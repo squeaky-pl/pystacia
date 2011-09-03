@@ -1,0 +1,15 @@
+syntax: regexp
+
+^.project$
+^.pydevproject$
+
+^bin/
+^etc/
+^include$
+^include/
+^lib/
+^lib_pypy/
+^lib-python/
+^share/
+^site-packages
+^tmp/
