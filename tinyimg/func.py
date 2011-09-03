@@ -1,6 +1,7 @@
-from ctypes import c_char_p
+from ctypes import c_char_p, c_void_p, POINTER, byref, cast
 
-from .types import MagickWand_p, MagickBoolean
+from . import TinyException, cdll
+from .types import MagickWand_p, MagickBoolean, ExceptionType
 
 def annote(cdll):
     cdll.MagickWandGenesis.restype = None
@@ -8,6 +9,14 @@ def annote(cdll):
     
     cdll.MagickWandTerminus.argtypes = ()
     cdll.MagickWandTerminus.restype = None
+    
+    #memory
+    cdll.MagickRelinquishMemory.restype = c_void_p
+    cdll.MagickRelinquishMemory.argtypes = (c_void_p,)
+    
+    #exceptions
+    cdll.MagickGetException.restype = c_void_p
+    cdll.MagickGetException.argtypes = (MagickWand_p, POINTER(ExceptionType))
     
     #wand
     cdll.NewMagickWand.restype = MagickWand_p
@@ -19,4 +28,20 @@ def annote(cdll):
     #reading
     cdll.MagickReadImage.restype = MagickBoolean
     cdll.MagickReadImage.argtypes = (MagickWand_p, c_char_p)
+    
+    #writing
+    cdll.MagickWriteImage.restype = MagickBoolean
+    cdll.MagickWriteImage.argtypes = (MagickWand_p, c_char_p) 
 
+def guard(wand, callable):
+    result = callable()
+    if not result:
+        exc_type = ExceptionType()
+        description = cdll.MagickGetException(wand, byref(exc_type))
+        exc = TinyException(cast(description, c_char_p).value)
+        cdll.MagickRelinquishMemory(description)
+        
+        raise exc
+        
+    return result
+        

@@ -25,6 +25,9 @@ def only_live(f):
         
     return wrapper
 
+def read(filename=None, file=None):
+    return Image.read(filename, file)
+
 class Image(object):
     def __init__(self, wand=None):
         if not wand:
@@ -34,10 +37,21 @@ class Image(object):
         self.__closed = False
     
     @classmethod
-    def read(cls, filename, file=None):
+    def read(cls, filename=None, file=None):
         wand = cdll.NewMagickWand()
         
-        return cls.__init__(wand=wand)
+        if filename:
+            guard(wand, lambda: cdll.MagickReadImage(wand, filename))
+            
+        return cls(wand=wand)
+    
+    @only_live
+    def write(self, filename):
+        guard(self.__wand, lambda: cdll.MagickWriteImage(self.__wand, filename))
+        
+    @only_live
+    def resize(self):
+        pass
     
     @only_live
     def close(self):
@@ -51,5 +65,7 @@ class Image(object):
         if not self.__closed: self.close()
 
 init()
+
+from .func import guard
 
 __all__ = [Image]

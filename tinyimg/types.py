@@ -3,6 +3,7 @@ from ctypes import Structure, POINTER, py_object, c_int
 enum = c_int
 
 MagickBoolean = enum
+ExceptionType = enum
 
 # taken from http://svn.python.org/projects/ctypes/trunk/ctypeslib/ctypeslib/contrib/pythonhdr.py
 try:
