@@ -1,5 +1,7 @@
+import webbrowser
 from sys import argv
 import atexit
+from tempfile import mkstemp
 from ctypes import CDLL
 from ctypes.util import find_library
 
@@ -52,6 +54,11 @@ class Image(object):
     @only_live
     def resize(self):
         pass
+    
+    def show(self):
+        tmpname = mkstemp()[1] + '.bmp'
+        self.write(tmpname)
+        webbrowser.open('file://' + tmpname)
     
     @only_live
     def close(self):
