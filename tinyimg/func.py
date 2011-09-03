@@ -1,14 +1,22 @@
 from ctypes import c_char_p
 
-from struct import MagickBoolean
+from .types import MagickWand_p, MagickBoolean
 
 def annote(cdll):
-    cdll.IsMagickInstantiated.restype = MagickBoolean
-    cdll.IsMagickInstantiated.argtypes = ()
+    cdll.MagickWandGenesis.restype = None
+    cdll.MagickWandGenesis.argtypes = ()
     
-    cdll.MagickCoreGenesis.restype = MagickBoolean
-    cdll.MagickCoreGenesis.argtypes = (c_char_p, MagickBoolean)
+    cdll.MagickWandTerminus.argtypes = ()
+    cdll.MagickWandTerminus.restype = None
     
-    cdll.MagickCoreTerminus.argtypes = ()
-    cdll.MagickCoreTerminus.restype = None
+    #wand
+    cdll.NewMagickWand.restype = MagickWand_p
+    cdll.NewMagickWand.argtypes = ()
+    
+    cdll.DestroyMagickWand.restype = MagickWand_p
+    cdll.DestroyMagickWand.argtypes = (MagickWand_p,)
+    
+    #reading
+    cdll.MagickReadImage.restype = MagickBoolean
+    cdll.MagickReadImage.argtypes = (MagickWand_p, c_char_p)
 
