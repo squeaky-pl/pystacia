@@ -8,8 +8,12 @@ syntax: regexp
 ^include$
 ^include/
 ^lib/
+^man/
 ^lib_pypy/
 ^lib-python/
 ^share/
 ^site-packages
 ^tmp/
+
+^\.DS_Store$
+\.pyc$

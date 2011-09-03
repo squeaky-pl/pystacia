@@ -1,4 +1,4 @@
-from ctypes import c_char_p, c_void_p, POINTER, byref, cast
+from ctypes import c_char_p, c_void_p, POINTER, byref, cast, c_size_t
 
 from . import TinyException, cdll
 from .types import MagickWand_p, MagickBoolean, ExceptionType
@@ -25,13 +25,22 @@ def annote(cdll):
     cdll.DestroyMagickWand.restype = MagickWand_p
     cdll.DestroyMagickWand.argtypes = (MagickWand_p,)
     
+    #properties
+    
     #reading
     cdll.MagickReadImage.restype = MagickBoolean
     cdll.MagickReadImage.argtypes = (MagickWand_p, c_char_p)
     
     #writing
     cdll.MagickWriteImage.restype = MagickBoolean
-    cdll.MagickWriteImage.argtypes = (MagickWand_p, c_char_p) 
+    cdll.MagickWriteImage.argtypes = (MagickWand_p, c_char_p)
+    
+    #size
+    cdll.MagickGetImageWidth.restype = c_size_t
+    cdll.MagickGetImageWidth.argtypes = (MagickWand_p,)
+    
+    cdll.MagickGetImageHeight.restype = c_size_t
+    cdll.MagickGetImageHeight.argtypes = (MagickWand_p,)
 
 def guard(wand, callable):
     result = callable()

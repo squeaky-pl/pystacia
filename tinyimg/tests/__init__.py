@@ -1,6 +1,10 @@
+from os.path import join, dirname
 from unittest import TestCase, skip
 
 from .. import Image, TinyException, read
+
+
+images = join(dirname(__file__), '../../images')
 
 class CloseTestCase(TestCase):
     @skip('not implemented')
@@ -18,3 +22,11 @@ class CloseTestCase(TestCase):
 class ReadTestCase(TestCase):
     def test(self):
         self.assertRaises(TinyException, lambda: read('/non/existant.jpg'))
+        
+class SizeTestCase(TestCase):
+    def test(self):
+        img = read(join(images, 'lena.bmp'))
+        self.assertSequenceEqual(img.size, (512, 512))
+        self.assertSequenceEqual((img.width, img.height), img.size)
+        
+        img.close()
