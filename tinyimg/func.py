@@ -22,6 +22,9 @@ def annote(cdll):
     cdll.NewMagickWand.restype = MagickWand_p
     cdll.NewMagickWand.argtypes = ()
     
+    cdll.CloneMagickWand.restype = MagickWand_p
+    cdll.CloneMagickWand.argtypes = (MagickWand_p,)
+    
     cdll.DestroyMagickWand.restype = MagickWand_p
     cdll.DestroyMagickWand.argtypes = (MagickWand_p,)
     

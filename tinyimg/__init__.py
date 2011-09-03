@@ -41,6 +41,10 @@ class Image(object):
         self.__wand = wand
         self.__closed = False
     
+    def clone(self):
+        wand = cdll.CloneMagickWand(self.__wand)
+        return self.__class__(wand=wand)
+    
     @classmethod
     def read(cls, filename=None, file=None):
         wand = cdll.NewMagickWand()
