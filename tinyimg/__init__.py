@@ -4,6 +4,9 @@ import atexit
 from tempfile import mkstemp
 from ctypes import CDLL, c_size_t, byref
 from ctypes.util import find_library
+from collections import Sequence
+
+from .types import Filter
 
 def init():
     global cdll
@@ -52,8 +55,20 @@ class Image(object):
         guard(self.__wand, lambda: cdll.MagickWriteImage(self.__wand, filename))
         
     @only_live
-    def resize(self):
-        pass
+    def resize(self, width=None, height=None, factor=None, filter=None, blur=1):
+        if not filter: filter = 'undefined'
+        
+        if not width and not height:
+            if not factor:
+                raise TinyException('Either width, height or factor must be provided')
+            
+            width, height = self.size
+            if not isinstance(factor, Sequence): factor = (factor, factor)
+            width, height = int(width * factor[0]), int(height * factor[1])
+        
+        filter = getattr(Filter, filter.upper())
+        
+        guard(self.__wand, lambda: cdll.MagickResizeImage(self.__wand, width, height, filter, blur))
     
     @property
     @only_live

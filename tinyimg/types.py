@@ -2,6 +2,37 @@ from ctypes import Structure, POINTER, py_object, c_int
 
 enum = c_int
 
+class Filter(enum): pass
+
+filters = ('UNDEFINED',
+           'POINT',
+           'BOX',
+           'TRIANGLE',
+           'HERMITE',
+           'HANNING',
+           'HAMMING',
+           'BLACKMAN',
+           'GAUSSIAN',
+           'QUADRATIC',
+           'CUBIC',
+           'CATROM',
+           'MITCHELL',
+           'JINC',
+           'SINC',
+           'KAISER',
+           'WELSH',
+           'PARZEN',
+           'BOHMAN',
+           'BARTLETT',
+           'LAGRANGE',
+           'LANCZOS',
+           'LANCZOS_SHARP',
+           'LANCZOS2',
+           'LANCZOS2_SHARP',
+           'ROBIDOUX'
+           )
+for i, filter in enumerate(filters): setattr(Filter, filter, i)
+
 MagickBoolean = enum
 ExceptionType = enum
 

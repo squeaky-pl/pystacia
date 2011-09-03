@@ -30,3 +30,20 @@ class SizeTestCase(TestCase):
         self.assertSequenceEqual((img.width, img.height), img.size)
         
         img.close()
+        
+class ResizeTestCase(TestCase):
+    def test(self):
+        img = read(join(images, 'lena.bmp'))
+        img.resize(256, 256)
+        
+        self.assertSequenceEqual(img.size, (256, 256))
+        
+        img.resize(factor=.5)
+        
+        self.assertSequenceEqual(img.size, (128, 128))
+        
+        img.resize(factor=(1, .5))
+        
+        self.assertSequenceEqual(img.size, (128, 64))
+        
+        self.assertRaises(TinyException, lambda: img.resize())
