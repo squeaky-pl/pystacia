@@ -2,7 +2,7 @@ import webbrowser
 from sys import argv
 import atexit
 from tempfile import mkstemp
-from ctypes import CDLL
+from ctypes import CDLL, c_size_t, byref
 from ctypes.util import find_library
 
 def init():
@@ -55,6 +55,20 @@ class Image(object):
     def resize(self):
         pass
     
+    @property
+    @only_live
+    def width(self):
+        return cdll.MagickGetImageWidth(self.__wand)
+    
+    @property
+    @only_live
+    def height(self):
+        return cdll.MagickGetImageHeight(self.__wand)
+    
+    @property
+    def size(self):
+        return (self.width, self.height)
+    
     def show(self):
         tmpname = mkstemp()[1] + '.bmp'
         self.write(tmpname)
@@ -63,6 +77,7 @@ class Image(object):
     @only_live
     def close(self):
         cdll.DestroyMagickWand(self.__wand)
+        self.__wand = None
         self.__closed = True
     
     @property
