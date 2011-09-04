@@ -47,7 +47,19 @@ class ResizeTestCase(TestCase):
         self.assertSequenceEqual(img.size, (128, 64))
         
         self.assertRaises(TinyException, lambda: img.resize())
+
+class CropTestCase(TestCase):
+    def test(self):
+        img = read(join(images, 'lena.bmp'))
         
+        img.crop(128, 128)
+        
+        self.assertSequenceEqual(img.size, (128, 128))
+        
+        img.crop(64, 64, 64, 64)
+        
+        self.assertSequenceEqual(img.size, (64, 64))
+
 class CloneTestCase(TestCase):
     def test(self):
         img = read(join(images, 'lena.bmp'))

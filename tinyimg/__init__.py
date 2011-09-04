@@ -74,6 +74,53 @@ class Image(object):
         
         guard(self.__wand, lambda: cdll.MagickResizeImage(self.__wand, width, height, filter, blur))
     
+    @only_live
+    def crop(self, width, height, x=0, y=0):
+        guard(self.__wand, lambda: cdll.MagickCropImage(self.__wand, width, height, x, y))
+    
+    @only_live
+    def flip(self, axis):
+        if axis.upper() == 'X':
+            guard(self.__wand, lambda: cdll.MagickFlipImage(self.__wand))
+        elif axis.upper() == 'Y':
+            guard(self.__wand, lambda: cdll.MagickFlopImage(self.__wand))
+        else:
+            raise TinyException('axis must be X or Y')
+        
+    @only_live
+    def roll(self, x, y):
+        guard(self.__wand, lambda: cdll.MagickRollImage(self.__wand, x, y))
+        
+    @only_live
+    def despeckle(self):
+        guard(self.__wand, lambda: cdll.MagickDespeckleImage(self.__wand))
+        
+    @only_live
+    def emboss(self, radius=0, sigma=0):
+        guard(self.__wand, lambda: cdll.MagickEmbossImage(self.__wand, radius, sigma))
+    
+    @only_live
+    def enhance(self):
+        guard(self.__wand, lambda: cdll.MagickEnhanceImage(self.__wand))
+    
+    @only_live
+    def equalize(self):
+        guard(self.__wand, lambda: cdll.MagickEqualizeImage(self.__wand))
+        
+    @only_live
+    def dft(self, magnitude):
+        guard(self.__wand, lambda: cdll.MagickForwardFourierTransformImage(self.__wand, bool(magnitude)))
+    
+    @only_live
+    def eval(self, expression):
+        wand = guard(self.__wand, lambda: cdll.MagickFxImage(self.__wand, expression))
+        cdll.DestroyMagickWand(self.__wand)
+        self.__wand = wand
+    
+    @only_live
+    def gamma(self, gamma):
+        guard(self.__wand, lambda: cdll.MagickGammaImage(self.__wand, gamma))
+        
     @property
     @only_live
     def width(self):

@@ -1,4 +1,4 @@
-from ctypes import c_char_p, c_void_p, POINTER, byref, cast, c_size_t, c_double
+from ctypes import c_char_p, c_void_p, POINTER, byref, cast, c_size_t, c_ssize_t, c_double
 
 from . import TinyException, cdll
 from .types import MagickWand_p, MagickBoolean, ExceptionType, Filter
@@ -48,6 +48,43 @@ def annote(cdll):
     #resize
     cdll.MagickResizeImage.argtypes = (MagickWand_p, c_size_t, c_size_t, Filter, c_double)
     cdll.MagickResizeImage.restype = MagickBoolean
+    
+    #crop
+    cdll.MagickCropImage.argtypes = (MagickWand_p, c_size_t, c_size_t, c_ssize_t, c_ssize_t)
+    cdll.MagickCropImage.restype = MagickBoolean
+    
+    #flip
+    cdll.MagickFlipImage.argtypes = (MagickWand_p,)
+    cdll.MagickFlipImage.restype = MagickBoolean
+    
+    cdll.MagickFlopImage.argtypes = (MagickWand_p,)
+    cdll.MagickFlopImage.restype = MagickBoolean
+    
+    #roll
+    cdll.MagickRollImage.argtypes = (MagickWand_p, c_ssize_t, c_ssize_t)
+    cdll.MagickRollImage.restype = MagickBoolean
+    
+    #other
+    cdll.MagickDespeckleImage.argtypes = (MagickWand_p,)
+    cdll.MagickDespeckleImage.restype = MagickBoolean
+    
+    cdll.MagickEmbossImage.argtypes = (MagickWand_p, c_double, c_double)
+    cdll.MagickEmbossImage.restype = MagickBoolean
+    
+    cdll.MagickEnhanceImage.argtypes = (MagickWand_p,)
+    cdll.MagickEnhanceImage.restype = MagickBoolean
+    
+    cdll.MagickEqualizeImage.argtypes = (MagickWand_p,)
+    cdll.MagickEqualizeImage.restype = MagickBoolean
+    
+    cdll.MagickForwardFourierTransformImage.argtypes = (MagickWand_p,)
+    cdll.MagickForwardFourierTransformImage.restype = MagickBoolean
+    
+    cdll.MagickFxImage.argtypes = (MagickWand_p, c_char_p)
+    cdll.MagickFxImage.restype = MagickWand_p
+    
+    cdll.MagickGammaImage.argtypes = (MagickWand_p, c_double)
+    cdll.MagickGammaImage.restype = MagickBoolean
 
 def guard(wand, callable):
     result = callable()
