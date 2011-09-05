@@ -169,7 +169,15 @@ class Image(object):
     @only_live
     def gamma(self, gamma):
         guard(self.__wand, lambda: cdll.MagickGammaImage(self.__wand, gamma))
+    
+    @only_live
+    def swirl(self, degrees):
+        guard(self.__wand, lambda: cdll.MagickSwirlImage(self.__wand, degrees))
         
+    @only_live
+    def spread(self, radius):
+        guard(self.__wand, lambda: cdll.MagickSpreadImage(self.__wand, radius))
+    
     @property
     @only_live
     def width(self):

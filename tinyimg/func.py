@@ -110,6 +110,12 @@ def annote(cdll):
     
     cdll.MagickGammaImage.argtypes = (MagickWand_p, c_double)
     cdll.MagickGammaImage.restype = MagickBoolean
+    
+    cdll.MagickSwirlImage.argtypes = (MagickWand_p, c_double)
+    cdll.MagickSwirlImage.restype = MagickBoolean
+    
+    cdll.MagickSpreadImage.argtypes = (MagickWand_p, c_double)
+    cdll.MagickSpreadImage.restype = MagickBoolean
 
 def guard(wand, callable, msg=None):
     result = callable()
