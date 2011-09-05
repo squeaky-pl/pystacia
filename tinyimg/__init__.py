@@ -48,6 +48,7 @@ class Image(object):
             if depth:
                 guard(self.__wand, lambda: cdll.MagickSetDepth(self.__wand, depth))
             if format:
+                format = format.upper()
                 guard(self.__wand, lambda: cdll.MagickSetFormat(self.__wand, format))
             guard(self.__wand, lambda: cdll.MagickReadImageBlob(self.__wand, blob, len(blob)))
             

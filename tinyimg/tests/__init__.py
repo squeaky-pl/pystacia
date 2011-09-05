@@ -70,3 +70,11 @@ class CloneTestCase(TestCase):
         copy.resize(factor=(2, 0.5))
         
         self.assertNotEqual(img.size, copy.size)
+        
+class ConstructFromBlobTestCase(TestCase):
+    def test(self):
+        img = Image(blob='\xff\xff\xff', format='rgb', depth=8, width=1, height=1)
+        
+        self.assertSequenceEqual(img.size, (1,1))
+        self.assertEqual(img.depth, 8)
+        self.assertEqual(img.get_blob('rgb'), '\xff\xff\xff')
