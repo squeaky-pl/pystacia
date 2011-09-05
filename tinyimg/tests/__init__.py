@@ -1,7 +1,7 @@
 from os.path import join, dirname
 from unittest import TestCase, skip
 
-from .. import Image, TinyException, read
+from .. import Image, TinyException, read, lena
 
 
 images = join(dirname(__file__), '../../images')
@@ -78,3 +78,17 @@ class ConstructFromBlobTestCase(TestCase):
         self.assertSequenceEqual(img.size, (1,1))
         self.assertEqual(img.depth, 8)
         self.assertEqual(img.get_blob('rgb'), '\xff\xff\xff')
+        
+class LenaTestCase(TestCase):
+    def test(self):
+        img = lena()
+        
+        self.assertSequenceEqual(img.size, (512, 512))
+        
+        img.close()
+        
+        img = lena(32)
+        
+        self.assertSequenceEqual(img.size, (32, 32))
+        
+        img.close()

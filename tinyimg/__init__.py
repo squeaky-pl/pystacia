@@ -1,5 +1,7 @@
 import webbrowser
 from sys import argv
+from os.path import dirname, join
+from bz2 import BZ2File
 import atexit
 from tempfile import mkstemp
 from ctypes import CDLL, c_size_t, byref, string_at
@@ -32,6 +34,16 @@ def only_live(f):
 
 def read(filename=None, file=None):
     return Image.read(filename, file)
+
+def lena_blob():
+    with BZ2File(join(dirname(__file__), 'lena.ycbcr.bz2')) as f:
+        return dict(blob=f.read(), format='ycbcr', height=512, width=512, depth=8)
+
+def lena(size=None):
+    img = Image(**lena_blob())
+    if size: img.resize(size, size)
+    
+    return img
 
 class Image(object):
     def __init__(self, width=None, height=None, depth=None,
