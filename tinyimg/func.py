@@ -34,9 +34,31 @@ def annote(cdll):
     cdll.MagickReadImage.restype = MagickBoolean
     cdll.MagickReadImage.argtypes = (MagickWand_p, c_char_p)
     
+    cdll.MagickReadImageBlob.restype = MagickBoolean
+    cdll.MagickReadImageBlob.argtypes = (MagickWand_p, c_void_p, c_size_t)
+    
     #writing
     cdll.MagickWriteImage.restype = MagickBoolean
     cdll.MagickWriteImage.argtypes = (MagickWand_p, c_char_p)
+    
+    cdll.MagickGetImageBlob.argtypes = (MagickWand_p, POINTER(c_size_t))
+    cdll.MagickGetImageBlob.restype = c_void_p
+    
+    #properties
+    cdll.MagickGetImageFormat.argtypes = (MagickWand_p,)
+    cdll.MagickGetImageFormat.restype = c_char_p
+    
+    cdll.MagickSetImageFormat.argtypes = (MagickWand_p, c_char_p)
+    cdll.MagickSetImageFormat.restype = MagickBoolean
+    
+    cdll.MagickSetFormat.argtypes = (MagickWand_p, c_char_p)
+    cdll.MagickSetFormat.restype = MagickBoolean
+    
+    cdll.MagickSetDepth.argtypes = (MagickWand_p, c_size_t)
+    cdll.MagickSetDepth.restype = MagickBoolean
+    
+    cdll.MagickSetSize.argtypes = (MagickWand_p, c_size_t, c_size_t)
+    cdll.MagickSetSize.restype = MagickBoolean
     
     #size
     cdll.MagickGetImageWidth.restype = c_size_t
@@ -44,6 +66,9 @@ def annote(cdll):
     
     cdll.MagickGetImageHeight.restype = c_size_t
     cdll.MagickGetImageHeight.argtypes = (MagickWand_p,)
+    
+    cdll.MagickGetImageDepth.restype = c_size_t
+    cdll.MagickGetImageDepth.argtypes = (MagickWand_p,)
     
     #resize
     cdll.MagickResizeImage.argtypes = (MagickWand_p, c_size_t, c_size_t, Filter, c_double)
@@ -86,13 +111,18 @@ def annote(cdll):
     cdll.MagickGammaImage.argtypes = (MagickWand_p, c_double)
     cdll.MagickGammaImage.restype = MagickBoolean
 
-def guard(wand, callable):
+def guard(wand, callable, msg=None):
     result = callable()
     if not result:
-        exc_type = ExceptionType()
-        description = cdll.MagickGetException(wand, byref(exc_type))
-        exc = TinyException(cast(description, c_char_p).value)
-        cdll.MagickRelinquishMemory(description)
+        description = None
+        if not msg:
+            exc_type = ExceptionType()
+            description = cdll.MagickGetException(wand, byref(exc_type))
+            msg = cast(description, c_char_p).value
+        exc = TinyException(msg)
+        
+        if description:
+            cdll.MagickRelinquishMemory(description)
         
         raise exc
         

@@ -2,7 +2,7 @@ import webbrowser
 from sys import argv
 import atexit
 from tempfile import mkstemp
-from ctypes import CDLL, c_size_t, byref
+from ctypes import CDLL, c_size_t, byref, string_at
 from ctypes.util import find_library
 from collections import Sequence
 
@@ -34,12 +34,27 @@ def read(filename=None, file=None):
     return Image.read(filename, file)
 
 class Image(object):
-    def __init__(self, wand=None):
-        if not wand:
-            pass
+    def __init__(self, width=None, height=None, depth=None,
+                 format=None, blob=None, wand=None, debug=False):
+        self.__wand = wand if wand else cdll.NewMagickWand()
         
-        self.__wand = wand
+        self.debug = debug
+
+        if blob:
+            try: blob = blob.read()
+            except AttributeError: pass
+            if width and height:
+                guard(self.__wand, lambda: cdll.MagickSetSize(self.__wand, width, height))
+            if depth:
+                guard(self.__wand, lambda: cdll.MagickSetDepth(self.__wand, depth))
+            if format:
+                guard(self.__wand, lambda: cdll.MagickSetFormat(self.__wand, format))
+            guard(self.__wand, lambda: cdll.MagickReadImageBlob(self.__wand, blob, len(blob)))
+            
         self.__closed = False
+        
+        if not self.__wand:
+            raise TinyException('Couldnt initialize image')
     
     def clone(self):
         wand = cdll.CloneMagickWand(self.__wand)
@@ -49,14 +64,35 @@ class Image(object):
     def read(cls, filename=None, file=None):
         wand = cdll.NewMagickWand()
         
+        if file:
+            return cls(blob=file)
+        
         if filename:
             guard(wand, lambda: cdll.MagickReadImage(wand, filename))
-            
-        return cls(wand=wand)
+            return cls(wand=wand)
     
     @only_live
     def write(self, filename):
         guard(self.__wand, lambda: cdll.MagickWriteImage(self.__wand, filename))
+        
+    @only_live
+    def get_blob(self, format=None):
+        if format:
+            format = format.upper()
+            old_format = cdll.MagickGetImageFormat(self.__wand)
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageFormat(self.__wand, format),
+                  'Format "{0}" unsupported'.format(format))
+        
+        size = c_size_t()
+        result = guard(self.__wand, lambda: cdll.MagickGetImageBlob(self.__wand, byref(size)))
+        blob = string_at(result, size.value)
+        cdll.MagickRelinquishMemory(result)
+        
+        if format:
+            guard(self.__wand, lambda: cdll.MagickSetImageFormat(self.__wand, old_format))
+        
+        return blob
         
     @only_live
     def resize(self, width=None, height=None, factor=None, filter=None, blur=1):
@@ -134,6 +170,19 @@ class Image(object):
     @property
     def size(self):
         return (self.width, self.height)
+    
+    @property
+    def debug(self):
+        return bool(self.__wand.contents.debug)
+    
+    @debug.setter
+    def debug(self, value):
+        self.__wand.contents.debug = value
+    
+    @property
+    @only_live
+    def depth(self):
+        return cdll.MagickGetImageDepth(self.__wand)
     
     def show(self):
         tmpname = mkstemp()[1] + '.bmp'
