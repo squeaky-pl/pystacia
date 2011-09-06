@@ -1,10 +1,6 @@
-from os.path import join, dirname
 from unittest import TestCase, skip
 
 from .. import Image, TinyException, read, lena
-
-
-images = join(dirname(__file__), '../../images')
 
 class CloseTestCase(TestCase):
     @skip('not implemented')
@@ -25,7 +21,7 @@ class ReadTestCase(TestCase):
         
 class SizeTestCase(TestCase):
     def test(self):
-        img = read(join(images, 'lena.bmp'))
+        img = lena()
         self.assertSequenceEqual(img.size, (512, 512))
         self.assertSequenceEqual((img.width, img.height), img.size)
         
@@ -33,7 +29,7 @@ class SizeTestCase(TestCase):
         
 class ResizeTestCase(TestCase):
     def test(self):
-        img = read(join(images, 'lena.bmp'))
+        img = lena()
         img.resize(256, 256)
         
         self.assertSequenceEqual(img.size, (256, 256))
@@ -50,7 +46,7 @@ class ResizeTestCase(TestCase):
 
 class CropTestCase(TestCase):
     def test(self):
-        img = read(join(images, 'lena.bmp'))
+        img = lena()
         
         img.crop(128, 128)
         
@@ -62,7 +58,7 @@ class CropTestCase(TestCase):
 
 class CloneTestCase(TestCase):
     def test(self):
-        img = read(join(images, 'lena.bmp'))
+        img = lena()
         copy = img.clone()
         
         self.assertSequenceEqual(img.size, copy.size)
