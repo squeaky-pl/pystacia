@@ -177,6 +177,26 @@ class Image(object):
     @only_live
     def spread(self, radius):
         guard(self.__wand, lambda: cdll.MagickSpreadImage(self.__wand, radius))
+        
+    @only_live
+    def auto_gamma(self):
+        guard(self.__wand, lambda: cdll.MagickAutoGammaImage(self.__wand))
+    
+    @only_live
+    def auto_level(self):
+        guard(self.__wand, lambda: cdll.MagickAutoLevelImage(self.__wand))
+        
+    @only_live
+    def blur(self, radius=0, sigma=0):
+        guard(self.__wand, lambda: cdll.MagickBlurImage(self.__wand, radius, sigma))
+    
+    @only_live
+    def brightness(self, percent):
+        guard(self.__wand, lambda: cdll.MagickBrightnessContrastImage(self.__wand, percent, 0))
+    
+    @only_live
+    def contrast(self, percent):
+        guard(self.__wand, lambda: cdll.MagickBrightnessContrastImage(self.__wand, 0, percent))
     
     @property
     @only_live
