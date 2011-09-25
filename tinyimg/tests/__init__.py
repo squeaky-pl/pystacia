@@ -17,7 +17,7 @@ class CloseTestCase(TestCase):
         
 class ReadTestCase(TestCase):
     def test(self):
-        self.assertRaises(TinyException, lambda: read('/non/existant.jpg'))
+        self.assertRaises(IOError, lambda: read('/non/existant.jpg'))
         
 class SizeTestCase(TestCase):
     def test(self):

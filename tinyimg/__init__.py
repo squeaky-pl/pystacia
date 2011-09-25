@@ -1,6 +1,6 @@
 import webbrowser
 from sys import argv
-from os.path import dirname, join
+from os.path import dirname, join, exists
 from bz2 import BZ2File
 import atexit
 from tempfile import mkstemp
@@ -45,6 +45,38 @@ def lena(size=None):
     
     return img
 
+def get_magick_version_str():
+    return cdll.MagickGetVersion(None)
+
+__magick_version = None
+def get_magick_version():
+    global __magick_version
+    
+    if not __magick_version:
+        options = get_magick_options()
+        
+        try: version = options['LIB_VERSION_NUMBER']
+        except KeyError:
+            try: version = options['VERSION']
+            except KeyError: pass
+            else: __magick_version = tuple(int(x) for x in version.splut('.'))
+        else: __magick_version = tuple(int(x) for x in version.split(','))
+        
+    return __magick_version
+
+__magick_options = {}
+def get_magick_options():
+    global __magick_options
+    
+    if not __magick_options:
+        size = c_size_t()
+        keys = cdll.MagickQueryConfigureOptions('*', size)
+        for key in (keys[i] for i in range(size.value)):
+            __magick_options[key] = cdll.MagickQueryConfigureOption(key)
+            
+    return __magick_options
+    
+
 class Image(object):
     def __init__(self, width=None, height=None, depth=None,
                  format=None, blob=None, wand=None, debug=False):
@@ -81,6 +113,8 @@ class Image(object):
             return cls(blob=file)
         
         if filename:
+            if not exists(filename):
+                raise IOError((2, 'No such file or directory: {0}'.format(filename)))
             guard(wand, lambda: cdll.MagickReadImage(wand, filename))
             return cls(wand=wand)
     
@@ -246,4 +280,4 @@ init()
 
 from .func import guard
 
-__all__ = [Image]
+__all__ = [Image, lena, read]

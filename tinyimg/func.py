@@ -4,6 +4,15 @@ from . import TinyException, cdll
 from .types import MagickWand_p, MagickBoolean, ExceptionType, Filter
 
 def annote(cdll):
+    cdll.MagickGetVersion.restype = c_char_p
+    cdll.MagickGetVersion.argtypes = (POINTER(c_size_t),)
+    
+    cdll.MagickQueryConfigureOptions.restype = POINTER(c_char_p)
+    cdll.MagickQueryConfigureOptions.argtypes = (c_char_p, POINTER(c_size_t))
+    
+    cdll.MagickQueryConfigureOption.restype = c_char_p
+    cdll.MagickQueryConfigureOption.argtypes = (c_char_p,)
+    
     cdll.MagickWandGenesis.restype = None
     cdll.MagickWandGenesis.argtypes = ()
     
