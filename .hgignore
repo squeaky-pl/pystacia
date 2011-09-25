@@ -3,17 +3,7 @@ syntax: regexp
 ^.project$
 ^.pydevproject$
 
-^bin/
-^etc/
-^include$
-^include/
-^lib/
-^man/
-^lib_pypy/
-^lib-python/
-^share/
-^site-packages
-^tmp/
+^env/
 
 ^\.DS_Store$
 \.pyc$
