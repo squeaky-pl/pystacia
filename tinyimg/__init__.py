@@ -75,7 +75,11 @@ def get_magick_options():
             __magick_options[key] = cdll.MagickQueryConfigureOption(key)
             
     return __magick_options
-    
+
+import tinyimg.enums
+
+def get_enum_value(enum, const):
+    return enums.get_value(enum, const, get_magick_version())
 
 class Image(object):
     def __init__(self, width=None, height=None, depth=None,
@@ -232,6 +236,18 @@ class Image(object):
     def contrast(self, percent):
         guard(self.__wand, lambda: cdll.MagickBrightnessContrastImage(self.__wand, 0, percent))
     
+    def merge(self, other, x=0, y=0, op='copy'):
+        op = get_enum_value('composite', op)
+        if not op:
+            raise TinyException('Couldnt resolve operator {0} to enum value.'.format(op))
+        
+        guard(self.__wand, lambda: cdll.MagickCompositeImage(self.__wand, other.wand, op, x, y))
+    
+    @property
+    @only_live
+    def wand(self):
+        return self.__wand
+    
     @property
     @only_live
     def width(self):
@@ -280,4 +296,4 @@ init()
 
 from .func import guard
 
-__all__ = [Image, lena, read]
+__all__ = ["Image", "lena", "read"]

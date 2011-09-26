@@ -2,6 +2,8 @@ from unittest import TestCase, skip
 
 from .. import Image, TinyException, read, lena
 
+from tinyimg.tests.enums import * 
+
 class CloseTestCase(TestCase):
     @skip('not implemented')
     def test(self):
