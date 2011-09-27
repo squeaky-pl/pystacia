@@ -69,6 +69,12 @@ def annote(cdll):
     cdll.MagickSetImageDepth.argtypes = (MagickWand_p, c_size_t)
     cdll.MagickSetImageDepth.restype = MagickBoolean
     
+    cdll.MagickSetImageType.argtypes = (MagickWand_p, c_size_t)
+    cdll.MagickSetImageType.restype = MagickBoolean
+    
+    cdll.MagickGetImageType.argtypes = (MagickWand_p,)
+    cdll.MagickGetImageType.restype = enum
+    
     cdll.MagickSetSize.argtypes = (MagickWand_p, c_size_t, c_size_t)
     cdll.MagickSetSize.restype = MagickBoolean
     

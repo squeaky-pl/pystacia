@@ -279,6 +279,17 @@ class Image(object):
         value = get_enum_value('colorspace', mnemonic)
         guard(self.__wand, lambda: cdll.MagickSetImageColorspace(self.__wand, value))
     
+    @property
+    @only_live
+    def type(self):
+        value = cdll.MagickGetImageType(self.__wand)
+        return get_enum_mnemonic('type', value)
+    
+    @type.setter
+    def type(self, mnemonic):
+        value = get_enum_value('type', mnemonic)
+        guard(self.__wand, lambda: cdll.MagickSetImageType(self.__wand, value))
+    
     @only_live
     def convert_colorspace(self, mnemonic):
         value = get_enum_value('colorspace', mnemonic)
@@ -315,7 +326,6 @@ class Image(object):
     @only_live
     def depth(self, value):
         guard(self.__wand, lambda: cdll.MagickSetImageDepth(self.__wand, value))
-    
     
     def show(self):
         tmpname = mkstemp()[1] + '.bmp'
