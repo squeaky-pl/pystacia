@@ -236,12 +236,17 @@ class Image(object):
     def contrast(self, percent):
         guard(self.__wand, lambda: cdll.MagickBrightnessContrastImage(self.__wand, 0, percent))
     
+    @only_live
     def merge(self, other, x=0, y=0, op='copy'):
         op = get_enum_value('composite', op)
         if not op:
             raise TinyException('Couldnt resolve operator {0} to enum value.'.format(op))
         
         guard(self.__wand, lambda: cdll.MagickCompositeImage(self.__wand, other.wand, op, x, y))
+    
+    @only_live
+    def deskew(self, threshold):
+        guard(self.__wand, lambda: cdll.MagickDeskewImage(self.__wand, threshold))
     
     @property
     @only_live

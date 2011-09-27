@@ -140,7 +140,10 @@ def annote(cdll):
     
     cdll.MagickCompositeImage.argtypes = (MagickWand_p, MagickWand_p, enum, c_ssize_t, c_ssize_t)
     cdll.MagickCompositeImage.restype = MagickBoolean
-
+    
+    cdll.MagickDeskewImage.argtypes = (MagickWand_p, c_double)
+    cdll.MagickDeskewImage.restype = MagickBoolean
+    
 def guard(wand, callable, msg=None):
     result = callable()
     if not result:
