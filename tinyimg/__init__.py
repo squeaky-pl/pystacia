@@ -9,6 +9,7 @@ from ctypes.util import find_library
 from collections import Sequence
 
 from .types import Filter
+from tinyimg.enums import get_mnemonic
 
 def init():
     global cdll
@@ -35,14 +36,22 @@ def only_live(f):
 def read(filename=None, file=None):
     return Image.read(filename, file)
 
+__lena_blob = None
 def lena_blob():
-    with BZ2File(join(dirname(__file__), 'lena.ycbcr.bz2')) as f:
-        return dict(blob=f.read(), format='ycbcr', height=512, width=512, depth=8)
+    global __lena_blob
+    
+    if not __lena_blob:
+        with BZ2File(join(dirname(__file__), 'lena.ycbcr.bz2')) as f:
+            __lena_blob = dict(blob=f.read(), format='ycbcr', height=512, width=512, depth=8)
+            
+    return __lena_blob
 
-def lena(size=None):
+def lena(size=None, colorspace='rgb'):
     img = Image(**lena_blob())
     if size: img.resize(size, size)
-    
+    if img.colorspace != colorspace:
+        img.convert_colorspace(colorspace)
+        
     return img
 
 def get_magick_version_str():
@@ -78,8 +87,15 @@ def get_magick_options():
 
 import tinyimg.enums
 
-def get_enum_value(enum, const):
-    return enums.get_value(enum, const, get_magick_version())
+def get_enum_value(enum, mnemonic, throw=True):
+    value = enums.get_value(enum, mnemonic, get_magick_version())
+    if throw and value == None:
+        template = "Enumeration '{enum}' cant map mnemonic '{mnemonic}'"
+        raise TinyException(template.format(enum=enum, mnemonic=mnemonic))
+    return value
+
+def get_enum_mnemonic(enum, value):
+    return enums.get_mnemonic(enum, value, get_magick_version())
 
 class Image(object):
     def __init__(self, width=None, height=None, depth=None,
@@ -238,11 +254,9 @@ class Image(object):
     
     @only_live
     def merge(self, other, x=0, y=0, op='copy'):
-        op = get_enum_value('composite', op)
-        if not op:
-            raise TinyException('Couldnt resolve operator {0} to enum value.'.format(op))
+        value = get_enum_value('composite', op)
         
-        guard(self.__wand, lambda: cdll.MagickCompositeImage(self.__wand, other.wand, op, x, y))
+        guard(self.__wand, lambda: cdll.MagickCompositeImage(self.__wand, other.wand, value, x, y))
     
     @only_live
     def deskew(self, threshold):
@@ -252,6 +266,23 @@ class Image(object):
     @only_live
     def wand(self):
         return self.__wand
+    
+    @property
+    @only_live
+    def colorspace(self):
+        value = cdll.MagickGetImageColorspace(self.__wand)
+        return get_enum_mnemonic('colorspace', value)
+    
+    @colorspace.setter
+    @only_live
+    def colorspace(self, mnemonic):
+        value = get_enum_value('colorspace', mnemonic)
+        guard(self.__wand, lambda: cdll.MagickSetImageColorspace(self.__wand, value))
+    
+    @only_live
+    def convert_colorspace(self, mnemonic):
+        value = get_enum_value('colorspace', mnemonic)
+        guard(self.__wand, lambda: cdll.MagickTransformImageColorspace(self.__wand, value))
     
     @property
     @only_live
@@ -279,6 +310,12 @@ class Image(object):
     @only_live
     def depth(self):
         return cdll.MagickGetImageDepth(self.__wand)
+    
+    @depth.setter
+    @only_live
+    def depth(self, value):
+        guard(self.__wand, lambda: cdll.MagickSetImageDepth(self.__wand, value))
+    
     
     def show(self):
         tmpname = mkstemp()[1] + '.bmp'
