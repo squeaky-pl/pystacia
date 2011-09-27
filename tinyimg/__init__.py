@@ -249,6 +249,13 @@ class Image(object):
         guard(self.__wand, lambda: cdll.MagickBrightnessContrastImage(self.__wand, percent, 0))
     
     @only_live
+    def modulate(self, hue=100, saturation=100, lightness=100):
+        guard(self.__wand, lambda: cdll.MagickModulateImage(self.__wand, lightness, saturation, hue))
+    
+    def desaturate(self):
+        self.modulate(saturation=0)
+    
+    @only_live
     def contrast(self, percent):
         guard(self.__wand, lambda: cdll.MagickBrightnessContrastImage(self.__wand, 0, percent))
     

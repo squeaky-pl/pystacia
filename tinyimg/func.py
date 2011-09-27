@@ -162,6 +162,9 @@ def annote(cdll):
     cdll.MagickDeskewImage.argtypes = (MagickWand_p, c_double)
     cdll.MagickDeskewImage.restype = MagickBoolean
     
+    cdll.MagickModulateImage.argtypes = (MagickWand_p, c_double, c_double, c_double)
+    cdll.MagickModulateImage.restype = MagickBoolean
+    
 def guard(wand, callable, msg=None):
     result = callable()
     if not result:
