@@ -220,6 +220,14 @@ class Image(object):
     @only_live
     def transpose(self):
         guard(self.__wand, lambda: cdll.MagickTransposeImage(self.__wand))
+    
+    @only_live
+    def transverse(self):
+        guard(self.__wand, lambda: cdll.MagickTransverseImage(self.__wand))
+        
+    @only_live
+    def wave(self, amplitude, length):
+        guard(self.__wand, lambda: cdll.MagickWaveImage(self.__wand, amplitude, length))
         
     @only_live
     def eval(self, expression):

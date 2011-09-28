@@ -186,6 +186,9 @@ def annote(cdll):
     cdll.MagickSetImageOpacity.argtypes = (MagickWand_p, c_double)
     cdll.MagickSetImageOpacity.restype = MagickBoolean
     
+    cdll.MagickWaveImage.argtypes = (MagickWand_p, c_double, c_double)
+    cdll.MagickWaveImage.restype = MagickBoolean
+    
     cdll.MagickShadowImage.argtypes = (MagickWand_p, c_double, c_double, c_ssize_t, c_ssize_t)
     cdll.MagickShadowImage.restype = MagickBoolean
     
@@ -200,6 +203,9 @@ def annote(cdll):
     
     cdll.MagickTransposeImage.argtypes = (MagickWand_p,)
     cdll.MagickTransposeImage.restype = MagickBoolean
+    
+    cdll.MagickTransverseImage.argtypes = (MagickWand_p,)
+    cdll.MagickTransverseImage.restype = MagickBoolean
     
     ###pixelwand
     cdll.NewPixelWand.argtypes = ()
