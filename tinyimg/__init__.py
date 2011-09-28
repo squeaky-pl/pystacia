@@ -10,6 +10,7 @@ from collections import Sequence
 
 from .types import Filter
 from tinyimg.enums import get_mnemonic
+from tinyimg.utils import TinyException, only_live
 
 def init():
     global cdll
@@ -22,16 +23,6 @@ def init():
     
     cdll.MagickWandGenesis()
     atexit.register(lambda: cdll.MagickWandTerminus())
-
-class TinyException(Exception): pass
-
-def only_live(f):
-    def wrapper(image, *args, **kw):
-        if image.closed: raise TinyException('Image already closed')
-        
-        return f(image, *args, **kw)
-        
-    return wrapper
 
 def read(filename=None, file=None):
     return Image.read(filename, file)
@@ -121,9 +112,12 @@ class Image(object):
         if not self.__wand:
             raise TinyException('Couldnt initialize image')
     
+    @only_live
     def clone(self):
         wand = cdll.CloneMagickWand(self.__wand)
         return self.__class__(wand=wand)
+    
+    copy = clone
     
     @classmethod
     def read(cls, filename=None, file=None):
@@ -180,6 +174,10 @@ class Image(object):
     @only_live
     def crop(self, width, height, x=0, y=0):
         guard(self.__wand, lambda: cdll.MagickCropImage(self.__wand, width, height, x, y))
+    
+    @only_live
+    def rotate(self, angle):
+        guard(self.__wand, lambda: cdll.MagickRotateImage(self.__wand, transparent.wand, angle))
     
     @only_live
     def flip(self, axis):
@@ -255,15 +253,29 @@ class Image(object):
     def desaturate(self):
         self.modulate(saturation=0)
         
+    @only_live
     def invert(self, only_gray=False):
         guard(self.__wand, lambda: cdll.MagickNegateImage(self.__wand, only_gray))
+        
+    @only_live
+    def oil_paint(self, radius):
+        guard(self.__wand, lambda: cdll.MagickOilPaintImage(self.__wand, radius))
+    
+    @only_live
+    def posterize(self, levels):
+        guard(self.__wand, lambda: cdll.MagickPosterizeImage(self.__wand, levels))
+    
+    @only_live
+    #TODO: moving center here
+    def radial_blur(self, radius):
+        guard(self.__wand, lambda: cdll.MagickRadialBlurImage(self.__wand, radius))
     
     @only_live
     def contrast(self, percent):
         guard(self.__wand, lambda: cdll.MagickBrightnessContrastImage(self.__wand, 0, percent))
     
     @only_live
-    def merge(self, other, x=0, y=0, op='copy'):
+    def merge(self, other, x=0, y=0, op='atop'):
         value = get_enum_value('composite', op)
         
         guard(self.__wand, lambda: cdll.MagickCompositeImage(self.__wand, other.wand, value, x, y))
@@ -271,6 +283,10 @@ class Image(object):
     @only_live
     def deskew(self, threshold):
         guard(self.__wand, lambda: cdll.MagickDeskewImage(self.__wand, threshold))
+    
+    @only_live
+    def sepia(self, threshold):
+        guard(self.__wand, lambda: cdll.MagickSepiaToneImage(self.__wand, threshold))
     
     @property
     @only_live
@@ -357,5 +373,8 @@ class Image(object):
 init()
 
 from .func import guard
+from tinyimg.color import from_string
+
+transparent = from_string('transparent')
 
 __all__ = ["Image", "lena", "read"]

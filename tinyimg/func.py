@@ -1,7 +1,7 @@
-from ctypes import c_char_p, c_void_p, POINTER, byref, cast, c_size_t, c_ssize_t, c_double
+from ctypes import c_char_p, c_void_p, POINTER, byref, cast, c_size_t, c_ssize_t, c_double, c_uint
 
 from . import TinyException, cdll
-from .types import MagickWand_p, MagickBoolean, ExceptionType, Filter, enum
+from .types import MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, Filter, enum
 
 def annote(cdll):
     cdll.MagickGetVersion.restype = c_char_p
@@ -167,6 +167,31 @@ def annote(cdll):
     
     cdll.MagickNegateImage.argtypes = (MagickWand_p, MagickBoolean)
     cdll.MagickNegateImage.restype = MagickBoolean
+    
+    cdll.MagickOilPaintImage.argtypes = (MagickWand_p, c_double)
+    cdll.MagickOilPaintImage.restype = MagickBoolean
+    
+    cdll.MagickPosterizeImage.argtypes = (MagickWand_p, c_uint)
+    cdll.MagickPosterizeImage.restype = MagickBoolean
+    
+    cdll.MagickRadialBlurImage.argtypes = (MagickWand_p, c_double)
+    cdll.MagickRadialBlurImage.restype = MagickBoolean
+    
+    cdll.MagickRotateImage.argtypes = (MagickWand_p, PixelWand_p, c_double)
+    cdll.MagickRotateImage.restype = MagickBoolean
+    
+    cdll.MagickSepiaToneImage.argtypes = (MagickWand_p, c_double)
+    cdll.MagickSepiaToneImage.restype = MagickBoolean
+    
+    ###pixelwand
+    cdll.NewPixelWand.argtypes = ()
+    cdll.NewPixelWand.restype = PixelWand_p
+    
+    cdll.DestroyPixelWand.argtypes = (PixelWand_p,)
+    cdll.DestroyPixelWand.restype = PixelWand_p
+    
+    cdll.PixelSetColor.argtypes = (PixelWand_p, c_char_p)
+    cdll.PixelSetColor.restype = MagickBoolean
     
 def guard(wand, callable, msg=None):
     result = callable()
