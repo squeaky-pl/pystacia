@@ -175,9 +175,14 @@ class Image(object):
     def crop(self, width, height, x=0, y=0):
         guard(self.__wand, lambda: cdll.MagickCropImage(self.__wand, width, height, x, y))
     
+    #TODO: fit
     @only_live
     def rotate(self, angle):
         guard(self.__wand, lambda: cdll.MagickRotateImage(self.__wand, transparent.wand, angle))
+    
+    @only_live
+    def set_opacity(self, opacity):
+        guard(self.__wand, lambda: cdll.MagickSetImageOpacity(self.__wand, opacity))
     
     @only_live
     def flip(self, axis):
@@ -212,6 +217,10 @@ class Image(object):
     def dft(self, magnitude):
         guard(self.__wand, lambda: cdll.MagickForwardFourierTransformImage(self.__wand, bool(magnitude)))
     
+    @only_live
+    def transpose(self):
+        guard(self.__wand, lambda: cdll.MagickTransposeImage(self.__wand))
+        
     @only_live
     def eval(self, expression):
         wand = guard(self.__wand, lambda: cdll.MagickFxImage(self.__wand, expression))
@@ -271,9 +280,26 @@ class Image(object):
         guard(self.__wand, lambda: cdll.MagickRadialBlurImage(self.__wand, radius))
     
     @only_live
+    def shadow(self, radius, x=0, y=0, opacity=0.5):
+        guard(self.__wand, lambda: cdll.MagickShadowImage(self.__wand, opacity, radius, x, y))
+        
+    @only_live
+    def shear(self, x_angle, y_angle):
+        guard(self.__wand, lambda: cdll.MagickShearImage(self.__wand, transparent.wand, x_angle, y_angle))
+    
+    @only_live
+    def solarize(self, threshold):
+        guard(self.__wand, lambda:cdll.MagickSolarizeImage(self.__wand, threshold))
+    
+    @only_live
     def contrast(self, percent):
         guard(self.__wand, lambda: cdll.MagickBrightnessContrastImage(self.__wand, 0, percent))
+        
+    @only_live
+    def sketch(self, sigma, radius=0, angle=45):
+        guard(self.__wand, lambda: cdll.MagickSketchImage(self.__wand, radius, sigma, angle))
     
+    #TODO fit mode
     @only_live
     def merge(self, other, x=0, y=0, op='atop'):
         value = get_enum_value('composite', op)
