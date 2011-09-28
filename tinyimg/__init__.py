@@ -254,6 +254,9 @@ class Image(object):
     
     def desaturate(self):
         self.modulate(saturation=0)
+        
+    def invert(self, only_gray=False):
+        guard(self.__wand, lambda: cdll.MagickNegateImage(self.__wand, only_gray))
     
     @only_live
     def contrast(self, percent):
