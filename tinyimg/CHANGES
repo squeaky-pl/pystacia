@@ -1,0 +1,7 @@
+=======
+CHANGES
+=======
+0.0
+===
+- refactored underlying enum implementation to use lazy enums instead of
+  string constants

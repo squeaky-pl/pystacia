@@ -1,5 +1,6 @@
 data =\
-[{'colorspace': {'cmy': 22,
+{'colorspace': [{'_version': (6, 6, 2, 10),
+                 'cmy': 22,
                  'cmyk': 12,
                  'gray': 2,
                  'hsb': 14,
@@ -21,8 +22,9 @@ data =\
                  'ycc': 8,
                  'yiq': 9,
                  'ypbpr': 10,
-                 'yuv': 11},
-  'composite': {'atop': 3,
+                 'yuv': 11}],
+ 'composite': [{'_version': (6, 6, 2, 10),
+                'atop': 3,
                 'blend': 4,
                 'blur': 57,
                 'bumpmap': 5,
@@ -86,43 +88,8 @@ data =\
                 'undefined': 0,
                 'vivid_light': 59,
                 'xor': 54},
-  'type': {'bilevel': 1,
-           'color_separation': 8,
-           'color_separation_matte': 9,
-           'grayscale': 2,
-           'grayscale_matte': 3,
-           'optimize': 10,
-           'palette': 4,
-           'palette_bilevel_matte': 11,
-           'palette_matte': 5,
-           'true_color': 6,
-           'true_color_matte': 7,
-           'undefined': 0},
-  'version': (6, 6, 2, 10)},
- {'colorspace': {'cmy': 22,
-                 'cmyk': 12,
-                 'gray': 2,
-                 'hsb': 14,
-                 'hsl': 15,
-                 'hwb': 16,
-                 'lab': 5,
-                 'log': 21,
-                 'ohta': 4,
-                 'rec601luma': 17,
-                 'rec601ycbcr': 18,
-                 'rec709luma': 19,
-                 'rec709ycbcr': 20,
-                 'rgb': 1,
-                 'srgb': 13,
-                 'transparent': 3,
-                 'undefined': 0,
-                 'xyz': 6,
-                 'ycbcr': 7,
-                 'ycc': 8,
-                 'yiq': 9,
-                 'ypbpr': 10,
-                 'yuv': 11},
-  'composite': {'atop': 3,
+               {'_version': (6, 6, 8, 6),
+                'atop': 3,
                 'blend': 4,
                 'blur': 57,
                 'bumpmap': 5,
@@ -188,43 +155,8 @@ data =\
                 'undefined': 0,
                 'vivid_light': 59,
                 'xor': 54},
-  'type': {'bilevel': 1,
-           'color_separation': 8,
-           'color_separation_matte': 9,
-           'grayscale': 2,
-           'grayscale_matte': 3,
-           'optimize': 10,
-           'palette': 4,
-           'palette_bilevel_matte': 11,
-           'palette_matte': 5,
-           'true_color': 6,
-           'true_color_matte': 7,
-           'undefined': 0},
-  'version': (6, 6, 8, 6)},
- {'colorspace': {'cmy': 22,
-                 'cmyk': 12,
-                 'gray': 2,
-                 'hsb': 14,
-                 'hsl': 15,
-                 'hwb': 16,
-                 'lab': 5,
-                 'log': 21,
-                 'ohta': 4,
-                 'rec601luma': 17,
-                 'rec601ycbcr': 18,
-                 'rec709luma': 19,
-                 'rec709ycbcr': 20,
-                 'rgb': 1,
-                 'srgb': 13,
-                 'transparent': 3,
-                 'undefined': 0,
-                 'xyz': 6,
-                 'ycbcr': 7,
-                 'ycc': 8,
-                 'yiq': 9,
-                 'ypbpr': 10,
-                 'yuv': 11},
-  'composite': {'atop': 3,
+               {'_version': (6, 6, 9, 5),
+                'atop': 3,
                 'blend': 4,
                 'blur': 57,
                 'bumpmap': 5,
@@ -291,8 +223,9 @@ data =\
                 'threshold': 53,
                 'undefined': 0,
                 'vivid_light': 59,
-                'xor': 54},
-  'type': {'bilevel': 1,
+                'xor': 54}],
+ 'type': [{'_version': (6, 6, 2, 10),
+           'bilevel': 1,
            'color_separation': 8,
            'color_separation_matte': 9,
            'grayscale': 2,
@@ -303,23 +236,23 @@ data =\
            'palette_matte': 5,
            'true_color': 6,
            'true_color_matte': 7,
-           'undefined': 0},
-  'version': (6, 6, 9, 5)}]
+           'undefined': 0}]}
 
-
-def get_value(enum, const, version):
+def lookup(mnemonic, version):
     value = None
-    for line in data:
-        if line['version'] > version: break
-        value = line[enum].get(const)
+    
+    for entry in data.get(mnemonic.enum.name, []):
+        if entry['_version'] > version: break
+        value = entry.get(mnemonic.name)
         
     return value
 
-def get_mnemonic(enum, value, version):
+def reverse_lookup(enum, value, version):
     mnemonic = None
-    for line in data:
-        if line['version'] > version: break
-        inverted = dict(zip(line[enum].values(), line[enum].keys()))
-        mnemonic = inverted.get(value)
-        
+    
+    for entry in data.get(enum.name, []):
+        if entry['_version'] > version: break
+        reversed = dict(zip(entry.values(), entry.keys()))
+        mnemonic = getattr(enum, reversed.get(value))
+    
     return mnemonic

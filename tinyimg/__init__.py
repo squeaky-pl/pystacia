@@ -9,14 +9,53 @@ from ctypes.util import find_library
 from collections import Sequence
 
 from .types import Filter
-from tinyimg.enums import get_mnemonic
 from tinyimg.utils import TinyException, only_live
 
+from tinyimg.lazyenum import enum
+
+composite = enum('composite')
+image_type = enum('type')
+colorspace = enum('colorspace')
+
 def init():
-    global cdll
-    cdll = CDLL(find_library('magickWand'))
+    def try_overrides():
+        paths = []
+        
+        from os import environ
+        
+        try: path = environ['VIRTUAL_ENV']
+        except KeyError: pass
+        else: paths.append(join(path, 'lib'))
+        
+        if not paths: return None
+        
+        import platform
+        
+        platform_dll_name = None
+        if getattr(platform, 'mac_ver'):
+            platform_dll_name = lambda v: 'lib{0}.dylib'.format(v.title())
+        
+        if not platform_dll_name: return None
+        
+        for path in paths:
+            path = join(path, platform_dll_name('magickWand'))
+            if exists(path):
+                return path
+        
+        return None
     
-    if not cdll: raise TinyException('Could not find or load magickWand')
+    # first let's look in some places that may override system-wide paths
+    resolved_path = try_overrides()
+    
+    # still nothing? let ctypes figure it out
+    if not resolved_path:
+        resolved_path = find_library('magickWand')
+        
+    if not resolved_path:
+        raise TinyException('Could not find or load magickWand')
+    
+    global cdll
+    cdll = CDLL(resolved_path)
     
     from .func import annote
     annote(cdll)
@@ -37,7 +76,7 @@ def lena_blob():
             
     return __lena_blob
 
-def lena(size=None, colorspace='rgb'):
+def lena(size=None, colorspace=colorspace.rgb):
     img = Image(**lena_blob())
     if size: img.resize(size, size)
     if img.colorspace != colorspace:
@@ -78,15 +117,15 @@ def get_magick_options():
 
 import tinyimg.enums
 
-def get_enum_value(enum, mnemonic, throw=True):
-    value = enums.get_value(enum, mnemonic, get_magick_version())
+def enum_lookup(mnemonic, throw=True):
+    value = enums.lookup(mnemonic, get_magick_version())
     if throw and value == None:
         template = "Enumeration '{enum}' cant map mnemonic '{mnemonic}'"
-        raise TinyException(template.format(enum=enum, mnemonic=mnemonic))
+        raise TinyException(template.format(enum=mnemonic.enum.name, mnemonic=mnemonic.name))
     return value
 
-def get_enum_mnemonic(enum, value):
-    return enums.get_mnemonic(enum, value, get_magick_version())
+def enum_reverse_lookup(enum, value):
+    return enums.reverse_lookup(enum, value, get_magick_version())
 
 class Image(object):
     def __init__(self, width=None, height=None, depth=None,
@@ -309,8 +348,8 @@ class Image(object):
     
     #TODO fit mode
     @only_live
-    def merge(self, other, x=0, y=0, op='atop'):
-        value = get_enum_value('composite', op)
+    def merge(self, other, x=0, y=0, op=composite.atop):
+        value = enum_lookup(op)
         
         guard(self.__wand, lambda: cdll.MagickCompositeImage(self.__wand, other.wand, value, x, y))
     
@@ -331,28 +370,28 @@ class Image(object):
     @only_live
     def colorspace(self):
         value = cdll.MagickGetImageColorspace(self.__wand)
-        return get_enum_mnemonic('colorspace', value)
+        return enum_reverse_lookup(colorspace, value)
     
     @colorspace.setter
     @only_live
     def colorspace(self, mnemonic):
-        value = get_enum_value('colorspace', mnemonic)
+        value = enum_lookup(mnemonic)
         guard(self.__wand, lambda: cdll.MagickSetImageColorspace(self.__wand, value))
     
     @property
     @only_live
     def type(self):
         value = cdll.MagickGetImageType(self.__wand)
-        return get_enum_mnemonic('type', value)
+        return enum_reverse_lookup(image_type, value)
     
     @type.setter
     def type(self, mnemonic):
-        value = get_enum_value('type', mnemonic)
+        value = enum_lookup(mnemonic)
         guard(self.__wand, lambda: cdll.MagickSetImageType(self.__wand, value))
     
     @only_live
     def convert_colorspace(self, mnemonic):
-        value = get_enum_value('colorspace', mnemonic)
+        value = enum_lookup(mnemonic)
         guard(self.__wand, lambda: cdll.MagickTransformImageColorspace(self.__wand, value))
     
     @property
