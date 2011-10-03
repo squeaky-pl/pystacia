@@ -115,17 +115,17 @@ def get_magick_options():
             
     return __magick_options
 
-import tinyimg.enums
+import tinyimg.api.enum as enum_api
 
 def enum_lookup(mnemonic, throw=True):
-    value = enums.lookup(mnemonic, get_magick_version())
+    value = enum_api.lookup(mnemonic, get_magick_version())
     if throw and value == None:
         template = "Enumeration '{enum}' cant map mnemonic '{mnemonic}'"
         raise TinyException(template.format(enum=mnemonic.enum.name, mnemonic=mnemonic.name))
     return value
 
 def enum_reverse_lookup(enum, value):
-    return enums.reverse_lookup(enum, value, get_magick_version())
+    return enum_api.reverse_lookup(enum, value, get_magick_version())
 
 class Image(object):
     def __init__(self, width=None, height=None, depth=None,

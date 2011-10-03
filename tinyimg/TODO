@@ -3,7 +3,6 @@ TODO
 ====
 
 - revise imports, move in function symbols at the end of files
-- move enums into api.enum module
 - refactor almighty Image constructor into several function factories
 - lazyenums main enums should be cached under dict,
   the values should be cached by resolve into objects
@@ -14,7 +13,8 @@ TODO
   once new api submodule also has functions inside
 - lazy init of imagick and function prototypes [0.2]
 - add env variable to force immediate init of imagick [0.2]
-- search path alteration mechanics [0.2]
+- search path alteration logic [0.2]
 - @api_simple_call [0.2]
-- smart detecting and lazy loading of API prototypes (based on docs, and decorators)
+- keep track of showed temp files and delete them on exit [0.2]
+- smart detecting and lazy loading of API prototypes (based on docs, and decorators) [0.2]
 - rope in logging in crucial moments, specifically init and finding lib [0.2]

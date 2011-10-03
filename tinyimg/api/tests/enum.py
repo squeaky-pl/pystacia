@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from tinyimg.enums import lookup
+from tinyimg.api.enum import lookup
 from tinyimg.lazyenum import enum
 
 composite = enum('composite')
