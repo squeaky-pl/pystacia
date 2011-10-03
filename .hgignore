@@ -5,6 +5,7 @@ syntax: regexp
 ^\.pydevproject$
 
 ^env/
+^dist/
 
 ^\.DS_Store$
 \.pyc$

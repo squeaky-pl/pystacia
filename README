@@ -1,3 +1,7 @@
+=======
+tinyimg
+=======
+
 tinyimg is a imaging library targetting broad versions and implementations
 of Python language. tinyimg wraps popular ImageMagick library with Python
 style & taste.
