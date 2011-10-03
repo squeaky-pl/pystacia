@@ -4,6 +4,8 @@ syntax: regexp
 ^\.project$
 ^\.pydevproject$
 
+^MANIFEST$
+^\.tox/
 ^env/
 ^dist/
 
