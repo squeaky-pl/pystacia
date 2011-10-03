@@ -1,7 +1,8 @@
 syntax: regexp
 
-^.project$
-^.pydevproject$
+^\.settings/
+^\.project$
+^\.pydevproject$
 
 ^env/
 
