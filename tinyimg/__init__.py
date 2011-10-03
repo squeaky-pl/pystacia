@@ -98,7 +98,7 @@ def get_magick_version():
         except KeyError:
             try: version = options['VERSION']
             except KeyError: pass
-            else: __magick_version = tuple(int(x) for x in version.splut('.'))
+            else: __magick_version = tuple(int(x) for x in version.split('.'))
         else: __magick_version = tuple(int(x) for x in version.split(','))
         
     return __magick_version
@@ -109,9 +109,10 @@ def get_magick_options():
     
     if not __magick_options:
         size = c_size_t()
-        keys = cdll.MagickQueryConfigureOptions('*', size)
+        keys = cdll.MagickQueryConfigureOptions(b('*'), size)
         for key in (keys[i] for i in range(size.value)):
-            __magick_options[key] = cdll.MagickQueryConfigureOption(key)
+            __magick_options[decode_char_p(key)] =\
+            decode_char_p(cdll.MagickQueryConfigureOption(key))
             
     return __magick_options
 
@@ -142,7 +143,8 @@ class Image(object):
             if depth:
                 guard(self.__wand, lambda: cdll.MagickSetDepth(self.__wand, depth))
             if format:
-                format = format.upper()
+                # ensure we always get bytes
+                format = b(format.upper())
                 guard(self.__wand, lambda: cdll.MagickSetFormat(self.__wand, format))
             guard(self.__wand, lambda: cdll.MagickReadImageBlob(self.__wand, blob, len(blob)))
             
@@ -178,7 +180,8 @@ class Image(object):
     @only_live
     def get_blob(self, format=None):
         if format:
-            format = format.upper()
+            # ensure we always get bytes
+            format = b(format.upper())
             old_format = cdll.MagickGetImageFormat(self.__wand)
             guard(self.__wand,
                   lambda: cdll.MagickSetImageFormat(self.__wand, format),
@@ -450,4 +453,7 @@ from tinyimg.color import from_string
 
 transparent = from_string('transparent')
 
+from six import b, PY3
+if PY3: decode_char_p = lambda v: v.decode('utf-8')
+else: decode_char_p = lambda v: v
 __all__ = ["Image", "lena", "read"]

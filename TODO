@@ -2,8 +2,6 @@
 TODO
 ====
 
-- setup.py
-- tox
 - revise imports, move in function symbols at the end of files
 - refactor almighty Image constructor into several function factories
 - lazyenums main enums should be cached under dict,

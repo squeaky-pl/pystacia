@@ -12,4 +12,5 @@ setup(
     packages=['tinyimg', 'tinyimg.api', 'tinyimg.tests', 'tinyimg.api.tests'],
     license='MIT License',
     long_description=open('README').read(),
+    install_requires=['six']
 )

@@ -1,4 +1,4 @@
-from utils import only_live
+from tinyimg.utils import only_live
 
 class Color(object):
     def __init__(self, wand):
@@ -20,10 +20,14 @@ class Color(object):
         return self.__wand
 
 def from_string(value):
+    #ensure we also get "bytes"
+    value = b(value)
     wand = cdll.NewPixelWand()
     guard(wand, lambda: cdll.PixelSetColor(wand, value))
     
     return Color(wand)
+
+from six import b
 
 from tinyimg import cdll
 from tinyimg.func import guard
