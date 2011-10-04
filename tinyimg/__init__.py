@@ -50,7 +50,7 @@ def init():
     
     # still nothing? let ctypes figure it out
     if not resolved_path:
-        resolved_path = find_library('magickWand')
+        resolved_path = find_library('MagickWand')
         
     if not resolved_path:
         raise TinyException('Could not find or load magickWand')

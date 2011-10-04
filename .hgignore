@@ -6,6 +6,8 @@ syntax: regexp
 
 ^MANIFEST$
 ^\.tox/
+^tinyimg\.egg-info/
+^tinyimg-env/
 ^env/
 ^dist/
 
