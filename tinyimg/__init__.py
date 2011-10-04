@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 import webbrowser
 from sys import argv
 from os.path import dirname, join, exists
@@ -5,7 +7,6 @@ import atexit
 from tempfile import mkstemp
 from ctypes import CDLL, c_size_t, byref, string_at
 from ctypes.util import find_library
-from collections import Sequence
 
 from .types import Filter
 from tinyimg.utils import TinyException, only_live
@@ -206,7 +207,7 @@ class Image(object):
                 raise TinyException('Either width, height or factor must be provided')
             
             width, height = self.size
-            if not isinstance(factor, Sequence): factor = (factor, factor)
+            if not hasattr(factor, '__getitem__'): factor = (factor, factor)
             width, height = int(width * factor[0]), int(height * factor[1])
         
         filter = getattr(Filter, filter.upper())
