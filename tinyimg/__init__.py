@@ -1,7 +1,6 @@
 import webbrowser
 from sys import argv
 from os.path import dirname, join, exists
-from bz2 import BZ2File
 import atexit
 from tempfile import mkstemp
 from ctypes import CDLL, c_size_t, byref, string_at
@@ -10,6 +9,7 @@ from collections import Sequence
 
 from .types import Filter
 from tinyimg.utils import TinyException, only_live
+from tinyimg.compat import BZ2File
 
 from tinyimg.lazyenum import enum
 

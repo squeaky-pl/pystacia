@@ -1,4 +1,17 @@
-from ctypes import c_char_p, c_void_p, POINTER, byref, cast, c_size_t, c_ssize_t, c_double, c_uint
+from ctypes import (c_char_p, c_void_p, POINTER, byref, c_int, c_long, c_longlong,
+                    cast, c_size_t, c_double, c_uint, sizeof, c_ulong, c_ulonglong)
+
+# python <=2.6 doesnt have c_ssize_t,
+# implementation copied from ctypes from 2.7
+try: from ctypes import c_ssize_t
+except ImportError:
+    if sizeof(c_uint) == sizeof(c_void_p):
+        c_ssize_t = c_int
+    elif sizeof(c_ulong) == sizeof(c_void_p):
+        c_ssize_t = c_long
+    elif sizeof(c_ulonglong) == sizeof(c_void_p):
+        c_ssize_t = c_longlong
+    
 
 from . import TinyException, cdll
 from .types import MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, Filter, enum

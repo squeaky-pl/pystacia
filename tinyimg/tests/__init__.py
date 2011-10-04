@@ -1,9 +1,8 @@
-from unittest import TestCase, skip
+from tinyimg.tests_compat import TestCase
 
 from .. import Image, TinyException, read, lena
 
 class CloseTestCase(TestCase):
-    @skip('not implemented')
     def test(self):
         img = Image()
         self.assertEquals(img.closed, False)
@@ -12,8 +11,6 @@ class CloseTestCase(TestCase):
         self.assertEquals(img.closed, True)
         
         self.assertRaises(TinyException, lambda: img.close())
-        
-        img.close()
         
 class ReadTestCase(TestCase):
     def test(self):

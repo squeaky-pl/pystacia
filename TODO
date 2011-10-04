@@ -18,3 +18,4 @@ TODO
 - keep track of showed temp files and delete them on exit [0.2]
 - smart detecting and lazy loading of API prototypes (based on docs, and decorators) [0.2]
 - rope in logging in crucial moments, specifically init and finding lib [0.2]
+- support for with protocol [0.2]
