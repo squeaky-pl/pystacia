@@ -66,11 +66,11 @@ class CloneTestCase(TestCase):
         
 class ConstructFromBlobTestCase(TestCase):
     def test(self):
-        img = Image(blob=b'\xff\xff\xff', format='rgb', depth=8, width=1, height=1)
+        img = Image(blob=b('\xff\xff\xff'), format='rgb', depth=8, width=1, height=1)
         
         self.assertSequenceEqual(img.size, (1,1))
         self.assertEqual(img.depth, 8)
-        self.assertEqual(img.get_blob('rgb'), b'\xff\xff\xff')
+        self.assertEqual(img.get_blob('rgb'), b('\xff\xff\xff'))
         
 class LenaTestCase(TestCase):
     def test(self):
@@ -85,3 +85,5 @@ class LenaTestCase(TestCase):
         self.assertSequenceEqual(img.size, (32, 32))
         
         img.close()
+
+from six import b

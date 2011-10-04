@@ -10,7 +10,7 @@ from ctypes.util import find_library
 
 from .types import Filter
 from tinyimg.utils import TinyException, only_live
-from tinyimg.compat import BZ2File
+from tinyimg.compat import BZ2File, formattable
 
 from tinyimg.lazyenum import enum
 
@@ -34,12 +34,13 @@ def init():
         
         platform_dll_name = None
         if getattr(platform, 'mac_ver'):
-            platform_dll_name = lambda v: 'lib{0}.dylib'.format(v.title())
+            def platform_dll_name(v):
+                return formattable('lib{0}.dylib').format(v)
         
         if not platform_dll_name: return None
         
         for path in paths:
-            path = join(path, platform_dll_name('magickWand'))
+            path = join(path, platform_dll_name('MagickWand'))
             if exists(path):
                 return path
         
@@ -122,7 +123,7 @@ import tinyimg.api.enum as enum_api
 def enum_lookup(mnemonic, throw=True):
     value = enum_api.lookup(mnemonic, get_magick_version())
     if throw and value == None:
-        template = "Enumeration '{enum}' cant map mnemonic '{mnemonic}'"
+        template = formattable("Enumeration '{enum}' cant map mnemonic '{mnemonic}'")
         raise TinyException(template.format(enum=mnemonic.enum.name, mnemonic=mnemonic.name))
     return value
 
@@ -170,7 +171,8 @@ class Image(object):
         
         if filename:
             if not exists(filename):
-                raise IOError((2, 'No such file or directory: {0}'.format(filename)))
+                template = formattable('No such file or directory: {0}')
+                raise IOError((2, template.format(filename)))
             guard(wand, lambda: cdll.MagickReadImage(wand, filename))
             return cls(wand=wand)
     
@@ -184,9 +186,10 @@ class Image(object):
             # ensure we always get bytes
             format = b(format.upper())
             old_format = cdll.MagickGetImageFormat(self.__wand)
+            template = formattable('Format "{0}" unsupported')
             guard(self.__wand,
                   lambda: cdll.MagickSetImageFormat(self.__wand, format),
-                  'Format "{0}" unsupported'.format(format))
+                  template.format(format))
         
         size = c_size_t()
         result = guard(self.__wand, lambda: cdll.MagickGetImageBlob(self.__wand, byref(size)))
@@ -370,28 +373,29 @@ class Image(object):
     def wand(self):
         return self.__wand
     
-    @property
     @only_live
-    def colorspace(self):
+    def __get_colorspace(self):
         value = cdll.MagickGetImageColorspace(self.__wand)
         return enum_reverse_lookup(colorspace, value)
     
-    @colorspace.setter
     @only_live
-    def colorspace(self, mnemonic):
+    def __set_colorspace(self, mnemonic):
         value = enum_lookup(mnemonic)
         guard(self.__wand, lambda: cdll.MagickSetImageColorspace(self.__wand, value))
     
-    @property
+    colorspace = property(__get_colorspace, __set_colorspace)
+    
     @only_live
-    def type(self):
+    def __get_type(self):
         value = cdll.MagickGetImageType(self.__wand)
         return enum_reverse_lookup(image_type, value)
     
-    @type.setter
-    def type(self, mnemonic):
+    @only_live
+    def __set_type(self, mnemonic):
         value = enum_lookup(mnemonic)
         guard(self.__wand, lambda: cdll.MagickSetImageType(self.__wand, value))
+    
+    type = property(__get_type, __set_type)
     
     @only_live
     def convert_colorspace(self, mnemonic):
@@ -412,23 +416,15 @@ class Image(object):
     def size(self):
         return (self.width, self.height)
     
-    @property
-    def debug(self):
-        return bool(self.__wand.contents.debug)
-    
-    @debug.setter
-    def debug(self, value):
-        self.__wand.contents.debug = value
-    
-    @property
     @only_live
-    def depth(self):
+    def __get_depth(self):
         return cdll.MagickGetImageDepth(self.__wand)
     
-    @depth.setter
     @only_live
-    def depth(self, value):
+    def __set_depth(self, value):
         guard(self.__wand, lambda: cdll.MagickSetImageDepth(self.__wand, value))
+    
+    depth = property(__get_depth, __set_depth)
     
     def show(self):
         tmpname = mkstemp()[1] + '.bmp'

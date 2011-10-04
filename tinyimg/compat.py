@@ -7,3 +7,11 @@ if not hasattr(BZ2File, '__exit__'):
         __exit__ = lambda self, type, value, traceback: self.close()
         
     BZ2File = BZ2Replacement
+
+# formattable, needed for python 2.5
+try: format
+except NameError:
+    from stringformat import FormattableString
+    formattable = FormattableString
+else:
+    formattable = str

@@ -2,6 +2,13 @@
 
 from distutils.core import setup
 
+install_requires=['six']
+
+try: format
+except NameError:
+    install_requires.append('StringFormat')
+
+
 setup(
     name='tinyimg',
     description='Python raster imaging library',
@@ -12,5 +19,5 @@ setup(
     packages=['tinyimg', 'tinyimg.api', 'tinyimg.tests', 'tinyimg.api.tests'],
     license='MIT License',
     long_description=open('README').read(),
-    install_requires=['six']
+    install_requires=install_requires
 )
