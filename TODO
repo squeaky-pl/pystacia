@@ -2,6 +2,7 @@
 TODO
 ====
 
+- warn when installed imagick is unsupported min, max version
 - revise imports, move in function symbols at the end of files
 - refactor almighty Image constructor into several function factories
 - lazyenums main enums should be cached under dict,
@@ -11,6 +12,8 @@ TODO
 - looking up lazyenums values should be cached under value
 - move enum lookups based on versions to api.enum module (version param is None)
   once new api submodule also has functions inside
+- when searching override define templates for other platforms
+- overrides from update soname to outdated soname
 - lazy init of imagick and function prototypes [0.2]
 - add env variable to force immediate init of imagick [0.2]
 - search path alteration logic [0.2]
