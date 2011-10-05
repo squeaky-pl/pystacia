@@ -2,6 +2,9 @@
 TODO
 ====
 
+- mooar tests
+- docs
+- docstrings
 - warn when installed imagick is unsupported min, max version
 - revise imports, move in function symbols at the end of files
 - refactor almighty Image constructor into several function factories
@@ -12,13 +15,15 @@ TODO
 - looking up lazyenums values should be cached under value
 - move enum lookups based on versions to api.enum module (version param is None)
   once new api submodule also has functions inside
+- try first outputting png, then bmp for show
 - when searching override define templates for other platforms
 - overrides from update soname to outdated soname
+- implement better show tool detecting (eog on linux e.g) and fallback to webbrowser [0.2]
 - lazy init of imagick and function prototypes [0.2]
 - add env variable to force immediate init of imagick [0.2]
 - search path alteration logic [0.2]
 - @api_simple_call [0.2]
 - keep track of showed temp files and delete them on exit [0.2]
-- smart detecting and lazy loading of API prototypes (based on docs, and decorators) [0.2]
+- smart detecting and lazy loading of API prototypes (based on maybe docs, and decorators) [0.2]
 - rope in logging in crucial moments, specifically init and finding lib [0.2]
 - support for with protocol [0.2]

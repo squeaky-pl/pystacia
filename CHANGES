@@ -3,5 +3,6 @@ CHANGES
 =======
 0.0
 ===
+- implemented memoized decorator to ease development
 - refactored underlying enum implementation to use lazy enums instead of
   string constants

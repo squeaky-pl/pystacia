@@ -9,7 +9,7 @@ from ctypes import CDLL, c_size_t, byref, string_at
 from ctypes.util import find_library
 
 from .types import Filter
-from tinyimg.utils import TinyException, only_live
+from tinyimg.utils import TinyException, only_live, memoized
 from tinyimg.compat import BZ2File, formattable
 
 from tinyimg.lazyenum import enum
@@ -23,6 +23,10 @@ def init():
         paths = []
         
         from os import environ
+        
+        try: path = environ['TINYIMG_LIBRARY_PATH']
+        except KeyError: pass
+        else: paths.append(path)
         
         try: path = environ['VIRTUAL_ENV']
         except KeyError: pass
@@ -68,15 +72,10 @@ def init():
 def read(filename=None, file=None):
     return Image.read(filename, file)
 
-__lena_blob = None
+@memoized
 def lena_blob():
-    global __lena_blob
-    
-    if not __lena_blob:
-        with BZ2File(join(dirname(__file__), 'lena.ycbcr.bz2')) as f:
-            __lena_blob = dict(blob=f.read(), format='ycbcr', height=512, width=512, depth=8)
-            
-    return __lena_blob
+    with BZ2File(join(dirname(__file__), 'lena.ycbcr.bz2')) as f:
+        return dict(blob=f.read(), format='ycbcr', height=512, width=512, depth=8)
 
 def lena(size=None, colorspace=colorspace.rgb):
     img = Image(**lena_blob())
@@ -89,34 +88,28 @@ def lena(size=None, colorspace=colorspace.rgb):
 def get_magick_version_str():
     return cdll.MagickGetVersion(None)
 
-__magick_version = None
+@memoized
 def get_magick_version():
-    global __magick_version
+    options = get_magick_options()
     
-    if not __magick_version:
-        options = get_magick_options()
-        
-        try: version = options['LIB_VERSION_NUMBER']
-        except KeyError:
-            try: version = options['VERSION']
-            except KeyError: pass
-            else: __magick_version = tuple(int(x) for x in version.split('.'))
-        else: __magick_version = tuple(int(x) for x in version.split(','))
-        
-    return __magick_version
+    try: version = options['LIB_VERSION_NUMBER']
+    except KeyError:
+        try: version = options['VERSION']
+        except KeyError: return None
+        else: return tuple(int(x) for x in version.split('.'))
+    else: return tuple(int(x) for x in version.split(','))
 
-__magick_options = {}
+@memoized
 def get_magick_options():
-    global __magick_options
+    options = {}
     
-    if not __magick_options:
-        size = c_size_t()
-        keys = cdll.MagickQueryConfigureOptions(b('*'), size)
-        for key in (keys[i] for i in range(size.value)):
-            __magick_options[decode_char_p(key)] =\
-            decode_char_p(cdll.MagickQueryConfigureOption(key))
+    size = c_size_t()
+    keys = cdll.MagickQueryConfigureOptions(b('*'), size)
+    for key in (keys[i] for i in range(size.value)):
+        options[decode_char_p(key)] =\
+        decode_char_p(cdll.MagickQueryConfigureOption(key))
             
-    return __magick_options
+    return options
 
 import tinyimg.api.enum as enum_api
 
@@ -181,7 +174,7 @@ class Image(object):
         guard(self.__wand, lambda: cdll.MagickWriteImage(self.__wand, filename))
         
     @only_live
-    def get_blob(self, format=None):
+    def get_blob(self, format=None): #@ReservedAssignment
         if format:
             # ensure we always get bytes
             format = b(format.upper())

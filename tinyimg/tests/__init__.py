@@ -87,3 +87,6 @@ class LenaTestCase(TestCase):
         img.close()
 
 from six import b
+
+from tinyimg.tests.lazyenum import *
+from tinyimg.tests.utils import *
