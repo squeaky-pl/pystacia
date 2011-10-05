@@ -15,3 +15,8 @@ except NameError:
     formattable = FormattableString
 else:
     formattable = str
+
+from six import PY3
+
+if PY3: decode_char_p = lambda v: v.decode('utf-8')
+else: decode_char_p = lambda v: v
