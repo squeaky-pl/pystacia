@@ -1,10 +1,10 @@
-from tinyimg.tests_compat import TestCase
+from tinyimg import Image, TinyException, read, read_raw, lena
 
-from .. import Image, TinyException, read, lena
+from tinyimg.tests_compat import TestCase
 
 class CloseTestCase(TestCase):
     def test(self):
-        img = Image()
+        img = lena()
         self.assertEquals(img.closed, False)
         
         img.close()
@@ -64,9 +64,9 @@ class CloneTestCase(TestCase):
         
         self.assertNotEqual(img.size, copy.size)
         
-class ConstructFromBlobTestCase(TestCase):
+class ReadRawTestCase(TestCase):
     def test(self):
-        img = Image(blob=b('\xff\xff\xff'), format='rgb', depth=8, width=1, height=1)
+        img = read_raw(raw=b('\xff\xff\xff'), format='rgb', depth=8, width=1, height=1)
         
         self.assertSequenceEqual(img.size, (1,1))
         self.assertEqual(img.depth, 8)

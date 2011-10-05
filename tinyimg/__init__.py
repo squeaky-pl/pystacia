@@ -65,12 +65,12 @@ def init():
 from tinyimg.utils import memoized
 
 @memoized
-def lena_blob():
+def raw_lena():
     with BZ2File(join(dirname(__file__), 'lena.ycbcr.bz2')) as f:
-        return dict(blob=f.read(), format='ycbcr', height=512, width=512, depth=8)
+        return dict(raw=f.read(), format='ycbcr', height=512, width=512, depth=8)
 
 def lena(size=None, colorspace=None):
-    img = Image(**lena_blob())
+    img = read_raw(**raw_lena())
     if size: img.resize(size, size)
     if not colorspace: colorspace=globals()['colorspace'].rgb
     if img.colorspace != colorspace:

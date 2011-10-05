@@ -1,53 +1,57 @@
-def read(filename=None, file=None):
-    return Image.read(filename, file)
+from __future__ import division
+
+def read_raw(raw, format, width, height, depth): #@ReservedAssignment
+    if hasattr(raw, 'read'):
+        length = width * height * depth // 8
+        raw = raw.read(length)
+    
+    format = b(format.upper()) #@ReservedAssignment
+    
+    wand = cdll.NewMagickWand()
+    
+    guard(wand, lambda: cdll.MagickSetSize(wand, width, height))
+    guard(wand, lambda: cdll.MagickSetDepth(wand, depth))
+    guard(wand, lambda: cdll.MagickSetFormat(wand, format))
+    
+    guard(wand, lambda: cdll.MagickReadImageBlob(wand, raw, len(raw)))
+    
+    return Image(wand)
+
+def read_blob(blob, length=None):
+    if hasattr(blob, 'read'): blob = blob.read(length)
+    
+    wand = cdll.NewMagickWand()
+    
+    guard(wand, lambda: cdll.MagickReadImageBlob(wand, blob, len(blob)))
+    
+    return Image(wand)
+    
+def read(filename):
+    wand = cdll.NewMagickWand()
+        
+    if not exists(filename):
+        template = formattable('No such file or directory: {0}')
+        raise IOError((2, template.format(filename)))
+    
+    filename = b(filename)
+    
+    guard(wand, lambda: cdll.MagickReadImage(wand, filename))
+    
+    return Image(wand)
 
 from tinyimg.utils import only_live
 
 class Image(object):
-    def __init__(self, width=None, height=None, depth=None,
-                 format=None, blob=None, wand=None, debug=False):
-        self.__wand = wand if wand else cdll.NewMagickWand()
-        
-        self.debug = debug
-
-        if blob:
-            try: blob = blob.read()
-            except AttributeError: pass
-            if width and height:
-                guard(self.__wand, lambda: cdll.MagickSetSize(self.__wand, width, height))
-            if depth:
-                guard(self.__wand, lambda: cdll.MagickSetDepth(self.__wand, depth))
-            if format:
-                # ensure we always get bytes
-                format = b(format.upper()) #@ReservedAssignment
-                guard(self.__wand, lambda: cdll.MagickSetFormat(self.__wand, format))
-            guard(self.__wand, lambda: cdll.MagickReadImageBlob(self.__wand, blob, len(blob)))
-            
-        self.__closed = False
-        
-        if not self.__wand:
-            raise TinyException('Couldnt initialize image')
+    def __init__(self, wand):
+        self.__wand = wand
+        self.__closed = not bool(wand)
     
     @only_live
     def clone(self):
         wand = cdll.CloneMagickWand(self.__wand)
-        return self.__class__(wand=wand)
+        return self.__class__(wand)
     
     copy = clone
-    
-    @classmethod
-    def read(cls, filename=None, file=None):
-        wand = cdll.NewMagickWand()
-        
-        if file:
-            return cls(blob=file)
-        
-        if filename:
-            if not exists(filename):
-                template = formattable('No such file or directory: {0}')
-                raise IOError((2, template.format(filename)))
-            guard(wand, lambda: cdll.MagickReadImage(wand, filename))
-            return cls(wand=wand)
     
     @only_live
     def write(self, filename):
@@ -355,4 +359,6 @@ image_type = enum('type')
 image_filter = enum('filter')
 colorspace = enum('colorspace')
 
-__all__ = ['Image', 'read', 'composite', 'image_type', 'image_filter', 'colorspace']
+__all__ = ['read_raw', 'read', 'read_blob',
+           'Image',
+           'composite', 'image_type', 'image_filter', 'colorspace']
