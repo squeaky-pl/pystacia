@@ -442,7 +442,15 @@ class Image(object):
     
     def __del__(self):
         if not self.__closed: self.close()
-
+    
+    def __repr__(self):
+        template = '<tinyimg.Image({width},{height},{depth},{colorspace},{type}) object at {address}>'
+        width, height = self.size
+        depth, type = self.depth, self.type.name #@ReservedAssignment
+        colorspace, address = self.colorspace.name, hex(id(self))
+        
+        return formattable(template).format(**locals())
+    
 init()
 
 from .func import guard
