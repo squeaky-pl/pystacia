@@ -31,3 +31,5 @@ from six import b
 
 from tinyimg import cdll
 from tinyimg.func import guard
+
+transparent = from_string('transparent')

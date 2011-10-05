@@ -2,18 +2,16 @@
 TODO
 ====
 
-- change resize to use lazyenums
+- detect resize filters
 - mooar tests
 - coverage
 - docs
 - docstrings
-- warn when installed imagick is unsupported min, max version
+- fit method [0.1.1]
+- warn when installed imagick is unsupported min version
 - revise imports, move in function symbols at the end of files
 - rename utils to util
 - refactor almighty Image constructor into several function factories
-- lazyenums main enums should be cached under dict,
-  the values should be cached by resolve into objects
-  and also stored on enums directly so we ever get only one copy
 - implement __repr__ on Color
 - implement rgb, rgba, rgb8, rgba8 color factory
 - implement other color factories [0.2]

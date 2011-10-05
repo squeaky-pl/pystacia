@@ -2,11 +2,6 @@ def read(filename=None, file=None):
     return Image.read(filename, file)
 
 from tinyimg.utils import only_live
-from tinyimg.lazyenum import enum
-
-composite = enum('composite')
-image_type = enum('type')
-colorspace = enum('colorspace')
 
 class Image(object):
     def __init__(self, width=None, height=None, depth=None,
@@ -24,7 +19,7 @@ class Image(object):
                 guard(self.__wand, lambda: cdll.MagickSetDepth(self.__wand, depth))
             if format:
                 # ensure we always get bytes
-                format = b(format.upper())
+                format = b(format.upper()) #@ReservedAssignment
                 guard(self.__wand, lambda: cdll.MagickSetFormat(self.__wand, format))
             guard(self.__wand, lambda: cdll.MagickReadImageBlob(self.__wand, blob, len(blob)))
             
@@ -80,8 +75,9 @@ class Image(object):
         return blob
         
     @only_live
-    def resize(self, width=None, height=None, factor=None, filter=None, blur=1):
-        if not filter: filter = 'undefined'
+    def resize(self, width=None, height=None, factor=None, filter=None, blur=1): #@ReservedAssignment
+        if not filter:
+            filter = image_filter.undefined #@ReservedAssignment
         
         if not width and not height:
             if not factor:
@@ -91,9 +87,9 @@ class Image(object):
             if not hasattr(factor, '__getitem__'): factor = (factor, factor)
             width, height = int(width * factor[0]), int(height * factor[1])
         
-        filter = getattr(Filter, filter.upper())
+        value = enum_lookup(filter)
         
-        guard(self.__wand, lambda: cdll.MagickResizeImage(self.__wand, width, height, filter, blur))
+        guard(self.__wand, lambda: cdll.MagickResizeImage(self.__wand, width, height, value, blur))
     
     @only_live
     def crop(self, width, height, x=0, y=0):
@@ -102,7 +98,7 @@ class Image(object):
     #TODO: fit
     @only_live
     def rotate(self, angle):
-        guard(self.__wand, lambda: cdll.MagickRotateImage(self.__wand, transparent.wand, angle))
+        guard(self.__wand, lambda: cdll.MagickRotateImage(self.__wand, color.transparent.wand, angle))
     
     @only_live
     def set_opacity(self, opacity):
@@ -217,7 +213,7 @@ class Image(object):
         
     @only_live
     def shear(self, x_angle, y_angle):
-        guard(self.__wand, lambda: cdll.MagickShearImage(self.__wand, transparent.wand, x_angle, y_angle))
+        guard(self.__wand, lambda: cdll.MagickShearImage(self.__wand, color.transparent.wand, x_angle, y_angle))
     
     @only_live
     def solarize(self, threshold):
@@ -233,8 +229,11 @@ class Image(object):
     
     #TODO fit mode
     @only_live
-    def merge(self, other, x=0, y=0, op=composite.atop):
-        value = enum_lookup(op)
+    def merge(self, other, x=0, y=0, composite=None):
+        if not composite:
+            composite = globals()['composite'].atop
+            
+        value = enum_lookup(composite)
         
         guard(self.__wand, lambda: cdll.MagickCompositeImage(self.__wand, other.wand, value, x, y))
     
@@ -344,13 +343,16 @@ from os.path import exists
 from six import b
 
 from tinyimg.compat import formattable
-from tinyimg.color import from_string
+from tinyimg import color
 from tinyimg.utils import TinyException
 from tinyimg.func import guard
 from tinyimg import magick
 from tinyimg import cdll, enum_lookup, enum_reverse_lookup
-from tinyimg.types import Filter
+from tinyimg.lazyenum import enum
 
-transparent = from_string('transparent')
+composite = enum('composite')
+image_type = enum('type')
+image_filter = enum('filter')
+colorspace = enum('colorspace')
 
-__all__ = ['Image', 'read', 'enum', 'composite', 'image_type', 'colorspace']
+__all__ = ['Image', 'read', 'composite', 'image_type', 'image_filter', 'colorspace']

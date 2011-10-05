@@ -3,7 +3,7 @@ class Enum(object):
         self.name = name
         
     def __getattr__(self, name):
-        return EnumValue(self, name)
+        return enum_value(self, name)
     
     def __repr__(self):
         template = formattable("tinyimg.enum('{0}')")
@@ -23,5 +23,9 @@ from tinyimg.utils import memoized
 @memoized
 def enum(name):
     return Enum(name) 
+
+@memoized
+def enum_value(enum, name):
+    return EnumValue(enum, name)
 
 from tinyimg.compat import formattable
