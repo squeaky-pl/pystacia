@@ -52,6 +52,15 @@ def init():
     
     import atexit
     atexit.register(lambda: cdll.MagickWandTerminus())
+    
+    # warn if unsupported
+    from tinyimg import magick
+    from tinyimg.api import min_version
+    version = magick.get_version()
+    if version < min_version:
+        from warnings import warn
+        template = formattable('Unsupported version of MagickWand {0}')
+        warn(template.format(version))
 
 from tinyimg.utils import memoized
 
@@ -81,11 +90,11 @@ def enum_lookup(mnemonic, throw=True):
 def enum_reverse_lookup(enum, value):
     return enum_api.reverse_lookup(enum, value, magick.get_version())
 
+
 cdll = None
 
-
-from os.path import dirname, join, exists
 from ctypes import CDLL
+from os.path import dirname, join, exists
 from ctypes.util import find_library
 
 from tinyimg.compat import BZ2File, formattable
@@ -93,8 +102,9 @@ from tinyimg.utils import TinyException
 
 init()
 
-from tinyimg.image import *
 from tinyimg import magick
+
+from tinyimg.image import *
 from tinyimg import image
 
 __all__ = image.__all__ + ['lena']

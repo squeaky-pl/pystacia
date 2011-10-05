@@ -8,7 +8,6 @@ TODO
 - docs
 - docstrings
 - fit method [0.1.1]
-- warn when installed imagick is unsupported min version
 - revise imports, move in function symbols at the end of files
 - rename utils to util
 - refactor almighty Image constructor into several function factories
