@@ -420,9 +420,16 @@ class Image(object):
     depth = property(__get_depth, __set_depth)
     
     def show(self):
-        tmpname = mkstemp()[1] + '.bmp'
+        extension = 'bmp'
+        delegates = get_magick_options().get('DELEGATES', '').split()
+        if 'png' in delegates:
+            extension = 'png'
+            
+        tmpname = mkstemp()[1] + '.' + extension
         self.write(tmpname)
         webbrowser.open('file://' + tmpname)
+        
+        return tmpname
     
     @only_live
     def close(self):

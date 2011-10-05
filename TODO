@@ -13,7 +13,7 @@ TODO
   and also stored on enums directly so we ever get only one copy
 - implement __repr__ on lazyenums, Image, Color
 - looking up lazyenums values should be cached under value
-- move enum lookups based on versions to api.enum module (version param is None)
+- move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
   once new api submodule also has functions inside
 - try first outputting png, then bmp for show
 - when searching override define templates for other platforms
