@@ -6,25 +6,25 @@ TODO
 - coverage
 - docs
 - docstrings
-- fit method [0.1.1]
-- move tinyimg.tests into tinyimg.tests.image
 - revise imports, move in function symbols at the end of files
-- rename utils to util
+- rename utils to util and tests
 - blank image factory with fill
 - implement __repr__ on Color
 - implement rgb, rgba, rgb8, rgba8 color factory
-- implement other color factories [0.2]
-- move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
   once new api submodule also has functions inside
 - when searching override define templates for other platforms
 - overrides from update soname to outdated soname
-- implement better show tool detecting (eog on linux e.g) and fallback to webbrowser [0.2]
-- lazy init of imagick and function prototypes [0.2]
+- move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
+- fit method [0.1.1]
+- lazy init of imagick and function prototypes [0.1.1]
+- keep track of showed temp files and delete them on exit [0.1.1]
+- @api_simple_call [0.1.1]
+- support for with protocol [0.1.1]
+- implement other color factories [0.2]
 - add env variable to force immediate init of imagick [0.2]
+- implement better show tool detecting (eog on linux e.g) and fallback to webbrowser [0.2]
 - search path alteration logic [0.2]
-- @api_simple_call [0.2]
-- keep track of showed temp files and delete them on exit [0.2]
 - smart detecting and lazy loading of API prototypes (based on maybe docs, and decorators) [0.2]
 - rope in logging in crucial moments, specifically init and finding lib [0.2]
-- support for with protocol [0.2]
 - bench script to test under different version of python [0.2]
+- pixel iterators [0.2]
