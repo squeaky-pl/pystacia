@@ -47,11 +47,9 @@ class Image(object):
         self.__closed = not bool(wand)
     
     @only_live
-    def clone(self):
+    def copy(self):
         wand = cdll.CloneMagickWand(self.__wand)
         return self.__class__(wand)
-    
-    copy = clone
     
     @only_live
     def write(self, filename):

@@ -53,10 +53,12 @@ class CropTestCase(TestCase):
         
         self.assertSequenceEqual(img.size, (64, 64))
 
-class CloneTestCase(TestCase):
+class CopyTestCase(TestCase):
     def test(self):
         img = lena()
-        copy = img.clone()
+        copy = img.copy()
+        
+        self.assertNotEquals(img.wand, copy.wand)
         
         self.assertSequenceEqual(img.size, copy.size)
         
