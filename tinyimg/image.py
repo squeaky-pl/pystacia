@@ -56,10 +56,10 @@ class Image(object):
         guard(self.__wand, lambda: cdll.MagickWriteImage(self.__wand, filename))
         
     @only_live
-    def get_blob(self, format=None): #@ReservedAssignment
+    def get_blob(self, format): #@ReservedAssignment
         if format:
             # ensure we always get bytes
-            format = b(format.upper())
+            format = b(format.upper()) #@ReservedAssignment
             old_format = cdll.MagickGetImageFormat(self.__wand)
             template = formattable('Format "{0}" unsupported')
             guard(self.__wand,
@@ -75,6 +75,13 @@ class Image(object):
             guard(self.__wand, lambda: cdll.MagickSetImageFormat(self.__wand, old_format))
         
         return blob
+        
+    def get_raw(self, format): #@ReservedAssignment
+        return dict(raw=self.get_blob(format),
+                    format=format,
+                    width=self.width,
+                    height=self.height,
+                    depth=self.depth)
         
     @only_live
     def resize(self, width=None, height=None, factor=None, filter=None, blur=1): #@ReservedAssignment
@@ -152,7 +159,7 @@ class Image(object):
         guard(self.__wand, lambda: cdll.MagickWaveImage(self.__wand, amplitude, length))
         
     @only_live
-    def eval(self, expression):
+    def eval(self, expression): #@ReservedAssignment
         wand = guard(self.__wand, lambda: cdll.MagickFxImage(self.__wand, expression))
         cdll.DestroyMagickWand(self.__wand)
         self.__wand = wand
@@ -274,7 +281,7 @@ class Image(object):
         value = enum_lookup(mnemonic)
         guard(self.__wand, lambda: cdll.MagickSetImageType(self.__wand, value))
     
-    type = property(__get_type, __set_type)
+    type = property(__get_type, __set_type) #@ReservedAssignment
     
     @only_live
     def convert_colorspace(self, mnemonic):

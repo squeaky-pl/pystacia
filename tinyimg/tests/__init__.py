@@ -66,13 +66,15 @@ class CopyTestCase(TestCase):
         
         self.assertNotEqual(img.size, copy.size)
         
-class ReadRawTestCase(TestCase):
+class ReadAndGetRawTestCase(TestCase):
     def test(self):
-        img = read_raw(raw=b('\xff\xff\xff'), format='rgb', depth=8, width=1, height=1)
+        data = dict(raw=b('\xff\xff\xff'), format='rgb', depth=8, width=1, height=1)
+        img = read_raw(**data)
         
         self.assertSequenceEqual(img.size, (1,1))
         self.assertEqual(img.depth, 8)
-        self.assertEqual(img.get_blob('rgb'), b('\xff\xff\xff'))
+        self.assertEqual(img.get_blob('rgb'), data['raw'])
+        self.assertDictEqual(img.get_raw('rgb'), data)
         
 class LenaTestCase(TestCase):
     def test(self):

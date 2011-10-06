@@ -2,15 +2,13 @@
 TODO
 ====
 
-- detect resize filters
 - mooar tests
 - coverage
 - docs
 - docstrings
 - fit method [0.1.1]
-- move tinyimg.tests imto tinyimg.tests.image
+- move tinyimg.tests into tinyimg.tests.image
 - revise imports, move in function symbols at the end of files
-- implement get_raw that return dict in the same order that read_raw accepts
 - rename utils to util
 - blank image factory with fill
 - implement __repr__ on Color
