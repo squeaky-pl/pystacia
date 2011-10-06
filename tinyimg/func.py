@@ -230,6 +230,9 @@ def annote(cdll):
     cdll.PixelSetColor.argtypes = (PixelWand_p, c_char_p)
     cdll.PixelSetColor.restype = MagickBoolean
     
+    cdll.PixelGetColorAsString.argtypes = (PixelWand_p,)
+    cdll.PixelGetColorAsString.restype = c_char_p
+    
 def guard(wand, callable, msg=None):
     result = callable()
     if not result:

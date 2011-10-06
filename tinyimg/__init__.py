@@ -78,6 +78,9 @@ def lena(size=None, colorspace=None):
         
     return img
 
+def magick_logo():
+    return read_special('logo:')
+
 import tinyimg.api.enum as enum_api
 
 def enum_lookup(mnemonic, throw=True):
@@ -104,7 +107,9 @@ init()
 
 from tinyimg import magick
 
+from tinyimg import color
+from tinyimg.image import read_special
 from tinyimg.image import *
 from tinyimg import image
 
-__all__ = image.__all__ + ['lena']
+__all__ = image.__all__ + ['lena', 'magick_logo']

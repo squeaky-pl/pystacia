@@ -39,8 +39,25 @@ def read(filename):
     
     return Image(wand)
 
-from tinyimg.util import only_live
+def read_special(spec, width=None, height=None):
+    wand = cdll.NewMagickWand()
+    
+    if width and height:
+        guard(wand, lambda: cdll.MagickSetSize(wand, width, height))
+    
+    spec = b(spec)
+    
+    guard(wand, lambda: cdll.MagickReadImage(wand, spec))
+    
+    return Image(wand)
 
+def blank(width, height, color=None):
+    if not color: color = globals()['color'].transparent
+    
+    return read_special('xc:' + str(color), width, height)
+
+from tinyimg.util import only_live
+    
 class Image(object):
     def __init__(self, wand):
         self.__wand = wand
@@ -337,7 +354,7 @@ class Image(object):
         if not self.__closed: self.close()
     
     def __repr__(self):
-        template = '<tinyimg.Image({width},{height},{depth},{colorspace},{type}) object at {address}>'
+        template = '<tinyimg.image.Image({width},{height},{depth},{colorspace},{type}) object at {address}>'
         width, height = self.size
         depth, type = self.depth, self.type.name #@ReservedAssignment
         colorspace, address = self.colorspace.name, hex(id(self))
@@ -364,6 +381,5 @@ image_type = enum('type')
 image_filter = enum('filter')
 colorspace = enum('colorspace')
 
-__all__ = ['read_raw', 'read', 'read_blob',
-           'Image',
+__all__ = ['read_raw', 'read', 'read_blob', 'blank',
            'composite', 'image_type', 'image_filter', 'colorspace']

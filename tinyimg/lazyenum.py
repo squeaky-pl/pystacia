@@ -6,7 +6,7 @@ class Enum(object):
         return enum_value(self, name)
     
     def __repr__(self):
-        template = formattable("tinyimg.enum('{0}')")
+        template = formattable("tinyimg.lazyenum.enum('{0}')")
         
         return template.format(self.name)
         

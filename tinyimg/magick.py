@@ -26,7 +26,6 @@ def get_options():
 def get_version_str():
     return cdll.MagickGetVersion(None)
 
-
 from ctypes import c_size_t
 
 from six import b 

@@ -11,5 +11,5 @@ syntax: regexp
 ^env/
 ^dist/
 
-^\.DS_Store$
+\.DS_Store$
 \.pyc$
