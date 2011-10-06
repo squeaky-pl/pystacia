@@ -39,7 +39,7 @@ def read(filename):
     
     return Image(wand)
 
-from tinyimg.utils import only_live
+from tinyimg.util import only_live
 
 class Image(object):
     def __init__(self, wand):
@@ -353,7 +353,7 @@ from six import b
 
 from tinyimg.compat import formattable
 from tinyimg import color
-from tinyimg.utils import TinyException
+from tinyimg.util import TinyException
 from tinyimg.func import guard
 from tinyimg import magick
 from tinyimg import cdll, enum_lookup, enum_reverse_lookup

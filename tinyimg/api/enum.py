@@ -443,7 +443,7 @@ data =\
            'true_color_matte': 7,
            'undefined': 0}]}
 
-from tinyimg.utils import memoized
+from tinyimg.util import memoized
 
 @memoized
 def lookup(mnemonic, version):

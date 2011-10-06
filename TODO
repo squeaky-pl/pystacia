@@ -7,7 +7,6 @@ TODO
 - docs
 - docstrings
 - revise imports, move in function symbols at the end of files
-- rename utils to util and tests
 - blank image factory with fill
 - implement __repr__ on Color
 - implement rgb, rgba, rgb8, rgba8 color factory

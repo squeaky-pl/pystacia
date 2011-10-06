@@ -18,7 +18,7 @@ class EnumValue(object):
     def __repr__(self):
         return repr(self.enum) + '.' + self.name
 
-from tinyimg.utils import memoized
+from tinyimg.util import memoized
 
 @memoized
 def enum(name):

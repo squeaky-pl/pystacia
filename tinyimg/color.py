@@ -1,4 +1,4 @@
-from tinyimg.utils import only_live
+from tinyimg.util import only_live
 
 class Color(object):
     def __init__(self, wand):

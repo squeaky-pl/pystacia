@@ -1,4 +1,4 @@
-from tinyimg.utils import memoized
+from tinyimg.util import memoized
 
 @memoized
 def get_version():

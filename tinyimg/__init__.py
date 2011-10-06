@@ -62,7 +62,7 @@ def init():
         template = formattable('Unsupported version of MagickWand {0}')
         warn(template.format(version))
 
-from tinyimg.utils import memoized
+from tinyimg.util import memoized
 
 @memoized
 def raw_lena():
@@ -98,7 +98,7 @@ from os.path import dirname, join, exists
 from ctypes.util import find_library
 
 from tinyimg.compat import BZ2File, formattable
-from tinyimg.utils import TinyException
+from tinyimg.util import TinyException
 
 init()
 

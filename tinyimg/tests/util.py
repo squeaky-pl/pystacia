@@ -17,4 +17,4 @@ class MemoizedTestCase(TestCase):
         
         self.assertEqual(producer.__doc__, 'doc')
         
-from tinyimg.utils import memoized
+from tinyimg.util import memoized
