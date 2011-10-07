@@ -63,11 +63,13 @@ def init():
 
 from tinyimg.util import memoized
 
+@memoized
 def __raw_lena():
     with BZ2File(join(dirname(__file__), 'lena.ycbcr.bz2')) as f:
         return dict(raw=f.read(), format='ycbcr', height=512, width=512, depth=8)
 
 # weakref memoization to let garbage collector clear it when needed
+# helps pypy a lot
 __lena = None
 def __lena_image():
     global __lena
