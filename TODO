@@ -11,6 +11,7 @@ TODO
 - overrides from update soname to outdated soname
 - drop lazy enum, keep and make string passing possible [x]?
 - should getters and setters be explicit?
+- those semaphores thing possibly should keep week references to any magick resource and clear it on exit [0.1.1]
 - move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
 - move color to be a class and have @staticmethod __getattr__ style called Factory in tinyimg.color
   and imported this class as color into tinyimg like color.white, color.transparent, [0.1.1]

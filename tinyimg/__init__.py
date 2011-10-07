@@ -50,7 +50,6 @@ def init():
     
     cdll.MagickWandGenesis()
     
-    import atexit
     atexit.register(lambda: cdll.MagickWandTerminus())
     
     # warn if unsupported
@@ -64,13 +63,29 @@ def init():
 
 from tinyimg.util import memoized
 
-@memoized
-def raw_lena():
+def __raw_lena():
     with BZ2File(join(dirname(__file__), 'lena.ycbcr.bz2')) as f:
         return dict(raw=f.read(), format='ycbcr', height=512, width=512, depth=8)
 
+# weakref memoization to let garbage collector clear it when needed
+__lena = None
+def __lena_image():
+    global __lena
+    
+    if not __lena:
+        lena = read_raw(**__raw_lena())
+        __lena = weakref.ref(lena)
+    else:
+        lena = __lena()
+        if not lena:
+            lena = read_raw(**__raw_lena())
+            __lena = weakref.ref(lena)
+    
+    return lena.copy()
+    
 def lena(size=None, colorspace=None):
-    img = read_raw(**raw_lena())
+    img = __lena_image()
+    
     if size: img.resize(size, size)
     if not colorspace: colorspace=globals()['colorspace'].rgb
     if img.colorspace != colorspace:
@@ -96,6 +111,8 @@ def enum_reverse_lookup(enum, value):
 
 cdll = None
 
+import atexit
+import weakref
 from ctypes import CDLL
 from os.path import dirname, join, exists
 from ctypes.util import find_library
