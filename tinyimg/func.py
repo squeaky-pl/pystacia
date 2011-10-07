@@ -233,6 +233,30 @@ def annote(cdll):
     cdll.PixelGetColorAsString.argtypes = (PixelWand_p,)
     cdll.PixelGetColorAsString.restype = c_char_p
     
+    cdll.PixelSetRed.argtypes = (PixelWand_p, c_double)
+    cdll.PixelSetRed.restype = None
+    
+    cdll.PixelSetGreen.argtypes = (PixelWand_p, c_double)
+    cdll.PixelSetGreen.restype = None
+    
+    cdll.PixelSetBlue.argtypes = (PixelWand_p, c_double)
+    cdll.PixelSetBlue.restype = None
+    
+    cdll.PixelSetAlpha.argtypes = (PixelWand_p, c_double)
+    cdll.PixelSetAlpha.restype = None
+    
+    cdll.PixelGetRed.argtypes = (PixelWand_p,)
+    cdll.PixelGetRed.restype = c_double
+    
+    cdll.PixelGetGreen.argtypes = (PixelWand_p,)
+    cdll.PixelGetGreen.restype = c_double
+    
+    cdll.PixelGetBlue.argtypes = (PixelWand_p,)
+    cdll.PixelGetBlue.restype = c_double
+    
+    cdll.PixelGetAlpha.argtypes = (PixelWand_p,)
+    cdll.PixelGetAlpha.restype = c_double
+    
 def guard(wand, callable, msg=None):
     result = callable()
     if not result:

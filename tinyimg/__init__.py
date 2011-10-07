@@ -112,4 +112,4 @@ from tinyimg.image import read_special
 from tinyimg.image import *
 from tinyimg import image
 
-__all__ = image.__all__ + ['lena', 'magick_logo']
+__all__ = image.__all__ + ['lena', 'magick_logo', 'color']
