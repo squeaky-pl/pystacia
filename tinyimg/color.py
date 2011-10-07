@@ -80,8 +80,8 @@ class Color(object):
         return self.get_string()
     
     def __repr__(self):
-        template = '<tinyimg.color.Color {string} object at {address}>'
-        return formattable(template).format(string=str(self), address=hex(id(self)))
+        template = '<tinyimg.color.Color rgba{rgba} object at {address}>'
+        return formattable(template).format(rgba=self.get_rgba(), address=hex(id(self)))
 
 def from_string(value):
     #ensure we also get "bytes"
