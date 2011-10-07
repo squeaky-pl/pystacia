@@ -18,8 +18,8 @@ def get_options():
     size = c_size_t()
     keys = cdll.MagickQueryConfigureOptions(b('*'), size)
     for key in (keys[i] for i in range(size.value)):
-        options[decode_char_p(key)] =\
-        decode_char_p(cdll.MagickQueryConfigureOption(key))
+        options[native_str(key)] =\
+        native_str(cdll.MagickQueryConfigureOption(key))
             
     return options
 
@@ -31,4 +31,4 @@ from ctypes import c_size_t
 from six import b 
 
 from tinyimg import cdll
-from tinyimg.compat import decode_char_p
+from tinyimg.compat import native_str

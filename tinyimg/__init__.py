@@ -1,47 +1,19 @@
 from __future__ import with_statement
 
 def init():
-    def try_overrides():
-        paths = []
-        
-        from os import environ
-        
-        try: path = environ['TINYIMG_LIBRARY_PATH']
-        except KeyError: pass
-        else: paths.append(path)
-        
-        try: path = environ['VIRTUAL_ENV']
-        except KeyError: pass
-        else: paths.append(join(path, 'lib'))
-        
-        if not paths: return None
-        
-        import platform
-        
-        platform_dll_name = None
-        if getattr(platform, 'mac_ver'):
-            def platform_dll_name(v):
-                return formattable('lib{0}.dylib').format(v)
-        
-        if not platform_dll_name: return None
-        
-        for path in paths:
-            path = join(path, platform_dll_name('MagickWand'))
-            if exists(path):
-                return path
-        
-        return None
-    
+    from api import search_paths
     # first let's look in some places that may override system-wide paths
-    resolved_path = try_overrides()
+    resolved_path = search_paths()
     
     # still nothing? let ctypes figure it out
     if not resolved_path:
+        from ctypes.util import find_library
         resolved_path = find_library('MagickWand')
         
     if not resolved_path:
         raise TinyException('Could not find or load magickWand')
     
+    from ctypes import CDLL
     global cdll
     cdll = CDLL(resolved_path)
     
@@ -50,6 +22,7 @@ def init():
     
     cdll.MagickWandGenesis()
     
+    import atexit
     atexit.register(lambda: cdll.MagickWandTerminus())
     
     # warn if unsupported
@@ -113,11 +86,8 @@ def enum_reverse_lookup(enum, value):
 
 cdll = None
 
-import atexit
 import weakref
-from ctypes import CDLL
-from os.path import dirname, join, exists
-from ctypes.util import find_library
+from os.path import dirname, join
 
 from tinyimg.compat import BZ2File, formattable
 from tinyimg.util import TinyException

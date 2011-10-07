@@ -16,6 +16,7 @@ TODO
 - move color to be a class and have @staticmethod __getattr__ style called Factory in tinyimg.color
   and imported this class as color into tinyimg like color.white, color.transparent, [0.1.1]
 - more generators from pseudoformats: plasma, checkerboard, gradients etc [0.1.1]
+- put generators together under some submodule, name?
 - fit method [0.1.1]
 - get_pixel, set_pixel [0.1.1]
 - lazy init of imagick and function prototypes [0.1.1]
@@ -37,3 +38,13 @@ TODO
 - show should accept zoom factor, passed to resize with point filter, and crop information [0.2]
 - show for color creates 32x32 image with color preview [0.2]
 - [0.2] hsl, cmyk setters and getters
+- implement gravity=(0, 0) gravity=(.5, 1) gravity=('left') on merge, crop, extend, rotate(crop=True), resize [0.2]
+
+STUFF
+=====
+- mooar tests
+- coverage
+- docs
+- docstrings
+- revise imports, move in function symbols at the end of files
+- version bumps

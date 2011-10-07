@@ -69,7 +69,7 @@ class Color(object):
     
     @only_live
     def get_string(self):
-        return decode_char_p(cdll.PixelGetColorAsString(self.__wand))
+        return native_str(cdll.PixelGetColorAsString(self.__wand))
     
     @property
     @only_live
@@ -111,6 +111,6 @@ from six import b
 
 from tinyimg import cdll
 from tinyimg.func import guard
-from tinyimg.compat import decode_char_p, formattable
+from tinyimg.compat import native_str, formattable
 
 transparent = from_string('transparent')

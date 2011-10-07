@@ -257,7 +257,7 @@ class Image(object):
     @only_live
     def merge(self, other, x=0, y=0, composite=None):
         if not composite:
-            composite = globals()['composite'].atop
+            composite = globals()['composite'].over
             
         value = enum_lookup(composite)
         

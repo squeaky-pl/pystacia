@@ -18,5 +18,5 @@ else:
 
 from six import PY3
 
-if PY3: decode_char_p = lambda v: v.decode('utf-8')
-else: decode_char_p = lambda v: v
+if PY3: native_str = lambda v: v.decode('utf-8')
+else: native_str = lambda v: v
