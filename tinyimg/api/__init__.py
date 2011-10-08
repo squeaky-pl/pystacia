@@ -14,9 +14,12 @@ def search_paths():
     if not environ.get('TINYIMG_SKIP_VIRTUAL_ENV'):
         try: path = environ['VIRTUAL_ENV']
         except KeyError: pass
-        else: paths.append(join(path, 'lib'))
+        else:
+            paths.append(join(path, 'lib'))
+            paths.append(join(path, 'dll'))
     
-    if not paths: return None
+    from os import getcwd
+    paths.append(getcwd())
     
     from platform import system
 
@@ -47,6 +50,8 @@ def search_paths():
         path_template = formattable('{path};{old_path}')
     
     for path in paths:
+        if not exists(path): continue
+        
         for abi in abis:
             template = formattable(dll_template(abi))
             dll_path = join(path, template.format(name=name, abi=abi))
