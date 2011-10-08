@@ -1,7 +1,7 @@
 from __future__ import with_statement
 
 def init():
-    from api import search_paths
+    from tinyimg.api import search_paths
     # first let's look in some places that may override system-wide paths
     resolved_path = search_paths()
     
