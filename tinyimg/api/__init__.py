@@ -18,26 +18,50 @@ def search_paths():
     
     if not paths: return None
     
-    import platform
-    
+    from platform import system
+
+    from ctypes import CDLL
     dll_template = None
-    if getattr(platform, 'mac_ver'):
+    factory = CDLL
+
+    macos = system().lower() == 'darwin'
+    linux = system().lower() == 'linux'
+    windows = system().lower() == 'windows'
+
+    if macos:
         def dll_template(abi):
             return 'lib{name}.{abi}.dylib' if abi else 'lib{name}.dylib'
-    elif platform.system().lower() == 'linux':
+    elif linux:
         def dll_template(abi):
             return 'lib{name}.so.{abi}' if abi else 'lib{name}.so'
-        
+    elif windows:
+        from ctypes import WinDLL
+        factory = WinDLL
+        def dll_template(abi):
+            return 'lib{name}-{abi}.dll' if abi else 'lib{name}.dll'
+    
     if not dll_template: return None
+    
+    if windows:
+        old_path = environ['PATH']
+        path_template = formattable('{path};{old_path}')
     
     for path in paths:
         for abi in abis:
             template = formattable(dll_template(abi))
-            path = join(path, template.format(name=name, abi=abi))
-            if exists(path):
-                try: CDLL(path)
-                except: pass
-                else: return path
+            dll_path = join(path, template.format(name=name, abi=abi))
+            #import pdb; pdb.set_trace() 
+            if exists(dll_path):
+                if windows:
+                    # windows doesnt store absolute locations in DLLs
+                    # we need to append current path to environ
+                    environ['PATH'] = path_template.format(path=path, old_path=old_path)
+                try: factory(dll_path)
+                except:
+                    if windows:
+                        # restore os path
+                        environ['PATH'] = old_path
+                else: return dll_path
     
     return None
 

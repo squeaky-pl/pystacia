@@ -13,9 +13,12 @@ def init():
     if not resolved_path:
         raise TinyException('Could not find or load magickWand')
     
+    
     from ctypes import CDLL
+    factory = CDLL
+    
     global cdll
-    cdll = CDLL(resolved_path)
+    cdll = factory(resolved_path)
     
     from .func import annote
     annote(cdll)
