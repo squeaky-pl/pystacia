@@ -445,23 +445,27 @@ data =\
 
 from tinyimg.util import memoized
 
+
 @memoized
 def lookup(mnemonic, version):
     value = None
     
     for entry in data.get(mnemonic.enum.name, []):
-        if entry['_version'] > version: break
+        if entry['_version'] > version:
+            break
         value = entry.get(mnemonic.name)
         
     return value
+
 
 @memoized
 def reverse_lookup(enum, value, version):
     mnemonic = None
     
     for entry in data.get(enum.name, []):
-        if entry['_version'] > version: break
-        reversed = dict(zip(entry.values(), entry.keys()))
-        mnemonic = getattr(enum, reversed.get(value))
+        if entry['_version'] > version:
+            break
+        lookup = dict(zip(entry.values(), entry.keys()))
+        mnemonic = getattr(enum, lookup.get(value))
     
     return mnemonic

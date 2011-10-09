@@ -1,5 +1,6 @@
 from tinyimg.util import only_live
 
+
 class Color(object):
     def __init__(self, wand):
         self.__wand = wand
@@ -81,7 +82,9 @@ class Color(object):
     
     def __repr__(self):
         template = '<tinyimg.color.Color rgba{rgba} object at {address}>'
-        return formattable(template).format(rgba=self.get_rgba(), address=hex(id(self)))
+        return formattable(template).format(rgba=self.get_rgba(),
+                                            address=hex(id(self)))
+
 
 def from_string(value):
     #ensure we also get "bytes"
@@ -90,6 +93,7 @@ def from_string(value):
     guard(wand, lambda: cdll.PixelSetColor(wand, value))
     
     return Color(wand)
+
 
 def from_rgb(r, g, b):
     wand = cdll.NewPixelWand()
@@ -100,12 +104,14 @@ def from_rgb(r, g, b):
     
     return Color(wand)
 
+
 def from_rgba(r, g, b, a):
     color = from_rgb(r, g, b)
     
     cdll.PixelSetAlpha(color.wand, a)
     
     return color
+
 
 from six import b
 

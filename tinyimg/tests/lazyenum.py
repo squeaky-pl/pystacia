@@ -1,6 +1,5 @@
 from unittest import TestCase
 
-from tinyimg.lazyenum import enum
 
 class EnumTestCase(TestCase):
     def test(self):
@@ -16,3 +15,6 @@ class EnumTestCase(TestCase):
         self.assertEqual(id(composite.qwerty), id(composite.qwerty))
         
         self.assertNotEqual(composite.qwerty, composite.abc)
+
+
+from tinyimg.lazyenum import enum

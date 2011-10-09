@@ -1,5 +1,6 @@
 from tinyimg.tests_compat import TestCase
 
+
 class RgbColorTestCase(TestCase):
     def test(self):
         rgb = (1, 0, 0)
@@ -20,12 +21,14 @@ class RgbColorTestCase(TestCase):
         red.set_rgba(0, 1, 1, 0)
         
         self.assertEqual(red.get_rgba(), (0, 1, 1, 0))
-        
+
+
 def StringColorTestCase(TestCase):
     def test(self):
         white = color.from_string('white')
         self.assertEqual(white.get_rgba(), (1, 1, 1, 1))
         red = color.from_string('red')
         self.assertEqual(red.get_rgba(), (1, 0, 0, 1))
-        
+
+
 from tinyimg import color

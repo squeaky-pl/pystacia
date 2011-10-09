@@ -1,29 +1,21 @@
-from __future__ import with_statement
-
 def init():
     from tinyimg.util import find_library
     from tinyimg.api import name, abis
     # first let's look in some places that may override system-wide paths
     resolved_path = find_library(name, abis)
-    
     # still nothing? let ctypes figure it out
     if not resolved_path:
-        from ctypes.util import find_library
+        from ctypes.util import find_library  # @Reimport
         resolved_path = find_library('MagickWand')
-        
     if not resolved_path:
         raise TinyException('Could not find or load magickWand')
     
-    
     from ctypes import CDLL
     factory = CDLL
-    
     global cdll
     cdll = factory(resolved_path)
-    
     from .func import annote
     annote(cdll)
-    
     cdll.MagickWandGenesis()
     
     import atexit
@@ -40,14 +32,18 @@ def init():
 
 from tinyimg.util import memoized
 
+
 @memoized
 def __raw_lena():
         filename = join(dirname(__file__), 'lena.ycbcr.bz2')
-        return dict(raw=bz2_readfile(filename), format='ycbcr', height=512, width=512, depth=8)
+        return dict(raw=bz2_readfile(filename), format='ycbcr',
+                    height=512, width=512, depth=8)
 
 # weakref memoization to let garbage collector clear it when needed
 # helps pypy a lot
 __lena = None
+
+
 def __lena_image():
     global __lena
     
@@ -61,28 +57,38 @@ def __lena_image():
             __lena = weakref.ref(lena)
     
     return lena.copy()
-    
+
+
 def lena(size=None, colorspace=None):
     img = __lena_image()
     
-    if size: img.resize(size, size)
-    if not colorspace: colorspace=globals()['colorspace'].rgb
+    if size:
+        img.resize(size, size)
+    if not colorspace:
+        colorspace = globals()['colorspace'].rgb
     if img.colorspace != colorspace:
         img.convert_colorspace(colorspace)
         
     return img
+
 
 def magick_logo():
     return read_special('logo:')
 
 import tinyimg.api.enum as enum_api
 
+
 def enum_lookup(mnemonic, throw=True):
     value = enum_api.lookup(mnemonic, magick.get_version())
     if throw and value == None:
-        template = formattable("Enumeration '{enum}' cant map mnemonic '{mnemonic}'")
-        raise TinyException(template.format(enum=mnemonic.enum.name, mnemonic=mnemonic.name))
+        template = "Enumeration '{enum}' cant map mnemonic '{mnemonic}'"
+        template = formattable(template)
+        enum = mnemonic.enum.name
+        mnemonic = mnemonic.name
+        raise TinyException(template.format(enum=enum, mnemonic=mnemonic))
+
     return value
+
 
 def enum_reverse_lookup(enum, value):
     return enum_api.reverse_lookup(enum, value, magick.get_version())

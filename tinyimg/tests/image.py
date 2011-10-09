@@ -1,6 +1,5 @@
-from tinyimg import TinyException, read, read_raw, lena
-
 from tinyimg.tests_compat import TestCase
+
 
 class CloseTestCase(TestCase):
     def test(self):
@@ -11,11 +10,13 @@ class CloseTestCase(TestCase):
         self.assertEquals(img.closed, True)
         
         self.assertRaises(TinyException, lambda: img.close())
-        
+
+
 class ReadTestCase(TestCase):
     def test(self):
         self.assertRaises(IOError, lambda: read('/non/existant.jpg'))
-        
+
+
 class SizeTestCase(TestCase):
     def test(self):
         img = lena()
@@ -23,7 +24,8 @@ class SizeTestCase(TestCase):
         self.assertSequenceEqual((img.width, img.height), img.size)
         
         img.close()
-        
+
+
 class ResizeTestCase(TestCase):
     def test(self):
         img = lena()
@@ -41,6 +43,7 @@ class ResizeTestCase(TestCase):
         
         self.assertRaises(TinyException, lambda: img.resize())
 
+
 class CropTestCase(TestCase):
     def test(self):
         img = lena()
@@ -52,6 +55,7 @@ class CropTestCase(TestCase):
         img.crop(64, 64, 64, 64)
         
         self.assertSequenceEqual(img.size, (64, 64))
+
 
 class CopyTestCase(TestCase):
     def test(self):
@@ -65,17 +69,20 @@ class CopyTestCase(TestCase):
         copy.resize(factor=(2, 0.5))
         
         self.assertNotEqual(img.size, copy.size)
-        
+
+
 class ReadAndGetRawTestCase(TestCase):
     def test(self):
-        data = dict(raw=b('\xff\xff\xff'), format='rgb', depth=8, width=1, height=1)
+        data = dict(raw=b('\xff\xff\xff'), format='rgb',
+                    depth=8, width=1, height=1)
         img = read_raw(**data)
         
-        self.assertSequenceEqual(img.size, (1,1))
+        self.assertSequenceEqual(img.size, (1, 1))
         self.assertEqual(img.depth, 8)
         self.assertEqual(img.get_blob('rgb'), data['raw'])
         self.assertDictEqual(img.get_raw('rgb'), data)
-        
+
+
 class LenaTestCase(TestCase):
     def test(self):
         img = lena()
@@ -90,4 +97,7 @@ class LenaTestCase(TestCase):
         
         img.close()
 
+
 from six import b
+
+from tinyimg import TinyException, read, read_raw, lena

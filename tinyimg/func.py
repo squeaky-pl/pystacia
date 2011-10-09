@@ -1,21 +1,3 @@
-from ctypes import (c_char_p, c_void_p, POINTER, byref, c_int, c_long, c_longlong,
-                    cast, c_size_t, c_double, c_uint, sizeof, c_ulong, c_ulonglong)
-
-# python <=2.6 doesnt have c_ssize_t,
-# implementation copied from ctypes from 2.7
-try: from ctypes import c_ssize_t
-except ImportError:
-    if sizeof(c_uint) == sizeof(c_void_p):
-        c_ssize_t = c_int
-    elif sizeof(c_ulong) == sizeof(c_void_p):
-        c_ssize_t = c_long
-    elif sizeof(c_ulonglong) == sizeof(c_void_p):
-        c_ssize_t = c_longlong
-    
-
-from . import TinyException, cdll
-from .types import MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, Filter, enum
-
 def annote(cdll):
     cdll.MagickGetVersion.restype = c_char_p
     cdll.MagickGetVersion.argtypes = (POINTER(c_size_t),)
@@ -111,11 +93,13 @@ def annote(cdll):
     cdll.MagickGetImageDepth.argtypes = (MagickWand_p,)
     
     #resize
-    cdll.MagickResizeImage.argtypes = (MagickWand_p, c_size_t, c_size_t, Filter, c_double)
+    cdll.MagickResizeImage.argtypes = (MagickWand_p, c_size_t, c_size_t,
+                                       enum, c_double)
     cdll.MagickResizeImage.restype = MagickBoolean
     
     #crop
-    cdll.MagickCropImage.argtypes = (MagickWand_p, c_size_t, c_size_t, c_ssize_t, c_ssize_t)
+    cdll.MagickCropImage.argtypes = (MagickWand_p, c_size_t, c_size_t,
+                                     c_ssize_t, c_ssize_t)
     cdll.MagickCropImage.restype = MagickBoolean
     
     #flip
@@ -166,16 +150,19 @@ def annote(cdll):
     cdll.MagickBlurImage.argtypes = (MagickWand_p, c_double, c_double)
     cdll.MagickBlurImage.restype = MagickBoolean
     
-    cdll.MagickBrightnessContrastImage.argtypes = (MagickWand_p, c_double, c_double)
+    cdll.MagickBrightnessContrastImage.argtypes = (MagickWand_p, c_double,
+                                                   c_double)
     cdll.MagickBrightnessContrastImage.restype = MagickBoolean
     
-    cdll.MagickCompositeImage.argtypes = (MagickWand_p, MagickWand_p, enum, c_ssize_t, c_ssize_t)
+    cdll.MagickCompositeImage.argtypes = (MagickWand_p, MagickWand_p, enum,
+                                          c_ssize_t, c_ssize_t)
     cdll.MagickCompositeImage.restype = MagickBoolean
     
     cdll.MagickDeskewImage.argtypes = (MagickWand_p, c_double)
     cdll.MagickDeskewImage.restype = MagickBoolean
     
-    cdll.MagickModulateImage.argtypes = (MagickWand_p, c_double, c_double, c_double)
+    cdll.MagickModulateImage.argtypes = (MagickWand_p, c_double,
+                                         c_double, c_double)
     cdll.MagickModulateImage.restype = MagickBoolean
     
     cdll.MagickNegateImage.argtypes = (MagickWand_p, MagickBoolean)
@@ -202,13 +189,16 @@ def annote(cdll):
     cdll.MagickWaveImage.argtypes = (MagickWand_p, c_double, c_double)
     cdll.MagickWaveImage.restype = MagickBoolean
     
-    cdll.MagickShadowImage.argtypes = (MagickWand_p, c_double, c_double, c_ssize_t, c_ssize_t)
+    cdll.MagickShadowImage.argtypes = (MagickWand_p, c_double, c_double,
+                                       c_ssize_t, c_ssize_t)
     cdll.MagickShadowImage.restype = MagickBoolean
     
-    cdll.MagickShearImage.argtypes = (MagickWand_p, PixelWand_p, c_double, c_double)
+    cdll.MagickShearImage.argtypes = (MagickWand_p, PixelWand_p,
+                                      c_double, c_double)
     cdll.MagickShearImage.restype = MagickBoolean
     
-    cdll.MagickSketchImage.argtypes = (MagickWand_p, c_double, c_double, c_double)
+    cdll.MagickSketchImage.argtypes = (MagickWand_p, c_double,
+                                       c_double, c_double)
     cdll.MagickSketchImage.restype = MagickBoolean
     
     cdll.MagickSolarizeImage.argtypes = (MagickWand_p, c_double)
@@ -256,8 +246,9 @@ def annote(cdll):
     
     cdll.PixelGetAlpha.argtypes = (PixelWand_p,)
     cdll.PixelGetAlpha.restype = c_double
-    
-def guard(wand, callable, msg=None):
+
+
+def guard(wand, callable, msg=None):  # @ReservedAssignment
     result = callable()
     if not result:
         description = None
@@ -273,4 +264,13 @@ def guard(wand, callable, msg=None):
         raise exc
         
     return result
-        
+
+
+from ctypes import (c_char_p, c_void_p, POINTER, byref,
+                    cast, c_size_t, c_double, c_uint)
+
+from tinyimg.util import TinyException
+from tinyimg.compat import c_ssize_t
+from tinyimg import cdll
+from tinyimg.types import (MagickWand_p, PixelWand_p, MagickBoolean,
+                           ExceptionType, enum)
