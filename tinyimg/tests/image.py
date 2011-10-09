@@ -1,4 +1,4 @@
-from tinyimg.tests_compat import TestCase
+from tinyimg.compat import TestCase
 
 
 class CloseTestCase(TestCase):
@@ -100,4 +100,6 @@ class LenaTestCase(TestCase):
 
 from six import b
 
-from tinyimg import TinyException, read, read_raw, lena
+from tinyimg.util import TinyException
+from tinyimg.image import read, read_raw
+from tinyimg import lena

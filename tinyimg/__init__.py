@@ -48,12 +48,12 @@ def __lena_image():
     global __lena
     
     if not __lena:
-        lena = read_raw(**__raw_lena())
+        lena = image.read_raw(**__raw_lena())
         __lena = weakref.ref(lena)
     else:
         lena = __lena()
         if not lena:
-            lena = read_raw(**__raw_lena())
+            lena = image.read_raw(**__raw_lena())
             __lena = weakref.ref(lena)
     
     return lena.copy()
@@ -65,7 +65,7 @@ def lena(size=None, colorspace=None):
     if size:
         img.resize(size, size)
     if not colorspace:
-        colorspace = globals()['colorspace'].rgb
+        colorspace = image.colorspace.rgb
     if img.colorspace != colorspace:
         img.convert_colorspace(colorspace)
         
@@ -73,7 +73,7 @@ def lena(size=None, colorspace=None):
 
 
 def magick_logo():
-    return read_special('logo:')
+    return image.read_special('logo:')
 
 import tinyimg.api.enum as enum_api
 
@@ -105,10 +105,4 @@ from tinyimg.util import TinyException
 init()
 
 from tinyimg import magick
-
-from tinyimg import color
-from tinyimg.image import read_special
-from tinyimg.image import *
 from tinyimg import image
-
-__all__ = image.__all__ + ['lena', 'magick_logo', 'color']

@@ -57,11 +57,11 @@ def read_special(spec, width=None, height=None):
     return Image(wand)
 
 
-def blank(width, height, color=None):
-    if not color:
-        color = globals()['color'].transparent
+def blank(width, height, background=None):
+    if not background:
+        background = 'transparent'
     
-    return read_special('xc:' + str(color), width, height)
+    return read_special('xc:' + str(background), width, height)
 
 from tinyimg.util import only_live
 
@@ -439,6 +439,3 @@ composite = enum('composite')
 image_type = enum('type')
 image_filter = enum('filter')
 colorspace = enum('colorspace')
-
-__all__ = ['read_raw', 'read', 'read_blob', 'blank',
-           'composite', 'image_type', 'image_filter', 'colorspace']

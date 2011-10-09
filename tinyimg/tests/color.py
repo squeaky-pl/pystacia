@@ -1,4 +1,4 @@
-from tinyimg.tests_compat import TestCase
+from tinyimg.compat import TestCase
 
 
 class RgbColorTestCase(TestCase):

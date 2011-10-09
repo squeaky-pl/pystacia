@@ -74,18 +74,16 @@ def find_library(name, abis):
     if version_info[:2] == (2, 5):
         import os
         windows = os.name == 'nt'
-
-    if macos:
-        def dll_template(abi):
-            return 'lib{name}.{abi}.dylib' if abi else 'lib{name}.dylib'
-    elif linux:
-        def dll_template(abi):
-            return 'lib{name}.so.{abi}' if abi else 'lib{name}.so'
-    elif windows:
-        def dll_template(abi):
-            return 'lib{name}-{abi}.dll' if abi else 'lib{name}.dll'
     
-    if not dll_template:
+    if macos or linux or windows:
+        def dll_template(abi):
+            if macos:
+                return 'lib{name}.{abi}.dylib' if abi else 'lib{name}.dylib'
+            elif linux:
+                return 'lib{name}.so.{abi}' if abi else 'lib{name}.so'
+            elif windows:
+                return 'lib{name}-{abi}.dll' if abi else 'lib{name}.dll'
+    else:
         return None
     
     if windows:

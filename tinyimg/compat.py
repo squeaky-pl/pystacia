@@ -21,48 +21,66 @@ if hasattr(platform, 'linux_distribution'):
 elif hasattr(platform, 'dist'):
     dist = platform.dist
 
+
+def fallback_bz2_readfile(filename):
+    tempdir = gettempdir()
+    template = formattable('cp "{src}" "{tmp}"')
+    system(template.format(src=filename, tmp=tempdir))
+    olddir = getcwd()
+    chdir(tempdir)
+    filename = basename(filename)
+    system(formattable('bunzip2 {0}').format(filename))
+    
+    filename = filename[:-4]
+    f = open(filename, 'rb')
+    data = f.read()
+    f.close()
+    
+    chdir(olddir)
+    
+    return data
+
+
+def bz2_readfile(filename):
+    f = bz2.BZ2File(filename, 'rb')
+    data = f.read()
+    f.close()
+    
+    return data
+
 try:
     import bz2
 except ImportError:
-    def bz2_readfile(filename):
-        tempdir = gettempdir()
-        template = formattable('cp "{src}" "{tmp}"')
-        system(template.format(src=filename, tmp=tempdir))
-        olddir = getcwd()
-        chdir(tempdir)
-        filename = basename(filename)
-        system(formattable('bunzip2 {0}').format(filename))
-        
-        filename = filename[:-4]
-        f = open(filename, 'rb')
-        data = f.read()
-        f.close()
-        
-        chdir(olddir)
-        
-        return data
-else:
-    def bz2_readfile(filename):
-        f = bz2.BZ2File(filename, 'rb')
-        data = f.read()
-        f.close()
-        
-        return data
+    bz2_readfile = fallback_bz2_readfile
+
 
 # python <=2.6 doesnt have c_ssize_t,
 # implementation copied from ctypes from 2.7
-try:
-    from ctypes import c_ssize_t
-except ImportError:
+def fallback_c_size_t():
     from ctypes import (c_void_p, c_int, c_long, c_longlong,
                         sizeof, c_uint, c_ulong, c_ulonglong)
     
     if sizeof(c_uint) == sizeof(c_void_p):
-        c_ssize_t = c_int
+        return c_int
     elif sizeof(c_ulong) == sizeof(c_void_p):
-        c_ssize_t = c_long
+        return c_long
     elif sizeof(c_ulonglong) == sizeof(c_void_p):
-        c_ssize_t = c_longlong
+        return c_longlong
+        
+import ctypes
+c_ssize_t = getattr(ctypes, 'c_ssize_t', fallback_c_size_t())
+
+
+# in python < 2.7 we need backported verion of unittest
+def fallback_testcase():
+    from unittest2 import TestCase
+    
+    return TestCase
+
+from unittest import TestCase
+
+if not hasattr(TestCase, 'assertSequenceEqual'):
+    TestCase = fallback_testcase()
 
 
 from tempfile import gettempdir
