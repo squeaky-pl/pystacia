@@ -83,21 +83,6 @@ class ReadAndGetRawTestCase(TestCase):
         self.assertDictEqual(img.get_raw('rgb'), data)
 
 
-class LenaTestCase(TestCase):
-    def test(self):
-        img = lena()
-        
-        self.assertSequenceEqual(img.size, (512, 512))
-        
-        img.close()
-        
-        img = lena(32)
-        
-        self.assertSequenceEqual(img.size, (32, 32))
-        
-        img.close()
-
-
 from six import b
 
 from tinyimg.util import TinyException

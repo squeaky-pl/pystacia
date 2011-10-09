@@ -23,7 +23,7 @@ class RgbColorTestCase(TestCase):
         self.assertEqual(red.get_rgba(), (0, 1, 1, 0))
 
 
-def StringColorTestCase(TestCase):
+class StringColorTestCase(TestCase):
     def test(self):
         white = color.from_string('white')
         self.assertEqual(white.get_rgba(), (1, 1, 1, 1))
