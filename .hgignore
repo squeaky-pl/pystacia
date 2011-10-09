@@ -10,6 +10,7 @@ syntax: regexp
 ^tinyimg-env/
 ^env/
 ^dist/
+^ironpython/(?!sync\.py)
 
 \.DS_Store$
 \.pyc$

@@ -1,9 +1,10 @@
 from __future__ import with_statement
 
 def init():
-    from tinyimg.api import search_paths
+    from tinyimg.util import find_library
+    from tinyimg.api import name, abis
     # first let's look in some places that may override system-wide paths
-    resolved_path = search_paths()
+    resolved_path = find_library(name, abis)
     
     # still nothing? let ctypes figure it out
     if not resolved_path:
@@ -41,8 +42,8 @@ from tinyimg.util import memoized
 
 @memoized
 def __raw_lena():
-    with BZ2File(join(dirname(__file__), 'lena.ycbcr.bz2')) as f:
-        return dict(raw=f.read(), format='ycbcr', height=512, width=512, depth=8)
+        filename = join(dirname(__file__), 'lena.ycbcr.bz2')
+        return dict(raw=bz2_readfile(filename), format='ycbcr', height=512, width=512, depth=8)
 
 # weakref memoization to let garbage collector clear it when needed
 # helps pypy a lot
@@ -92,7 +93,7 @@ cdll = None
 import weakref
 from os.path import dirname, join
 
-from tinyimg.compat import BZ2File, formattable
+from tinyimg.compat import formattable, bz2_readfile
 from tinyimg.util import TinyException
 
 init()
