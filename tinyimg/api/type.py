@@ -1,10 +1,7 @@
-from ctypes import Structure, POINTER, c_int, c_char
+from ctypes import Structure, POINTER, c_int
 
 
 enum = c_int
-
-MaxText = c_char * 4096
-
 MagickBoolean = enum
 ExceptionType = enum
 

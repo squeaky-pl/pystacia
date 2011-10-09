@@ -6,8 +6,6 @@ TODO
 - coverage
 - docs
 - docstrings
-- revise imports, move in function symbols at the end of files
-- move types to api and rename to type
 - those semaphores thing possibly should keep week references to any magick resource and clear it on exit [0.1.1]
 - move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
 - move color to be a class and have @staticmethod __getattr__ style called Factory in tinyimg.color

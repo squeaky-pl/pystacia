@@ -430,7 +430,7 @@ from six import b
 from tinyimg.compat import formattable
 from tinyimg import color
 from tinyimg.util import TinyException
-from tinyimg.func import guard
+from tinyimg.api.func import guard
 from tinyimg import magick
 from tinyimg import cdll, enum_lookup, enum_reverse_lookup
 from tinyimg.lazyenum import enum

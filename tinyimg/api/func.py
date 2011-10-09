@@ -272,5 +272,5 @@ from ctypes import (c_char_p, c_void_p, POINTER, byref,
 from tinyimg.util import TinyException
 from tinyimg.compat import c_ssize_t
 from tinyimg import cdll
-from tinyimg.types import (MagickWand_p, PixelWand_p, MagickBoolean,
+from tinyimg.api.type import (MagickWand_p, PixelWand_p, MagickBoolean,
                            ExceptionType, enum)

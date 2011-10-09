@@ -14,7 +14,7 @@ def init():
     factory = CDLL
     global cdll
     cdll = factory(resolved_path)
-    from .func import annote
+    from tinyimg.api.func import annote
     annote(cdll)
     cdll.MagickWandGenesis()
     

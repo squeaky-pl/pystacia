@@ -116,7 +116,7 @@ def from_rgba(r, g, b, a):
 from six import b
 
 from tinyimg import cdll
-from tinyimg.func import guard
+from tinyimg.api.func import guard
 from tinyimg.compat import native_str, formattable
 
 transparent = from_string('transparent')
