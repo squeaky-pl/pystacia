@@ -7,7 +7,7 @@ class Color(object):
         self.__closed = not bool(wand)
     
     def __get_red(self):
-        return cdll.PixelGetRed(self.__wand)
+        return saturate(cdll.PixelGetRed(self.__wand))
     
     def __set_red(self, value):
         cdll.PixelSetRed(self.__wand, value)
@@ -17,7 +17,7 @@ class Color(object):
     r = red
     
     def __get_green(self):
-        return cdll.PixelGetGreen(self.__wand)
+        return saturate(cdll.PixelGetGreen(self.__wand))
     
     def __set_green(self, value):
         cdll.PixelSetGreen(self.__wand, value)
@@ -27,7 +27,7 @@ class Color(object):
     g = green
     
     def __get_blue(self):
-        return cdll.PixelGetBlue(self.__wand)
+        return saturate(cdll.PixelGetBlue(self.__wand))
     
     def __set_blue(self, value):
         cdll.PixelSetBlue(self.__wand, value)
@@ -37,7 +37,7 @@ class Color(object):
     b = blue
     
     def __get_alpha(self):
-        return cdll.PixelGetAlpha(self.__wand)
+        return saturate(cdll.PixelGetAlpha(self.__wand))
     
     def __set_alpha(self, value):
         cdll.PixelSetAlpha(self.__wand, value)
@@ -70,7 +70,14 @@ class Color(object):
     
     @only_live
     def get_string(self):
-        return native_str(cdll.PixelGetColorAsString(self.__wand))
+        if self.alpha == 1:
+            template = formattable('rgb({0},{1},{2})')
+        else:
+            template = formattable('rgba({0},{1},{2},{3})')
+        
+        rgb = tuple(int(x * 255) for x in (self.red, self.green, self.blue))
+        
+        return template.format(*(rgb + (self.alpha,)))
     
     @property
     @only_live
@@ -81,8 +88,9 @@ class Color(object):
         return self.get_string()
     
     def __repr__(self):
-        template = '<tinyimg.color.Color rgba{rgba} object at {address}>'
-        return formattable(template).format(rgba=self.get_rgba(),
+        template = ('<tinyimg.color.Color(r={0},g={1},b={2},a={3})'
+                    'object at {address}>')
+        return formattable(template).format(*self.get_rgba(),
                                             address=hex(id(self)))
 
 
@@ -113,10 +121,20 @@ def from_rgba(r, g, b, a):
     return color
 
 
+def saturate(v):
+    if v == 0:
+        return 0
+    elif v == 1:
+        return 1
+    else:
+        return round(v, 4)
+
+
+
 from six import b
 
 from tinyimg import cdll
 from tinyimg.api.func import guard
-from tinyimg.compat import native_str, formattable
+from tinyimg.compat import formattable
 
 transparent = from_string('transparent')

@@ -1,6 +1,23 @@
 from tinyimg.compat import TestCase
 
 
+class CloseTest(TestCase):
+    def test(self):
+        white = color.from_string('white')
+        self.assertEquals(white.closed, False)
+        white.close()
+        self.assertRaises(TinyException, lambda: white.close())
+        self.assertEquals(white.closed, True)
+
+
+class GetStringTest(TestCase):
+    def test(self):
+        blue = color.from_string('blue')
+        self.assertEquals(blue.get_string(), 'rgb(0,0,255)')
+        blue.alpha = 0
+        self.assertEquals(blue.get_string(), 'rgba(0,0,255,0)')
+
+
 class RgbColorTestCase(TestCase):
     def test(self):
         rgb = (1, 0, 0)
@@ -32,3 +49,4 @@ class StringColorTestCase(TestCase):
 
 
 from tinyimg import color
+from tinyimg.util import TinyException

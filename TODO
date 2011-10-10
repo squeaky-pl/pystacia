@@ -6,7 +6,10 @@ TODO
 - coverage
 - docs
 - docstrings
+- change merge to overlay? as of overlay_color?
 - resize, maybe rescale ? crop - resize ?
+- rename image_type as types, image_filter as filters <- it allows introducing colors
+  as factory in directly in tinyimg and doesnt override builtin symbols
 - those semaphores thing possibly should keep week references to any magick resource and clear it on exit [0.1.1]
 - move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
 - move color to be a class and have @staticmethod __getattr__ style called Factory in tinyimg.color
@@ -51,4 +54,4 @@ STUFF
 - pyflakes, pep8
 
 tests:
-[ ] tinyimg
+[x] tinyimg

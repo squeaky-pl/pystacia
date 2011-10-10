@@ -57,11 +57,11 @@ def read_special(spec, width=None, height=None):
     return Image(wand)
 
 
-def blank(width, height, background=None):
-    if not background:
-        background = 'transparent'
+def blank(width, height, color=None):
+    if not color:
+        color = 'transparent'
     
-    return read_special('xc:' + str(background), width, height)
+    return read_special('xc:' + str(color), width, height)
 
 from tinyimg.util import only_live
 
@@ -322,6 +322,20 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickSepiaToneImage(self.__wand, threshold))
     
+    @only_live
+    def overlay_color(self, color, blend=1):
+        # image magick ignores alpha setting of color
+        # let's incorporate it into blend
+        blend *= color.alpha
+        
+        blend = color_module.from_rgb(blend, blend, blend)
+        
+        guard(self.__wand,
+              lambda: cdll.MagickColorizeImage(self.__wand, color.wand,
+                                               blend.wand))
+        
+        blend.close()
+    
     @property
     @only_live
     def wand(self):
@@ -429,6 +443,7 @@ from six import b
 
 from tinyimg.compat import formattable
 from tinyimg import color
+color_module = color
 from tinyimg.util import TinyException
 from tinyimg.api.func import guard
 from tinyimg import magick

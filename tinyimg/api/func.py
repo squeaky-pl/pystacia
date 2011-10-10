@@ -210,6 +210,10 @@ def annote(cdll):
     cdll.MagickTransverseImage.argtypes = (MagickWand_p,)
     cdll.MagickTransverseImage.restype = MagickBoolean
     
+    cdll.MagickColorizeImage.argtypes = (MagickWand_p, PixelWand_p,
+                                         PixelWand_p)
+    cdll.MagickColorizeImage.restype = MagickBoolean
+    
     ###pixelwand
     cdll.NewPixelWand.argtypes = ()
     cdll.NewPixelWand.restype = PixelWand_p
@@ -219,9 +223,6 @@ def annote(cdll):
     
     cdll.PixelSetColor.argtypes = (PixelWand_p, c_char_p)
     cdll.PixelSetColor.restype = MagickBoolean
-    
-    cdll.PixelGetColorAsString.argtypes = (PixelWand_p,)
-    cdll.PixelGetColorAsString.restype = c_char_p
     
     cdll.PixelSetRed.argtypes = (PixelWand_p, c_double)
     cdll.PixelSetRed.restype = None
