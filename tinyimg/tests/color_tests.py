@@ -18,6 +18,15 @@ class GetStringTest(TestCase):
         self.assertEquals(blue.get_string(), 'rgba(0,0,255,0)')
 
 
+class CopyStringTest(TestCase):
+    def test(self):
+        blue = color.from_string('white')
+        blue_copy = blue.copy()
+        
+        self.assertNotEqual(blue.wand, blue_copy.wand)
+        self.assertSequenceEqual(blue.get_rgba(), blue_copy.get_rgba())
+
+
 class RgbColorTestCase(TestCase):
     def test(self):
         rgb = (1, 0, 0)

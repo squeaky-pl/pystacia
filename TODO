@@ -44,6 +44,9 @@ TODO
 - [0.2] hsl, cmyk setters and getters
 - implement gravity=(0, 0) gravity=(.5, 1) gravity=('left') on merge, crop, extend, rotate(crop=True), resize [0.2]
 - with img.masked(mask) as img:
+- thread safety?
+- should repr use wand as id() ?
+
 STUFF
 =====
 - mooar tests

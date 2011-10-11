@@ -84,9 +84,15 @@ class Color(object):
     def wand(self):
         return self.__wand
     
+    @only_live
+    def copy(self):
+        wand = cdll.ClonePixelWand(self.__wand)
+        return Color(wand)
+    
     def __str__(self):
         return self.get_string()
     
+    @only_live
     def __repr__(self):
         template = ('<tinyimg.color.Color(r={0},g={1},b={2},a={3})'
                     'object at {address}>')
@@ -128,7 +134,6 @@ def saturate(v):
         return 1
     else:
         return round(v, 4)
-
 
 
 from six import b

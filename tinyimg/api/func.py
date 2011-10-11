@@ -239,6 +239,9 @@ def annote(cdll):
     cdll.DestroyPixelWand.argtypes = (PixelWand_p,)
     cdll.DestroyPixelWand.restype = PixelWand_p
     
+    cdll.ClonePixelWand.argtypes = (PixelWand_p,)
+    cdll.ClonePixelWand.restype = PixelWand_p
+    
     cdll.PixelSetColor.argtypes = (PixelWand_p, c_char_p)
     cdll.PixelSetColor.restype = MagickBoolean
     
