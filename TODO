@@ -6,6 +6,7 @@ TODO
 - coverage
 - docs
 - docstrings
+- remove color paramname from everywhere - use fill, background and so on - future proof
 - change merge to overlay? as of overlay_color?
 - resize, maybe rescale ? crop - resize ?
 - rename image_type as types, image_filter as filters <- it allows introducing colors
@@ -42,7 +43,7 @@ TODO
 - show for color creates 32x32 image with color preview [0.2]
 - [0.2] hsl, cmyk setters and getters
 - implement gravity=(0, 0) gravity=(.5, 1) gravity=('left') on merge, crop, extend, rotate(crop=True), resize [0.2]
-
+- with img.masked(mask) as img:
 STUFF
 =====
 - mooar tests

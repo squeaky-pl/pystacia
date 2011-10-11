@@ -214,6 +214,24 @@ def annote(cdll):
                                          PixelWand_p)
     cdll.MagickColorizeImage.restype = MagickBoolean
     
+    cdll.MagickGetImagePixelColor.argtypes = (MagickWand_p, c_ssize_t,
+                                              c_ssize_t, PixelWand_p)
+    cdll.MagickGetImagePixelColor.restype = MagickBoolean
+    
+    cdll.MagickSpliceImage.argtypes = (MagickWand_p, c_size_t, c_size_t,
+                                       c_ssize_t, c_ssize_t)
+    cdll.MagickSpliceImage.restype = MagickBoolean
+    
+    cdll.MagickSetImageBackgroundColor.argtypes = (MagickWand_p, PixelWand_p)
+    cdll.MagickSetImageBackgroundColor.restype = MagickBoolean
+    
+    cdll.MagickGetImageBackgroundColor.argtypes = (MagickWand_p, PixelWand_p)
+    cdll.MagickGetImageBackgroundColor.restype = MagickBoolean
+    
+    cdll.MagickTrimImage.argtypes = (MagickWand_p, c_double)
+    cdll.MagickTrimImage.restype = MagickBoolean
+    
+    
     ###pixelwand
     cdll.NewPixelWand.argtypes = ()
     cdll.NewPixelWand.restype = PixelWand_p

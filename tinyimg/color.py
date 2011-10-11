@@ -2,9 +2,9 @@ from tinyimg.util import only_live
 
 
 class Color(object):
-    def __init__(self, wand):
-        self.__wand = wand
-        self.__closed = not bool(wand)
+    def __init__(self, wand=None):
+        self.__wand = wand if wand else cdll.NewPixelWand()
+        self.__closed = False
     
     def __get_red(self):
         return saturate(cdll.PixelGetRed(self.__wand))

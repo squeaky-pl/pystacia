@@ -336,6 +336,67 @@ class Image(object):
         
         blend.close()
     
+    @only_live
+    def get_pixel(self, x, y):
+        color = color_module.Color()
+        
+        guard(self.__wand,
+              lambda: cdll.MagickGetImagePixelColor(self.__wand, x, y,
+                                                    color.wand))
+        # imagemagick ignores alpha channel, set it to 1
+        color.alpha = 1
+        
+        return color
+    
+    def splice(self, x, y, width, height):
+        background = color.from_string('transparent')
+            
+        # preserve background color
+        old_color = color.Color()
+        guard(self.__wand,
+              lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
+                                                         old_color.wand))
+        guard(self.__wand,
+              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+                                                         background.wand))
+        
+        guard(self.__wand,
+              lambda: cdll.MagickSpliceImage(self.__wand, width,
+                                             height, x, y))
+        
+        #restore background color
+        guard(self.__wand,
+              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+                                                         old_color.wand))
+        old_color.close()
+        background.close()
+    
+    def trim(self, similarity=10, background=None):
+        # TODO: guessing of background?
+        background_free = not(background)
+        if not background:
+            background = color.from_string('transparent')
+        
+        # preserve background color
+        old_color = color.Color()
+        guard(self.__wand,
+              lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
+                                                         old_color.wand))
+        guard(self.__wand,
+              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+                                                         background.wand))
+        
+        guard(self.__wand,
+              lambda: cdll.MagickTrimImage(self.__wand, similarity))
+        
+        #restore background color
+        guard(self.__wand,
+              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+                                                         old_color.wand))
+        
+        if background_free:
+            background.close()
+            
     @property
     @only_live
     def wand(self):
