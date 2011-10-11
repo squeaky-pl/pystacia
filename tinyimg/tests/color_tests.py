@@ -18,7 +18,7 @@ class GetStringTest(TestCase):
         self.assertEquals(blue.get_string(), 'rgba(0,0,255,0)')
 
 
-class CopyStringTest(TestCase):
+class CopyTest(TestCase):
     def test(self):
         blue = color.from_string('white')
         blue_copy = blue.copy()
@@ -55,6 +55,14 @@ class StringColorTestCase(TestCase):
         self.assertEqual(white.get_rgba(), (1, 1, 1, 1))
         red = color.from_string('red')
         self.assertEqual(red.get_rgba(), (1, 0, 0, 1))
+
+
+class SaturateTest(TestCase):
+    def test(self):
+        self.assertEqual(color.saturate(0.5), 0.5)
+        self.assertIsInstance(color.saturate(0.0), int)
+        self.assertEqual(color.saturate(0.0), 0)
+        self.assertIsInstance(color.saturate(1.0), int)
 
 
 from tinyimg import color

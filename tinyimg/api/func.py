@@ -231,7 +231,6 @@ def annote(cdll):
     cdll.MagickTrimImage.argtypes = (MagickWand_p, c_double)
     cdll.MagickTrimImage.restype = MagickBoolean
     
-    
     ###pixelwand
     cdll.NewPixelWand.argtypes = ()
     cdll.NewPixelWand.restype = PixelWand_p

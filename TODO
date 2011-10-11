@@ -59,3 +59,5 @@ STUFF
 
 tests:
 [x] tinyimg
+[x] tinyimg.color
+[x] tinyimg.compat
