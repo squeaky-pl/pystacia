@@ -35,9 +35,9 @@ from tinyimg.util import memoized
 
 @memoized
 def __raw_lena():
-        filename = join(dirname(__file__), 'lena.ycbcr.bz2')
-        return dict(raw=bz2_readfile(filename), format='ycbcr',
-                    height=512, width=512, depth=8)
+    filename = join(dirname(__file__), 'lena.ycbcr.bz2')
+    return dict(raw=bz2_readfile(filename), format='ycbcr',
+                height=512, width=512, depth=8)
 
 # weakref memoization to let garbage collector clear it when needed
 # helps pypy a lot

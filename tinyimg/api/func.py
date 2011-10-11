@@ -55,6 +55,12 @@ def annote(cdll):
     cdll.MagickSetImageFormat.argtypes = (MagickWand_p, c_char_p)
     cdll.MagickSetImageFormat.restype = MagickBoolean
     
+    cdll.MagickGetFormat.argtypes = (MagickWand_p,)
+    cdll.MagickGetFormat.restype = c_char_p
+    
+    cdll.MagickSetCompression.argtypes = (MagickWand_p, enum)
+    cdll.MagickSetCompression.restype = MagickBoolean
+    
     cdll.MagickSetFormat.argtypes = (MagickWand_p, c_char_p)
     cdll.MagickSetFormat.restype = MagickBoolean
     

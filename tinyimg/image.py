@@ -13,19 +13,30 @@ def read_raw(raw, format, width, height, depth):  # @ReservedAssignment
     guard(wand, lambda: cdll.MagickSetSize(wand, width, height))
     guard(wand, lambda: cdll.MagickSetDepth(wand, depth))
     guard(wand, lambda: cdll.MagickSetFormat(wand, format))
-    
+        
     guard(wand, lambda: cdll.MagickReadImageBlob(wand, raw, len(raw)))
     
     return Image(wand)
 
 
-def read_blob(blob, length=None):
+def read_blob(blob, format, length=None):  # @ReservedAssignment
     if hasattr(blob, 'read'):
         blob = blob.read(length)
     
     wand = cdll.NewMagickWand()
     
+    # ensure we always get bytes
+    format = b(format.upper())  # @ReservedAssignment
+    old_format = cdll.MagickGetImageFormat(wand)
+    template = formattable('Format "{0}" unsupported')
+    guard(wand,
+          lambda: cdll.MagickSetFormat(wand, format),
+          template.format(format))
+    
     guard(wand, lambda: cdll.MagickReadImageBlob(wand, blob, len(blob)))
+    
+    guard(wand,
+              lambda: cdll.MagickSetFormat(wand, old_format))
     
     return Image(wand)
 
@@ -79,18 +90,17 @@ class Image(object):
     @only_live
     def write(self, filename):
         guard(self.__wand,
-              lambda: cdll.MagickWriteImage(self.__wand, filename))
+              lambda: cdll.MagickWriteImage(self.__wand, b(filename)))
         
     @only_live
     def get_blob(self, format):  # @ReservedAssignment
-        if format:
-            # ensure we always get bytes
-            format = b(format.upper())  # @ReservedAssignment
-            old_format = cdll.MagickGetImageFormat(self.__wand)
-            template = formattable('Format "{0}" unsupported')
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageFormat(self.__wand, format),
-                  template.format(format))
+        # ensure we always get bytes
+        format = b(format.upper())  # @ReservedAssignment
+        old_format = cdll.MagickGetFormat(self.__wand)
+        template = formattable('Format "{0}" unsupported')
+        guard(self.__wand,
+              lambda: cdll.MagickSetFormat(self.__wand, format),
+              template.format(format))
         
         size = c_size_t()
         result = guard(self.__wand,
@@ -99,9 +109,8 @@ class Image(object):
         blob = string_at(result, size.value)
         cdll.MagickRelinquishMemory(result)
         
-        if format:
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageFormat(self.__wand, old_format))
+        guard(self.__wand,
+              lambda: cdll.MagickSetFormat(self.__wand, old_format))
         
         return blob
         
@@ -515,3 +524,4 @@ composite = enum('composite')
 image_type = enum('type')
 image_filter = enum('filter')
 colorspace = enum('colorspace')
+compressions = enum('compression')

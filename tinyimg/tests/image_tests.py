@@ -12,9 +12,51 @@ class CloseTestCase(TestCase):
         self.assertRaises(TinyException, lambda: img.close())
 
 
+class ReadAndGetRawTestCase(TestCase):
+    def test(self):
+        data = dict(raw=b('\xff\xff\xff'), format='rgb',
+                    depth=8, width=1, height=1)
+        img = read_raw(**data)
+        
+        self.assertSequenceEqual(img.size, (1, 1))
+        self.assertEqual(img.depth, 8)
+        self.assertEqual(img.get_blob('rgb'), data['raw'])
+        self.assertDictEqual(img.get_raw('rgb'), data)
+
+
+class ReadBlobTestCase(TestCase):
+    def test(self):
+        img = lena()
+        bmp = img.get_blob('bmp')
+        
+        for i in (bmp, BytesIO(bmp)):
+            img = read_blob(i, 'bmp')
+            
+            self.assertSequenceEqual(img.size, (512, 512))
+            self.assertEquals(img.type, image_type.true_color)
+            self.assertEquals(img.colorspace, colorspace.rgb)
+            self.assertEquals(img.depth, 8)
+
+
 class ReadTestCase(TestCase):
     def test(self):
-        self.assertRaises(IOError, lambda: read('/non/existant.jpg'))
+        self.assertRaises(IOError, lambda: read('/non/existant.qwerty'))
+        
+        img = lena()
+        
+        tmpname = mkstemp()[1] + '.bmp'
+        img.write(tmpname)
+        
+        img.close()
+        
+        img = read(tmpname)
+        
+        self.assertSequenceEqual(img.size, (512, 512))
+        self.assertEquals(img.type, image_type.true_color)
+        self.assertEquals(img.colorspace, colorspace.rgb)
+        self.assertEquals(img.depth, 8)
+            
+        img.close()
 
 
 class SizeTestCase(TestCase):
@@ -71,20 +113,10 @@ class CopyTestCase(TestCase):
         self.assertNotEqual(img.size, copy.size)
 
 
-class ReadAndGetRawTestCase(TestCase):
-    def test(self):
-        data = dict(raw=b('\xff\xff\xff'), format='rgb',
-                    depth=8, width=1, height=1)
-        img = read_raw(**data)
-        
-        self.assertSequenceEqual(img.size, (1, 1))
-        self.assertEqual(img.depth, 8)
-        self.assertEqual(img.get_blob('rgb'), data['raw'])
-        self.assertDictEqual(img.get_raw('rgb'), data)
+from tempfile import mkstemp
 
-
-from six import b
+from six import b, BytesIO
 
 from tinyimg.util import TinyException
-from tinyimg.image import read, read_raw
-from tinyimg import lena
+from tinyimg.image import read, read_raw, read_blob, image_type, colorspace
+from tinyimg import lena, __raw_lena

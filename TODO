@@ -6,6 +6,7 @@ TODO
 - coverage
 - docs
 - docstrings
+- containers vs formats
 - remove color paramname from everywhere - use fill, background and so on - future proof
 - change merge to overlay? as of overlay_color?
 - resize, maybe rescale ? crop - resize ?
@@ -44,6 +45,7 @@ TODO
 - [0.2] hsl, cmyk setters and getters
 - implement gravity=(0, 0) gravity=(.5, 1) gravity=('left') on merge, crop, extend, rotate(crop=True), resize [0.2]
 - with img.masked(mask) as img:
+- with img.canvas() as c:
 - thread safety?
 - should repr use wand as id() ?
 
@@ -61,3 +63,4 @@ tests:
 [x] tinyimg
 [x] tinyimg.color
 [x] tinyimg.compat
+[ ] tinyimg.image
