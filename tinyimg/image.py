@@ -352,8 +352,6 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickGetImagePixelColor(self.__wand, x, y,
                                                     color.wand))
-        # imagemagick ignores alpha channel, set it to 1
-        color.alpha = 1
         
         return color
     

@@ -59,6 +59,14 @@ class ReadTestCase(TestCase):
         img.close()
 
 
+class BlankTestCase(TestCase):
+    def test(self):
+        img = blank(10, 20)
+        
+        self.assertEquals(img.get_pixel(5, 5).alpha, 0)
+        self.assertSequenceEqual(img.size, (10, 20))
+
+
 class SizeTestCase(TestCase):
     def test(self):
         img = lena()
@@ -118,5 +126,6 @@ from tempfile import mkstemp
 from six import b, BytesIO
 
 from tinyimg.util import TinyException
-from tinyimg.image import read, read_raw, read_blob, image_type, colorspace
+from tinyimg.image import (read, read_raw, read_blob, image_type,
+                           colorspace, blank)
 from tinyimg import lena, __raw_lena
