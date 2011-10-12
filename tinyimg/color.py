@@ -94,10 +94,13 @@ class Color(object):
     
     @only_live
     def __repr__(self):
-        template = ('<tinyimg.color.Color(r={0},g={1},b={2},a={3})'
-                    'object at {address}>')
-        return formattable(template).format(*self.get_rgba(),
-                                            address=hex(id(self)))
+        template = ('<{class_}(r={0},g={1},b={2},a={3})'
+                    'object at {addr}>')
+        addr = hex(self.__wand)
+        class_ = self.__class__.name
+        
+        return formattable(template).format(*self.get_rgba(), addr=addr,
+                                            class_=class_)
 
 
 def from_string(value):

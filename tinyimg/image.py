@@ -498,13 +498,16 @@ class Image(object):
             self.close()
     
     def __repr__(self):
-        template = '<tinyimg.image.Image({width},{height},{depth}'\
-                   ',{colorspace},{type}) object at {address}>'
-        width, height = self.size
+        template = '<{class_}(w={w},h={h},{depth}bit'\
+                   ',{colorspace},{type}) object at {addr}>'
+        w, h = self.size
         depth, type = self.depth, self.type.name  # @ReservedAssignment
-        colorspace, address = self.colorspace.name, hex(id(self))
+        colorspace, addr = self.colorspace.name, hex(self.__wand)
+        class_ = self.__class__.__name__
         
-        return formattable(template).format(**locals())
+        return formattable(template).format(class_=class_, w=w, h=h,
+                                            depth=depth, colorspace=colorspace,
+                                            addr=addr)
 
 
 import webbrowser
