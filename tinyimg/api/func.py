@@ -88,6 +88,9 @@ def annote(cdll):
     cdll.MagickTransformImageColorspace.argtypes = (MagickWand_p, enum)
     cdll.MagickTransformImageColorspace.restype = MagickBoolean
     
+    cdll.MagickSetImageColor.argtypes = (MagickWand_p, PixelWand_p)
+    cdll.MagickSetImageColor.restype = MagickBoolean
+    
     #size
     cdll.MagickGetImageWidth.restype = c_size_t
     cdll.MagickGetImageWidth.argtypes = (MagickWand_p,)

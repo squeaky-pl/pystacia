@@ -68,11 +68,11 @@ def read_special(spec, width=None, height=None):
     return Image(wand)
 
 
-def blank(width, height, color=None):
-    if not color:
-        color = 'transparent'
+def blank(width, height, background=None):
+    if not background:
+        background = 'transparent'
     
-    return read_special('xc:' + str(color), width, height)
+    return read_special('xc:' + str(background), width, height)
 
 from tinyimg.util import only_live
 
@@ -158,6 +158,11 @@ class Image(object):
     def set_opacity(self, opacity):
         guard(self.__wand,
               lambda: cdll.MagickSetImageOpacity(self.__wand, opacity))
+    
+    @only_live
+    def fill(self, fill):
+        guard(self.__wand,
+              lambda: cdll.MagickSetImageColor(self.__wand, fill.wand))
     
     @only_live
     def flip(self, axis):

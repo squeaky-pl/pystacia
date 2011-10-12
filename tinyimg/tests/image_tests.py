@@ -128,4 +128,4 @@ from six import b, BytesIO
 from tinyimg.util import TinyException
 from tinyimg.image import (read, read_raw, read_blob, image_type,
                            colorspace, blank)
-from tinyimg import lena, __raw_lena
+from tinyimg import lena
