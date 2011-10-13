@@ -6,6 +6,7 @@ TODO
 - coverage
 - docs
 - docstrings
+- is dft really fft?
 - containers vs formats
 - remove color paramname from everywhere - use fill, background and so on - future proof
 - change merge to overlay? as of overlay_color?

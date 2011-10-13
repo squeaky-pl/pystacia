@@ -1,3 +1,5 @@
+from unittest import skip
+
 from tinyimg.compat import TestCase
 
 
@@ -227,12 +229,55 @@ class EmbossTestCase(TestCase):
         img.close()
 
 
-#only check if it doesnt blow up
+# only check if it doesnt blow up
 class EnhanceTestCase(TestCase):
     def test(self):
         img = lena()
         
         img.enhance()
+        
+        img.close()
+
+# only check if it doesnt blow up
+class EqualizeTestCase(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.equalize()
+        
+        img.close()
+
+
+# only check if it doesnt blow up
+class DftTestCase(TestCase):
+    @skip
+    def test(self):
+        img = lena()
+        
+        img.dft()
+        
+        img.close()
+
+
+class TransposeImage(TestCase):
+    def test(self):
+        img = lena()
+        
+        rgba = img.get_pixel(10, 0).get_rgba()
+        img.transpose()
+        self.assertEquals(img.get_pixel(0, 10).get_rgba(), rgba)
+        
+        img.close()
+
+
+class TransverseImage(TestCase):
+    def test(self):
+        img = lena()
+        
+        rgba = img.get_pixel(20, 40).get_rgba()
+        img.transverse()
+        pix = img.get_pixel(img.width - 1 - 40, img.height - 1 - 20)
+        self.assertSequenceEqual(pix.get_rgba(), rgba)
         
         img.close()
 
