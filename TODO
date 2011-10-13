@@ -7,8 +7,10 @@ TODO
 - docs
 - docstrings
 - is dft really fft?
+- method chaining?
 - detect dft/fft
 - delete TestCase from all testcases
+- all test should use __eq__ opeartors on color
 - assertSequenceEqual is not needed use assert Equal
 - containers vs formats
 - remove color paramname from everywhere - use fill, background and so on - future proof
@@ -56,6 +58,7 @@ TODO
 - visual testing framework with reference images
 - wave needs axis parameter and phi
 - checker in show, zoom, crop
+- > and < on color lightness comparison
 
 STUFF
 =====

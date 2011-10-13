@@ -238,7 +238,7 @@ class Image(object):
     @only_live
     def fx(self, expression):  # @ReservedAssignment
         wand = guard(self.__wand,
-                     lambda: cdll.MagickFxImage(self.__wand, expression))
+                     lambda: cdll.MagickFxImage(self.__wand, b(expression)))
         cdll.DestroyMagickWand(self.__wand)
         self.__wand = wand
     
@@ -265,15 +265,24 @@ class Image(object):
               lambda: cdll.MagickAutoLevelImage(self.__wand))
         
     @only_live
-    def blur(self, radius=0, sigma=0):
+    def blur(self, radius, strength=None):
+        if strength == None:
+            strength = radius
+            
         guard(self.__wand,
-              lambda: cdll.MagickBlurImage(self.__wand, radius, sigma))
+              lambda: cdll.MagickBlurImage(self.__wand, radius, strength))
     
     @only_live
-    def brightness(self, percent):
+    def brightness(self, factor):
         guard(self.__wand,
               lambda: cdll.MagickBrightnessContrastImage(self.__wand,
-                                                         percent, 0))
+                                                         factor * 100, 0))
+    
+    @only_live
+    def contrast(self, factor):
+        guard(self.__wand,
+              lambda: cdll.MagickBrightnessContrastImage(self.__wand,
+                                                         0, factor * 100))
     
     @only_live
     def modulate(self, hue=100, saturation=100, lightness=100):
@@ -322,12 +331,6 @@ class Image(object):
     def solarize(self, threshold):
         guard(self.__wand,
               lambda: cdll.MagickSolarizeImage(self.__wand, threshold))
-    
-    @only_live
-    def contrast(self, percent):
-        guard(self.__wand,
-              lambda: cdll.MagickBrightnessContrastImage(self.__wand,
-                                                         0, percent))
     
     @only_live
     def sketch(self, sigma, radius=0, angle=45):
@@ -523,7 +526,7 @@ class Image(object):
                    ',{colorspace},{type}) object at {addr}>'
         w, h = self.size
         depth, type = self.depth, self.type.name  # @ReservedAssignment
-        colorspace, addr = self.colorspace.name, hex(self.__wand)
+        colorspace, addr = self.colorspace.name, hex(addressof(self.__wand[0]))
         class_ = self.__class__.__name__
         
         return formattable(template).format(class_=class_, w=w, h=h,
@@ -533,7 +536,7 @@ class Image(object):
 
 import webbrowser
 from tempfile import mkstemp
-from ctypes import c_size_t, byref, string_at
+from ctypes import c_size_t, byref, string_at, addressof
 from os.path import exists
 
 from six import b

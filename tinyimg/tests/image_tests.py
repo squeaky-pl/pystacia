@@ -236,6 +236,7 @@ class EnhanceTestCase(TestCase):
         
         img.close()
 
+
 # only check if it doesnt blow up
 class EqualizeTestCase(TestCase):
     def test(self):
@@ -287,7 +288,7 @@ class Wave(TestCase):
         img.wave(10, 100)
         self.assertEquals(img.size, (512, 512 + 20))
         self.assertEquals(img.get_pixel(25, 10).alpha, 0)
-        self.assertEquals(img.get_pixel(128 ,128).alpha, 1)
+        self.assertEquals(img.get_pixel(128, 128).alpha, 1)
         
         img.close()
 
@@ -310,6 +311,96 @@ class Gamma(TestCase):
         img.gamma(1)
         pix = img.get_pixel(128, 128)
         self.assertEquals(pix.get_rgba(), rgba)
+        img.gamma(2)
+        pix = img.get_pixel(128, 128)
+        self.assertGreater(pix.get_rgba(), rgba)
+        
+        img.close()
+
+
+# only test if it doesnt blow up
+class Swirl(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.swirl(90)
+        
+        img.close()
+
+
+# only test if it doesnt blow up
+class Spread(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.spread(5)
+        
+        img.close()
+
+
+# only test if it doest blow up
+class AutoGamma(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.auto_gamma()
+        
+        img.close()
+
+
+# only test if it doesnt blow up
+class AutoLevel(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.auto_level()
+        
+        img.close()
+
+
+class Blur(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.blur(3)
+        
+        img.close()
+
+
+class Brighness(TestCase):
+    def test(self):
+        img = lena()
+        
+        coords = (40, 40)
+        before = img.get_pixel(*coords)
+        img.brightness(0)
+        self.assertEqual(img.get_pixel(*coords), before)
+        img.brightness(0.5)
+        self.assertGreater(img.get_pixel(*coords).get_rgba(),
+                           before.get_rgba())
+        img.close()
+        
+        img = lena()
+        img.brightness(-0.5)
+        self.assertLess(img.get_pixel(*coords).get_rgba(),
+                        before.get_rgba())
+        img.brightness(-1)
+        self.assertEqual(img.get_pixel(*coords), color.from_string('black'))
+        img.brightness(1)
+        self.assertEqual(img.get_pixel(*coords), color.from_string('white'))
+        img.close()
+
+
+class Contrast(TestCase):
+    def test(self):
+        img = lena()
+        
+        coords = (40, 40)
+        before = img.get_pixel(*coords)
+        img.contrast(0)
+        self.assertEquals(img.get_pixel(*coords), before)
+        img.contrast(-1)
+        self.assertEquals(img.get_pixel(*coords), color.from_rgb(.5, .5, .5))
         
         img.close()
 

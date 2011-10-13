@@ -89,14 +89,18 @@ class Color(object):
         wand = cdll.ClonePixelWand(self.__wand)
         return Color(wand)
     
+    def __eq__(self, other):
+        return self.get_rgba() == other.get_rgba()
+    
     def __str__(self):
         return self.get_string()
     
     @only_live
     def __repr__(self):
         template = ('<{class_}(r={0},g={1},b={2},a={3})'
-                    'object at {addr}>')
-        kw = dict(addr=hex(self.__wand), class_=self.__class__.name)
+                    ' object at {addr}>')
+        kw = dict(addr=hex(addressof(self.__wand[0])),
+                  class_=self.__class__.__name__)
         
         return formattable(template).format(*self.get_rgba(), **kw)
 
@@ -136,6 +140,8 @@ def saturate(v):
     else:
         return round(v, 4)
 
+
+from ctypes import addressof
 
 from six import b
 
