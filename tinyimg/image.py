@@ -285,13 +285,15 @@ class Image(object):
                                                          0, factor * 100))
     
     @only_live
-    def modulate(self, hue=100, saturation=100, lightness=100):
+    def modulate(self, hue=0, saturation=0, lightness=0):
         guard(self.__wand,
-              lambda: cdll.MagickModulateImage(self.__wand, lightness,
-                                               saturation, hue))
+              lambda: cdll.MagickModulateImage(self.__wand,
+                                               lightness * 100 + 100,
+                                               saturation * 100 + 100,
+                                               hue * 100 + 100))
     
     def desaturate(self):
-        self.modulate(saturation=0)
+        self.modulate(saturation=-1)
         
     @only_live
     def invert(self, only_gray=False):

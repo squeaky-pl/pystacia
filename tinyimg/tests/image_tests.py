@@ -405,6 +405,45 @@ class Contrast(TestCase):
         img.close()
 
 
+class Modulate(TestCase):
+    def test(self):
+        img = lena()
+        
+        coords = (40, 40)
+        before = img.get_pixel(*coords)
+        img.modulate()
+        self.assertEqual(img.get_pixel(*coords), before)
+        
+        img.modulate(lightness=-1)
+        self.assertEqual(img.get_pixel(*coords), color.from_string('black'))
+        
+        img.close()
+
+
+class Desaturate(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.desaturate()
+        pix = img.get_pixel(40, 40)
+        self.assertEqual(pix.r, pix.g)
+        self.assertEqual(pix.g, pix.b)
+        
+        img.close()
+
+
+class Invert(TestCase):
+    def test(self):
+        img = lena()
+        
+        coords = (40, 40)
+        before = img.get_pixel(*coords).get_rgb()
+        img.invert()
+        after = img.get_pixel(*coords).get_rgb()
+        self.assertEqual(tuple(x + y for x, y in zip(before, after)),
+                         (1, 1, 1))
+
+
 class SizeTestCase(TestCase):
     def test(self):
         img = lena()

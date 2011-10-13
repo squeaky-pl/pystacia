@@ -78,7 +78,11 @@ def fallback_testcase():
     return TestCase, skip
 
 from unittest import TestCase
-    
+try:
+    from unittest import skip
+except ImportError:
+    pass
+
 if not hasattr(TestCase, 'assertSequenceEqual'):
     TestCase, skip = fallback_testcase()
 
