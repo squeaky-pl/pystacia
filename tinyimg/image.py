@@ -165,8 +165,9 @@ class Image(object):
             guard(self.__wand,
                   lambda: cdll.MagickSetImageColor(self.__wand, fill.wand))
         else:
+            width, height = self.width, self.height
             cdll.DestroyMagickWand(self.__wand)
-            self.__wand = blank(self.width, self.height, fill, _ctype=True)
+            self.__wand = blank(width, height, fill, _ctype=True)
     
     @only_live
     def flip(self, axis):
