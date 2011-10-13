@@ -106,31 +106,21 @@ class WriteTestCase(TestCase):
         img.close()
 
 
-class SizeTestCase(TestCase):
-    def test(self):
-        img = lena()
-        self.assertSequenceEqual(img.size, (512, 512))
-        self.assertSequenceEqual((img.width, img.height), img.size)
-        
-        img.close()
-
-
 class ResizeTestCase(TestCase):
     def test(self):
         img = lena()
+        
         img.resize(256, 256)
-        
         self.assertSequenceEqual(img.size, (256, 256))
-        
         img.resize(factor=.5)
-        
         self.assertSequenceEqual(img.size, (128, 128))
         
         img.resize(factor=(1, .5))
         
         self.assertSequenceEqual(img.size, (128, 64))
-        
         self.assertRaises(TinyException, lambda: img.resize())
+        
+        img.close()
 
 
 class CropTestCase(TestCase):
@@ -138,12 +128,48 @@ class CropTestCase(TestCase):
         img = lena()
         
         img.crop(128, 128)
-        
         self.assertSequenceEqual(img.size, (128, 128))
-        
         img.crop(64, 64, 64, 64)
-        
         self.assertSequenceEqual(img.size, (64, 64))
+        
+        img.close()
+
+
+class RotateTestCase(TestCase):
+    def test(self):
+        img = lena()
+        
+        size = img.size
+        img.rotate(30)
+        self.assertGreater(img.size, size)
+        self.assertEquals(img.get_pixel(5, 5).alpha, 0)
+        
+        img.close()
+
+
+class SetAlphaTestCase(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.set_alpha(0.5)
+        self.assertEquals(img.get_pixel(32, 32).alpha, 0.5)
+        img.set_alpha(0.7)
+        self.assertEquals(img.get_pixel(5, 5).alpha, 0.7)
+        img.set_alpha(0)
+        self.assertEquals(img.get_pixel(10, 50).alpha, 0)
+        img.set_alpha(1)
+        self.assertEquals(img.get_pixel(64, 64).alpha, 1)
+        
+        img.close()
+
+
+class SizeTestCase(TestCase):
+    def test(self):
+        img = lena()
+        self.assertSequenceEqual(img.size, (512, 512))
+        self.assertSequenceEqual((img.width, img.height), img.size)
+        
+        img.close()
 
 
 from tempfile import mkstemp

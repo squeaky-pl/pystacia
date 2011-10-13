@@ -155,9 +155,9 @@ class Image(object):
                                              color.transparent.wand, angle))
     
     @only_live
-    def set_opacity(self, opacity):
+    def set_alpha(self, alpha):
         guard(self.__wand,
-              lambda: cdll.MagickSetImageOpacity(self.__wand, opacity))
+              lambda: cdll.MagickSetImageOpacity(self.__wand, alpha))
     
     @only_live
     def fill(self, fill):

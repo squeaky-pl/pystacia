@@ -91,8 +91,10 @@ def annote(cdll):
     # symbol added in 6.6.1.6
     try:
         cdll.MagickSetImageColor.argtypes = (MagickWand_p, PixelWand_p)
-    except AttributeError: pass
-    else: cdll.MagickSetImageColor.restype = MagickBoolean
+    except AttributeError:
+        pass
+    else:
+        cdll.MagickSetImageColor.restype = MagickBoolean
     
     #size
     cdll.MagickGetImageWidth.restype = c_size_t
