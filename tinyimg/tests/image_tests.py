@@ -163,6 +163,80 @@ class SetAlphaTestCase(TestCase):
         img.close()
 
 
+class FillTestCase(TestCase):
+    def test(self):
+        img = lena()
+        
+        red = color.from_string('red')
+        img.fill(red)
+        self.assertSequenceEqual(img.get_pixel(32, 32).get_rgba(),
+                                 (1, 0, 0, 1))
+        transparent = color.from_string('transparent')
+        img.fill(transparent)
+        self.assertEquals(img.get_pixel(128, 128).alpha, 0)
+        
+        img.close()
+
+
+class FlipTestCase(TestCase):
+    def test(self):
+        img = lena()
+        
+        rgba = img.get_pixel(10, 10).get_rgba()
+        img.flip(axes.x)
+        pix = img.get_pixel(10, img.height - 1 - 10)
+        self.assertSequenceEqual(pix.get_rgba(), rgba)
+        img.flip(axes.y)
+        pix = img.get_pixel(img.width - 1 - 10, img.height - 1 - 10)
+        self.assertSequenceEqual(pix.get_rgba(), rgba)
+        
+        img.close()
+
+
+class RollTestCase(TestCase):
+    def test(self):
+        img = lena()
+        
+        rgba = img.get_pixel(img.width - 1 - 10, 10).get_rgba()
+        img.roll(20, 0)
+        pix = img.get_pixel(9, 10)
+        self.assertSequenceEqual(pix.get_rgba(), rgba)
+        img.roll(0, 20)
+        pix = img.get_pixel(10, 9)
+        
+        img.close()
+
+
+# only checks if it doesnt blow up
+class DespeckleTestCase(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.despeckle()
+        
+        img.close()
+
+
+# only check if it doesnt blow up
+class EmbossTestCase(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.emboss()
+        
+        img.close()
+
+
+#only check if it doesnt blow up
+class EnhanceTestCase(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.enhance()
+        
+        img.close()
+
+
 class SizeTestCase(TestCase):
     def test(self):
         img = lena()
@@ -178,6 +252,6 @@ from six import b, BytesIO
 
 from tinyimg.util import TinyException
 from tinyimg.image import (read, read_raw, read_blob, image_type,
-                           colorspace, blank)
+                           colorspace, blank, axes)
 from tinyimg import color
 from tinyimg import lena

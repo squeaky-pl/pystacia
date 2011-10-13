@@ -170,9 +170,9 @@ class Image(object):
     
     @only_live
     def flip(self, axis):
-        if axis.upper() == 'X':
+        if axis.name == 'x':
             guard(self.__wand, lambda: cdll.MagickFlipImage(self.__wand))
-        elif axis.upper() == 'Y':
+        elif axis.name == 'y':
             guard(self.__wand, lambda: cdll.MagickFlopImage(self.__wand))
         else:
             raise TinyException('axis must be X or Y')
@@ -535,3 +535,4 @@ image_type = enum('type')
 image_filter = enum('filter')
 colorspace = enum('colorspace')
 compressions = enum('compression')
+axes = enum('axis')

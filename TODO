@@ -47,7 +47,7 @@ TODO
 - with img.masked(mask) as img:
 - with img.canvas() as c:
 - thread safety?
-- should repr use wand as id() ?
+- visual testing framework with reference images
 
 STUFF
 =====
