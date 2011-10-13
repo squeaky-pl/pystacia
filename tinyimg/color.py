@@ -75,7 +75,7 @@ class Color(object):
         else:
             template = formattable('rgba({0},{1},{2},{3})')
         
-        rgb = tuple(int(x * 255) for x in (self.red, self.green, self.blue))
+        rgb = tuple(int(x * 255) for x in self.get_rgb())
         
         return template.format(*(rgb + (self.alpha,)))
     

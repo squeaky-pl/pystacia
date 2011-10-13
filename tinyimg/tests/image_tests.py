@@ -65,6 +65,45 @@ class BlankTestCase(TestCase):
         
         self.assertEquals(img.get_pixel(5, 5).alpha, 0)
         self.assertSequenceEqual(img.size, (10, 20))
+        
+        img.close()
+        
+        rgba = (1, 0, 0, 0.5)
+        img = blank(30, 40, color.from_rgba(*rgba))
+        self.assertSequenceEqual(img.size, (30, 40))
+        self.assertSequenceEqual(img.get_pixel(10, 10).get_rgba(), rgba)
+
+        img.close()
+
+
+class CopyTestCase(TestCase):
+    def test(self):
+        img = lena()
+        copy = img.copy()
+        
+        self.assertNotEquals(img.wand, copy.wand)
+        self.assertSequenceEqual(img.size, copy.size)
+        copy.resize(factor=(2, 0.5))
+        self.assertNotEqual(img.size, copy.size)
+        
+        img.close()
+        copy.close()
+
+
+class WriteTestCase(TestCase):
+    def test(self):
+        img = lena()
+        
+        tmpname = mkstemp()[1] + '.bmp'
+        img.write(tmpname)
+        
+        img.close()
+        
+        img = read(tmpname)
+        self.assertSequenceEqual(img.size, (512, 512))
+        self.assertEquals(img.colorspace, colorspace.rgb)
+        self.assertEquals(img.type, image_type.true_color)
+        img.close()
 
 
 class SizeTestCase(TestCase):
@@ -107,20 +146,6 @@ class CropTestCase(TestCase):
         self.assertSequenceEqual(img.size, (64, 64))
 
 
-class CopyTestCase(TestCase):
-    def test(self):
-        img = lena()
-        copy = img.copy()
-        
-        self.assertNotEquals(img.wand, copy.wand)
-        
-        self.assertSequenceEqual(img.size, copy.size)
-        
-        copy.resize(factor=(2, 0.5))
-        
-        self.assertNotEqual(img.size, copy.size)
-
-
 from tempfile import mkstemp
 
 from six import b, BytesIO
@@ -128,4 +153,5 @@ from six import b, BytesIO
 from tinyimg.util import TinyException
 from tinyimg.image import (read, read_raw, read_blob, image_type,
                            colorspace, blank)
+from tinyimg import color
 from tinyimg import lena
