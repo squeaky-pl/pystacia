@@ -55,7 +55,7 @@ def read(filename):
     return Image(wand)
 
 
-def read_special(spec, width=None, height=None):
+def read_special(spec, width=None, height=None, _ctype=False):
     wand = cdll.NewMagickWand()
     
     if width and height:
@@ -65,14 +65,14 @@ def read_special(spec, width=None, height=None):
     
     guard(wand, lambda: cdll.MagickReadImage(wand, spec))
     
-    return Image(wand)
+    return wand if _ctype else Image(wand)
 
 
-def blank(width, height, background=None):
+def blank(width, height, background=None, _ctype=False):
     if not background:
         background = 'transparent'
     
-    return read_special('xc:' + str(background), width, height)
+    return read_special('xc:' + str(background), width, height, _ctype)
 
 from tinyimg.util import only_live
 
@@ -161,8 +161,12 @@ class Image(object):
     
     @only_live
     def fill(self, fill):
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageColor(self.__wand, fill.wand))
+        if hasattr(cdll, 'MagickSetImageColor'):
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageColor(self.__wand, fill.wand))
+        else:
+            cdll.DestroyMagickWand(self.__wand)
+            self.__wand = blank(self.width, self.height, fill, _ctype=True)
     
     @only_live
     def flip(self, axis):
