@@ -216,11 +216,27 @@ class Image(object):
         
     @only_live
     def wave(self, amplitude, length):
+        transparent = color.from_string('transparent')
+        
+        old_color = color.Color()
+        guard(self.__wand,
+              lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
+                                                         old_color.wand))
+        guard(self.__wand,
+              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+                                                         transparent.wand))
+        
         guard(self.__wand,
               lambda: cdll.MagickWaveImage(self.__wand, amplitude, length))
         
+        guard(self.__wand,
+              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+                                                         old_color.wand))
+        old_color.close()
+        transparent.close()
+        
     @only_live
-    def eval(self, expression):  # @ReservedAssignment
+    def fx(self, expression):  # @ReservedAssignment
         wand = guard(self.__wand,
                      lambda: cdll.MagickFxImage(self.__wand, expression))
         cdll.DestroyMagickWand(self.__wand)

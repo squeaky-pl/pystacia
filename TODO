@@ -7,6 +7,9 @@ TODO
 - docs
 - docstrings
 - is dft really fft?
+- detect dft/fft
+- delete TestCase from all testcases
+- assertSequenceEqual is not needed use assert Equal
 - containers vs formats
 - remove color paramname from everywhere - use fill, background and so on - future proof
 - change merge to overlay? as of overlay_color?
@@ -18,6 +21,8 @@ TODO
 - move color to be a class and have @staticmethod __getattr__ style called Factory in tinyimg.color
   and imported this class as color into tinyimg like color.white, color.transparent, [0.1.1]
 - more generators from pseudoformats: plasma, checkerboard, gradients etc [0.1.1]
+- group tests according to their set up and tear down strategies
+  into one class with many test methods [0.1.1]
 - move lazyenym, and compat under util? [0.1.1]
 - put generators together under some submodule, name? [0.1.1]
 - drop lazy enum, keep and make string passing possible [x]? [0.1.1]
@@ -49,6 +54,8 @@ TODO
 - with img.canvas() as c:
 - thread safety?
 - visual testing framework with reference images
+- wave needs axis parameter and phi
+- checker in show, zoom, crop
 
 STUFF
 =====

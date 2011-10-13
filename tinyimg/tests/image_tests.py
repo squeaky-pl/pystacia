@@ -1,6 +1,4 @@
-from unittest import skip
-
-from tinyimg.compat import TestCase
+from tinyimg.compat import TestCase, skip
 
 
 class CloseTestCase(TestCase):
@@ -259,7 +257,7 @@ class DftTestCase(TestCase):
         img.close()
 
 
-class TransposeImage(TestCase):
+class Transpose(TestCase):
     def test(self):
         img = lena()
         
@@ -270,7 +268,7 @@ class TransposeImage(TestCase):
         img.close()
 
 
-class TransverseImage(TestCase):
+class Transverse(TestCase):
     def test(self):
         img = lena()
         
@@ -278,6 +276,40 @@ class TransverseImage(TestCase):
         img.transverse()
         pix = img.get_pixel(img.width - 1 - 40, img.height - 1 - 20)
         self.assertSequenceEqual(pix.get_rgba(), rgba)
+        
+        img.close()
+
+
+class Wave(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.wave(10, 100)
+        self.assertEquals(img.size, (512, 512 + 20))
+        self.assertEquals(img.get_pixel(25, 10).alpha, 0)
+        self.assertEquals(img.get_pixel(128 ,128).alpha, 1)
+        
+        img.close()
+
+
+# only test if it doesnt blow up
+class Fx(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.fx('0')
+        
+        img.close()
+
+
+class Gamma(TestCase):
+    def test(self):
+        img = lena()
+        
+        rgba = img.get_pixel(128, 128).get_rgba()
+        img.gamma(1)
+        pix = img.get_pixel(128, 128)
+        self.assertEquals(pix.get_rgba(), rgba)
         
         img.close()
 
