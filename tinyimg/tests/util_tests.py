@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 
-class MemoizedTestCase(TestCase):
+class Memoized(TestCase):
     def test(self):
         class A(object):
             pass
@@ -11,10 +11,10 @@ class MemoizedTestCase(TestCase):
             """doc"""
             return A()
         
-        self.assertEqual(producer(), producer())
+        self.assertEquals(producer(), producer())
         self.assertNotEqual(producer(), producer(1))
-        self.assertEqual(producer.__name__, 'producer')
-        self.assertEqual(producer.__doc__, 'doc')
+        self.assertEquals(producer.__name__, 'producer')
+        self.assertEquals(producer.__doc__, 'doc')
 
 
 from tinyimg.util import memoized

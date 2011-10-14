@@ -1,24 +1,24 @@
 from tinyimg.compat import TestCase
 
 
-class MagickLogoTestCase(TestCase):
+class MagickLogo(TestCase):
     def test(self):
         img = magick_logo()
         
-        self.assertSequenceEqual(img.size, (640, 480))
+        self.assertEquals(img.size, (640, 480))
         self.assertEquals(img.type, image_type.palette)
 
 
-class LenaTestCase(TestCase):
+class Lena(TestCase):
     def test(self):
         img = lena()
-        self.assertSequenceEqual(img.size, (512, 512))
+        self.assertEquals(img.size, (512, 512))
         self.assertEquals(img.type, image_type.true_color)
         self.assertEquals(img.colorspace, colorspace.rgb)
         img.close()
         
         img = lena(32, colorspace=colorspace.ycbcr)
-        self.assertSequenceEqual(img.size, (32, 32))
+        self.assertEquals(img.size, (32, 32))
         self.assertEquals(img.colorspace, colorspace.ycbcr)
         img.close()
 

@@ -1,18 +1,18 @@
 from unittest import TestCase
 
 
-class EnumTestCase(TestCase):
+class Enum(TestCase):
     def test(self):
         composite = enum('composite')
         
-        self.assertEqual(composite.name, 'composite')
-        self.assertEqual(composite.atop.name, 'atop')
+        self.assertEquals(composite.name, 'composite')
+        self.assertEquals(composite.atop.name, 'atop')
         
         #test memoized
-        self.assertEqual(enum('qwerty'), enum('qwerty'))
+        self.assertEquals(enum('qwerty'), enum('qwerty'))
         
-        self.assertEqual(composite.qwerty, composite.qwerty)
-        self.assertEqual(id(composite.qwerty), id(composite.qwerty))
+        self.assertEquals(composite.qwerty, composite.qwerty)
+        self.assertEquals(id(composite.qwerty), id(composite.qwerty))
         
         self.assertNotEqual(composite.qwerty, composite.abc)
 

@@ -1,7 +1,7 @@
 from tinyimg.compat import TestCase
 
 
-class CompatTestCase(TestCase):
+class Compat(TestCase):
     def test(self):
         if version_info < (2, 6):
             from stringformat import FormattableString
@@ -15,7 +15,7 @@ class CompatTestCase(TestCase):
             value = 'abc'.encode('utf-8')
             
         self.assertIsInstance(native_str(value), str)
-        self.assertEqual(native_str(value), 'abc')
+        self.assertEquals(native_str(value), 'abc')
         
         if version_info >= (2, 7):
             from ctypes import c_ssize_t as c_ssize_t_

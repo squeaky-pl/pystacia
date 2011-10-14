@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 
-class EnumTestCase(TestCase):
+class Enum(TestCase):
     def test(self):
         composite = enum('composite')
         

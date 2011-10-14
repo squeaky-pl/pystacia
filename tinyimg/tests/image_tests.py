@@ -1,7 +1,7 @@
 from tinyimg.compat import TestCase, skip
 
 
-class CloseTestCase(TestCase):
+class Close(TestCase):
     def test(self):
         img = lena()
         self.assertEquals(img.closed, False)
@@ -12,19 +12,19 @@ class CloseTestCase(TestCase):
         self.assertRaises(TinyException, lambda: img.close())
 
 
-class ReadAndGetRawTestCase(TestCase):
+class ReadAndGetRaw(TestCase):
     def test(self):
         data = dict(raw=b('\xff\xff\xff'), format='rgb',
                     depth=8, width=1, height=1)
         img = read_raw(**data)
         
-        self.assertSequenceEqual(img.size, (1, 1))
-        self.assertEqual(img.depth, 8)
-        self.assertEqual(img.get_blob('rgb'), data['raw'])
+        self.assertEquals(img.size, (1, 1))
+        self.assertEquals(img.depth, 8)
+        self.assertEquals(img.get_blob('rgb'), data['raw'])
         self.assertDictEqual(img.get_raw('rgb'), data)
 
 
-class ReadBlobTestCase(TestCase):
+class ReadBlob(TestCase):
     def test(self):
         img = lena()
         bmp = img.get_blob('bmp')
@@ -32,13 +32,13 @@ class ReadBlobTestCase(TestCase):
         for i in (bmp, BytesIO(bmp)):
             img = read_blob(i, 'bmp')
             
-            self.assertSequenceEqual(img.size, (512, 512))
+            self.assertEquals(img.size, (512, 512))
             self.assertEquals(img.type, image_type.true_color)
             self.assertEquals(img.colorspace, colorspace.rgb)
             self.assertEquals(img.depth, 8)
 
 
-class ReadTestCase(TestCase):
+class Read(TestCase):
     def test(self):
         self.assertRaises(IOError, lambda: read('/non/existant.qwerty'))
         
@@ -59,30 +59,30 @@ class ReadTestCase(TestCase):
         img.close()
 
 
-class BlankTestCase(TestCase):
+class Blank(TestCase):
     def test(self):
         img = blank(10, 20)
         
         self.assertEquals(img.get_pixel(5, 5).alpha, 0)
-        self.assertSequenceEqual(img.size, (10, 20))
+        self.assertEquals(img.size, (10, 20))
         
         img.close()
         
-        rgba = (1, 0, 0, 0.5)
-        img = blank(30, 40, color.from_rgba(*rgba))
-        self.assertSequenceEqual(img.size, (30, 40))
-        self.assertSequenceEqual(img.get_pixel(10, 10).get_rgba(), rgba)
+        background = color.from_rgba(1, 0, 0, 0.5)
+        img = blank(30, 40, background)
+        self.assertEquals(img.size, (30, 40))
+        self.assertEquals(img.get_pixel(10, 10), background)
 
         img.close()
 
 
-class CopyTestCase(TestCase):
+class Copy(TestCase):
     def test(self):
         img = lena()
         copy = img.copy()
         
         self.assertNotEquals(img.wand, copy.wand)
-        self.assertSequenceEqual(img.size, copy.size)
+        self.assertEquals(img.size, copy.size)
         copy.resize(factor=(2, 0.5))
         self.assertNotEqual(img.size, copy.size)
         
@@ -90,7 +90,7 @@ class CopyTestCase(TestCase):
         copy.close()
 
 
-class WriteTestCase(TestCase):
+class Write(TestCase):
     def test(self):
         img = lena()
         
@@ -100,42 +100,42 @@ class WriteTestCase(TestCase):
         img.close()
         
         img = read(tmpname)
-        self.assertSequenceEqual(img.size, (512, 512))
+        self.assertEquals(img.size, (512, 512))
         self.assertEquals(img.colorspace, colorspace.rgb)
         self.assertEquals(img.type, image_type.true_color)
         img.close()
 
 
-class ResizeTestCase(TestCase):
+class Resize(TestCase):
     def test(self):
         img = lena()
         
         img.resize(256, 256)
-        self.assertSequenceEqual(img.size, (256, 256))
+        self.assertEquals(img.size, (256, 256))
         img.resize(factor=.5)
-        self.assertSequenceEqual(img.size, (128, 128))
+        self.assertEquals(img.size, (128, 128))
         
         img.resize(factor=(1, .5))
         
-        self.assertSequenceEqual(img.size, (128, 64))
+        self.assertEquals(img.size, (128, 64))
         self.assertRaises(TinyException, lambda: img.resize())
         
         img.close()
 
 
-class CropTestCase(TestCase):
+class Crop(TestCase):
     def test(self):
         img = lena()
         
         img.crop(128, 128)
-        self.assertSequenceEqual(img.size, (128, 128))
+        self.assertEquals(img.size, (128, 128))
         img.crop(64, 64, 64, 64)
-        self.assertSequenceEqual(img.size, (64, 64))
+        self.assertEquals(img.size, (64, 64))
         
         img.close()
 
 
-class RotateTestCase(TestCase):
+class Rotate(TestCase):
     def test(self):
         img = lena()
         
@@ -147,7 +147,7 @@ class RotateTestCase(TestCase):
         img.close()
 
 
-class SetAlphaTestCase(TestCase):
+class SetAlpha(TestCase):
     def test(self):
         img = lena()
         
@@ -163,14 +163,13 @@ class SetAlphaTestCase(TestCase):
         img.close()
 
 
-class FillTestCase(TestCase):
+class Fill(TestCase):
     def test(self):
         img = lena()
         
         red = color.from_string('red')
         img.fill(red)
-        self.assertSequenceEqual(img.get_pixel(32, 32).get_rgba(),
-                                 (1, 0, 0, 1))
+        self.assertEquals(img.get_pixel(32, 32), red)
         transparent = color.from_string('transparent')
         img.fill(transparent)
         self.assertEquals(img.get_pixel(128, 128).alpha, 0)
@@ -178,37 +177,38 @@ class FillTestCase(TestCase):
         img.close()
 
 
-class FlipTestCase(TestCase):
+class Flip(TestCase):
     def test(self):
         img = lena()
         
-        rgba = img.get_pixel(10, 10).get_rgba()
+        before = img.get_pixel(10, 10)
         img.flip(axes.x)
         pix = img.get_pixel(10, img.height - 1 - 10)
-        self.assertSequenceEqual(pix.get_rgba(), rgba)
+        self.assertEquals(pix, before)
         img.flip(axes.y)
         pix = img.get_pixel(img.width - 1 - 10, img.height - 1 - 10)
-        self.assertSequenceEqual(pix.get_rgba(), rgba)
+        self.assertEquals(pix, before)
         
         img.close()
 
 
-class RollTestCase(TestCase):
+class Roll(TestCase):
     def test(self):
         img = lena()
         
-        rgba = img.get_pixel(img.width - 1 - 10, 10).get_rgba()
+        before = img.get_pixel(img.width - 1 - 10, 10)
         img.roll(20, 0)
         pix = img.get_pixel(9, 10)
-        self.assertSequenceEqual(pix.get_rgba(), rgba)
+        self.assertEquals(pix, before)
         img.roll(0, 20)
-        pix = img.get_pixel(10, 9)
+        pix = img.get_pixel(9, 30)
+        self.assertEquals(pix, before)
         
         img.close()
 
 
 # only checks if it doesnt blow up
-class DespeckleTestCase(TestCase):
+class Despeckle(TestCase):
     def test(self):
         img = lena()
         
@@ -218,7 +218,7 @@ class DespeckleTestCase(TestCase):
 
 
 # only check if it doesnt blow up
-class EmbossTestCase(TestCase):
+class Emboss(TestCase):
     def test(self):
         img = lena()
         
@@ -228,7 +228,7 @@ class EmbossTestCase(TestCase):
 
 
 # only check if it doesnt blow up
-class EnhanceTestCase(TestCase):
+class Enhance(TestCase):
     def test(self):
         img = lena()
         
@@ -238,7 +238,7 @@ class EnhanceTestCase(TestCase):
 
 
 # only check if it doesnt blow up
-class EqualizeTestCase(TestCase):
+class Equalize(TestCase):
     def test(self):
         img = lena()
         
@@ -248,7 +248,7 @@ class EqualizeTestCase(TestCase):
 
 
 # only check if it doesnt blow up
-class DftTestCase(TestCase):
+class Dft(TestCase):
     @skip
     def test(self):
         img = lena()
@@ -262,9 +262,9 @@ class Transpose(TestCase):
     def test(self):
         img = lena()
         
-        rgba = img.get_pixel(10, 0).get_rgba()
+        before = img.get_pixel(10, 0)
         img.transpose()
-        self.assertEquals(img.get_pixel(0, 10).get_rgba(), rgba)
+        self.assertEquals(img.get_pixel(0, 10), before)
         
         img.close()
 
@@ -273,10 +273,10 @@ class Transverse(TestCase):
     def test(self):
         img = lena()
         
-        rgba = img.get_pixel(20, 40).get_rgba()
+        before = img.get_pixel(20, 40)
         img.transverse()
         pix = img.get_pixel(img.width - 1 - 40, img.height - 1 - 20)
-        self.assertSequenceEqual(pix.get_rgba(), rgba)
+        self.assertEquals(pix, before)
         
         img.close()
 
@@ -374,7 +374,7 @@ class Brighness(TestCase):
         coords = (40, 40)
         before = img.get_pixel(*coords)
         img.brightness(0)
-        self.assertEqual(img.get_pixel(*coords), before)
+        self.assertEquals(img.get_pixel(*coords), before)
         img.brightness(0.5)
         self.assertGreater(img.get_pixel(*coords).get_rgba(),
                            before.get_rgba())
@@ -385,9 +385,9 @@ class Brighness(TestCase):
         self.assertLess(img.get_pixel(*coords).get_rgba(),
                         before.get_rgba())
         img.brightness(-1)
-        self.assertEqual(img.get_pixel(*coords), color.from_string('black'))
+        self.assertEquals(img.get_pixel(*coords), color.from_string('black'))
         img.brightness(1)
-        self.assertEqual(img.get_pixel(*coords), color.from_string('white'))
+        self.assertEquals(img.get_pixel(*coords), color.from_string('white'))
         img.close()
 
 
@@ -412,10 +412,10 @@ class Modulate(TestCase):
         coords = (40, 40)
         before = img.get_pixel(*coords)
         img.modulate()
-        self.assertEqual(img.get_pixel(*coords), before)
+        self.assertEquals(img.get_pixel(*coords), before)
         
         img.modulate(lightness=-1)
-        self.assertEqual(img.get_pixel(*coords), color.from_string('black'))
+        self.assertEquals(img.get_pixel(*coords), color.from_string('black'))
         
         img.close()
 
@@ -426,8 +426,8 @@ class Desaturate(TestCase):
         
         img.desaturate()
         pix = img.get_pixel(40, 40)
-        self.assertEqual(pix.r, pix.g)
-        self.assertEqual(pix.g, pix.b)
+        self.assertEquals(pix.r, pix.g)
+        self.assertEquals(pix.g, pix.b)
         
         img.close()
 
@@ -440,7 +440,7 @@ class Invert(TestCase):
         before = img.get_pixel(*coords).get_rgb()
         img.invert()
         after = img.get_pixel(*coords).get_rgb()
-        self.assertEqual(tuple(x + y for x, y in zip(before, after)),
+        self.assertEquals(tuple(x + y for x, y in zip(before, after)),
                          (1, 1, 1))
 
 
@@ -504,7 +504,7 @@ class Overlay(TestCase):
         img2.resize(50, 50)
         before = img2.get_pixel(10, 10)
         img.overlay(img2, 50, 50)
-        self.assertEqual(img.get_pixel(60, 60), before)
+        self.assertEquals(img.get_pixel(60, 60), before)
 
 
 class Deskew(TestCase):
@@ -542,15 +542,15 @@ class OverlayColor(TestCase):
 class GetPixel(TestCase):
     def test(self):
         img = blank(5, 5, color.from_string('red'))
-        self.assertEqual(img.get_pixel(0, 0), color.from_string('red'))
+        self.assertEquals(img.get_pixel(0, 0), color.from_string('red'))
         img.close()
         
         img = blank(5, 5, color.from_string('blue'))
-        self.assertEqual(img.get_pixel(0, 1), color.from_string('blue'))
+        self.assertEquals(img.get_pixel(0, 1), color.from_string('blue'))
         img.close()
         
         img = blank(5, 5, color.from_string('white'))
-        self.assertEqual(img.get_pixel(1, 1), color.from_string('white'))
+        self.assertEquals(img.get_pixel(1, 1), color.from_string('white'))
         img.close()
 
 
@@ -606,6 +606,13 @@ class SizeTestCase(TestCase):
         self.assertSequenceEqual(img.size, (512, 512))
         self.assertSequenceEqual((img.width, img.height), img.size)
         
+        img.close()
+
+
+class DepthTestCase(TestCase):
+    def test(self):
+        img = lena()
+        self.assertEquals(img.depth, 8)
         img.close()
 
 

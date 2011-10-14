@@ -18,50 +18,50 @@ class GetStringTest(TestCase):
         self.assertEquals(blue.get_string(), 'rgba(0,0,255,0)')
 
 
-class CopyTest(TestCase):
+class Copy(TestCase):
     def test(self):
         blue = color.from_string('white')
         blue_copy = blue.copy()
         
         self.assertNotEqual(blue.wand, blue_copy.wand)
-        self.assertSequenceEqual(blue.get_rgba(), blue_copy.get_rgba())
+        self.assertEquals(blue, blue_copy)
 
 
-class RgbColorTestCase(TestCase):
+class RgbColor(TestCase):
     def test(self):
         rgb = (1, 0, 0)
         red = color.from_rgb(*rgb)
         
-        self.assertSequenceEqual((red.red, red.r), (1, 1))
-        self.assertSequenceEqual((red.green, red.g), (0, 0))
-        self.assertSequenceEqual((red.blue, red.b), (0, 0))
-        self.assertEqual((red.alpha, red.a), (1, 1))
+        self.assertEquals((red.red, red.r), (1, 1))
+        self.assertEquals((red.green, red.g), (0, 0))
+        self.assertEquals((red.blue, red.b), (0, 0))
+        self.assertEquals((red.alpha, red.a), (1, 1))
         
-        self.assertSequenceEqual(red.get_rgb(), rgb)
-        self.assertSequenceEqual(red.get_rgba(), rgb + (1,))
+        self.assertEquals(red.get_rgb(), rgb)
+        self.assertEquals(red.get_rgba(), rgb + (1,))
         
         red.g = 1
-        self.assertEqual(red.g, 1)
-        self.assertEqual(red.green, 1)
+        self.assertEquals(red.g, 1)
+        self.assertEquals(red.green, 1)
         
         red.set_rgba(0, 1, 1, 0)
         
-        self.assertEqual(red.get_rgba(), (0, 1, 1, 0))
+        self.assertEquals(red.get_rgba(), (0, 1, 1, 0))
 
 
-class StringColorTestCase(TestCase):
+class String(TestCase):
     def test(self):
         white = color.from_string('white')
-        self.assertEqual(white.get_rgba(), (1, 1, 1, 1))
+        self.assertEquals(white.get_rgba(), (1, 1, 1, 1))
         red = color.from_string('red')
-        self.assertEqual(red.get_rgba(), (1, 0, 0, 1))
+        self.assertEquals(red.get_rgba(), (1, 0, 0, 1))
 
 
 class SaturateTest(TestCase):
     def test(self):
-        self.assertEqual(color.saturate(0.5), 0.5)
+        self.assertEquals(color.saturate(0.5), 0.5)
         self.assertIsInstance(color.saturate(0.0), int)
-        self.assertEqual(color.saturate(0.0), 0)
+        self.assertEquals(color.saturate(0.0), 0)
         self.assertIsInstance(color.saturate(1.0), int)
 
 
