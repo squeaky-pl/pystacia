@@ -13,7 +13,7 @@ class Lena(TestCase):
     def test(self):
         img = lena()
         self.assertEquals(img.size, (512, 512))
-        self.assertEquals(img.type, image_type.true_color)
+        self.assertEquals(img.type, image_type.truecolor)
         self.assertEquals(img.colorspace, colorspace.rgb)
         img.close()
         

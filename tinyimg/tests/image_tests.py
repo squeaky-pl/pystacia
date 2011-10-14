@@ -33,7 +33,7 @@ class ReadBlob(TestCase):
             img = read_blob(i, 'bmp')
             
             self.assertEquals(img.size, (512, 512))
-            self.assertEquals(img.type, image_type.true_color)
+            self.assertEquals(img.type, image_type.truecolor)
             self.assertEquals(img.colorspace, colorspace.rgb)
             self.assertEquals(img.depth, 8)
 
@@ -52,7 +52,7 @@ class Read(TestCase):
         img = read(tmpname)
         
         self.assertSequenceEqual(img.size, (512, 512))
-        self.assertEquals(img.type, image_type.true_color)
+        self.assertEquals(img.type, image_type.truecolor)
         self.assertEquals(img.colorspace, colorspace.rgb)
         self.assertEquals(img.depth, 8)
             
@@ -102,7 +102,7 @@ class Write(TestCase):
         img = read(tmpname)
         self.assertEquals(img.size, (512, 512))
         self.assertEquals(img.colorspace, colorspace.rgb)
-        self.assertEquals(img.type, image_type.true_color)
+        self.assertEquals(img.type, image_type.truecolor)
         img.close()
 
 
@@ -593,7 +593,7 @@ class Type(TestCase):
     def test(self):
         img = lena()
         
-        self.assertEquals(img.type, image_type.true_color)
+        self.assertEquals(img.type, image_type.truecolor)
         img.type = image_type.bilevel
         self.assertEquals(img.type, image_type.bilevel)
         

@@ -503,8 +503,8 @@ data =\
            'palette': 4,
            'palette_bilevel_matte': 11,
            'palette_matte': 5,
-           'true_color': 6,
-           'true_color_matte': 7,
+           'truecolor': 6,
+           'truecolor_matte': 7,
            'undefined': 0}]}
 
 from tinyimg.util import memoized
