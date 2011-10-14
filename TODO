@@ -6,6 +6,7 @@ TODO
 - coverage
 - docs
 - docstrings
+- quality settings?
 - is dft really fft?
 - method chaining?
 - detect dft/fft
@@ -14,7 +15,6 @@ TODO
 - assertSequenceEqual is not needed use assert Equal
 - containers vs formats
 - remove color paramname from everywhere - use fill, background and so on - future proof
-- change merge to overlay? as of overlay_color?
 - resize, maybe rescale ? crop - resize ?
 - rename image_type as types, image_filter as filters <- it allows introducing colors
   as factory in directly in tinyimg and doesnt override builtin symbols

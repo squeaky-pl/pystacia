@@ -492,7 +492,49 @@ class Sketch(TestCase):
     def test(self):
         img = lena()
         
-        img.sketch(10)
+        img.sketch(2)
+        
+        img.close()
+
+
+class Overlay(TestCase):
+    def test(self):
+        img = lena()
+        img2 = img.copy()
+        img2.resize(50, 50)
+        before = img2.get_pixel(10, 10)
+        img.overlay(img2, 50, 50)
+        self.assertEqual(img.get_pixel(60, 60), before)
+
+
+class Deskew(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.rotate(5)
+        size = img.size
+        img.deskew(100)
+        self.assertGreater(img.size, size)
+        
+        img.close()
+
+
+class Sepia(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.sepia()
+        
+        img.close()
+
+
+class OverlayColor(TestCase):
+    def test(self):
+        img = lena()
+        
+        red = color.from_string('red')
+        img.color_overlay(red)
+        self.assertEquals(img.get_pixel(40, 40), red)
         
         img.close()
 

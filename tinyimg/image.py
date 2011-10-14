@@ -342,9 +342,8 @@ class Image(object):
               lambda: cdll.MagickSketchImage(self.__wand, radius,
                                              strength, angle))
     
-    #TODO fit mode
     @only_live
-    def merge(self, other, x=0, y=0, composite=None):
+    def overlay(self, other, x=0, y=0, composite=None):
         if not composite:
             composite = globals()['composite'].over
             
@@ -360,12 +359,16 @@ class Image(object):
               lambda: cdll.MagickDeskewImage(self.__wand, threshold))
     
     @only_live
-    def sepia(self, threshold):
+    def sepia(self, saturation=-.4, threshold=.8):
+        threshold = 2 ** int(magick.get_options()['QuantumDepth']) * threshold
+        
         guard(self.__wand,
               lambda: cdll.MagickSepiaToneImage(self.__wand, threshold))
+        
+        self.modulate(saturation=saturation)
     
     @only_live
-    def overlay_color(self, color, blend=1):
+    def color_overlay(self, color, blend=1):
         # image magick ignores alpha setting of color
         # let's incorporate it into blend
         blend *= color.alpha
