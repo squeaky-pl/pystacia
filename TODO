@@ -2,7 +2,6 @@
 TODO
 ====
 
-- mooar tests
 - coverage
 - docs
 - docstrings
@@ -10,9 +9,7 @@ TODO
 - is dft really fft?
 - method chaining?
 - detect dft/fft
-- containers vs formats
 - remove color paramname from everywhere - use fill, background and so on - future proof
-- resize, maybe rescale ? crop - resize ?
 - rename image_type as types, image_filter as filters <- it allows introducing colors
   as factory in directly in tinyimg and doesnt override builtin symbols
 - those semaphores thing possibly should keep week references to any magick resource and clear it on exit [0.1.1]
@@ -38,6 +35,7 @@ TODO
 - add env variable to force immediate init of imagick [0.2]
 - implement better show tool detecting (eog on linux e.g) and fallback to webbrowser [0.2]
 - allow overriding viewer wiith TINYIMG_VIEWER env var
+- containers vs formats
 - search path alteration logic [0.2]
 - smart detecting and lazy loading of API prototypes (based on maybe docs, and decorators)
   once new api submodule also has functions inside [0.2]
@@ -57,6 +55,7 @@ TODO
 - wave needs axis parameter and phi
 - checker in show, zoom, crop
 - > and < on color lightness comparison
+- zip deployment technique with all binaries for all osses
 
 STUFF
 =====
@@ -67,12 +66,3 @@ STUFF
 - revise imports, move in function symbols at the end of files
 - version bumps
 - pyflakes, pep8
-
-tests:
-[x] tinyimg
-[x] tinyimg.color
-[x] tinyimg.compat
-[x] tinyimg.image
-[x] tinyimg.lazyenum
-[x] tinyimg.magick
-[x] tinyimg.util

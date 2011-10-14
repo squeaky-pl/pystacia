@@ -83,7 +83,7 @@ class Copy(TestCase):
         
         self.assertNotEquals(img.wand, copy.wand)
         self.assertEquals(img.size, copy.size)
-        copy.resize(factor=(2, 0.5))
+        copy.rescale(factor=(2, 0.5))
         self.assertNotEqual(img.size, copy.size)
         
         img.close()
@@ -106,30 +106,30 @@ class Write(TestCase):
         img.close()
 
 
-class Resize(TestCase):
+class Rescale(TestCase):
     def test(self):
         img = lena()
         
-        img.resize(256, 256)
+        img.rescale(256, 256)
         self.assertEquals(img.size, (256, 256))
-        img.resize(factor=.5)
+        img.rescale(factor=.5)
         self.assertEquals(img.size, (128, 128))
         
-        img.resize(factor=(1, .5))
+        img.rescale(factor=(1, .5))
         
         self.assertEquals(img.size, (128, 64))
-        self.assertRaises(TinyException, lambda: img.resize())
+        self.assertRaises(TinyException, lambda: img.rescale())
         
         img.close()
 
 
-class Crop(TestCase):
+class Resize(TestCase):
     def test(self):
         img = lena()
         
-        img.crop(128, 128)
+        img.resize(128, 128)
         self.assertEquals(img.size, (128, 128))
-        img.crop(64, 64, 64, 64)
+        img.resize(64, 64, 64, 64)
         self.assertEquals(img.size, (64, 64))
         
         img.close()
@@ -501,7 +501,7 @@ class Overlay(TestCase):
     def test(self):
         img = lena()
         img2 = img.copy()
-        img2.resize(50, 50)
+        img2.rescale(50, 50)
         before = img2.get_pixel(10, 10)
         img.overlay(img2, 50, 50)
         self.assertEquals(img.get_pixel(60, 60), before)

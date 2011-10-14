@@ -122,7 +122,7 @@ class Image(object):
                     depth=self.depth)
         
     @only_live
-    def resize(self, width=None, height=None,
+    def rescale(self, width=None, height=None,
                factor=None, filter=None, blur=1):  # @ReservedAssignment
         if not filter:
             filter = image_filter.undefined  # @ReservedAssignment
@@ -144,7 +144,7 @@ class Image(object):
                                              value, blur))
     
     @only_live
-    def crop(self, width, height, x=0, y=0):
+    def resize(self, width, height, x=0, y=0):
         guard(self.__wand,
               lambda: cdll.MagickCropImage(self.__wand, width, height, x, y))
     

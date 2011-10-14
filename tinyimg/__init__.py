@@ -59,11 +59,11 @@ def __lena_image():
     return lena.copy()
 
 
-def lena(size=None, colorspace=None):
+def lena(width=None, colorspace=None):
     img = __lena_image()
     
-    if size:
-        img.resize(size, size)
+    if width:
+        img.rescale(width, width)
     if not colorspace:
         colorspace = image.colorspace.rgb
     if img.colorspace != colorspace:
