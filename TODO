@@ -74,3 +74,5 @@ tests:
 [x] tinyimg.compat
 [x] tinyimg.image
 [x] tinyimg.lazyenum
+[x] tinyimg.magick
+[x] tinyimg.util
