@@ -539,6 +539,67 @@ class OverlayColor(TestCase):
         img.close()
 
 
+class GetPixel(TestCase):
+    def test(self):
+        img = blank(5, 5, color.from_string('red'))
+        self.assertEqual(img.get_pixel(0, 0), color.from_string('red'))
+        img.close()
+        
+        img = blank(5, 5, color.from_string('blue'))
+        self.assertEqual(img.get_pixel(0, 1), color.from_string('blue'))
+        img.close()
+        
+        img = blank(5, 5, color.from_string('white'))
+        self.assertEqual(img.get_pixel(1, 1), color.from_string('white'))
+        img.close()
+
+
+class Splice(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.splice(10, 10, 10, 10)
+        self.assertTrue(img.get_pixel(5, 5).opaque)
+        self.assertEquals(img.get_pixel(15, 15).alpha, 0)
+        
+        img.close()
+
+
+class Trim(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.rotate(5)
+        img.rotate(-5)
+        size = img.size
+        img.trim()
+        self.assertLess(img.size, size)
+        
+        img.close()
+
+
+class Colorspace(TestCase):
+    def test(self):
+        img = lena()
+        
+        self.assertEquals(img.colorspace, colorspace.rgb)
+        img.colorspace = colorspace.ycbcr
+        self.assertEquals(img.colorspace, colorspace.ycbcr)
+        
+        img.close()
+
+
+class Type(TestCase):
+    def test(self):
+        img = lena()
+        
+        self.assertEquals(img.type, image_type.true_color)
+        img.type = image_type.bilevel
+        self.assertEquals(img.type, image_type.bilevel)
+        
+        img.close()
+
+
 class SizeTestCase(TestCase):
     def test(self):
         img = lena()

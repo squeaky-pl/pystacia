@@ -3,8 +3,7 @@ from __future__ import division
 
 def read_raw(raw, format, width, height, depth):  # @ReservedAssignment
     if hasattr(raw, 'read'):
-        length = width * height * depth // 8
-        raw = raw.read(length)
+        raw = raw.read()
     
     format = b(format.upper())  # @ReservedAssignment
     
@@ -85,7 +84,8 @@ class Image(object):
     @only_live
     def copy(self):
         wand = cdll.CloneMagickWand(self.__wand)
-        return self.__class__(wand)
+        
+        return Image(wand)
     
     @only_live
     def write(self, filename):
