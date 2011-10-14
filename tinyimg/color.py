@@ -80,6 +80,10 @@ class Color(object):
         return template.format(*(rgb + (self.alpha,)))
     
     @property
+    def opaque(self):
+        return self.alpha == 1
+    
+    @property
     @only_live
     def wand(self):
         return self.__wand

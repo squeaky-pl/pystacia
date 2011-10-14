@@ -444,6 +444,59 @@ class Invert(TestCase):
                          (1, 1, 1))
 
 
+class OilPlaint(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.oil_paint(3)
+        
+        img.close()
+
+
+class Posterize(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.posterize(4)
+        
+        img.close()
+
+
+class RadialBlur(TestCase):
+    def test(self):
+        img = lena()
+        
+        coords = (256, 256)
+        before = img.get_pixel(*coords)
+        img.radial_blur(5)
+        self.assertEquals(img.get_pixel(*coords), before)
+        
+        img.close()
+
+
+class Shear(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.shear(5, 0)
+        self.assertEquals(img.get_pixel(5, 5).alpha, 0)
+        self.assertTrue(img.get_pixel(256, 256).opaque)
+        img.shear(0, 5)
+        self.assertEquals(img.get_pixel(256, 2).alpha, 0)
+        self.assertTrue(img.get_pixel(256, 256).opaque)
+        
+        img.close()
+
+
+class Sketch(TestCase):
+    def test(self):
+        img = lena()
+        
+        img.sketch(10)
+        
+        img.close()
+
+
 class SizeTestCase(TestCase):
     def test(self):
         img = lena()

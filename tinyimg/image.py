@@ -335,10 +335,12 @@ class Image(object):
               lambda: cdll.MagickSolarizeImage(self.__wand, threshold))
     
     @only_live
-    def sketch(self, sigma, radius=0, angle=45):
+    def sketch(self, radius, angle=45, strength=None):
+        if strength == None:
+            strength = radius
         guard(self.__wand,
               lambda: cdll.MagickSketchImage(self.__wand, radius,
-                                             sigma, angle))
+                                             strength, angle))
     
     #TODO fit mode
     @only_live

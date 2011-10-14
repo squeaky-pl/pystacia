@@ -55,6 +55,7 @@ TODO
 - with img.masked(mask) as img:
 - with img.canvas() as c:
 - thread safety?
+- all functions should accept blend as param - merges result on top with this blend
 - visual testing framework with reference images
 - wave needs axis parameter and phi
 - checker in show, zoom, crop
