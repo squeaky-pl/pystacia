@@ -1,4 +1,20 @@
+# tinyimg/__init__.py
+# Copyright (C) 2011 by Paweł Piotr Przeradowski
+#
+# This module is part of tinyimg and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
+"""tinyimg is a raster graphics library utilizing ImageMagick"""
+
+
 def init():
+    """Find ImageMagick DLL and initialize it.
+       
+       Searches available paths with :func:`tinyimg.util.find_library`
+       and then fallbacks to standard :func:`ctypes.util.find_liblrary`.
+       Loads the DLL into memory, initializes it and warns if it has
+       unsupported API and ABI versions.
+    """
     from tinyimg.util import find_library
     from tinyimg.api import name, abis
     # first let's look in some places that may override system-wide paths
@@ -35,6 +51,7 @@ from tinyimg.util import memoized
 
 @memoized
 def __raw_lena():
+    """Decode standard lena test image from bzipped YCbCr stream."""
     filename = join(dirname(__file__), 'lena.ycbcr.bz2')
     return dict(raw=bz2_readfile(filename), format='ycbcr',
                 height=512, width=512, depth=8)
@@ -45,6 +62,7 @@ __lena = None
 
 
 def __lena_image():
+    """Perform weakref memoization of :class:`.Image`."""
     global __lena
     
     if not __lena:
@@ -59,26 +77,47 @@ def __lena_image():
     return lena.copy()
 
 
-def lena(width=None, colorspace=None):
+def lena(width=None):
+    """Return standard lena test image.
+       
+       http://en.wikipedia.org/wiki/Lenna
+       Resulting :class:`.Image` object is a TrueTypein, RGB colorspace,
+       8bit per channel image.
+       
+       :param width: Returned image will be of this size. When not specified
+         defaults to 512x512 which is how the bitmap is stored internally.
+       
+    """
     img = __lena_image()
     
     if width:
         img.rescale(width, width)
-    if not colorspace:
-        colorspace = image.colorspace.rgb
-    if img.colorspace != colorspace:
-        img.convert_colorspace(colorspace)
+
+    img.convert_colorspace(image.colorspace.rgb)
         
     return img
 
 
 def magick_logo():
+    """
+        Return ImageMagick logo image.
+        
+        Resulting imaage is 640x480, pallette, RGB colorspace image.
+    """
     return image.read_special('logo:')
 
 import tinyimg.api.enum as enum_api
 
 
 def enum_lookup(mnemonic, throw=True):
+    """Translate lazyenum's mnemonic into its numeral value.
+        
+       :param mnemonic: A :class:`tinyimg.lazyenum.EnumValue` instance to be
+         looked up
+        
+       :param throw: Raises an exception if mnemonic cant be mapped when
+         ``True`` otherwise returns ``None``
+    """
     value = enum_api.lookup(mnemonic, magick.get_version())
     if throw and value == None:
         template = "Enumeration '{enum}' cant map mnemonic '{mnemonic}'"
@@ -91,6 +130,7 @@ def enum_lookup(mnemonic, throw=True):
 
 
 def enum_reverse_lookup(enum, value):
+    """Translate numeral value into its lazyenum mnemonic"""
     return enum_api.reverse_lookup(enum, value, magick.get_version())
 
 

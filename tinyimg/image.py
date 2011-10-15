@@ -538,7 +538,7 @@ class Image(object):
         
         return formattable(template).format(class_=class_, w=w, h=h,
                                             depth=depth, colorspace=colorspace,
-                                            addr=addr)
+                                            addr=addr, type=type)
 
 
 import webbrowser

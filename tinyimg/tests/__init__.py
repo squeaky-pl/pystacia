@@ -17,9 +17,9 @@ class Lena(TestCase):
         self.assertEquals(img.colorspace, colorspace.rgb)
         img.close()
         
-        img = lena(32, colorspace=colorspace.ycbcr)
+        img = lena(32)
         self.assertEquals(img.size, (32, 32))
-        self.assertEquals(img.colorspace, colorspace.ycbcr)
+        self.assertEquals(img.colorspace, colorspace.rgb)
         img.close()
 
 
