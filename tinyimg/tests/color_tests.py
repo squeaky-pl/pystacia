@@ -13,9 +13,9 @@ class CloseTest(TestCase):
 class GetStringTest(TestCase):
     def test(self):
         blue = color.from_string('blue')
-        self.assertEquals(blue.get_string(), 'rgb(0,0,255)')
+        self.assertEquals(blue.get_string(), 'rgb(0, 0, 255)')
         blue.alpha = 0
-        self.assertEquals(blue.get_string(), 'rgba(0,0,255,0)')
+        self.assertEquals(blue.get_string(), 'rgba(0, 0, 255, 0)')
 
 
 class Copy(TestCase):

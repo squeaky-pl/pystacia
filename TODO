@@ -9,28 +9,30 @@ TODO
 - is dft really fft?
 - method chaining?
 - detect dft/fft
+- Image should be used like x = Image() then x.wand in factories like Color
+- nice system detecting OS in setup.py and downloading binary libraries
 - exception in the tests causes os.exit(1) which doesnt trigger atexit
 - remove color paramname from everywhere - use fill, background and so on - future proof
 - rename image_type as types, image_filter as filters <- it allows introducing colors
   as factory in directly in tinyimg and doesnt override builtin symbols
 - those semaphores thing possibly should keep week references to any magick resource and clear it on exit [0.1.1]
 - move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
-- move color to be a class and have @staticmethod __getattr__ style called Factory in tinyimg.color
-  and imported this class as color into tinyimg like color.white, color.transparent, [0.1.1]
+- implement colors __getattr__ style called Factory in tinyimg.color [0.1.1]
 - more generators from pseudoformats: plasma, checkerboard, gradients etc [0.1.1]
 - group tests according to their set up and tear down strategies
   into one class with many test methods [0.1.1]
 - move lazyenym, and compat under util? [0.1.1]
 - put generators together under some submodule, name? [0.1.1]
-- drop lazy enum, keep and make string passing possible [x]? [0.1.1]
+- make string passing possible [x]? [0.1.1]
 - fit method [0.1.1]
 - should getters and setters be explicit? [0.1.1]
-- get_pixel, set_pixel [0.1.1]
+- set_pixel (possible?) [0.1.1]
 - lazy init of imagick and function prototypes [0.1.1]
 - keep track of showed temp files and delete them on exit [0.1.1]
 - rgb8, rgba8 color factory, and accessors [0.1.1]
 - @api_simple_call [0.1.1]
 - support for with protocol [0.1.1]
+- info method (returns all the crucial magick informations along with loaded libraries and paths)
 - extract base class TinyBase with closed, close, with protocol and constructor (under util)? [0.1.1]
 - implement other color factories [0.2]
 - add env variable to force immediate init of imagick [0.2]

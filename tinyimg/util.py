@@ -1,16 +1,13 @@
-class TinyException(Exception):
-    pass
+from decorator import decorator
 
 
-def only_live(f):
-    def wrapper(obj, *args, **kw):
-        if obj.closed:
-            template = formattable('{0} already closed')
-            raise TinyException(template.format(obj.__class__))
-        
-        return f(obj, *args, **kw)
-        
-    return wrapper
+@decorator
+def only_live(f, obj, *args, **kw):
+    if obj.closed:
+        template = formattable('{0} already closed')
+        raise TinyException(template.format(obj.__class__))
+    
+    return f(obj, *args, **kw)
 
 
 # adapted from http://wiki.python.org/moin/PythonDecoratorLibrary#Memoize
@@ -113,6 +110,10 @@ def find_library(name, abis):
                     return dll_path
     
     return None
+
+
+class TinyException(Exception):
+    pass
 
 
 from os.path import join, exists

@@ -2,7 +2,7 @@
 
 from distutils.core import setup
 
-install_requires=['six']
+install_requires=['six', 'decorator']
 
 try: format
 except NameError:

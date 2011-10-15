@@ -1,79 +1,265 @@
+# coding: utf-8
+# tinyimg/color.py
+# Copyright (C) 2011 by Paweł Piotr Przeradowski
+#
+# This module is part of tinyimg and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
+"""Various color-related functions and objects.""" 
+
+
+def from_string(value):
+    """Create :class:`Color` from string.
+    
+       :param value: CSS color specification
+       :type value: ``str``
+       :rtype: :class:`Color`
+       
+       Creates new instance from a valid color specification string
+       as in CSS 2.1. Supported formats include rgb, rgba, hsl, hsla,
+       color identifiers, hexadecimal values, integer and percent values
+       where applicable.
+       
+       >>> from_string('red')
+       <Color(r=1,g=0,b=0,a=1) object at 0x10320e400L>
+       >>> from_string('rgb(1,1,0)')
+       <Color(r=1,g=1,b=0,a=1) object at 0x103270600L>
+       >>> from_string('#fff')
+       <Color(r=1,g=1,b=1,a=1) object at 0x103251800L>
+       >>> from_string('hsla(50%, 100%, 100%, 0.5)')
+       <Color(r=0,g=1,b=1,a=0.5) object at 0x103252a00L>
+    """
+    #ensure we also get "bytes"
+    value = b(value)
+    wand = cdll.NewPixelWand()
+    guard(wand, lambda: cdll.PixelSetColor(wand, value))
+    
+    return Color(wand)
+
+
+def from_rgb(r, g, b):
+    """Create opaque :class:`Color` from red, green and blue components.
+       
+       :param r: red component
+       :param g: green component
+       :param b: blue component
+       :rtype: :class:`Color`
+       
+       Red, gren and blue components should be numbers between 0 and 1
+       inclusive. Resulting color is opaque (alpha channel equal to 1).
+       
+       >>> from_rgb(0.5, 1, 0.5)
+       <Color(r=0.5,g=1,b=0.5,a=1) object at 0x103266200L>
+    """
+    wand = cdll.NewPixelWand()
+    
+    cdll.PixelSetRed(wand, r)
+    cdll.PixelSetGreen(wand, g)
+    cdll.PixelSetBlue(wand, b)
+    
+    return Color(wand)
+
+
+def from_rgba(r, g, b, a):
+    """Create :class:`Color` from red, green, blue and alpha components.
+       
+       :param r: red component
+       :param g: green component
+       :param b: blue component
+       :param a: alpha component
+       :rtype: :class:`Color`
+       
+       Red, gren, blue and alpha components should be numbers between 0 and 1
+       inclusive.
+       
+       >>> from_rgba(1, 1, 0, 0.5)
+       <Color(r=1,g=1,b=0,a=0.5) object at 0x103222600L>
+    """
+    color = from_rgb(r, g, b)
+    
+    cdll.PixelSetAlpha(color.wand, a)
+    
+    return color
+
 from tinyimg.util import only_live
 
 
 class Color(object):
+    
+    """Object representing color information."""
+    
     def __init__(self, wand=None):
+        """Create :class:`Color` object.
+           
+           :param wand: ImageMagick resource handle
+           :type wand: :class:`tinyimg.api.type.PixelWand_p`
+           
+           Not to be used directly. Use one of color factory functions
+           such as :func:`from_rgba` or :func:`from_string` instead. 
+        """
         self.__wand = wand if wand else cdll.NewPixelWand()
         self.__closed = False
     
-    def __get_red(self):
-        return saturate(cdll.PixelGetRed(self.__wand))
-    
-    def __set_red(self, value):
-        cdll.PixelSetRed(self.__wand, value)
+    def red():  # @NoSelf
+        d =\
+        """Set or get red channel information.
+                  
+           The value ought to be a float between 0 and 1.
+                  
+           :rtype: ``float`` or ``int``
+        """
+        def g(self):
+            return saturate(cdll.PixelGetRed(self.__wand))
         
-    red = property(__get_red, __set_red)
+        def s(self, value):
+            cdll.PixelSetRed(self.__wand, value)
+        
+        return dict(fget=g, fset=s, doc=d)
+        
+    red = property(**red())
     
     r = red
+    """Convenience synonym for :attr:`red`."""
     
-    def __get_green(self):
-        return saturate(cdll.PixelGetGreen(self.__wand))
+    def green():  # @NoSelf
+        d =\
+        """Set or get green channel information.
+                  
+           The value ought to be a float between 0 and 1.
+                  
+           :rtype: ``float`` or ``int``
+        """
+        def g(self):
+            return saturate(cdll.PixelGetGreen(self.__wand))
+        
+        def s(self, value):
+            cdll.PixelSetGreen(self.__wand, value)
+        
+        return dict(fget=g, fset=s, doc=d)
     
-    def __set_green(self, value):
-        cdll.PixelSetGreen(self.__wand, value)
-    
-    green = property(__get_green, __set_green)
+    green = property(**green())
     
     g = green
+    """Convenience synonym for :attr:`green`."""
     
-    def __get_blue(self):
-        return saturate(cdll.PixelGetBlue(self.__wand))
+    def blue():  # @NoSelf
+        d =\
+        """Set or get blue channel information.
+                  
+           The value ought to be a float between 0 and 1.
+                  
+           :rtype: ``float`` or ``int``
+        """
+        def g(self):
+            return saturate(cdll.PixelGetBlue(self.__wand))
+        
+        def s(self, value):
+            cdll.PixelSetBlue(self.__wand, value)
+        
+        return dict(fget=g, fset=s, doc=d)
     
-    def __set_blue(self, value):
-        cdll.PixelSetBlue(self.__wand, value)
-    
-    blue = property(__get_blue, __set_blue)
+    blue = property(**blue())
 
     b = blue
+    """Convenience synonym for :attr:`blue`."""
     
-    def __get_alpha(self):
-        return saturate(cdll.PixelGetAlpha(self.__wand))
+    def alpha():  # @NoSelf
+        d =\
+        """Set or get alpha channel information.
+                  
+           The value ought to be a float between 0 and 1.
+                  
+           :rtype: ``float`` or ``int``
+        """
+        def g(self):
+            return saturate(cdll.PixelGetAlpha(self.__wand))
+        
+        def s(self, value):
+            cdll.PixelSetAlpha(self.__wand, value)
+        
+        return dict(fget=g, fset=s, doc=d)
     
-    def __set_alpha(self, value):
-        cdll.PixelSetAlpha(self.__wand, value)
-    
-    alpha = property(__get_alpha, __set_alpha)
+    alpha = property(**alpha())
     
     a = alpha
+    """Convenience synonym for :attr:`alpha`."""
     
     def get_rgb(self):
+        """Return red, green and blue components.
+           
+           :rtype: tuple
+           
+           Returns tuple containing red, green and blue channel information
+           as numbers between 0 and 1.
+        """
         return (self.r, self.g, self.b)
     
     def get_rgba(self):
+        """Return red, green, blue and alpha components.
+           
+           :rtype: ``tuple``
+           
+           Returns tuple containing red, green, blue and alpha channel
+           information as numbers between 0 and 1.
+        """
         return self.get_rgb() + (self.a,)
     
     def set_rgb(self, r, g, b):
+        """Set red, green and blue components all at once.
+           
+           :param r: red component
+           :param g: green component
+           :param b: blue component
+           
+           Components should be numbers between 0 and 1. Alpha component
+           remains unchanged.
+        """
         self.r, self.g, self.b = r, g, b
         
     def set_rgba(self, r, g, b, a):
+        """Set red, green, blue and alpha components all at once.
+           
+           :param r: red component
+           :param g: green component
+           :param b: blue component
+           :param a: alpha component
+           
+           Components should be numbers between 0 and 1.
+        """
         self.set_rgb(r, g, b)
         self.a = a
     
     @only_live
     def close(self):
+        """Free associted ImageMagick resources.
+           
+           Object cant be used after calling this method.
+        """
         cdll.DestroyPixelWand(self.__wand)
         self.__closed = True
         
     @property
     def closed(self):
+        """Check if object is closed.
+        
+           :rtype: ``bool``
+        """
         return self.__closed
     
     @only_live
     def get_string(self):
+        """Return string representation of color.
+           
+           :rtype: ``str``
+           
+           Returns standard CSS string representation of color either
+           ``rgb(r, g, b)`` or ``rgba(r, g, b, a)`` when color is not
+           fully opaque.
+        """
         if self.alpha == 1:
-            template = formattable('rgb({0},{1},{2})')
+            template = formattable('rgb({0}, {1}, {2})')
         else:
-            template = formattable('rgba({0},{1},{2},{3})')
+            template = formattable('rgba({0}, {1}, {2}, {3})')
         
         rgb = tuple(int(x * 255) for x in self.get_rgb())
         
@@ -81,15 +267,56 @@ class Color(object):
     
     @property
     def opaque(self):
+        """Check if color is fully opaque.
+           
+           :rtype: ``bool``
+           
+           Returns ``True`` if alpha component is exactly equal to 1,
+           otherwise ``False``.
+           
+           >>> from_string('red').opaque
+           True
+           >>> from_string('transparent').opaque
+           False
+        """
         return self.alpha == 1
     
     @property
+    def transparent(self):
+        """Check if color is fully transparent.
+           
+           :rtype: ``bool``
+           
+           Returns ``True`` if alpha component is exactly equal to 0,
+           otherwise ``False``.
+           
+           >>> from_string('blue').transparent
+           False
+           >>> from_string('transparent').transparent
+           True
+        """
+        return self.alpha == 0
+     
+    @property
     @only_live
     def wand(self):
+        """Return underlying ImageMagick resource.
+        
+           :rtype: ``tinyimg.api.type.PixelWand_p``.
+           
+           This can be useful if you want to perform custom operations
+           directly coping with ctypes.
+        """
         return self.__wand
     
     @only_live
     def copy(self):
+        """Return an independent new :class:`Color` object with copied state.
+        
+        >>> copy = red.copy()
+        >>> copy == red
+        True
+        """
         wand = cdll.ClonePixelWand(self.__wand)
         return Color(wand)
     
@@ -107,33 +334,6 @@ class Color(object):
                   class_=self.__class__.__name__)
         
         return formattable(template).format(*self.get_rgba(), **kw)
-
-
-def from_string(value):
-    #ensure we also get "bytes"
-    value = b(value)
-    wand = cdll.NewPixelWand()
-    guard(wand, lambda: cdll.PixelSetColor(wand, value))
-    
-    return Color(wand)
-
-
-def from_rgb(r, g, b):
-    wand = cdll.NewPixelWand()
-    
-    cdll.PixelSetRed(wand, r)
-    cdll.PixelSetGreen(wand, g)
-    cdll.PixelSetBlue(wand, b)
-    
-    return Color(wand)
-
-
-def from_rgba(r, g, b, a):
-    color = from_rgb(r, g, b)
-    
-    cdll.PixelSetAlpha(color.wand, a)
-    
-    return color
 
 
 def saturate(v):
