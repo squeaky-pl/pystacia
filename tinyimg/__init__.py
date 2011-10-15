@@ -1,10 +1,11 @@
+# coding: utf-8
 # tinyimg/__init__.py
 # Copyright (C) 2011 by Paweł Piotr Przeradowski
 #
 # This module is part of tinyimg and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-"""tinyimg is a raster graphics library utilizing ImageMagick"""
+"""tinyimg is a raster graphics library utilizing ImageMagick."""
 
 
 def init():
@@ -80,9 +81,9 @@ def __lena_image():
 def lena(width=None):
     """Return standard lena test image.
        
-       http://en.wikipedia.org/wiki/Lenna
-       Resulting :class:`.Image` object is a TrueTypein, RGB colorspace,
-       8bit per channel image.
+       Resulting :class:`.Image` object is a TrueType in, RGB colorspace,
+       8bit per channel image. For background on the test image see:
+       http://en.wikipedia.org/wiki/Lenna.
        
        :param width: Returned image will be of this size. When not specified
          defaults to 512x512 which is how the bitmap is stored internally.
@@ -102,7 +103,7 @@ def magick_logo():
     """
         Return ImageMagick logo image.
         
-        Resulting imaage is 640x480, pallette, RGB colorspace image.
+        Resulting image is 640x480, pallette, RGB colorspace image.
     """
     return image.read_special('logo:')
 
