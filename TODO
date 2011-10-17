@@ -5,21 +5,26 @@ TODO
 - coverage
 - docs
 - docstrings
-- quality settings?
 - is dft really fft?
-- method chaining?
+- method chaining? possibly turn off with a variable
+- enhance -> denoise -> remove_noise?
 - detect dft/fft
 - Image should be used like x = Image() then x.wand in factories like Color
 - nice system detecting OS in setup.py and downloading binary libraries
 - exception in the tests causes os.exit(1) which doesnt trigger atexit
 - remove color paramname from everywhere - use fill, background and so on - future proof
+- add DYLD_FALLBACK_LIBRARY_PATH and LD_LIBRARY_PATH on MacOSX and Linux, we can
+  have more then one needed lib files out there
 - rename image_type as types, image_filter as filters <- it allows introducing colors
   as factory in directly in tinyimg and doesnt override builtin symbols
+- colorize? if no native method blank image overlay with color operator and set saturation
 - those semaphores thing possibly should keep week references to any magick resource and clear it on exit [0.1.1]
 - move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
 - implement colors __getattr__ style called Factory in tinyimg.color [0.1.1]
 - more generators from pseudoformats: plasma, checkerboard, gradients etc [0.1.1]
 - group tests according to their set up and tear down strategies
+- Image.write should obey format when explicitely set, ImageMagick always does it
+  from filename, if format is set call get_blob() instead and save to fs in py
   into one class with many test methods [0.1.1]
 - move lazyenym, and compat under util? [0.1.1]
 - put generators together under some submodule, name? [0.1.1]

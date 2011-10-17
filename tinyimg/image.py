@@ -1,7 +1,108 @@
 from __future__ import division
 
+""":class:`Image` creation and management operations"""
+
+
+def read(filename):
+    """Read :class:`Image` from filename.
+       
+       :param filename: file name to read
+       :type filename: ``str``
+       :rtype: :class:`Image`
+       
+       Reads file, determines its format and return an :class:`Image`
+       representing it.
+       
+       >>> read('example.jpg')
+       <Image(w=512,h=512,8bit,rgb,truecolor) object at 0x10302ee00L>
+    """
+    wand = cdll.NewMagickWand()
+        
+    if not exists(filename):
+        template = formattable('No such file or directory: {0}')
+        raise IOError((2, template.format(filename)))
+    
+    filename = b(filename)
+    
+    guard(wand, lambda: cdll.MagickReadImage(wand, filename))
+    
+    return Image(wand)
+
+
+def read_blob(blob, format=None, length=None):  # @ReservedAssignment
+    """Read :class:`Image` from a blob string or stream with a header.
+       
+       :param blob: blob data string or stream
+       :type blob: ``str`` (Python 2.x) / ``bytes`` (Python 3.x) or
+         file-like object
+       :param format: container format such as :term:`JPEG` or :term:`BMP`
+       :type format: ``str``
+       :param length: read maximum this bytes from stream
+       :type length: ``int``
+       :rtype: :class:`Image`
+       
+       Reads image from string or data stream that contains a valid file
+       header i.e. it carries information on image dimensions, bit depth and
+       compression. Data format is equivalent to e.g. :term:`JPEG` file
+       read into string(Python 2.x)/bytes(PYthon 3.x) or file-like object.
+       It is useful in cases when you have open file-like object but not the
+       file itself in the filesystem. That often happens in web applications
+       which map :term:`POST` data with file-like objects. Format and length
+       are typically not used but can be a hint when the information cannot be
+       guessed from the data itself.
+       
+       >>> with file('example.jpg') as f:
+       >>>     img = read_blob(f)
+       >>> img
+       <Image(w=512,h=512,8bit,rgb,truecolor) object at 0x10302ee00L>
+    """
+    if hasattr(blob, 'read'):
+        blob = blob.read(length)
+    
+    wand = cdll.NewMagickWand()
+    
+    if format:
+        # ensure we always get bytes
+        format = b(format.upper())  # @ReservedAssignment
+        old_format = cdll.MagickGetImageFormat(wand)
+        template = formattable('Format "{0}" unsupported')
+        guard(wand,
+              lambda: cdll.MagickSetFormat(wand, format),
+              template.format(format))
+    
+    guard(wand, lambda: cdll.MagickReadImageBlob(wand, blob, len(blob)))
+    
+    if format:
+        guard(wand,
+                  lambda: cdll.MagickSetFormat(wand, old_format))
+    
+    return Image(wand)
+
 
 def read_raw(raw, format, width, height, depth):  # @ReservedAssignment
+    """Read :class:`Image` from raw string or stream.
+       
+       :param raw: raw data string or stream
+       :type raw: ``str`` (Python 2.x) / ``bytes`` (Python 3.x) or
+         file-like object
+       :param format: raw pixel format eg. ``'RGB'``
+       :type format: ``str``
+       :param width: width of image in raw data
+       :type width: ``int``
+       :param height: height of image in raw data
+       :type height: ``int``
+       :param depth: depth of a single channel in bits
+       :type depth: ``int``
+       :rtype: :class:`Image`
+       
+       Reads image data from a raw string or stream containing data in format
+       such as :term:`RGB` or :term:`YCbCr`. The contained image has
+       dimensions of width and height pixels. Each channel is of depth bits.
+    
+       >>> img = read_raw(b'\xff\x00\x00', 'rgb', 1, 1, 8)
+       >>> img.get_pixel(0, 0) == color.from_string('red')
+       True
+    """
     if hasattr(raw, 'read'):
         raw = raw.read()
     
@@ -18,43 +119,8 @@ def read_raw(raw, format, width, height, depth):  # @ReservedAssignment
     return Image(wand)
 
 
-def read_blob(blob, format, length=None):  # @ReservedAssignment
-    if hasattr(blob, 'read'):
-        blob = blob.read(length)
-    
-    wand = cdll.NewMagickWand()
-    
-    # ensure we always get bytes
-    format = b(format.upper())  # @ReservedAssignment
-    old_format = cdll.MagickGetImageFormat(wand)
-    template = formattable('Format "{0}" unsupported')
-    guard(wand,
-          lambda: cdll.MagickSetFormat(wand, format),
-          template.format(format))
-    
-    guard(wand, lambda: cdll.MagickReadImageBlob(wand, blob, len(blob)))
-    
-    guard(wand,
-              lambda: cdll.MagickSetFormat(wand, old_format))
-    
-    return Image(wand)
-
-
-def read(filename):
-    wand = cdll.NewMagickWand()
-        
-    if not exists(filename):
-        template = formattable('No such file or directory: {0}')
-        raise IOError((2, template.format(filename)))
-    
-    filename = b(filename)
-    
-    guard(wand, lambda: cdll.MagickReadImage(wand, filename))
-    
-    return Image(wand)
-
-
 def read_special(spec, width=None, height=None, _ctype=False):
+    """Read special :term:`ImageMagick` image resource"""
     wand = cdll.NewMagickWand()
     
     if width and height:
@@ -68,6 +134,20 @@ def read_special(spec, width=None, height=None, _ctype=False):
 
 
 def blank(width, height, background=None, _ctype=False):
+    """Create :class:`Image` with monolithic background
+       
+       :param width: Width in pixels
+       :type width: ``int``
+       :param height: Height in pixels
+       :type height: ``int``
+       :param background: background color, defaults to fully transparent
+       :type background: :class:`tinyimg.Color`
+       
+       Creates blank image of given dimensions filled with background color.
+       
+       >>> blank(32, 32, color.from_string('red'))
+       <Image(w=32,h=32,16bit,rgb,palette) object at 0x108006000L>
+    """
     if not background:
         background = 'transparent'
     
@@ -77,23 +157,106 @@ from tinyimg.util import only_live
 
 
 class Image(object):
-    def __init__(self, wand):
+    def __init__(self, wand=None):
         self.__wand = wand
         self.__closed = not bool(wand)
     
     @only_live
     def copy(self):
+        """Create new independent copy of an image"""
         wand = cdll.CloneMagickWand(self.__wand)
         
         return Image(wand)
     
     @only_live
-    def write(self, filename):
+    def write(self, filename, format=None, compression=None, quality=None):
+        """Write an image to filesystem.
+           
+           :param filename: file name to write to.
+           :type filename: ``str``
+           :param format: file format
+           :type format: ``str``
+           :param compression: compression algorithm
+           :type compression: :class:`tinyimg.lazyenum.EnumValue`
+           :param quality: output quality
+           :type quality: ``int``
+           
+           Saves an image to disk under given filename, format is determined
+           from filename unless specified explicitely. The interpretation of
+           quality parameter depends on the chosen format. E.g. for
+           :term:`JPEG` it's a integer number between 1 (worst) and 100 (best)
+           whilst for lossless format like
+           :term:`PNG` 0 means best compression. The default value is to choose
+           best available compression that preserves good quality image.
+           
+           >>> img = blank(10, 10)
+           >>> img.write('example.jpg')
+           >>> img.close()
+           
+           This method can be chained.
+        """
+        if format:
+            format = b(format.upper())  # @ReservedAssignment
+            old_format = cdll.MagickGetImageFormat(self.__wand)
+            template = formattable('Format "{0}" unsupported')
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageFormat(self.__wand, format),
+                  template.format(format))
+            
+        if quality != None:
+            old_quality = cdll.MagickGetImageCompressionQuality(self.__wand)
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageCompressionQuality(self.__wand,
+                                                                quality))
+        
         guard(self.__wand,
               lambda: cdll.MagickWriteImage(self.__wand, b(filename)))
         
+        if quality != None:
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageCompressionQuality(self.__wand,
+                                                                old_quality))
+        if format:
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageFormat(self.__wand, old_format))
+        
+        return self
+    
     @only_live
-    def get_blob(self, format):  # @ReservedAssignment
+    def get_blob(self, format, compression=None,  # @ReservedAssignment
+                 quality=None):
+        """Return a blob representing an image
+           
+           :param format: format of the output such as :term:`JPEG`
+           :type format: ``str``
+           :param compression: compression supported by format
+           :type compression: :class:`tinyimg.lazyenum.EnumValue`
+           :param quality: output quality
+           :rtype: ``str`` (Python 2.x) / ``bytes`` (Python 3.x)
+           
+           Returns blob carrying data representing an image along its header
+           in the given format. Compression is one of compression algorithms.
+           Some formats like :term:`TIFF` supports more then one compression
+           algorithms but typically this parameter is not used.
+           The interpretation of quality parameter depends
+           on the chosen format. E.g. for :term:`JPEG` it's integer number
+           between 1 (worst) and 100 (best) whilst for lossless format like
+           :term:`PNG` 0 means best compression. The default value is to choose
+           best available compression that preserves good quality image.
+        """
+        if compression != None:
+            old_compression = cdll.MagickGetImageCompression(self.__wand)
+            compression = enum_lookup(compression)
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageCompression(self.__wand,
+                                                    compression))
+            
+        if quality != None:
+            old_quality = cdll.MagickGetImageCompressionQuality(self.__wand)
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageCompressionQuality(self.__wand,
+                                                                quality))
+            
         # ensure we always get bytes
         format = b(format.upper())  # @ReservedAssignment
         old_format = cdll.MagickGetFormat(self.__wand)
@@ -112,9 +275,27 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickSetFormat(self.__wand, old_format))
         
+        if quality != None:
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageCompressionQuality(self.__wand,
+                                                                old_quality))
+        if compression != None:
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageCompression(self.__wand,
+                                                    old_compression))
+        
         return blob
         
     def get_raw(self, format):  # @ReservedAssignment
+        """Return ``dict`` representing raw image data.
+           
+           :param format: format of the output such as :term:`RGB`
+           :type format:  ``str``
+           :rtype: ``dict``
+           
+           Returns raw data ``dict`` consisting of raw, format, width, height
+           and depth keys along their values.
+        """
         return dict(raw=self.get_blob(format),
                     format=format,
                     width=self.width,
@@ -124,6 +305,39 @@ class Image(object):
     @only_live
     def rescale(self, width=None, height=None,
                factor=None, filter=None, blur=1):  # @ReservedAssignment
+        """Rescales an image to given dimensions.
+        
+           :param width: Width of resulting image
+           :type width: ``int``
+           :param height: Height of resulting image
+           :type height: ``int``
+           :param factor: Zoom factor
+           :type factor: ``float`` or ``tuple`` of ``float``
+           :param filter: Scaling filter
+           :type filter: :class:`tinyimg.lazuenym.Enums`
+           
+           Rescales an image to a given width and height pixels. Instead of
+           supplying width and height you can use factor parameter which is
+           a tuple of two floats specifying scaling factor along x and y axes.
+           You can also pass single float as factor which implies the same
+           factor for both axes. Filter is one of possible scaling algorithms.
+           You can choose from popular :term:`Bilinear`, :term:`Cubic`,
+           :term:`Sinc`, :term:`Lanczos` and many more. By default it uses
+           filter which is most adequate for the scaling you perform i.e. the
+           one which preserves as much as possible detail and sharpness.
+           
+           >>> img = read('example.jpg')
+           >>> img.size
+           (32L, 32L)
+           >>> img.rescale(640, 480)
+           >>> img.size
+           (640L, 480L)
+           >>> img.rescale(factor=.5)
+           >>> img.size
+           (320L, 240L)
+           
+           This method can be chained.
+        """
         if not filter:
             filter = image_filter.undefined  # @ReservedAssignment
         
@@ -142,25 +356,89 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickResizeImage(self.__wand, width, height,
                                              value, blur))
+        
+        return self
     
     @only_live
     def resize(self, width, height, x=0, y=0):
+        """Resize (crop) image to given dimensions.
+           
+           :param width: Width of resulting image
+           :type width: ``int``
+           :param height: Height of resulting image
+           :type height: ``int``
+           :param x: x origin of resized area
+           :type x: ``int``
+           :param y: y origin of resixed area
+           :type y: ``int``
+           
+           Crops out the given x, y, width, height area of image.
+           
+           >>> img = read('example.jpg')
+           >>> img.size
+           (512L, 512L)
+           >>> img.resize(320, 240, 10, 20)
+           >>> img.size()
+           (320L, 240L)
+           
+           This method can be chained.
+        """
         guard(self.__wand,
               lambda: cdll.MagickCropImage(self.__wand, width, height, x, y))
+        
+        return self
     
     @only_live
     def rotate(self, angle):
+        """Rotate an image.
+        
+           :param angle: angle of rotation in degrees clockwise
+           
+           Rotates an image clockwise. Resulting image can be larger in size
+           than the original. The resulting empty spaces are filled with
+           transparent pixels.
+           
+           This method can be chained
+        """
         guard(self.__wand,
               lambda: cdll.MagickRotateImage(self.__wand,
                                              color.transparent.wand, angle))
+        
+        return self
     
     @only_live
     def set_alpha(self, alpha):
+        """Set alpha channel of pixels in the image.
+        
+           :param alpha: target alpha value
+           :type alpha: float
+           
+           Resets alpha channel of all pixels in the image to given
+           value between 0 (transpanret) and 1 (opaque).
+           
+           This method can be chained.
+        """
         guard(self.__wand,
               lambda: cdll.MagickSetImageOpacity(self.__wand, alpha))
+        
+        return self
     
     @only_live
     def fill(self, fill):
+        """Fill whole image with one color.
+        
+           :param fill: desired fill color
+           :type fill: :class:`tinyimg.color.Color`
+           
+           Fills whole image with a monolithic color.
+           
+           >>> img = read('example.jpg')
+           >>> img.fill(color.from_string('yellow'))
+           >>> img.get_pixel(20, 20) == color.from_string('yellow')
+           True
+           
+           This method can be chained.
+        """
         if hasattr(cdll, 'MagickSetImageColor'):
             guard(self.__wand,
                   lambda: cdll.MagickSetImageColor(self.__wand, fill.wand))
@@ -168,9 +446,20 @@ class Image(object):
             width, height = self.width, self.height
             cdll.DestroyMagickWand(self.__wand)
             self.__wand = blank(width, height, fill, _ctype=True)
+            
+        return self
     
     @only_live
     def flip(self, axis):
+        """Flip an image along given axis.
+           
+           :param axis: X or Y axis
+           :type axis: :class:`tinyimg.lazyenum.EnumValue`
+           
+           Flips (mirrors) an image along :attr:`axes.x` or :attr:`axes.y`.
+           
+           This method can be chained.
+        """
         if axis.name == 'x':
             guard(self.__wand, lambda: cdll.MagickFlipImage(self.__wand))
         elif axis.name == 'y':
@@ -178,33 +467,126 @@ class Image(object):
         else:
             raise TinyException('axis must be X or Y')
         
+        return self
+    
     @only_live
     def roll(self, x, y):
+        """Roll pixels in the image.
+           
+           :param x: offset in the x-axis direction
+           :type x: ``int``
+           :param y: offset in the y-axis direction
+           :type y: ``int``
+        
+           Rolls pixels in the image in the left-to-right direction along
+           x-axis and top-to-bottom direction along y-axis. Offsets can be
+           negative to roll in the opposite direction.
+           
+           This method can be chained.
+        """
         guard(self.__wand, lambda: cdll.MagickRollImage(self.__wand, x, y))
         
+        return self
+    
     @only_live
     def despeckle(self):
+        """Attempt to remove speckle preserving edges.
+           
+           Resulting image almost solid color areas are smoothed preserving
+           edges.
+           
+           This method can be chained.
+        """
         guard(self.__wand, lambda: cdll.MagickDespeckleImage(self.__wand))
         
+        return self
+    
     @only_live
-    def emboss(self, radius=0, sigma=0):
+    def emboss(self, radius=0, strength=None):
+        """Apply edge detecting algorithm.
+           
+           :param radius: filter radius
+           :type radius: ``int``
+           :param stregth: filter strength (sigma)
+           :type strength: ``int``
+           
+           On a typical photo creates effect of raised edges.
+           
+           This method can be chained.
+        """
+        if strength == None:
+            strength = radius
+            
         guard(self.__wand,
-              lambda: cdll.MagickEmbossImage(self.__wand, radius, sigma))
+              lambda: cdll.MagickEmbossImage(self.__wand, radius, strength))
+        
+        return self
     
     @only_live
     def enhance(self):
+        """Attempt to remove noise preserving edges.
+        
+           Applies a digital filter that improves the quality of a
+           noisy image.
+           
+           This method can be chained.
+        """
+           
         guard(self.__wand, lambda: cdll.MagickEnhanceImage(self.__wand))
+        
+        return self
     
     @only_live
     def equalize(self):
+        """Equalize image histogram.
+           
+           This method usually increases the global contrast of many images,
+           especially when the usable data of the image is represented by
+           close contrast values. Through this adjustment, the intensities
+           can be better distributed on the histogram. This allows for areas
+           of lower local contrast to gain a higher contrast. See also:
+           http://en.wikipedia.org/wiki/Histogram_equalization.
+           
+           This method can be chained.
+        """
         guard(self.__wand, lambda: cdll.MagickEqualizeImage(self.__wand))
         
+        return self
+        
     @only_live
-    def dft(self, magnitude):
+    def dft(self, magnitude=True):
+        """Applies inverse discrete Fourier transform to an image.
+           
+           :param magnitude: if ``True``, return as magnitude / phase pair
+             otherwise a real / imaginary image pair.
+           :type magnitude: ``bool``
+           :rtype: 2-element ``tuple`` of :class:`Image`
+           
+           Performs inverse discrete Fourier transform (DFT)
+           and returns a tuple of two resulting images. Go to
+           http://www.imagemagick.org/Usage/fourier/ to see what can be
+           accomplished with it. This method will not be present if your
+           ImageMagick installation wasn't compiled against FFTW.
+        """
         magnitude = bool(magnitude)
-        guard(self.__wand,
-              lambda: cdll.MagickForwardFourierTransformImage(self.__wand,
-                                                              magnitude))
+        copy = self.copy()
+        
+        guard(copy.wand,
+            lambda: cdll.MagickForwardFourierTransformImage(copy.wand,
+                                                           magnitude))
+        
+        first = blank(*self.size)
+        second = blank(*self.size)
+        
+        first.overlay(copy, composite=composite.copy)
+        
+        guard(copy.wand, lambda: cdll.MagickNextImage(copy.wand))
+        
+        second.overlay(copy, composite=composite.copy)
+        
+        copy.close()
+        
+        return (first, second)
     
     @only_live
     def transpose(self):
@@ -556,6 +938,9 @@ from tinyimg.api.func import guard
 from tinyimg import magick
 from tinyimg import cdll, enum_lookup, enum_reverse_lookup
 from tinyimg.lazyenum import enum
+
+if not 'fftw' in magick.get_delegates():
+    del Image.dft
 
 composite = enum('composite')
 image_type = enum('type')

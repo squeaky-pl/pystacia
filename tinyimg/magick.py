@@ -38,4 +38,13 @@ def get_options():
 def get_version_str():
     return cdll.MagickGetVersion(None)
 
+
+def get_delegates():
+    try:
+        delegates = get_options()['DELEGATES']
+    except KeyError:
+        return []
+    
+    return delegates.split()
+
 from tinyimg import cdll

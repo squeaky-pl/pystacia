@@ -4,7 +4,9 @@ API Documentation
 Something here
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     
     api/tinyimg
+    api/color
+    api/image
 

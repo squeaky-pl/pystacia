@@ -63,7 +63,7 @@ __lena = None
 
 
 def __lena_image():
-    """Perform weakref memoization of :class:`.Image`."""
+    """Perform weakref memoization of Lena."""
     global __lena
     
     if not __lena:

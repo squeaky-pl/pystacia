@@ -5,7 +5,7 @@
 # This module is part of tinyimg and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-"""Various color-related functions and objects.""" 
+"""Various color-related functions and objects."""
 
 
 def from_string(value):
@@ -95,7 +95,7 @@ class Color(object):
            :type wand: :class:`tinyimg.api.type.PixelWand_p`
            
            Not to be used directly. Use one of color factory functions
-           such as :func:`from_rgba` or :func:`from_string` instead. 
+           such as :func:`from_rgba` or :func:`from_string` instead.
         """
         self.__wand = wand if wand else cdll.NewPixelWand()
         self.__closed = False
@@ -108,6 +108,7 @@ class Color(object):
                   
            :rtype: ``float`` or ``int``
         """
+        
         def g(self):
             return saturate(cdll.PixelGetRed(self.__wand))
         
@@ -129,6 +130,7 @@ class Color(object):
                   
            :rtype: ``float`` or ``int``
         """
+        
         def g(self):
             return saturate(cdll.PixelGetGreen(self.__wand))
         
@@ -150,6 +152,7 @@ class Color(object):
                   
            :rtype: ``float`` or ``int``
         """
+        
         def g(self):
             return saturate(cdll.PixelGetBlue(self.__wand))
         
@@ -171,6 +174,7 @@ class Color(object):
                   
            :rtype: ``float`` or ``int``
         """
+        
         def g(self):
             return saturate(cdll.PixelGetAlpha(self.__wand))
         

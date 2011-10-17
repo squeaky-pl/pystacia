@@ -1,4 +1,5 @@
-from tinyimg.compat import TestCase, skip
+from tinyimg.image import Image
+from tinyimg.compat import TestCase, skipIf
 
 
 class Close(TestCase):
@@ -30,7 +31,7 @@ class ReadBlob(TestCase):
         bmp = img.get_blob('bmp')
         
         for i in (bmp, BytesIO(bmp)):
-            img = read_blob(i, 'bmp')
+            img = read_blob(i)
             
             self.assertEquals(img.size, (512, 512))
             self.assertEquals(img.type, image_type.truecolor)
@@ -249,11 +250,15 @@ class Equalize(TestCase):
 
 # only check if it doesnt blow up
 class Dft(TestCase):
-    @skip
+    @skipIf(not hasattr(Image, 'dft'), 'ImageMagick without FFTW delegate')
     def test(self):
-        img = lena()
+        img = blank(40, 40, color.from_string('red'))
         
-        img.dft()
+        result = img.dft()
+        self.assertIsInstance(result, tuple)
+        self.assertIsInstance(result[0], Image)
+        self.assertIsInstance(result[1], Image)
+        self.assertEqual(result[0].size, img.size)
         
         img.close()
 

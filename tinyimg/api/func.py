@@ -58,14 +58,23 @@ def annote(cdll):
     cdll.MagickGetFormat.argtypes = (MagickWand_p,)
     cdll.MagickGetFormat.restype = c_char_p
     
-    cdll.MagickSetCompression.argtypes = (MagickWand_p, enum)
-    cdll.MagickSetCompression.restype = MagickBoolean
+    cdll.MagickSetImageCompression.argtypes = (MagickWand_p, enum)
+    cdll.MagickSetImageCompression.restype = MagickBoolean
+    
+    cdll.MagickGetImageCompression.argtypes = (MagickWand_p,)
+    cdll.MagickGetImageCompression.restype = enum
     
     cdll.MagickSetFormat.argtypes = (MagickWand_p, c_char_p)
     cdll.MagickSetFormat.restype = MagickBoolean
     
     cdll.MagickSetDepth.argtypes = (MagickWand_p, c_size_t)
     cdll.MagickSetDepth.restype = MagickBoolean
+    
+    cdll.MagickGetImageCompressionQuality.argtypes = (MagickWand_p,)
+    cdll.MagickGetImageCompressionQuality.restype = c_size_t
+    
+    cdll.MagickSetImageCompressionQuality.argtypes = (MagickWand_p, c_size_t)
+    cdll.MagickSetImageCompressionQuality.restype = MagickBoolean
     
     cdll.MagickSetImageDepth.argtypes = (MagickWand_p, c_size_t)
     cdll.MagickSetImageDepth.restype = MagickBoolean
@@ -140,8 +149,12 @@ def annote(cdll):
     cdll.MagickEqualizeImage.argtypes = (MagickWand_p,)
     cdll.MagickEqualizeImage.restype = MagickBoolean
     
-    cdll.MagickForwardFourierTransformImage.argtypes = (MagickWand_p,)
+    cdll.MagickForwardFourierTransformImage.argtypes = (MagickWand_p,
+                                                        MagickBoolean)
     cdll.MagickForwardFourierTransformImage.restype = MagickBoolean
+    
+    cdll.MagickNextImage.argtypes = (MagickWand_p,)
+    cdll.MagickNextImage.restype = MagickBoolean
     
     cdll.MagickFxImage.argtypes = (MagickWand_p, c_char_p)
     cdll.MagickFxImage.restype = MagickWand_p
