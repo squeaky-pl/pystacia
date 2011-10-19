@@ -163,7 +163,10 @@ class Image(object):
     
     @only_live
     def copy(self):
-        """Create new independent copy of an image"""
+        """Create new independent copy of an image.
+        
+           :rtype: :class:`tinyimg.image.Image`
+        """
         wand = cdll.CloneMagickWand(self.__wand)
         
         return Image(wand)
@@ -356,8 +359,6 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickResizeImage(self.__wand, width, height,
                                              value, blur))
-        
-        return self
     
     @only_live
     def resize(self, width, height, x=0, y=0):
@@ -385,8 +386,6 @@ class Image(object):
         """
         guard(self.__wand,
               lambda: cdll.MagickCropImage(self.__wand, width, height, x, y))
-        
-        return self
     
     @only_live
     def rotate(self, angle):
@@ -403,8 +402,6 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickRotateImage(self.__wand,
                                              color.transparent.wand, angle))
-        
-        return self
     
     @only_live
     def set_alpha(self, alpha):
@@ -420,8 +417,6 @@ class Image(object):
         """
         guard(self.__wand,
               lambda: cdll.MagickSetImageOpacity(self.__wand, alpha))
-        
-        return self
     
     @only_live
     def fill(self, fill):
@@ -446,8 +441,6 @@ class Image(object):
             width, height = self.width, self.height
             cdll.DestroyMagickWand(self.__wand)
             self.__wand = blank(width, height, fill, _ctype=True)
-            
-        return self
     
     @only_live
     def flip(self, axis):
@@ -466,8 +459,6 @@ class Image(object):
             guard(self.__wand, lambda: cdll.MagickFlopImage(self.__wand))
         else:
             raise TinyException('axis must be X or Y')
-        
-        return self
     
     @only_live
     def roll(self, x, y):
@@ -485,8 +476,6 @@ class Image(object):
            This method can be chained.
         """
         guard(self.__wand, lambda: cdll.MagickRollImage(self.__wand, x, y))
-        
-        return self
     
     @only_live
     def despeckle(self):
@@ -498,8 +487,6 @@ class Image(object):
            This method can be chained.
         """
         guard(self.__wand, lambda: cdll.MagickDespeckleImage(self.__wand))
-        
-        return self
     
     @only_live
     def emboss(self, radius=0, strength=None):
@@ -519,8 +506,6 @@ class Image(object):
             
         guard(self.__wand,
               lambda: cdll.MagickEmbossImage(self.__wand, radius, strength))
-        
-        return self
     
     @only_live
     def enhance(self):
@@ -533,8 +518,6 @@ class Image(object):
         """
            
         guard(self.__wand, lambda: cdll.MagickEnhanceImage(self.__wand))
-        
-        return self
     
     @only_live
     def equalize(self):
@@ -550,8 +533,6 @@ class Image(object):
            This method can be chained.
         """
         guard(self.__wand, lambda: cdll.MagickEqualizeImage(self.__wand))
-        
-        return self
         
     @only_live
     def dft(self, magnitude=True):
@@ -614,8 +595,6 @@ class Image(object):
         """
         guard(self.__wand, lambda: cdll.MagickTransverseImage(self.__wand))
         
-        return self
-        
     @only_live
     def wave(self, amplitude, length, offset=0, axis=None):
         """Apply wave like distortion to an image.
@@ -663,8 +642,6 @@ class Image(object):
                                                          old_color.wand))
         old_color.close()
         transparent.close()
-        
-        return self
     
     @only_live
     def fx(self, expression):  # @ReservedAssignment
@@ -681,8 +658,6 @@ class Image(object):
                      lambda: cdll.MagickFxImage(self.__wand, b(expression)))
         cdll.DestroyMagickWand(self.__wand)
         self.__wand = wand
-        
-        return self
     
     @only_live
     def gamma(self, gamma):
@@ -699,8 +674,6 @@ class Image(object):
            This method can be chained
         """
         guard(self.__wand, lambda: cdll.MagickGammaImage(self.__wand, gamma))
-        
-        return self
     
     @only_live
     def swirl(self, angle):
@@ -716,8 +689,6 @@ class Image(object):
         """
         guard(self.__wand, lambda: cdll.MagickSwirlImage(self.__wand, angle))
         
-        return self
-        
     @only_live
     def spread(self, radius):
         """Spread pixels in random direction.
@@ -732,8 +703,6 @@ class Image(object):
         """
         guard(self.__wand, lambda: cdll.MagickSpreadImage(self.__wand, radius))
         
-        return self
-        
     @only_live
     def auto_gamma(self):
         """Auto-gamma image.
@@ -745,8 +714,6 @@ class Image(object):
         """
         guard(self.__wand,
               lambda: cdll.MagickAutoGammaImage(self.__wand))
-        
-        return self
     
     @only_live
     def auto_level(self):
@@ -759,8 +726,6 @@ class Image(object):
         """
         guard(self.__wand,
               lambda: cdll.MagickAutoLevelImage(self.__wand))
-        
-        return self
         
     @only_live
     def blur(self, radius, strength=None):
@@ -781,8 +746,6 @@ class Image(object):
             
         guard(self.__wand,
               lambda: cdll.MagickBlurImage(self.__wand, radius, strength))
-        
-        return self
     
     @only_live
     def brightness(self, factor):
@@ -801,8 +764,6 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickBrightnessContrastImage(self.__wand,
                                                          factor * 100, 0))
-        
-        return self
     
     @only_live
     def contrast(self, factor):
@@ -822,8 +783,6 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickBrightnessContrastImage(self.__wand,
                                                          0, factor * 100))
-        
-        return self
     
     @only_live
     def modulate(self, hue=0, saturation=0, lightness=0):
@@ -852,8 +811,6 @@ class Image(object):
                                                lightness * 100 + 100,
                                                saturation * 100 + 100,
                                                hue * 100 + 100))
-        
-        return self
     
     def desaturate(self):
         """Desatures an image.
@@ -875,8 +832,6 @@ class Image(object):
         """
         guard(self.__wand,
               lambda: cdll.MagickNegateImage(self.__wand, only_gray))
-        
-        return self
     
     @only_live
     def oil_paint(self, radius):
@@ -892,8 +847,6 @@ class Image(object):
         """
         guard(self.__wand,
               lambda: cdll.MagickOilPaintImage(self.__wand, radius))
-        
-        return self
     
     @only_live
     def posterize(self, levels, dither=False):
@@ -915,8 +868,6 @@ class Image(object):
         """
         guard(self.__wand,
               lambda: cdll.MagickPosterizeImage(self.__wand, levels, dither))
-        
-        return self
     
     @only_live
     #TODO: moving center here
@@ -932,8 +883,6 @@ class Image(object):
         """
         guard(self.__wand,
               lambda: cdll.MagickRadialBlurImage(self.__wand, angle))
-        
-        return self
     
     @only_live
     def shadow(self, radius, x=0, y=0, opacity=0.5):
@@ -956,7 +905,6 @@ class Image(object):
               lambda: cdll.MagickShearImage(self.__wand,
                                             color.transparent.wand,
                                             x_angle, y_angle))
-        return self
     
     @only_live
     def solarize(self, threshold):
@@ -1033,8 +981,6 @@ class Image(object):
         """
         guard(self.__wand,
               lambda: cdll.MagickDeskewImage(self.__wand, threshold))
-        
-        return self
     
     @only_live
     def sepia(self, threshold=.8, saturation=-.4):
@@ -1057,8 +1003,6 @@ class Image(object):
         
         if saturation:
             self.modulate(saturation=saturation)
-        
-        return self
     
     @only_live
     def color_overlay(self, color, blend=1):
@@ -1085,8 +1029,6 @@ class Image(object):
                                                blend.wand))
         
         blend.close()
-        
-        return self
     
     @only_live
     def get_pixel(self, x, y):
@@ -1143,8 +1085,6 @@ class Image(object):
                                                          old_color.wand))
         old_color.close()
         background.close()
-        
-        return self
     
     def trim(self, similarity=.1, background=None):
         """Attempt to trim off extra background around image.
@@ -1184,8 +1124,6 @@ class Image(object):
         
         if background_free:
             background.close()
-            
-        return self
         
     @property
     @only_live
@@ -1275,8 +1213,6 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickTransformImageColorspace(self.__wand,
                                                           colorspace))
-        
-        return self
     
     @property
     @only_live
@@ -1399,7 +1335,6 @@ class Image(object):
                                             depth=depth, colorspace=colorspace,
                                             addr=addr, type=type)
 
-
 import webbrowser
 from tempfile import mkstemp
 from ctypes import c_size_t, byref, string_at, addressof
@@ -1418,6 +1353,14 @@ from tinyimg.lazyenum import enum
 
 if not 'fftw' in magick.get_delegates():
     del Image.dft
+    
+# perform chainability
+from tinyimg.util import chainable
+
+for key in (key for key in Image.__dict__ if not key.startswith('_')):
+    item = Image.__dict__[key]
+    if callable(item) and item.__doc__ and ':rtype:' not in item.__doc__:
+        setattr(Image, key, chainable(item))
 
 composite = enum('composite')
 image_type = enum('type')

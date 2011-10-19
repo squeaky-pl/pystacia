@@ -2,6 +2,12 @@ from decorator import decorator
 
 
 @decorator
+def chainable(f, obj, *args, **kw):
+    f(obj, *args, **kw)
+    
+    return obj
+
+@decorator
 def only_live(f, obj, *args, **kw):
     if obj.closed:
         template = formattable('{0} already closed')
