@@ -637,7 +637,7 @@ class Image(object):
            This method can be chained.
         """
         if not axis:
-            axis = axes.x;
+            axis = axes.x
             
         transparent = color.from_string('transparent')
         
@@ -673,7 +673,7 @@ class Image(object):
            :param expression: expression to evaluate
            
            For more information on the available expressions visit:
-           http://www.imagemagick.org/script/fx.php and 
+           http://www.imagemagick.org/script/fx.php.
            
            This method can be chained.
         """
@@ -994,7 +994,7 @@ class Image(object):
            :type x: ``int``
            :param y: y coordinate of overlay
            :type y: ``int``
-           :param composite: 
+           :param composite: Composition operator
            :type composite: :class:`tinyimg.lazyenum.EnumValue`
            
            Overlays given image on this image at ``(x, y)`` using
@@ -1205,10 +1205,12 @@ class Image(object):
            Sets or gets colorspace. When you set this property there's no
            colorspace conversion performed and the original channel values
            are just left as is. If you actually want to perform a conversion
-           use :attr:`convert_colorspace` instead.
+           use :attr:`convert_colorspace` instead. Popular colorspace include
+           RGB, YCbCr, grayscale and so on.
            
            :rtype: :class:`tinyimg.lazyenum.EnumValue`
         """
+        
         @only_live
         def fget(self):
             value = cdll.MagickGetImageColorspace(self.__wand)
@@ -1224,53 +1226,129 @@ class Image(object):
     
     colorspace = colorspace()
     
-    @only_live
-    def __get_type(self):
-        value = cdll.MagickGetImageType(self.__wand)
-        return enum_reverse_lookup(image_type, value)
+    def type():  # @ReservedAssignment @NoSelf
+        doc = (  # @Used
+        """Set or get image type.
+           
+           :rtype: :class:`tinyimg.lazyenum.EnumValue`
+           
+           Popular image types include truecolor, pallete, bilevel and their
+           matter counterparts.
+           
+           >>> img = read('example.jpg')
+           >>> img.type == image_type.truecolor
+        """)
+        
+        @only_live
+        def fget(self):
+            value = cdll.MagickGetImageType(self.__wand)
+            return enum_reverse_lookup(image_type, value)
+        
+        @only_live
+        def fset(self, mnemonic):
+            value = enum_lookup(mnemonic)
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageType(self.__wand, value))
+            
+        return property(**locals())
+    
+    type = type()  # @ReservedAssignment
     
     @only_live
-    def __set_type(self, mnemonic):
-        value = enum_lookup(mnemonic)
+    def convert_colorspace(self, colorspace):
+        """Convert to given colorspace.
+           
+           :param colorspace: destination colorspace
+           :type colorspace: :class:`tinyimg.color.Color`
+           
+           Converts an image to a given colorspace.
+           
+           >>> img = read('example.jpg')
+           >>> img.convert_colorspace(colorspace.ycbcr)
+           >>> img.colorspace == colorspace.ycbcr
+           True
+           
+           This method can be chained.
+        """
+           
+        colorspace = enum_lookup(colorspace)
         guard(self.__wand,
-              lambda: cdll.MagickSetImageType(self.__wand, value))
-    
-    type = property(__get_type, __set_type)  # @ReservedAssignment
-    
-    @only_live
-    def convert_colorspace(self, mnemonic):
-        value = enum_lookup(mnemonic)
-        guard(self.__wand,
-              lambda: cdll.MagickTransformImageColorspace(self.__wand, value))
+              lambda: cdll.MagickTransformImageColorspace(self.__wand,
+                                                          colorspace))
+        
+        return self
     
     @property
     @only_live
     def width(self):
+        """Get image width.
+           
+           :rtype: ``int``
+           
+           Return image width in pixels.
+        """
         return cdll.MagickGetImageWidth(self.__wand)
     
     @property
     @only_live
     def height(self):
+        """Get image height.
+           
+           :rtype: ``int``
+           
+           Return image height in pixels.
+        """
         return cdll.MagickGetImageHeight(self.__wand)
     
     @property
     def size(self):
+        """Return a tuple of image width and height.
+           
+           :rtype: ``tuples`` of two ``int``
+           
+           Returns a tuple storing image width on first position and image
+           height on second position.
+           
+           >>> img = read('example.jpg')
+           >> img.size
+           (640, 480)
+        """
         return (self.width, self.height)
     
-    @only_live
-    def __get_depth(self):
-        return cdll.MagickGetImageDepth(self.__wand)
+    def depth():  # @NoSelf
+        doc = (  # @UnusedVariable
+        """Set or get image depth per channel.
+        
+           :rtype: ``int``
+           
+           Set or get depth per channel in bits. Either 8 or 16.
+        """)
+        
+        @only_live
+        def fget(self):
+            return cdll.MagickGetImageDepth(self.__wand)
+        
+        @only_live
+        def fset(self, value):
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageDepth(self.__wand, value))
+            
+        return property(**locals())
     
-    @only_live
-    def __set_depth(self, value):
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageDepth(self.__wand, value))
-    
-    depth = property(__get_depth, __set_depth)
+    depth = depth()
     
     def show(self):
+        """Display an image in GUI.
+           
+           :rtype: ``str``
+           
+           Saves image to temporary lossless file format on a disk and sends
+           it to default image handling program to display. Returns a path
+           to the temporary file. You get no gurantees about life span of a
+           file since it will be typically deleted when image gets closed.
+        """
         extension = 'bmp'
-        delegates = magick.get_options().get('DELEGATES', '').split()
+        delegates = magick.get_delegates()
         if 'png' in delegates:
             extension = 'png'
             
@@ -1282,12 +1360,27 @@ class Image(object):
     
     @only_live
     def close(self):
+        """Close image and free resources.
+           
+           Closes image freeing underlying :term:`ImageMagick` resources.
+           After performing this operation image cant be used anymore
+           and will throw exceptions.
+           
+           :rtype: ``type(None)``
+        """
         cdll.DestroyMagickWand(self.__wand)
         self.__wand = None
         self.__closed = True
     
     @property
     def closed(self):
+        """Check if image is closed.
+           
+           Returns ``True`` if image has been closed and cannot be
+           used anymore. ``False`` otherwise.
+           
+           :rtype: ``bool``
+        """
         return self.__closed
     
     def __del__(self):

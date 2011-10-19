@@ -36,7 +36,8 @@ TODO
 - should getters and setters be explicit? [0.1.1]
 - set_pixel (possible?) [0.1.1]
 - lazy init of imagick and function prototypes [0.1.1]
-- keep track of showed temp files and delete them on exit [0.1.1]
+- keep track of showed temp files and delete them on exit, possibly in the
+  image object [0.1.1]
 - rgb8, rgba8 color factory, and accessors [0.1.1]
 - @api_simple_call [0.1.1]
 - support for with protocol [0.1.1]
