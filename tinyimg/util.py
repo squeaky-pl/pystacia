@@ -7,6 +7,7 @@ def chainable(f, obj, *args, **kw):
     
     return obj
 
+
 @decorator
 def only_live(f, obj, *args, **kw):
     if obj.closed:

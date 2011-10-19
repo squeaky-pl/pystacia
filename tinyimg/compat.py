@@ -71,21 +71,14 @@ import ctypes
 c_ssize_t = getattr(ctypes, 'c_ssize_t', fallback_c_size_t())
 
 
-# in python < 2.7 we need backported verion of unittest
-def fallback_testcase():
-    from unittest2 import TestCase, skip, skipIf
-    
-    return TestCase, skip, skipIf
-
-from unittest import TestCase
 try:
     from unittest import skip, skipIf
 except ImportError:
-    pass
+    from unittest2 import skip, skipIf  # @UnusedImport @Reimport
 
+from unittest import TestCase
 if not hasattr(TestCase, 'assertSequenceEqual'):
-    TestCase, skip, skipIf = fallback_testcase()
-
+    from unittest2 import TestCase  # @UnusedImport @Reimport
 
 from tempfile import gettempdir
 from os import system, chdir, getcwd

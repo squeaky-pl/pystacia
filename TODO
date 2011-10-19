@@ -2,13 +2,12 @@
 TODO
 ====
 
+- convenience imports in main module
 - coverage
 - docs
 - docstrings
-- is dft really fft?
 - method chaining? possibly turn off with a variable
 - enhance -> denoise -> remove_noise?
-- detect dft/fft
 - Image should be used like x = Image() then x.wand in factories like Color
 - nice system detecting OS in setup.py and downloading binary libraries
 - shear - skew?

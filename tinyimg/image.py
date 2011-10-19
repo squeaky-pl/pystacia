@@ -172,7 +172,8 @@ class Image(object):
         return Image(wand)
     
     @only_live
-    def write(self, filename, format=None, compression=None, quality=None):
+    def write(self, filename, format=None,  # @ReservedAssignment
+              compression=None, quality=None):
         """Write an image to filesystem.
            
            :param filename: file name to write to.
@@ -1137,7 +1138,7 @@ class Image(object):
         return self.__wand
     
     def colorspace():  # @NoSelf
-        doc =\
+        doc = (  # @UnusedVariable
         """Return or set colorspace associated with image.
            
            Sets or gets colorspace. When you set this property there's no
@@ -1147,7 +1148,7 @@ class Image(object):
            RGB, YCbCr, grayscale and so on.
            
            :rtype: :class:`tinyimg.lazyenum.EnumValue`
-        """
+        """)
         
         @only_live
         def fget(self):
@@ -1165,7 +1166,7 @@ class Image(object):
     colorspace = colorspace()
     
     def type():  # @ReservedAssignment @NoSelf
-        doc = (  # @Used
+        doc = (  # @UnusedVariable
         """Set or get image type.
            
            :rtype: :class:`tinyimg.lazyenum.EnumValue`
@@ -1338,6 +1339,7 @@ class Image(object):
 import webbrowser
 from tempfile import mkstemp
 from ctypes import c_size_t, byref, string_at, addressof
+from os import environ
 from os.path import exists
 
 from six import b
@@ -1353,14 +1355,20 @@ from tinyimg.lazyenum import enum
 
 if not 'fftw' in magick.get_delegates():
     del Image.dft
-    
-# perform chainability
-from tinyimg.util import chainable
 
-for key in (key for key in Image.__dict__ if not key.startswith('_')):
-    item = Image.__dict__[key]
-    if callable(item) and item.__doc__ and ':rtype:' not in item.__doc__:
-        setattr(Image, key, chainable(item))
+try:
+    disable_chains = environ['TINYIMG_DISABLE_CHAINS']
+except KeyError:
+    disable_chains = False
+    
+if not disable_chains:
+    # perform chainability
+    from tinyimg.util import chainable
+    
+    for key in (key for key in Image.__dict__ if not key.startswith('_')):
+        item = Image.__dict__[key]
+        if callable(item) and item.__doc__ and ':rtype:' not in item.__doc__:
+            setattr(Image, key, chainable(item))
 
 composite = enum('composite')
 image_type = enum('type')
