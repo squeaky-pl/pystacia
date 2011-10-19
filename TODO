@@ -11,6 +11,7 @@ TODO
 - detect dft/fft
 - Image should be used like x = Image() then x.wand in factories like Color
 - nice system detecting OS in setup.py and downloading binary libraries
+- shear - skew?
 - exception in the tests causes os.exit(1) which doesnt trigger atexit
 - remove color paramname from everywhere - use fill, background and so on - future proof
 - add DYLD_FALLBACK_LIBRARY_PATH and LD_LIBRARY_PATH on MacOSX and Linux, we can
@@ -26,6 +27,8 @@ TODO
 - Image.write should obey format when explicitely set, ImageMagick always does it
   from filename, if format is set call get_blob() instead and save to fs in py
   into one class with many test methods [0.1.1]
+- compress method that let's you apply compression and reread image, useful for
+  preving compression result
 - move lazyenym, and compat under util? [0.1.1]
 - put generators together under some submodule, name? [0.1.1]
 - make string passing possible [x]? [0.1.1]
@@ -60,9 +63,10 @@ TODO
 - thread safety?
 - all functions should accept blend as param - merges result on top with this blend
 - visual testing framework with reference images
-- wave needs axis parameter and phi
+- wave needs phi
 - checker in show, zoom, crop
 - > and < on color lightness comparison
+- color_overlay should become fill once we have blending everywhere
 - zip deployment technique with all binaries for all osses
 
 STUFF

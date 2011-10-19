@@ -23,6 +23,7 @@ class ReadAndGetRaw(TestCase):
         self.assertEquals(img.depth, 8)
         self.assertEquals(img.get_blob('rgb'), data['raw'])
         self.assertDictEqual(img.get_raw('rgb'), data)
+        self.assertEquals(img.get_pixel(0, 0), color.from_string('white'))
 
 
 class ReadBlob(TestCase):
@@ -160,7 +161,6 @@ class SetAlpha(TestCase):
         self.assertEquals(img.get_pixel(10, 50).alpha, 0)
         img.set_alpha(1)
         self.assertEquals(img.get_pixel(64, 64).alpha, 1)
-        
         img.close()
 
 

@@ -198,7 +198,7 @@ def annote(cdll):
     cdll.MagickOilPaintImage.argtypes = (MagickWand_p, c_double)
     cdll.MagickOilPaintImage.restype = MagickBoolean
     
-    cdll.MagickPosterizeImage.argtypes = (MagickWand_p, c_uint)
+    cdll.MagickPosterizeImage.argtypes = (MagickWand_p, c_uint, MagickBoolean)
     cdll.MagickPosterizeImage.restype = MagickBoolean
     
     cdll.MagickRadialBlurImage.argtypes = (MagickWand_p, c_double)

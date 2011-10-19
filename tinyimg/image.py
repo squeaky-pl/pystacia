@@ -590,14 +590,55 @@ class Image(object):
     
     @only_live
     def transpose(self):
+        """Transpose an image.
+           
+           Creates a vertical mirror image by reflecting the
+           pixels around the central x-axis while rotating them 90-degrees.
+           In other words each row of source image from top to bottom becomes
+           a column of new image from left to right.
+           
+           This method can be chained.
+        """
         guard(self.__wand, lambda: cdll.MagickTransposeImage(self.__wand))
+        
+        return self
     
     @only_live
     def transverse(self):
+        """Transverse an image.
+           
+           Creates a horizontal mirror image by reflecting the
+           pixels around the central y-axis while rotating them 270-degrees.
+           
+           This method can be chained.
+        """
         guard(self.__wand, lambda: cdll.MagickTransverseImage(self.__wand))
         
+        return self
+        
     @only_live
-    def wave(self, amplitude, length):
+    def wave(self, amplitude, length, offset=0, axis=None):
+        """Apply wave like distortion to an image.
+           
+           :param amplitude: amplitude (A) of wave in pixels
+           :type amplitude: ``int``
+           :param length: length (lambda) of wave in pixels.
+           :type length: ``int``
+           :param offset: offset (phi) from initial position in pixels
+           :type length: ``int``
+           :param axis: axis along which to apply deformation. Defaults to x.
+           :type axis: ``tinyimg.enum.EnumValue``
+           
+           Applies wave like distoration to an image along chosen
+           axis. Axis defaults to :attr:``axes.x``. Offset parameter is
+           not effective as for now. Will be implemented in the feature.
+           Resulting empty areas are filled with transparent pixels.
+           
+           This method can be chained.
+        """
+        if not axis:
+            axis = axes.x;
+            
         transparent = color.from_string('transparent')
         
         old_color = color.Color()
@@ -608,8 +649,14 @@ class Image(object):
               lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
                                                          transparent.wand))
         
+        if axis.name == 'y':
+            self.rotate(90)
+        
         guard(self.__wand,
               lambda: cdll.MagickWaveImage(self.__wand, amplitude, length))
+        
+        if axis.name == 'y':
+            self.rotate(-90)
         
         guard(self.__wand,
               lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
@@ -617,86 +664,276 @@ class Image(object):
         old_color.close()
         transparent.close()
         
+        return self
+    
     @only_live
     def fx(self, expression):  # @ReservedAssignment
+        """Perform expression using ImageMagick mini-language.
+        
+           :param expression: expression to evaluate
+           
+           For more information on the available expressions visit:
+           http://www.imagemagick.org/script/fx.php and 
+           
+           This method can be chained.
+        """
         wand = guard(self.__wand,
                      lambda: cdll.MagickFxImage(self.__wand, b(expression)))
         cdll.DestroyMagickWand(self.__wand)
         self.__wand = wand
+        
+        return self
     
     @only_live
     def gamma(self, gamma):
+        """Apply gamma correction to an image.
+           
+           :param gamma: Gamma value
+           :type gamma: ``float``
+           
+           Apply gamma correction to an image. Value ``1`` is an identity
+           operation. Higher values yield brighter image and lower values
+           darken image. More information on gamma corection can be found
+           here: http://en.wikipedia.org/wiki/Gamma_correction.
+           
+           This method can be chained
+        """
         guard(self.__wand, lambda: cdll.MagickGammaImage(self.__wand, gamma))
+        
+        return self
     
     @only_live
-    def swirl(self, degrees):
-        guard(self.__wand, lambda: cdll.MagickSwirlImage(self.__wand, degrees))
+    def swirl(self, angle):
+        """Distort image with swirl effect.
+           
+           :param angle: Angle in degrees clockwise
+           :type angle: ``float``
+           
+           Swirls an image by angle clockwise. Angle can be negative resulting
+           in distortion in opposite direction.
+           
+           This method can be chained.
+        """
+        guard(self.__wand, lambda: cdll.MagickSwirlImage(self.__wand, angle))
+        
+        return self
         
     @only_live
     def spread(self, radius):
+        """Spread pixels in random direction.
+           
+           :param radius: Maximal distance from original position
+           :type radius: ``int``
+           
+           Applies special effect method that randomly displaces each
+           pixel in a block defined by the radius parameter.
+        
+           This method can be chained.
+        """
         guard(self.__wand, lambda: cdll.MagickSpreadImage(self.__wand, radius))
+        
+        return self
         
     @only_live
     def auto_gamma(self):
+        """Auto-gamma image.
+        
+           Extracts the 'mean' from the image and adjust the
+           image to try make set its gamma appropriatally.
+           
+           This method can be chained.
+        """
         guard(self.__wand,
               lambda: cdll.MagickAutoGammaImage(self.__wand))
+        
+        return self
     
     @only_live
     def auto_level(self):
+        """Auto-level image.
+        
+           Adjusts the levels of an image by scaling the minimum and
+           maximum values to the full quantum range.
+           
+           This method can be chained.
+        """
         guard(self.__wand,
               lambda: cdll.MagickAutoLevelImage(self.__wand))
         
+        return self
+        
     @only_live
     def blur(self, radius, strength=None):
+        """Blur image.
+           
+           :param radius: Gaussian operator radius
+           :type radius: float
+           :param strength: Standard deviation (sigma)
+           :type strength: float
+           
+           Convolves the image with a gaussian operator of the given radius
+           and standard deviation (strength).
+           
+           This method can be chained.
+        """
         if strength == None:
             strength = radius
             
         guard(self.__wand,
               lambda: cdll.MagickBlurImage(self.__wand, radius, strength))
+        
+        return self
     
     @only_live
     def brightness(self, factor):
+        """Brightens an image.
+           
+           :param factor: Brightness factor betwwen -1 and 1
+           :type factor: ``float``
+           
+           Brightens an image with specified factor. Factor of ``0`` is
+           no-change operation. Values towards ``-1`` make image darker.
+           ``-1`` makes image completely black. Values towards 1 make image
+           brigther. ``1`` makes image completely white.
+           
+           This method can be chained.
+        """
         guard(self.__wand,
               lambda: cdll.MagickBrightnessContrastImage(self.__wand,
                                                          factor * 100, 0))
+        
+        return self
     
     @only_live
     def contrast(self, factor):
+        """Change image contrast.
+           
+           :param factor: Contrast factor betwwen -1 and 1
+           :type factor: ``float``
+           
+           Change image contrast with specified factor. Factor of ``0`` is
+           no-change operation. Values towards ``-1`` make image less
+           contrasting. ``-1`` makes image completely gray. Values towards
+           ``1`` increase image constrast. ``1`` pulls channel values towards
+           0 and 1 resulting in a highly contrasting posterized image.
+           
+           This method can be chained.
+        """
         guard(self.__wand,
               lambda: cdll.MagickBrightnessContrastImage(self.__wand,
                                                          0, factor * 100))
+        
+        return self
     
     @only_live
     def modulate(self, hue=0, saturation=0, lightness=0):
+        """Modulate hue, saturation and lightness of the image
+           
+           :param hue: Hue value from -1 to 1
+           :type hue: ``float``
+           :param saturation: Saturation value from -1 to infinity
+           :type saturation: ``float``
+           :param lightness: Lightness value from -1 to inifinity
+           :type lightness: ``float``
+           
+           Setting any of the parameters to 0 is no-change operation.
+           Hue parameter represents hue rotation relatively to current
+           position. `-1` means rotation by 180 degrees counter-clockwise and
+           1 is rotation by 180 degrees clockwise. Setting saturation to ``-1``
+           completely desaturates image (makes it grayscale) while values from
+           ``0`` towards infinity make it more saturated. Setting lightness
+           to ``-1`` makes image completely black and values from ``0`` towards
+           infinity make it lighter eventually reaching pure white.
+           
+           This method can be chained.
+        """
         guard(self.__wand,
               lambda: cdll.MagickModulateImage(self.__wand,
                                                lightness * 100 + 100,
                                                saturation * 100 + 100,
                                                hue * 100 + 100))
+        
+        return self
     
     def desaturate(self):
+        """Desatures an image.
+           
+           Reduces saturation level of all pixels to minimum yielding
+           grayscale image.
+           
+           This method can be chained.
+        """
         self.modulate(saturation=-1)
         
     @only_live
     def invert(self, only_gray=False):
+        """Invert image colors.
+           
+           Inverts all image colors resulting in a negative image.
+           
+           This method can be chained.
+        """
         guard(self.__wand,
               lambda: cdll.MagickNegateImage(self.__wand, only_gray))
         
-    @only_live
-    def oil_paint(self, radius):
-        guard(self.__wand,
-              lambda: cdll.MagickOilPaintImage(self.__wand, radius))
+        return self
     
     @only_live
-    def posterize(self, levels):
+    def oil_paint(self, radius):
+        """Simulates oil paiting.
+           
+           :param radius: brush radius
+           :type radius: ``float``
+           
+           Each pixel is replaced by the most frequent color occurring in a
+           circular region defined by radius.
+           
+           This method can be chained.
+        """
         guard(self.__wand,
-              lambda: cdll.MagickPosterizeImage(self.__wand, levels))
+              lambda: cdll.MagickOilPaintImage(self.__wand, radius))
+        
+        return self
+    
+    @only_live
+    def posterize(self, levels, dither=False):
+        """Reduces number of colors in the image.
+           
+           :param levels: Output number of levels per channel
+           :type levels: ``int``
+           :param dither: Weather dithering should be performed
+           'type dither: :bool:
+           
+           Reduces the image to a limited number of color levels.
+           Levels specify color levels allowed in each channel. The
+           channel spectrum is divided equally by level. Very low
+           values (2, 3 or 4) have the most visible effect. ``1`` produces
+           ``1**3`` output colors, ``2`` produces ``2**3`` colors ie. ``8``
+           and so on. Setting dither to ``True`` enables dithering.
+           
+           This method can be chained.
+        """
+        guard(self.__wand,
+              lambda: cdll.MagickPosterizeImage(self.__wand, levels, dither))
+        
+        return self
     
     @only_live
     #TODO: moving center here
-    def radial_blur(self, radius):
+    def radial_blur(self, angle):
+        """Performs radial blur.
+        
+           :param angle: Blur angle in degrees
+           :type angle: ``float``
+           
+           Radial blurs image within given angle.
+           
+           This method can be chained.
+        """
         guard(self.__wand,
-              lambda: cdll.MagickRadialBlurImage(self.__wand, radius))
+              lambda: cdll.MagickRadialBlurImage(self.__wand, angle))
+        
+        return self
     
     @only_live
     def shadow(self, radius, x=0, y=0, opacity=0.5):
@@ -706,10 +943,20 @@ class Image(object):
     
     @only_live
     def shear(self, x_angle, y_angle):
+        """Shear an image by given angles.
+        
+           :param x_angle: angle between y axis and vertical edge
+           :type x_angle: ``float``
+           :param y_angle: angle betwwen x axis and horizontal edge
+           :type y_angle: ``float``
+           
+           This method can be chained.
+        """
         guard(self.__wand,
               lambda: cdll.MagickShearImage(self.__wand,
                                             color.transparent.wand,
                                             x_angle, y_angle))
+        return self
     
     @only_live
     def solarize(self, threshold):
@@ -718,6 +965,19 @@ class Image(object):
     
     @only_live
     def sketch(self, radius, angle=45, strength=None):
+        """Simulate sketched image.
+           
+           :param radius: stroke length.
+           :type radius: ``float``
+           :param angle: angle of strokes clockwise relative to horizontal axis
+           :type radius: ``float``
+           :param strength: effect strength (sigma)
+           :type strength: ``float``
+           
+           Simulates a sketch by adding strokes into an image.
+           
+           This method can be chained.
+        """
         if strength == None:
             strength = radius
         guard(self.__wand,
@@ -725,32 +985,95 @@ class Image(object):
                                              strength, angle))
     
     @only_live
-    def overlay(self, other, x=0, y=0, composite=None):
+    def overlay(self, image, x=0, y=0, composite=None):
+        """Overlay another image on this image.
+        
+           :param image: imaged to be overlayed
+           :type image: :class:`tinyimg.image.Image`
+           :param x: x coordinate of overlay
+           :type x: ``int``
+           :param y: y coordinate of overlay
+           :type y: ``int``
+           :param composite: 
+           :type composite: :class:`tinyimg.lazyenum.EnumValue`
+           
+           Overlays given image on this image at ``(x, y)`` using
+           composite operator. There are many popular composite
+           operators available like lighten, darken, colorize, saturate,
+           overlay, burn or default - over.
+           
+           >>> img = read('example.jpg')
+           >>> img2 = read('example2.jpg')
+           >>> img.overlay(img2, 10, 10)
+           
+           This method can be chained.
+        """
         if not composite:
             composite = globals()['composite'].over
             
         value = enum_lookup(composite)
         
         guard(self.__wand,
-              lambda: cdll.MagickCompositeImage(self.__wand, other.wand,
+              lambda: cdll.MagickCompositeImage(self.__wand, image.wand,
                                                 value, x, y))
     
     @only_live
     def deskew(self, threshold):
+        """Attempt to deskew image.
+           
+           :param threshold: Separate background from foreground.
+           :type threshold: ``float``
+           
+           Removes skew from the image. Skew is an artifact that occurs in
+           scanned images because of the camera being misaligned,
+           imperfections in the scanning or surface, or simply because
+           the paper was not placed completely flat when scanned.
+           
+           This method can be chained.
+        """
         guard(self.__wand,
               lambda: cdll.MagickDeskewImage(self.__wand, threshold))
+        
+        return self
     
     @only_live
-    def sepia(self, saturation=-.4, threshold=.8):
+    def sepia(self, threshold=.8, saturation=-.4):
+        """Sepia-tonne an image.
+           
+           :param threshold: Controls hue. Set to sepia tone by default.
+           :type threshold: ``float``
+           :param saturation: Saturation level
+           :type saturation:``float``
+           
+           Perform sepia-tonning of an image. You can control hue by
+           adjusting threshold parameter.
+           
+           This method can be chained.
+        """
         threshold = 2 ** int(magick.get_options()['QuantumDepth']) * threshold
         
         guard(self.__wand,
               lambda: cdll.MagickSepiaToneImage(self.__wand, threshold))
         
-        self.modulate(saturation=saturation)
+        if saturation:
+            self.modulate(saturation=saturation)
+        
+        return self
     
     @only_live
     def color_overlay(self, color, blend=1):
+        """Overlay color over whole image.
+           
+           :param color: color to overlay
+           :type color: :class:`tinyimg.color.Color`
+           :param blend: overlay blending
+           :type blend: ``float``
+           
+           Overlay a color over whole image. Blend is bleding factor of a
+           color with `0` being completely transparent and ``1`` fully opaque.
+           
+           This method can be chained.
+        """
         # image magick ignores alpha setting of color
         # let's incorporate it into blend
         blend *= color.alpha
@@ -762,9 +1085,21 @@ class Image(object):
                                                blend.wand))
         
         blend.close()
+        
+        return self
     
     @only_live
     def get_pixel(self, x, y):
+        """Get pixel color at given coordinates.
+           
+           :param x: x coordinate of pixel
+           :type x: ``int``
+           :param y: y coordinate of pixel
+           :type y: ``int``
+           :rtype: :color:`tinyimg.color.Color`
+           
+           Reads pixel color at point ``(x,y)``.
+        """
         color = color_module.Color()
         
         guard(self.__wand,
@@ -774,6 +1109,19 @@ class Image(object):
         return color
     
     def splice(self, x, y, width, height):
+        """Insert bands of transprent areas into an image.
+           
+           :param x: x coordinate of splice
+           :type x: ``int``
+           :param y: y coordinate of splice
+           :type y: ``int``
+           :param width: width of splice
+           :type width: ``int``
+           :param height: height of splice
+           :type height: ``int``
+           
+           This method can be chained.
+        """
         background = color.from_string('transparent')
             
         # preserve background color
@@ -795,8 +1143,23 @@ class Image(object):
                                                          old_color.wand))
         old_color.close()
         background.close()
+        
+        return self
     
-    def trim(self, similarity=10, background=None):
+    def trim(self, similarity=.1, background=None):
+        """Attempt to trim off extra background around image.
+           
+           :param similarity: Smilarity factor
+           :type similarity: ``float``
+           :param background: background color, transparent by default
+           :type background: :class:`tinyimg.color.Color`
+           
+           Removes edges that are the background color from the image.
+           The greater similarity the more distant hues are considered the same
+           color. Simlarity of `0` means only this exact color.
+           
+           This method can be chained.
+        """
         # TODO: guessing of background?
         background_free = not(background)
         if not background:
@@ -812,7 +1175,7 @@ class Image(object):
                                                          background.wand))
         
         guard(self.__wand,
-              lambda: cdll.MagickTrimImage(self.__wand, similarity))
+              lambda: cdll.MagickTrimImage(self.__wand, similarity * 100))
         
         #restore background color
         guard(self.__wand,
@@ -822,23 +1185,44 @@ class Image(object):
         if background_free:
             background.close()
             
+        return self
+        
     @property
     @only_live
     def wand(self):
+        """Return underlyimg ImageMagick resource.
+           
+           Useful when you want to perform custom operations directly
+           accessing ctypes.
+           :rtype: :class:`tinyimag.api.type.MagickWand_p`
+        """
         return self.__wand
     
-    @only_live
-    def __get_colorspace(self):
-        value = cdll.MagickGetImageColorspace(self.__wand)
-        return enum_reverse_lookup(colorspace, value)
+    def colorspace():  # @NoSelf
+        doc =\
+        """Return or set colorspace associated with image.
+           
+           Sets or gets colorspace. When you set this property there's no
+           colorspace conversion performed and the original channel values
+           are just left as is. If you actually want to perform a conversion
+           use :attr:`convert_colorspace` instead.
+           
+           :rtype: :class:`tinyimg.lazyenum.EnumValue`
+        """
+        @only_live
+        def fget(self):
+            value = cdll.MagickGetImageColorspace(self.__wand)
+            return enum_reverse_lookup(colorspace, value)
+        
+        @only_live
+        def fset(self, mnemonic):
+            value = enum_lookup(mnemonic)
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageColorspace(self.__wand, value))
+        
+        return property(**locals())
     
-    @only_live
-    def __set_colorspace(self, mnemonic):
-        value = enum_lookup(mnemonic)
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageColorspace(self.__wand, value))
-    
-    colorspace = property(__get_colorspace, __set_colorspace)
+    colorspace = colorspace()
     
     @only_live
     def __get_type(self):
