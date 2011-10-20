@@ -51,6 +51,12 @@ def find_library(name, abis):
     else:
         paths.append(path)
     
+    if not environ.get('TINYIMG_SKIP_PACKAGE'):
+        import tinyimg
+        path = dirname(tinyimg.__file__)
+        paths.append(join(path, 'lib'))
+        paths.append(join(path, 'dll'))
+    
     if not environ.get('TINYIMG_SKIP_VIRTUAL_ENV'):
         try:
             path = environ['VIRTUAL_ENV']
@@ -123,6 +129,6 @@ class TinyException(Exception):
     pass
 
 
-from os.path import join, exists
+from os.path import join, exists, dirname
 
 from tinyimg.compat import formattable

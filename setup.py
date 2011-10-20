@@ -1,6 +1,13 @@
 # coding: utf-8
 
 from distutils.core import setup
+from distutils.command.install import install
+
+class tinyimg_install(install):
+    def run(self):
+        install.run(self)
+        
+        print('==> Installing binary ImageMagick distribution')
 
 install_requires=['six', 'decorator']
 
@@ -19,5 +26,6 @@ setup(
     package_data={'tinyimg': ['lena.ycbcr.bz2']},
     license='MIT License',
     long_description=open('README').read(),
-    install_requires=install_requires
+    install_requires=install_requires,
+    cmdclass=dict(install=tinyimg_install)
 )
