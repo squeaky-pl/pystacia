@@ -16,17 +16,17 @@ def read(filename):
        >>> read('example.jpg')
        <Image(w=512,h=512,8bit,rgb,truecolor) object at 0x10302ee00L>
     """
-    wand = cdll.NewMagickWand()
-        
     if not exists(filename):
         template = formattable('No such file or directory: {0}')
         raise IOError((2, template.format(filename)))
     
     filename = b(filename)
     
-    guard(wand, lambda: cdll.MagickReadImage(wand, filename))
+    image = Image()
     
-    return Image(wand)
+    guard(image.wand, lambda: cdll.MagickReadImage(image.wand, filename))
+    
+    return image
 
 
 def read_blob(blob, format=None, length=None):  # @ReservedAssignment
@@ -59,24 +59,25 @@ def read_blob(blob, format=None, length=None):  # @ReservedAssignment
     if hasattr(blob, 'read'):
         blob = blob.read(length)
     
-    wand = cdll.NewMagickWand()
+    image = Image()
     
     if format:
         # ensure we always get bytes
         format = b(format.upper())  # @ReservedAssignment
-        old_format = cdll.MagickGetImageFormat(wand)
+        old_format = cdll.MagickGetImageFormat(image.wand)
         template = formattable('Format "{0}" unsupported')
-        guard(wand,
-              lambda: cdll.MagickSetFormat(wand, format),
+        guard(image.wand,
+              lambda: cdll.MagickSetFormat(image.wand, format),
               template.format(format))
     
-    guard(wand, lambda: cdll.MagickReadImageBlob(wand, blob, len(blob)))
+    guard(image.wand,
+          lambda: cdll.MagickReadImageBlob(image.wand, blob, len(blob)))
     
     if format:
-        guard(wand,
-                  lambda: cdll.MagickSetFormat(wand, old_format))
+        guard(image.wand,
+                  lambda: cdll.MagickSetFormat(image.wand, old_format))
     
-    return Image(wand)
+    return image
 
 
 def read_raw(raw, format, width, height, depth):  # @ReservedAssignment
@@ -108,32 +109,33 @@ def read_raw(raw, format, width, height, depth):  # @ReservedAssignment
     
     format = b(format.upper())  # @ReservedAssignment
     
-    wand = cdll.NewMagickWand()
+    image = Image()
     
-    guard(wand, lambda: cdll.MagickSetSize(wand, width, height))
-    guard(wand, lambda: cdll.MagickSetDepth(wand, depth))
-    guard(wand, lambda: cdll.MagickSetFormat(wand, format))
+    guard(image.wand, lambda: cdll.MagickSetSize(image.wand, width, height))
+    guard(image.wand, lambda: cdll.MagickSetDepth(image.wand, depth))
+    guard(image.wand, lambda: cdll.MagickSetFormat(image.wand, format))
         
-    guard(wand, lambda: cdll.MagickReadImageBlob(wand, raw, len(raw)))
+    guard(image.wand,
+          lambda: cdll.MagickReadImageBlob(image.wand, raw, len(raw)))
     
-    return Image(wand)
+    return image
 
 
-def read_special(spec, width=None, height=None, _ctype=False):
+def read_special(spec, width=None, height=None):
     """Read special :term:`ImageMagick` image resource"""
-    wand = cdll.NewMagickWand()
+    image = Image()
     
     if width and height:
-        guard(wand, lambda: cdll.MagickSetSize(wand, width, height))
+        guard(image.wand, lambda: cdll.MagickSetSize(image.wand, width, height))
     
     spec = b(spec)
     
-    guard(wand, lambda: cdll.MagickReadImage(wand, spec))
+    guard(image.wand, lambda: cdll.MagickReadImage(image.wand, spec))
     
-    return wand if _ctype else Image(wand)
+    return image
 
 
-def blank(width, height, background=None, _ctype=False):
+def blank(width, height, background=None):
     """Create :class:`Image` with monolithic background
        
        :param width: Width in pixels
@@ -151,15 +153,15 @@ def blank(width, height, background=None, _ctype=False):
     if not background:
         background = 'transparent'
     
-    return read_special('xc:' + str(background), width, height, _ctype)
+    return read_special('xc:' + str(background), width, height)
 
 from tinyimg.util import only_live
 
 
 class Image(object):
     def __init__(self, wand=None):
-        self.__wand = wand
-        self.__closed = not bool(wand)
+        self.__wand = wand if wand else cdll.NewMagickWand()
+        self.__closed = False
     
     @only_live
     def copy(self):
@@ -441,7 +443,7 @@ class Image(object):
         else:
             width, height = self.width, self.height
             cdll.DestroyMagickWand(self.__wand)
-            self.__wand = blank(width, height, fill, _ctype=True)
+            self.__wand = blank(width, height, fill)._claim_wand()
     
     @only_live
     def flip(self, axis):
@@ -1137,6 +1139,20 @@ class Image(object):
         """
         return self.__wand
     
+    def _claim_wand(self):
+        """Reclaims wand from this image.
+           
+           :rtype: :class:`tinyimg.api.type.MagickWand_p`
+           
+           For internal use only. Do not use directly. Reclaims wand of this
+           image from owning by this object. Object is closed afterwards.
+        """
+        wand = self.__wand
+        self.__wand = None
+        self.close()
+        
+        return wand
+    
     def colorspace():  # @NoSelf
         doc = (  # @UnusedVariable
         """Return or set colorspace associated with image.
@@ -1305,8 +1321,10 @@ class Image(object):
            
            :rtype: ``type(None)``
         """
-        cdll.DestroyMagickWand(self.__wand)
-        self.__wand = None
+        if self.__wand:
+            cdll.DestroyMagickWand(self.__wand)
+            self.__wand = None
+        
         self.__closed = True
     
     @property

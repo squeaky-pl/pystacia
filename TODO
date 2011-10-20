@@ -6,9 +6,7 @@ TODO
 - coverage
 - docs
 - docstrings
-- method chaining? possibly turn off with a variable
 - enhance -> denoise -> remove_noise?
-- Image should be used like x = Image() then x.wand in factories like Color
 - nice system detecting OS in setup.py and downloading binary libraries
 - shear - skew?
 - exception in the tests causes os.exit(1) which doesnt trigger atexit
