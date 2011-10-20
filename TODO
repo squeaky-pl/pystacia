@@ -16,6 +16,7 @@ TODO
 - rename image_type as types, image_filter as filters <- it allows introducing colors
   as factory in directly in tinyimg and doesnt override builtin symbols
 - colorize? if no native method blank image overlay with color operator and set saturation
+- move version and author from setup.py into __init__.py [0.1.1]
 - those semaphores thing possibly should keep week references to any magick resource and clear it on exit [0.1.1]
 - move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
 - implement colors __getattr__ style called Factory in tinyimg.color [0.1.1]
