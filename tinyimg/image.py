@@ -126,7 +126,8 @@ def read_special(spec, width=None, height=None):
     image = Image()
     
     if width and height:
-        guard(image.wand, lambda: cdll.MagickSetSize(image.wand, width, height))
+        guard(image.wand, lambda:
+              cdll.MagickSetSize(image.wand, width, height))
     
     spec = b(spec)
     

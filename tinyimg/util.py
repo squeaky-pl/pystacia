@@ -42,8 +42,6 @@ class memoized(object):
 def find_library(name, abis):
     paths = []
     
-    from os import environ
-    
     try:
         path = environ['TINYIMG_LIBRARY_PATH']
     except KeyError:
@@ -106,6 +104,7 @@ def find_library(name, abis):
     
     return None
 
+
 @memoized
 def get_osname():
     if hasattr(platform, 'mac_ver') and platform.mac_ver()[0]:
@@ -154,6 +153,7 @@ class library_path_transaction:
             del environ[self.key]
         
         return self
+
 
 class TinyException(Exception):
     pass
