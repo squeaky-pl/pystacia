@@ -562,11 +562,11 @@ class Image(object):
         first = blank(*self.size)
         second = blank(*self.size)
         
-        first.overlay(copy, composite=composite.copy)
+        first.overlay(copy, composite=composites.copy)
         
         guard(copy.wand, lambda: cdll.MagickNextImage(copy.wand))
         
-        second.overlay(copy, composite=composite.copy)
+        second.overlay(copy, composite=composites.copy)
         
         copy.close()
         
@@ -960,7 +960,7 @@ class Image(object):
            This method can be chained.
         """
         if not composite:
-            composite = globals()['composite'].over
+            composite = composites.over
             
         value = enum_lookup(composite)
         
@@ -1388,7 +1388,7 @@ if not disable_chains:
         if callable(item) and item.__doc__ and ':rtype:' not in item.__doc__:
             setattr(Image, key, chainable(item))
 
-composite = enum('composite')
+composites = enum('composite')
 types = enum('type')
 filters = enum('filter')
 colorspaces = enum('colorspace')
