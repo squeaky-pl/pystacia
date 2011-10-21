@@ -14,14 +14,14 @@ class Lena(TestCase):
         img = lena()
         self.assertEquals(img.size, (512, 512))
         self.assertEquals(img.type, types.truecolor)
-        self.assertEquals(img.colorspace, colorspace.rgb)
+        self.assertEquals(img.colorspace, colorspaces.rgb)
         img.close()
         
         img = lena(32)
         self.assertEquals(img.size, (32, 32))
-        self.assertEquals(img.colorspace, colorspace.rgb)
+        self.assertEquals(img.colorspace, colorspaces.rgb)
         img.close()
 
 
 from tinyimg import magick_logo, lena
-from tinyimg.image import types, colorspace
+from tinyimg.image import types, colorspaces

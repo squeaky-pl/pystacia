@@ -94,7 +94,7 @@ def lena(width=None):
     if width:
         img.rescale(width, width)
 
-    img.convert_colorspace(image.colorspace.rgb)
+    img.convert_colorspace(image.colorspaces.rgb)
         
     return img
 

@@ -345,7 +345,7 @@ class Image(object):
            This method can be chained.
         """
         if not filter:
-            filter = image_filter.undefined  # @ReservedAssignment
+            filter = filters.undefined  # @ReservedAssignment
         
         if not width and not height:
             if not factor:
@@ -1169,7 +1169,7 @@ class Image(object):
         @only_live
         def fget(self):
             value = cdll.MagickGetImageColorspace(self.__wand)
-            return enum_reverse_lookup(colorspace, value)
+            return enum_reverse_lookup(colorspaces, value)
         
         @only_live
         def fset(self, mnemonic):
@@ -1390,7 +1390,7 @@ if not disable_chains:
 
 composite = enum('composite')
 types = enum('type')
-image_filter = enum('filter')
-colorspace = enum('colorspace')
+filters = enum('filter')
+colorspaces = enum('colorspace')
 compressions = enum('compression')
 axes = enum('axis')
