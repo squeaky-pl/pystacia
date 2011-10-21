@@ -10,17 +10,18 @@ class tinyimg_build(build):
         from distutils.file_util import write_file
         from distutils.dir_util import mkpath
         
-        print('==> Installing binary ImageMagick distribution')
-        
-        #from pdb import set_trace; set_trace()
-        
         lib_base = join(self.build_base, 'libraries')
         mkpath(lib_base)
         write_file(join(lib_base, 'test.txt'), 'test')
         
         return result
 
-from setuptools.command.install import install
+try:
+    # this will be present with pip or setuptools was installed
+    from setuptools.command.install import install
+except ImportError:
+    # still it can work with python setup.py install
+    from distutils.command.install import install
 
 class tinyimg_install(install):
     def run(self):

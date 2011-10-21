@@ -10,6 +10,7 @@ syntax: regexp
 ^tinyimg-env/
 ^env/
 ^dist/
+^build/
 ^ironpython/(?!sync\.py)
 ^doc/build/(?!\.keep)
 

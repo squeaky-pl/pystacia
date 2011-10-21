@@ -69,66 +69,99 @@ def find_library(name, abis):
     from os import getcwd
     paths.append(getcwd())
     
-    import platform
-    from tinyimg.compat import dist
-
     from ctypes import CDLL
     dll_template = None
     factory = CDLL
 
-    macos = hasattr(platform, 'mac_ver') and platform.mac_ver()[0]
-    linux = dist and dist()[0]
-    windows = hasattr(platform, 'win32_ver') and platform.win32_ver()[0]
-    from sys import version_info
-    # on windows with 2.5 win32_ver is empty
-    if version_info[:2] == (2, 5):
-        import os
-        windows = os.name == 'nt'
-    
-    if macos or linux or windows:
-        def dll_template(abi):
-            if macos:
-                return 'lib{name}.{abi}.dylib' if abi else 'lib{name}.dylib'
-            elif linux:
-                return 'lib{name}.so.{abi}' if abi else 'lib{name}.so'
-            elif windows:
-                return 'lib{name}-{abi}.dll' if abi else 'lib{name}.dll'
-    else:
+    def dll_template(abi):
+        osname = get_osname()
+        if osname == 'macos':
+            return 'lib{name}.{abi}.dylib' if abi else 'lib{name}.dylib'
+        elif osname == 'linux':
+            return 'lib{name}.so.{abi}' if abi else 'lib{name}.so'
+        elif osname == 'windows':
+            return 'lib{name}-{abi}.dll' if abi else 'lib{name}.dll'
+        
         return None
-    
-    if windows:
-        old_path = environ['PATH']
-        path_template = formattable('{path};{old_path}')
-    
+
     for path in paths:
         if not exists(path):
             continue
         
         for abi in abis:
             template = formattable(dll_template(abi))
+            if not template:
+                continue
             dll_path = join(path, template.format(name=name, abi=abi))
             if exists(dll_path):
-                if windows:
-                    # windows doesnt store absolute locations in DLLs
-                    # we need to append current path to environ
-                    environ['PATH'] = path_template.format(path=path,
-                                                           old_path=old_path)
+                transaction = library_path_transaction(path).begin()
+                
                 try:
                     factory(dll_path)
                 except:
-                    if windows:
-                        # restore os path
-                        environ['PATH'] = old_path
+                    transaction.rollback()
                 else:
+                    transaction.commit()
                     return dll_path
     
     return None
 
+@memoized
+def get_osname():
+    if hasattr(platform, 'mac_ver') and platform.mac_ver()[0]:
+        return 'macos'
+    if dist and dist()[0]:
+        return 'linux'
+    if hasattr(platform, 'win32_ver') and platform.win32_ver()[0]:
+        return 'windows'
+    # on windows with 2.5 win32_ver is empty
+    if version_info[:2] == (2, 5):
+        import os
+        if os.name == 'nt':
+            return 'windows'
+        
+    return None
+
+
+class library_path_transaction:
+    _environ_keys = dict(macos='DYLD_FALLBACK_LIBRARY_PATH',
+                         linux='LD_LIBRARY_PATH',
+                         windows='PATH')
+    
+    def __init__(self, path):
+        self.key = self.__class__._environ_keys[get_osname()]
+        self.path = path
+        
+    def begin(self):
+        old_path = environ.get(self.key)
+        if not old_path or self.path not in old_path:
+            parts = [self.path]
+            if old_path:
+                parts.append(old_path)
+            environ[self.key] = pathsep.join(parts)
+        
+        self.old_path = old_path
+        
+        return self
+        
+    def commit(self):
+        return self
+    
+    def rollback(self):
+        if self.old_path:
+            environ[self.key] = self.old_path
+        else:
+            del environ[self.key]
+        
+        return self
 
 class TinyException(Exception):
     pass
 
 
+import platform
+from sys import version_info
+from os import environ, pathsep
 from os.path import join, exists, dirname
 
-from tinyimg.compat import formattable
+from tinyimg.compat import formattable, dist
