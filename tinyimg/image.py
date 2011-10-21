@@ -1191,13 +1191,13 @@ class Image(object):
            matter counterparts.
            
            >>> img = read('example.jpg')
-           >>> img.type == image_type.truecolor
+           >>> img.type == types.truecolor
         """)
         
         @only_live
         def fget(self):
             value = cdll.MagickGetImageType(self.__wand)
-            return enum_reverse_lookup(image_type, value)
+            return enum_reverse_lookup(types, value)
         
         @only_live
         def fset(self, mnemonic):
@@ -1389,7 +1389,7 @@ if not disable_chains:
             setattr(Image, key, chainable(item))
 
 composite = enum('composite')
-image_type = enum('type')
+types = enum('type')
 image_filter = enum('filter')
 colorspace = enum('colorspace')
 compressions = enum('compression')

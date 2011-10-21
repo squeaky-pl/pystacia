@@ -35,7 +35,7 @@ class ReadBlob(TestCase):
             img = read_blob(i)
             
             self.assertEquals(img.size, (512, 512))
-            self.assertEquals(img.type, image_type.truecolor)
+            self.assertEquals(img.type, types.truecolor)
             self.assertEquals(img.colorspace, colorspace.rgb)
             self.assertEquals(img.depth, 8)
 
@@ -54,7 +54,7 @@ class Read(TestCase):
         img = read(tmpname)
         
         self.assertSequenceEqual(img.size, (512, 512))
-        self.assertEquals(img.type, image_type.truecolor)
+        self.assertEquals(img.type, types.truecolor)
         self.assertEquals(img.colorspace, colorspace.rgb)
         self.assertEquals(img.depth, 8)
             
@@ -104,7 +104,7 @@ class Write(TestCase):
         img = read(tmpname)
         self.assertEquals(img.size, (512, 512))
         self.assertEquals(img.colorspace, colorspace.rgb)
-        self.assertEquals(img.type, image_type.truecolor)
+        self.assertEquals(img.type, types.truecolor)
         img.close()
 
 
@@ -598,9 +598,9 @@ class Type(TestCase):
     def test(self):
         img = lena()
         
-        self.assertEquals(img.type, image_type.truecolor)
-        img.type = image_type.bilevel
-        self.assertEquals(img.type, image_type.bilevel)
+        self.assertEquals(img.type, types.truecolor)
+        img.type = types.bilevel
+        self.assertEquals(img.type, types.bilevel)
         
         img.close()
 
@@ -626,7 +626,7 @@ from tempfile import mkstemp
 from six import b, BytesIO
 
 from tinyimg.util import TinyException
-from tinyimg.image import (read, read_raw, read_blob, image_type,
+from tinyimg.image import (read, read_raw, read_blob, types,
                            colorspace, blank, axes)
 from tinyimg import color
 from tinyimg import lena

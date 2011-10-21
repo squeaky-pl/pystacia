@@ -6,14 +6,14 @@ class MagickLogo(TestCase):
         img = magick_logo()
         
         self.assertEquals(img.size, (640, 480))
-        self.assertEquals(img.type, image_type.palette)
+        self.assertEquals(img.type, types.palette)
 
 
 class Lena(TestCase):
     def test(self):
         img = lena()
         self.assertEquals(img.size, (512, 512))
-        self.assertEquals(img.type, image_type.truecolor)
+        self.assertEquals(img.type, types.truecolor)
         self.assertEquals(img.colorspace, colorspace.rgb)
         img.close()
         
@@ -24,4 +24,4 @@ class Lena(TestCase):
 
 
 from tinyimg import magick_logo, lena
-from tinyimg.image import image_type, colorspace
+from tinyimg.image import types, colorspace

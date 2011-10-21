@@ -8,11 +8,9 @@ TODO
 - docstrings
 - enhance -> denoise -> remove_noise?
 - nice system detecting OS in setup.py and downloading binary libraries
-- shear - skew?
+- shear - skew? angles or pixels?
 - exception in the tests causes os.exit(1) which doesnt trigger atexit
 - remove color paramname from everywhere - use fill, background and so on - future proof
-- add DYLD_FALLBACK_LIBRARY_PATH and LD_LIBRARY_PATH on MacOSX and Linux, we can
-  have more then one needed lib files out there
 - rename image_type as types, image_filter as filters <- it allows introducing colors
   as factory in directly in tinyimg and doesnt override builtin symbols
 - colorize? if no native method blank image overlay with color operator and set saturation
