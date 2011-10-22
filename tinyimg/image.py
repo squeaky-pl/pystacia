@@ -924,19 +924,43 @@ class Image(object):
                                             x_angle, y_angle))
     
     @only_live
-    def solarize(self, threshold):
+    def solarize(self, factor):
+        """Solarizes an image.
+           
+           :param factor: solarize factor
+           :type factor: ``float``
+           
+           Applies solarization which is a color value opration similar to
+           what can be a result of partially exposing a photograph in a
+           darkroom. The usable range of factor is from ``0`` to ``1``
+           inclusive. Value of ``0`` is no-change operation whilst ``1``
+           produces a negative. Typically factor ``0.5`` produces
+           interesting effect.
+           
+           This method can be chained.
+        """
+        factor = (1 - factor) * 2 ** magick.get_depth()
+        
         guard(self.__wand,
-              lambda: cdll.MagickSolarizeImage(self.__wand, threshold))
+              lambda: cdll.MagickSolarizeImage(self.__wand, factor))
     
     @only_live
     def colorize(self, color):
+        """Colorize image.
+           
+           :param color: color from which hue value is used
+           :type color: :class:`tinyimg.color.Color`
+           
+           Colorizes image resulting in image containing
+           only one hue value.
+           
+           This method can be chained.
+        """
         overlay = blank(self.width, self.height, color)
         
         self.overlay(overlay, composite=composites.hue)
         
         overlay.close()
-        
-        return self
     
     @only_live
     def sketch(self, radius, angle=45, strength=None):

@@ -498,6 +498,21 @@ class Skew(TestCase):
         img.close()
 
 
+class Solarize(TestCase):
+    def test(self):
+        img = lena()
+        
+        before = img.get_pixel(256, 256)
+        
+        img.solarize(0)
+        self.assertEquals(img.get_pixel(256, 256), before)
+        img.solarize(1)
+        self.assertEquals(img.get_pixel(256, 256).get_rgb(),
+                          tuple(1 - x for x in before.get_rgb()))
+        
+        img.close()
+
+
 class Sketch(TestCase):
     def test(self):
         img = lena()

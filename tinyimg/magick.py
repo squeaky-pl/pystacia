@@ -47,4 +47,8 @@ def get_delegates():
     
     return delegates.split()
 
+def get_depth():
+    depth = get_options().get('QuantumDepth')
+    return int(depth) if depth else None
+
 from tinyimg import cdll
