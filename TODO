@@ -2,7 +2,6 @@
 TODO
 ====
 
-- convenience imports in main module
 - coverage
 - docs
 - docstrings
@@ -60,6 +59,7 @@ TODO
 - all functions should accept blend as param - merges result on top with this blend
 - visual testing framework with reference images
 - wave needs phi
+- blending gravity
 - checker in show, zoom, crop
 - > and < on color lightness comparison
 - color_overlay should become fill once we have blending everywhere
@@ -68,6 +68,7 @@ TODO
 STUFF
 =====
 - mooar tests
+- rebuild binaries
 - coverage
 - docs
 - docstrings

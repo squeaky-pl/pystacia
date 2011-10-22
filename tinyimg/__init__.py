@@ -147,3 +147,16 @@ init()
 
 from tinyimg import magick
 from tinyimg import image
+
+#convenience imports
+from tinyimg.image import read, read_blob, read_raw
+from tinyimg.image import (
+    composites, types, filters, colorspaces, compressions, axes)
+from tinyimg import color
+
+
+__all__ = [
+    'lena', 'magick_logo',
+    'read', 'read_blob', 'read_raw',
+    'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
+    'color']
