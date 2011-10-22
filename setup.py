@@ -82,6 +82,17 @@ except ImportError:
     from urllib.request import urlretrieve  # @Reimport
 from zipfile import ZipFile
 
+# patch ZipFile to have extract method, py25
+if not hasattr(ZipFile, 'extract'):
+    def extract(z, name, path):
+        f = open(join(path, name), 'wb')
+        
+        f.write(z.read(name))
+        
+        f.close()
+        
+    ZipFile.extract = extract
+
 from distutils.dir_util import mkpath
 from distutils.util import get_platform
 
