@@ -38,6 +38,7 @@ class tinyimg_build(build):
                        get_platform() + '.zip')
         
         if remote_file not in binaries:
+            self.warn('==> Couldnt find binary Imagick for your platform')
             return result
         
         self.announce('==> Magick binary distribution: ' + remote_file)

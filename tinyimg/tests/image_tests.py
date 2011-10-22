@@ -229,11 +229,11 @@ class Emboss(TestCase):
 
 
 # only check if it doesnt blow up
-class Enhance(TestCase):
+class Denoise(TestCase):
     def test(self):
         img = lena()
         
-        img.enhance()
+        img.denoise()
         
         img.close()
 
@@ -479,16 +479,21 @@ class RadialBlur(TestCase):
         img.close()
 
 
-class Shear(TestCase):
+class Skew(TestCase):
     def test(self):
         img = lena()
         
-        img.shear(5, 0)
-        self.assertEquals(img.get_pixel(5, 5).alpha, 0)
+        width, height = img.size
+        
+        img.skew(5)
+        self.assertTrue(img.get_pixel(2, 0).transparent)
         self.assertTrue(img.get_pixel(256, 256).opaque)
-        img.shear(0, 5)
-        self.assertEquals(img.get_pixel(256, 2).alpha, 0)
+        self.assertEquals(img.width, width + 5)
+        
+        img.skew(5, axes.y)
+        self.assertTrue(img.get_pixel(256, 1).transparent)
         self.assertTrue(img.get_pixel(256, 256).opaque)
+        self.assertEquals(img.height, height + 5)
         
         img.close()
 

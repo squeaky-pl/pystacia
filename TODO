@@ -6,14 +6,14 @@ TODO
 - coverage
 - docs
 - docstrings
-- enhance -> denoise -> remove_noise?
-- nice system detecting OS in setup.py and downloading binary libraries
-- shear - skew? angles or pixels?
+- move lena to png, if no png support delete lena
+- dont rely in tests solely on lena
+- group methods in image and refer to this order in documentation
 - exception in the tests causes os.exit(1) which doesnt trigger atexit
 - remove color paramname from everywhere - use fill,
   background and so on - future proof
-- colorize? if no native method blank image overlay with color operator and set saturation
 - move version and author from setup.py into __init__.py [0.1.1]
+- more methods for image [0.1.1]
 - those semaphores thing possibly should keep week references to any magick resource and clear it on exit [0.1.1]
 - move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
 - implement colors __getattr__ style called Factory in tinyimg.color [0.1.1]

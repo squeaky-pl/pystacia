@@ -512,7 +512,7 @@ class Image(object):
               lambda: cdll.MagickEmbossImage(self.__wand, radius, strength))
     
     @only_live
-    def enhance(self):
+    def denoise(self):
         """Attempt to remove noise preserving edges.
         
            Applies a digital filter that improves the quality of a
@@ -895,16 +895,29 @@ class Image(object):
                                              radius, x, y))
     
     @only_live
-    def shear(self, x_angle, y_angle):
-        """Shear an image by given angles.
+    def skew(self, offset, axis=None):
+        """Skews an image by given offsets.
         
-           :param x_angle: angle between y axis and vertical edge
-           :type x_angle: ``float``
-           :param y_angle: angle betwwen x axis and horizontal edge
-           :type y_angle: ``float``
+           :param offset: offset in pixels along given axis
+           :type offset: ``int``
+           :param axis: axis along which to perform skew
+           :type axis: ``tinyimg.lazyenum.EnumValue``
+           
+           Skews an image along given axis. If no axis is given it defaults
+           to X axis.
            
            This method can be chained.
         """
+        if not axis:
+            axis = axes.x
+            
+        if axis == axes.x:
+            x_angle = degrees(atan(offset / self.height))
+            y_angle = 0
+        elif axis == axes.y:
+            x_angle = 0
+            y_angle = degrees(atan(offset / self.width))
+            
         guard(self.__wand,
               lambda: cdll.MagickShearImage(self.__wand,
                                             color.transparent.wand,
@@ -914,6 +927,16 @@ class Image(object):
     def solarize(self, threshold):
         guard(self.__wand,
               lambda: cdll.MagickSolarizeImage(self.__wand, threshold))
+    
+    @only_live
+    def colorize(self, color):
+        overlay = blank(self.width, self.height, color)
+        
+        self.overlay(overlay, composite=composites.hue)
+        
+        overlay.close()
+        
+        return self
     
     @only_live
     def sketch(self, radius, angle=45, strength=None):
@@ -1360,6 +1383,7 @@ from tempfile import mkstemp
 from ctypes import c_size_t, byref, string_at, addressof
 from os import environ
 from os.path import exists
+from math import atan, degrees
 
 from six import b
 
