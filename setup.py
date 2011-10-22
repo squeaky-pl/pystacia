@@ -1,5 +1,12 @@
 # coding: utf-8
 
+def extract(zipfile, path):
+    from zipfile import ZipFile
+    z = ZipFile(zipfile)
+    for name in z.namelist():
+        z.extract(name, path)
+    z.close()
+
 from distutils.command.build import build
 
 class tinyimg_build(build):
@@ -9,10 +16,13 @@ class tinyimg_build(build):
         from os.path import join 
         from distutils.file_util import write_file
         from distutils.dir_util import mkpath
-        
+        from urllib import urlretrieve
+
         lib_base = join(self.build_base, 'libraries')
         mkpath(lib_base)
-        write_file(join(lib_base, 'test.txt'), 'test')
+	mkpath(self.build_temp)
+        urlretrieve('https://bitbucket.org/squeaky/tinyimg/downloads/imagick_win_x86.zip', join(self.build_temp, 'libraries.zip'))
+        extract(join(self.build_temp, 'libraries.zip'), lib_base)
         
         return result
 
