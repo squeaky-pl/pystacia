@@ -1,7 +1,25 @@
 # coding: utf-8
 
+base_urls = [
+    'https://bitbucket.org/squeaky/tinyimg/downloads/'
+]
+
+magick_version = '6.7.2.10'
+
+binaries = {
+    'imagick-6.7.2.10-win32.zip': '1a9e7c9514fde117737de4f7e730db40'
+}
+
+def md5_file(f, block_size=1**20):
+    fingerprint = md5()
+    while True:
+        data = f.read(block_size)
+        if not data:
+            break
+        fingerprint.update(data)
+    return fingerprint.hexdigest()
+
 def extract(zipfile, path):
-    from zipfile import ZipFile
     z = ZipFile(zipfile)
     for name in z.namelist():
         z.extract(name, path)
@@ -13,18 +31,48 @@ class tinyimg_build(build):
     def run(self):
         result = build.run(self)
         
-        from os.path import join 
-        from distutils.file_util import write_file
-        from distutils.dir_util import mkpath
-        from urllib import urlretrieve
-
+        remote_file = ('imagick-' + magick_version + '-' +
+                       get_platform() + '.zip')
+        
+        if remote_file not in binaries:
+            return result
+        
+        self.announce('==> Magick binary distribution: ' + remote_file)
+        
+        local_file = join(self.buile_temp, remote_file)
+        
+        mkpath(self.build_temp)
+        
+        found = False
+        for base in base_urls:
+            url = base + remote_file
+            self.announce('==> Downloading: ' + url)
+            urlretrieve(url, local_file)
+            if md5_file(local_file) == binaries[remote_file][1]:
+                self.announce('==> MD5 digest OK')
+                found = True
+                break
+            
+            self.announce('==> MD5 digest failed')
+        
+        if not found:
+            return result
+        
         lib_base = join(self.build_base, 'libraries')
         mkpath(lib_base)
-	mkpath(self.build_temp)
-        urlretrieve('https://bitbucket.org/squeaky/tinyimg/downloads/imagick_win_x86.zip', join(self.build_temp, 'libraries.zip'))
-        extract(join(self.build_temp, 'libraries.zip'), lib_base)
+        
+        extract(local_file, lib_base)
         
         return result
+
+
+from os.path import join 
+from hashlib import md5
+from urllib import urlretrieve
+from zipfile import ZipFile
+
+from distutils.dir_util import mkpath
+from distutils.util import get_platform
 
 try:
     # this will be present with pip or setuptools was installed
