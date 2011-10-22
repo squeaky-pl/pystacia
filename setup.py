@@ -11,12 +11,15 @@ binaries = {
 }
 
 def md5_file(f, block_size=1**20):
+    f = open(f, 'rb')
     fingerprint = md5()
     while True:
         data = f.read(block_size)
         if not data:
             break
         fingerprint.update(data)
+    f.close()
+    
     return fingerprint.hexdigest()
 
 def extract(zipfile, path):
@@ -39,7 +42,7 @@ class tinyimg_build(build):
         
         self.announce('==> Magick binary distribution: ' + remote_file)
         
-        local_file = join(self.buile_temp, remote_file)
+        local_file = join(self.build_temp, remote_file)
         
         mkpath(self.build_temp)
         
@@ -48,12 +51,13 @@ class tinyimg_build(build):
             url = base + remote_file
             self.announce('==> Downloading: ' + url)
             urlretrieve(url, local_file)
-            if md5_file(local_file) == binaries[remote_file][1]:
+
+            if md5_file(local_file) == binaries[remote_file]:
                 self.announce('==> MD5 digest OK')
                 found = True
                 break
             
-            self.announce('==> MD5 digest failed')
+            self.warn('==> MD5 digest failed')
         
         if not found:
             return result
