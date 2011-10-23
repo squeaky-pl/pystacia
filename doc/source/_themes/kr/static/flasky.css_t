@@ -2,11 +2,11 @@
  * flasky.css_t
  * ~~~~~~~~~~~~
  *
- * :copyright: Copyright 2010 by Armin Ronacher. Modifications by Kenneth Reitz.
+ * :copyright: Copyright 2010 by Armin Ronacher. Modifications by
+ *  Kenneth Reitz and Paweł Piotr Przeradowski.
  * :license: Flask Design License, see LICENSE for details.
  */
 
-{% set page_width = '940px' %}
 {% set sidebar_width = '220px' %}
 
 @import url("basic.css");
@@ -23,8 +23,7 @@ body {
 }
 
 div.document {
-    width: {{ page_width }};
-    margin: 30px auto 0 auto;
+    margin: 30px 50px 0;
 }
 
 div.documentwrapper {
@@ -56,8 +55,7 @@ img.floatingflask {
 }
 
 div.footer {
-    width: {{ page_width }};
-    margin: 20px auto 30px auto;
+    margin: 20px 50px 30px;
     font-size: 14px;
     color: #888;
     text-align: right;
@@ -420,7 +418,7 @@ a:hover tt {
     }
 
     .footer {
-    	width: auto;
+        width: auto;
     }
 
 
