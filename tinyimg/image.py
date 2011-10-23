@@ -3,15 +3,17 @@ from __future__ import division
 """:class:`Image` creation and management operations"""
 
 
-def read(filename):
+def read(filename, factory=None):
     """Read :class:`Image` from filename.
        
        :param filename: file name to read
        :type filename: ``str``
+       :param factory: Image subclass to use when instantiating objects
        :rtype: :class:`Image`
        
-       Reads file, determines its format and return an :class:`Image`
-       representing it.
+       Reads file, determines its format and returns an :class:`Image`
+       representing it. You can optionally pass factory parameter
+       to use alternative :class:`Image` subclass.
        
        >>> read('example.jpg')
        <Image(w=512,h=512,8bit,rgb,truecolor) object at 0x10302ee00L>
@@ -22,14 +24,18 @@ def read(filename):
     
     filename = b(filename)
     
-    image = Image()
+    if not factory:
+        factory = Image
+    
+    image = factory()
     
     guard(image.wand, lambda: cdll.MagickReadImage(image.wand, filename))
     
     return image
 
 
-def read_blob(blob, format=None, length=None):  # @ReservedAssignment
+def read_blob(blob, format=None,
+              length=None, factory=None):  # @ReservedAssignment
     """Read :class:`Image` from a blob string or stream with a header.
        
        :param blob: blob data string or stream
@@ -39,6 +45,7 @@ def read_blob(blob, format=None, length=None):  # @ReservedAssignment
        :type format: ``str``
        :param length: read maximum this bytes from stream
        :type length: ``int``
+       :param factory: Image subclass to use when instantiating objects
        :rtype: :class:`Image`
        
        Reads image from string or data stream that contains a valid file
@@ -49,7 +56,8 @@ def read_blob(blob, format=None, length=None):  # @ReservedAssignment
        file itself in the filesystem. That often happens in web applications
        which map :term:`POST` data with file-like objects. Format and length
        are typically not used but can be a hint when the information cannot be
-       guessed from the data itself.
+       guessed from the data itself. You can optionally pass factory parameter
+       to use alternative :class:`Image` subclass.
        
        >>> with file('example.jpg') as f:
        >>>     img = read_blob(f)
@@ -59,7 +67,10 @@ def read_blob(blob, format=None, length=None):  # @ReservedAssignment
     if hasattr(blob, 'read'):
         blob = blob.read(length)
     
-    image = Image()
+    if not factory:
+        factory = Image
+    
+    image = factory()
     
     if format:
         # ensure we always get bytes
@@ -80,7 +91,8 @@ def read_blob(blob, format=None, length=None):  # @ReservedAssignment
     return image
 
 
-def read_raw(raw, format, width, height, depth):  # @ReservedAssignment
+def read_raw(raw, format, width, height,
+             depth, factory=None):  # @ReservedAssignment
     """Read :class:`Image` from raw string or stream.
        
        :param raw: raw data string or stream
@@ -94,11 +106,14 @@ def read_raw(raw, format, width, height, depth):  # @ReservedAssignment
        :type height: ``int``
        :param depth: depth of a single channel in bits
        :type depth: ``int``
+       :param factory: Image subclass to use when instantiating objects
        :rtype: :class:`Image`
        
        Reads image data from a raw string or stream containing data in format
        such as :term:`RGB` or :term:`YCbCr`. The contained image has
        dimensions of width and height pixels. Each channel is of depth bits.
+       You can optionally pass factory parameter to use alternative
+       :class:`Image` subclass.
     
        >>> img = read_raw(b'\xff\x00\x00', 'rgb', 1, 1, 8)
        >>> img.get_pixel(0, 0) == color.from_string('red')
@@ -109,7 +124,10 @@ def read_raw(raw, format, width, height, depth):  # @ReservedAssignment
     
     format = b(format.upper())  # @ReservedAssignment
     
-    image = Image()
+    if not factory:
+        factory = Image
+    
+    image = factory()
     
     guard(image.wand, lambda: cdll.MagickSetSize(image.wand, width, height))
     guard(image.wand, lambda: cdll.MagickSetDepth(image.wand, depth))
@@ -121,9 +139,12 @@ def read_raw(raw, format, width, height, depth):  # @ReservedAssignment
     return image
 
 
-def read_special(spec, width=None, height=None):
+def read_special(spec, width=None, height=None, factory=None):
     """Read special :term:`ImageMagick` image resource"""
-    image = Image()
+    if not factory:
+        factory = Image
+        
+    image = factory()
     
     if width and height:
         guard(image.wand, lambda:

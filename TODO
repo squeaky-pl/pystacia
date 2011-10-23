@@ -5,6 +5,7 @@ TODO
 - coverage
 - docs
 - docstrings
+- factory parameter for factories
 - move lena to png, if no png support delete lena
 - dont rely in tests solely on lena
 - group methods in image and refer to this order in documentation
@@ -70,6 +71,9 @@ DOCS
 
 fork me on bitbucket
 logo stuff and project group name
+style - fixed left column, background left column, background main
+search why doesnt work
+Image subclassing documentation
 
 
 STUFF
