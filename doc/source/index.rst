@@ -42,6 +42,7 @@ Narrative documentation
    installation
    image
    color
+   misc
 
 
 Reference Material

@@ -1458,9 +1458,9 @@ if not disable_chains:
         if callable(item) and item.__doc__ and ':rtype:' not in item.__doc__:
             setattr(Image, key, chainable(item))
 
-composites = enum('composite')
 types = enum('type')
 filters = enum('filter')
 colorspaces = enum('colorspace')
 compressions = enum('compression')
+composites = enum('composite')
 axes = enum('axis')
