@@ -8,17 +8,19 @@
 """Various color-related functions and objects."""
 
 
-def from_string(value):
+def from_string(value, factory=None):
     """Create :class:`Color` from string.
     
        :param value: CSS color specification
        :type value: ``str``
-       :rtype: :class:`Color`
+       :param factory: alternative :class:`Color` subclass to use
+       :rtype: :class:`Color` or factory instance
        
        Creates new instance from a valid color specification string
        as in CSS 2.1. Supported formats include rgb, rgba, hsl, hsla,
        color identifiers, hexadecimal values, integer and percent values
-       where applicable.
+       where applicable. When factory is specified this type
+       is used instead of default :class:`Color` type.
        
        >>> from_string('red')
        <Color(r=1,g=0,b=0,a=1) object at 0x10320e400L>
@@ -34,19 +36,25 @@ def from_string(value):
     wand = cdll.NewPixelWand()
     guard(wand, lambda: cdll.PixelSetColor(wand, value))
     
-    return Color(wand)
+    if not factory:
+        factory = Color
+    
+    return factory(wand)
 
 
-def from_rgb(r, g, b):
+def from_rgb(r, g, b, factory=None):
     """Create opaque :class:`Color` from red, green and blue components.
        
        :param r: red component
        :param g: green component
        :param b: blue component
-       :rtype: :class:`Color`
+       :param factory: alternative :class:`Color` subclass to use
+       :rtype: :class:`Color` or factory instance
        
        Red, gren and blue components should be numbers between 0 and 1
        inclusive. Resulting color is opaque (alpha channel equal to 1).
+       When factory is specified this type is used instead of
+       default :class:`Color` type.
        
        >>> from_rgb(0.5, 1, 0.5)
        <Color(r=0.5,g=1,b=0.5,a=1) object at 0x103266200L>
@@ -57,17 +65,21 @@ def from_rgb(r, g, b):
     cdll.PixelSetGreen(wand, g)
     cdll.PixelSetBlue(wand, b)
     
-    return Color(wand)
+    if not factory:
+        factory = Color
+    
+    return factory(wand)
 
 
-def from_rgba(r, g, b, a):
+def from_rgba(r, g, b, a, factory=None):
     """Create :class:`Color` from red, green, blue and alpha components.
        
        :param r: red component
        :param g: green component
        :param b: blue component
        :param a: alpha component
-       :rtype: :class:`Color`
+       :param factory: alternative :class:`Color` subclass to use
+       :rtype: :class:`Color` or factory instance
        
        Red, gren, blue and alpha components should be numbers between 0 and 1
        inclusive.
@@ -75,9 +87,9 @@ def from_rgba(r, g, b, a):
        >>> from_rgba(1, 1, 0, 0.5)
        <Color(r=1,g=1,b=0,a=0.5) object at 0x103222600L>
     """
-    color = from_rgb(r, g, b)
+    color = from_rgb(r, g, b, factory)
     
-    cdll.PixelSetAlpha(color.wand, a)
+    color.alpha = a
     
     return color
 

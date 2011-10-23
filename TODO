@@ -12,6 +12,9 @@ TODO
 - exception in the tests causes os.exit(1) which doesnt trigger atexit
 - remove color paramname from everywhere - use fill,
   background and so on - future proof
+- setting factories globally [0.1.1] if you want to use a subclass
+- i.e. registry module to use for paths, chainability and any other things
+  that affect runtime
 - move version and author from setup.py into __init__.py [0.1.1]
 - more methods for image [0.1.1]
 - those semaphores thing possibly should keep week references to any magick resource and clear it on exit [0.1.1]
