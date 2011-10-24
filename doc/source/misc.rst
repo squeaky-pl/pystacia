@@ -11,3 +11,6 @@ Subclassing tinyimg classes
 
 Compiling ImageMagick from source
 ---------------------------------
+
+Environment variables influencing tinyimg runtime
+-------------------------------------------------

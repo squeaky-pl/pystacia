@@ -74,6 +74,50 @@ Some of them are listed below:
   used with :meth:`tinyimg.image.Image.overlay`.
 - :attr:`tinyimg.image.axes`: :attr:`axes.x` and :attr:`axes.y` axes
 
+Method chaining
+---------------
+
+By default methods of :class:`tinyimg.image.Image` are chainable i.e. you
+can construct code using long string of methods forming a chain such as::
+
+    from tinyimg import read
+    read('example.jpg').denoise().rescale(256, 256).rotate(45).write('output.png')
+
+This style of programming is used a lot in some communities e.g. :term:`jQuery`
+and some :term:`Java` and :term:`PHP` projects. This is unusual in Python
+and not entirely clear if appropriate. Instead a Python programmer could
+typically code like that::
+
+    from tinyimg import read
+    image = read('example.jpg')
+    image.denoise()
+    image.rescale(256, 256)
+    image.rotate(45)
+    image.write('output.png')
+
+Tinyimg allows both styles or mixture of them. By default all methods that can
+be chained are chainable. It's up to you what you choose. One of the down sides
+of chaining is that when an exception occurs it can be not immediately clear
+where it comes from when you call one method several times on one line. If you want to
+explicitly forbid chaining you can do so by injection environment variable
+`TINYIMG_NO_CHAINS` with non-false value before importing :mod:`tinyimg`. When
+you do so methods that were previously chainable return ``None``::
+
+    from os import environ
+    environ['TINYIMG_NO_CHAINS'] = '1'
+    
+    from tinyimg import read
+    # chaining explicitely disabled above
+    
+    image = read('example.jpg')
+    image.blur(3).rotate(45)  # this raises an Exception
+
+or from shell:
+
+.. code-block:: bash
+
+    $ TINYIMG_NO_CHAINS=1 python helloworld.py
+
 Behind the scenes
 =================
 

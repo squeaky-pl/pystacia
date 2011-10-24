@@ -252,7 +252,7 @@ class Image(object):
     
     @only_live
     def get_blob(self, format, compression=None,  # @ReservedAssignment
-                 quality=None):
+                 quality=None, factory=None):
         """Return a blob representing an image
            
            :param format: format of the output such as :term:`JPEG`
@@ -311,10 +311,12 @@ class Image(object):
             guard(self.__wand,
                   lambda: cdll.MagickSetImageCompression(self.__wand,
                                                     old_compression))
-        
+        if factory:
+            blob = factory(blob)
+            
         return blob
         
-    def get_raw(self, format):  # @ReservedAssignment
+    def get_raw(self, format, factory=None):  # @ReservedAssignment
         """Return ``dict`` representing raw image data.
            
            :param format: format of the output such as :term:`RGB`
@@ -324,7 +326,7 @@ class Image(object):
            Returns raw data ``dict`` consisting of raw, format, width, height
            and depth keys along their values.
         """
-        return dict(raw=self.get_blob(format),
+        return dict(raw=self.get_blob(format, factory),
                     format=format,
                     width=self.width,
                     height=self.height,
@@ -1445,7 +1447,7 @@ if not 'fftw' in magick.get_delegates():
     del Image.dft
 
 try:
-    disable_chains = environ['TINYIMG_DISABLE_CHAINS']
+    disable_chains = environ['TINYIMG_NO_CHAINS']
 except KeyError:
     disable_chains = False
     
