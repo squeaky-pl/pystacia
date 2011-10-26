@@ -24,3 +24,4 @@ import colorspace
 import type
 
 import rescale
+import resize

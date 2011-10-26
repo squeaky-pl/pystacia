@@ -273,7 +273,7 @@ Upscaling close-ups with differnt filters:
 
 >>> image.rescale(factor=0.5, filter=filters.lanczos)
 
-Downscaling close-ups with diffrent filters:
+Downscaling close-ups with different filters:
 
 .. container:: clearfix left
 
@@ -292,8 +292,38 @@ Downscaling close-ups with diffrent filters:
     .. figure:: _static/generated/lena_downscale_lanczos.jpg
        
        Lanczos
+
+Resizing
+--------
+
+If you wanna crop out a portion of an image you can use
+:meth:`tinyimg.image.Image.resize`. it accepts four parameters describing cropped
+out region: width, height, x and y in this order. The former two default
+to 0:
+
+>>> image.size
+(256, 256)
+
+>>> image.resize(128, 128)
+
+>>> image.resize(64, 128, 128, 128)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_resize1.jpg
+       
+       (128, 128)
+    
+    .. figure:: _static/generated/lena_resize2.jpg
+       
+       (64, 128, 128, 128)
+
 Color transformation
---------------------
+====================
 
 Bluring, denoising and enahncing
 --------------------------------
