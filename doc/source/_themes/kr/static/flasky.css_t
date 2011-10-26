@@ -465,3 +465,16 @@ a:hover tt {
 .revsys-inline {
     display: none!important;
 }
+
+.left.container > div {
+    float: left;
+    margin-right: 20px;
+}
+
+.left.container p {
+    font-size: 80%;
+}
+
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { zoom: 1; }

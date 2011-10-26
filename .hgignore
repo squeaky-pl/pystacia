@@ -12,8 +12,9 @@ syntax: regexp
 ^env/
 ^dist/
 ^build/
+^doc/build/
 ^ironpython/(?!sync\.py)
-^doc/build/(?!\.keep)
+^doc/source/_static/generated/(?!\.keep)
 
 \.DS_Store$
 \.pyc$
