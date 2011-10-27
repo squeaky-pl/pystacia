@@ -578,6 +578,49 @@ calues towards `1` increase brightness.
        
        +0.75
 
+Gamma correction
+----------------
+
+You can use :meth:`tinyimg.image.Image.gamma` to apply gamma correction. Value
+of `1` is no-change operation. Values towards `0` make image darker. Values
+towards infinity make image lighter.
+
+>>> image.gamma(0.3)
+
+>>> image.gamma(0.6)
+
+>>> image.gamma(1)
+
+>>> image.gamma(1.5)
+
+>>> image.gamma(2)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena_gamma0.1.jpg
+       
+       0.1
+       
+    .. figure:: _static/generated/lena_gamma0.3.jpg
+       
+       0.3
+       
+    .. figure:: _static/generated/lena_gamma0.6.jpg
+       
+       0.6
+       
+    .. figure:: _static/generated/lena128.jpg
+       
+       1 (Original)
+       
+    .. figure:: _static/generated/lena_gamma1.5.jpg
+       
+       1.5
+       
+    .. figure:: _static/generated/lena_gamma2.jpg
+       
+       2
+
 Modulation
 ----------
 
@@ -774,14 +817,219 @@ same as negative of original. Value of `0.5` yields particulary interesting effe
 Posterization
 -------------
 
-Bluring, denoising and enahncing
+:meth:`tinyimg.image.Image.posterize` accepts single level parameter and
+reduces number of colors in the image
+to ``levels ** 3`` colors. Each channel has level final values distributed
+equally along its spectrum. So 1 level yields 1 color, 2 levels yield 8 color
+and so on.
+
+>>> image.posterize(2)
+
+>>> image.posterize(3)
+
+>>> image.posterize(4)
+
+>>> image.posterize(5)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena128.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_posterize2.jpg
+       
+       2 levels
+       
+    .. figure:: _static/generated/lena_posterize3.jpg
+       
+       3 levels
+       
+    .. figure:: _static/generated/lena_posterize4.jpg
+       
+       4 levels
+       
+    .. figure:: _static/generated/lena_posterize5.jpg
+       
+       5 levels
+
+Bluring, denoising and enhancing
 ================================
+
+Blur
+----
+
+You can blur image with :meth:`tinyimg.image.Image.blur`. Method accepts
+mandatory radius and optional strength parameter.
+
+>>> img.blur(3)
+
+>>> img.blur(10)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_blur3.jpg
+       
+       radius 3
+       
+    .. figure:: _static/generated/lena_blur10.jpg
+       
+       radius 10
+       
+Radial blur
+-----------
+
+To perform radial blur use :meth:`tinyimg.image.Image.radial_blur`. Pass in
+single parameter - blur angle in degrees.
+
+>>> img.blur(10)
+
+>>> img.blur(45)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_radial_blur10.jpg
+       
+       10 degrees
+       
+    .. figure:: _static/generated/lena_radial_blur45.jpg
+       
+       45 degrees
+       
+Removing noise
+--------------
+
+If you want to perform noise removal you can use
+:meth:`tinyimg.image.Image.denoise` method.
+
+>>> img.denoise()
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_denoise.jpg
+       
+       Denoised image
+
+Removing speckles
+-----------------
+
+:meth:`tinyimg.image.Image.despeckle` on the other hand removes speckles
+- larger grain defects than noise.
+
+>>> img.despeckle()
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_despeckle.jpg
+       
+       Despeckled image
+
+
+Embossing
+---------
+
+Emboss raises detected edges in image creating 3D effect sharpening it at
+the same time.
+Call :meth:`tinyimg.image.Image.emboss` to use it.
+
+>>> img.emboss()
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_emboss.jpg
+       
+       Embossed image
 
 Deforming
 =========
 
+Swirling
+--------
+
+To apply whirlpool like effect use :meth:`tinyimg.image.Image.swirl`. Positive
+angles result in clockwise whirling, negative in counter-clockwise.
+
+>>> img.swirl(60)
+
+>>> img.swirl(-30)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_swirl60.jpg
+       
+       60 degrees
+       
+    .. figure:: _static/generated/lena_swirl-30.jpg
+       
+       -30 degrees
+
+Waving
+------
+
+:meth:`tinyimg.image.Image.wave` applies sinusoidal deformation along give axis
+(defaults to x).
+You can control amplitude and length of the wave. Resulting extra pixels are
+transparent.
+
+>>> img.wave(20, 100)
+
+>>> img.wave(-10, 50)
+
+>>> img.wave(50, 200 axis=axes.y)
+
+>>> img.wave(10, 30, axis=axes.y)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena128.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_wave20,100,x.jpg
+       
+       (100, 20, x)
+       
+    .. figure:: _static/generated/lena_wave-10,50,x.jpg
+       
+       (50, -10, x)
+       
+    .. figure:: _static/generated/lena_wave50,200,y.jpg
+       
+       (200, 50, y)
+       
+    .. figure:: _static/generated/lena_wave10,30,y.jpg
+       
+       (30, 10, y)
+
 Special effects
 ===============
+
+Pixel manipulation
+==================
 
 Bundled standard images
 -----------------------

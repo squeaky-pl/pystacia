@@ -37,6 +37,7 @@ import roll
 
 import contrast
 import brightness
+import gamma
 import modulate
 import desaturate
 import colorize
@@ -44,3 +45,13 @@ import sepia
 import equalize
 import invert
 import solarize
+import posterize
+
+import blur
+import radial_blur
+import denoise
+import despeckle
+import emboss
+
+import swirl
+import wave

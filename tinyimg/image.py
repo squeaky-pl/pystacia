@@ -626,6 +626,46 @@ class Image(object):
                                                          0, factor * 100))
     
     @only_live
+    def gamma(self, gamma):
+        """Apply gamma correction to an image.
+           
+           :param gamma: Gamma value
+           :type gamma: ``float``
+           
+           Apply gamma correction to an image. Value ``1`` is an identity
+           operation. Higher values yield brighter image and lower values
+           darken image. More information on gamma corection can be found
+           here: http://en.wikipedia.org/wiki/Gamma_correction.
+           
+           This method can be chained
+        """
+        guard(self.__wand, lambda: cdll.MagickGammaImage(self.__wand, gamma))
+    
+    @only_live
+    def auto_gamma(self):
+        """Auto-gamma image.
+        
+           Extracts the 'mean' from the image and adjust the
+           image to try make set its gamma appropriatally.
+           
+           This method can be chained.
+        """
+        guard(self.__wand,
+              lambda: cdll.MagickAutoGammaImage(self.__wand))
+    
+    @only_live
+    def auto_level(self):
+        """Auto-level image.
+        
+           Adjusts the levels of an image by scaling the minimum and
+           maximum values to the full quantum range.
+           
+           This method can be chained.
+        """
+        guard(self.__wand,
+              lambda: cdll.MagickAutoLevelImage(self.__wand))
+    
+    @only_live
     def modulate(self, hue=0, saturation=0, lightness=0):
         """Modulate hue, saturation and lightness of the image
            
@@ -751,6 +791,118 @@ class Image(object):
               lambda: cdll.MagickSolarizeImage(self.__wand, factor))
     
     @only_live
+    def posterize(self, levels, dither=False):
+        """Reduces number of colors in the image.
+           
+           :param levels: Output number of levels per channel
+           :type levels: ``int``
+           :param dither: Weather dithering should be performed
+           'type dither: :bool:
+           
+           Reduces the image to a limited number of color levels.
+           Levels specify color levels allowed in each channel. The
+           channel spectrum is divided equally by level. Very low
+           values (2, 3 or 4) have the most visible effect. ``1`` produces
+           ``1**3`` output colors, ``2`` produces ``2**3`` colors ie. ``8``
+           and so on. Setting dither to ``True`` enables dithering.
+           
+           This method can be chained.
+        """
+        guard(self.__wand,
+              lambda: cdll.MagickPosterizeImage(self.__wand, levels, dither))
+    
+    @only_live
+    def blur(self, radius, strength=None):
+        """Blur image.
+           
+           :param radius: Gaussian operator radius
+           :type radius: float
+           :param strength: Standard deviation (sigma)
+           :type strength: float
+           
+           Convolves the image with a gaussian operator of the given radius
+           and standard deviation (strength).
+           
+           This method can be chained.
+        """
+        if strength == None:
+            strength = radius
+            
+        guard(self.__wand,
+              lambda: cdll.MagickBlurImage(self.__wand, radius, strength))
+    
+    @only_live
+    #TODO: moving center here
+    def radial_blur(self, angle):
+        """Performs radial blur.
+        
+           :param angle: Blur angle in degrees
+           :type angle: ``float``
+           
+           Radial blurs image within given angle.
+           
+           This method can be chained.
+        """
+        guard(self.__wand,
+              lambda: cdll.MagickRadialBlurImage(self.__wand, angle))
+    
+    @only_live
+    def denoise(self):
+        """Attempt to remove noise preserving edges.
+        
+           Applies a digital filter that improves the quality of a
+           noisy image.
+           
+           This method can be chained.
+        """
+           
+        guard(self.__wand, lambda: cdll.MagickEnhanceImage(self.__wand))
+    
+    @only_live
+    def despeckle(self):
+        """Attempt to remove speckle preserving edges.
+           
+           Resulting image almost solid color areas are smoothed preserving
+           edges.
+           
+           This method can be chained.
+        """
+        guard(self.__wand, lambda: cdll.MagickDespeckleImage(self.__wand))
+    
+    @only_live
+    def emboss(self, radius=0, strength=None):
+        """Apply edge detecting algorithm.
+           
+           :param radius: filter radius
+           :type radius: ``int``
+           :param stregth: filter strength (sigma)
+           :type strength: ``int``
+           
+           On a typical photo creates effect of raised edges.
+           
+           This method can be chained.
+        """
+        if strength == None:
+            strength = radius
+            
+        guard(self.__wand,
+              lambda: cdll.MagickEmbossImage(self.__wand, radius, strength))
+    
+    @only_live
+    def swirl(self, angle):
+        """Distort image with swirl effect.
+           
+           :param angle: Angle in degrees clockwise
+           :type angle: ``float``
+           
+           Swirls an image by angle clockwise. Angle can be negative resulting
+           in distortion in opposite direction.
+           
+           This method can be chained.
+        """
+        guard(self.__wand, lambda: cdll.MagickSwirlImage(self.__wand, angle))
+    
+    @only_live
     def set_alpha(self, alpha):
         """Set alpha channel of pixels in the image.
         
@@ -788,48 +940,6 @@ class Image(object):
             width, height = self.width, self.height
             cdll.DestroyMagickWand(self.__wand)
             self.__wand = blank(width, height, fill)._claim_wand()
-    
-    @only_live
-    def despeckle(self):
-        """Attempt to remove speckle preserving edges.
-           
-           Resulting image almost solid color areas are smoothed preserving
-           edges.
-           
-           This method can be chained.
-        """
-        guard(self.__wand, lambda: cdll.MagickDespeckleImage(self.__wand))
-    
-    @only_live
-    def emboss(self, radius=0, strength=None):
-        """Apply edge detecting algorithm.
-           
-           :param radius: filter radius
-           :type radius: ``int``
-           :param stregth: filter strength (sigma)
-           :type strength: ``int``
-           
-           On a typical photo creates effect of raised edges.
-           
-           This method can be chained.
-        """
-        if strength == None:
-            strength = radius
-            
-        guard(self.__wand,
-              lambda: cdll.MagickEmbossImage(self.__wand, radius, strength))
-    
-    @only_live
-    def denoise(self):
-        """Attempt to remove noise preserving edges.
-        
-           Applies a digital filter that improves the quality of a
-           noisy image.
-           
-           This method can be chained.
-        """
-           
-        guard(self.__wand, lambda: cdll.MagickEnhanceImage(self.__wand))
     
     @only_live
     def dft(self, magnitude=True):
@@ -931,36 +1041,6 @@ class Image(object):
         self.__wand = wand
     
     @only_live
-    def gamma(self, gamma):
-        """Apply gamma correction to an image.
-           
-           :param gamma: Gamma value
-           :type gamma: ``float``
-           
-           Apply gamma correction to an image. Value ``1`` is an identity
-           operation. Higher values yield brighter image and lower values
-           darken image. More information on gamma corection can be found
-           here: http://en.wikipedia.org/wiki/Gamma_correction.
-           
-           This method can be chained
-        """
-        guard(self.__wand, lambda: cdll.MagickGammaImage(self.__wand, gamma))
-    
-    @only_live
-    def swirl(self, angle):
-        """Distort image with swirl effect.
-           
-           :param angle: Angle in degrees clockwise
-           :type angle: ``float``
-           
-           Swirls an image by angle clockwise. Angle can be negative resulting
-           in distortion in opposite direction.
-           
-           This method can be chained.
-        """
-        guard(self.__wand, lambda: cdll.MagickSwirlImage(self.__wand, angle))
-        
-    @only_live
     def spread(self, radius):
         """Spread pixels in random direction.
            
@@ -973,51 +1053,7 @@ class Image(object):
            This method can be chained.
         """
         guard(self.__wand, lambda: cdll.MagickSpreadImage(self.__wand, radius))
-        
-    @only_live
-    def auto_gamma(self):
-        """Auto-gamma image.
-        
-           Extracts the 'mean' from the image and adjust the
-           image to try make set its gamma appropriatally.
-           
-           This method can be chained.
-        """
-        guard(self.__wand,
-              lambda: cdll.MagickAutoGammaImage(self.__wand))
     
-    @only_live
-    def auto_level(self):
-        """Auto-level image.
-        
-           Adjusts the levels of an image by scaling the minimum and
-           maximum values to the full quantum range.
-           
-           This method can be chained.
-        """
-        guard(self.__wand,
-              lambda: cdll.MagickAutoLevelImage(self.__wand))
-        
-    @only_live
-    def blur(self, radius, strength=None):
-        """Blur image.
-           
-           :param radius: Gaussian operator radius
-           :type radius: float
-           :param strength: Standard deviation (sigma)
-           :type strength: float
-           
-           Convolves the image with a gaussian operator of the given radius
-           and standard deviation (strength).
-           
-           This method can be chained.
-        """
-        if strength == None:
-            strength = radius
-            
-        guard(self.__wand,
-              lambda: cdll.MagickBlurImage(self.__wand, radius, strength))
-        
     @only_live
     def oil_paint(self, radius):
         """Simulates oil paiting.
@@ -1032,42 +1068,6 @@ class Image(object):
         """
         guard(self.__wand,
               lambda: cdll.MagickOilPaintImage(self.__wand, radius))
-    
-    @only_live
-    def posterize(self, levels, dither=False):
-        """Reduces number of colors in the image.
-           
-           :param levels: Output number of levels per channel
-           :type levels: ``int``
-           :param dither: Weather dithering should be performed
-           'type dither: :bool:
-           
-           Reduces the image to a limited number of color levels.
-           Levels specify color levels allowed in each channel. The
-           channel spectrum is divided equally by level. Very low
-           values (2, 3 or 4) have the most visible effect. ``1`` produces
-           ``1**3`` output colors, ``2`` produces ``2**3`` colors ie. ``8``
-           and so on. Setting dither to ``True`` enables dithering.
-           
-           This method can be chained.
-        """
-        guard(self.__wand,
-              lambda: cdll.MagickPosterizeImage(self.__wand, levels, dither))
-    
-    @only_live
-    #TODO: moving center here
-    def radial_blur(self, angle):
-        """Performs radial blur.
-        
-           :param angle: Blur angle in degrees
-           :type angle: ``float``
-           
-           Radial blurs image within given angle.
-           
-           This method can be chained.
-        """
-        guard(self.__wand,
-              lambda: cdll.MagickRadialBlurImage(self.__wand, angle))
     
     @only_live
     def shadow(self, radius, x=0, y=0, opacity=0.5):
