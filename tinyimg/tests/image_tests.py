@@ -532,13 +532,13 @@ class Overlay(TestCase):
         self.assertEquals(img.get_pixel(60, 60), before)
 
 
-class Deskew(TestCase):
+class Straighten(TestCase):
     def test(self):
         img = lena()
         
         img.rotate(5)
         size = img.size
-        img.deskew(100)
+        img.straighten(100)
         self.assertGreater(img.size, size)
         
         img.close()

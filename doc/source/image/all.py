@@ -34,3 +34,8 @@ import flip
 import trans
 import skew
 import roll
+
+import contrast
+import brightness
+import modulate
+import desaturate

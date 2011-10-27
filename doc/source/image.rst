@@ -119,6 +119,17 @@ inversion of its counterpart.
 If you want to change (convert) underlying color space without affecting visual
 representation use :meth:`tinyimg.image.Image.convert_colorspace` method instead.
 
+Depth
+-----
+
+Depth represents number of bits used to store channel information. It's
+typically 8 bit for :term:`TrueColor` images but can be as well 16 bit
+for some :term:`TIFF` images. You query the image depth with
+:attr:`tinyimg.image.Image.depth` property.
+
+>>> image.depth
+8
+
 Storage type
 ------------
 
@@ -460,19 +471,207 @@ directions as arguments.
        
        Rolled by (-30, 40)
 
+Straightening image
+-------------------
 
+Trimming extra background
+-------------------------
 
 Color transformation
 ====================
 
-Bluring, denoising and enahncing
---------------------------------
+Color transformations are operations that affect color channel information
+without changing pixel location in any way.
 
-Deforming
+Adjsuting contrast
+------------------
+
+:meth:`tinyimg.image.Image.contrast` increases or decreases contrast of an image.
+Passing `0` is no change operation. Values towards `-1` decrease
+constract whilst values towards `1` increase it.
+
+>>> image.contrast(-1)
+
+>>> image.contrast(-0.6)
+
+>>> image.contrast(-0.25)
+
+>>> image.contrast(0)
+
+>>> image.contrast(0.25)
+
+>>> image.contrast(0.75)
+
+>>> image.contrast(1)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena_contrast-1.jpg
+       
+       -1
+       
+    .. figure:: _static/generated/lena_contrast-0.6.jpg
+       
+       -0.6
+       
+    .. figure:: _static/generated/lena_contrast-0.25.jpg
+       
+       -0.25
+       
+    .. figure:: _static/generated/lena128.jpg
+       
+       0 (original)
+       
+    .. figure:: _static/generated/lena_contrast0.25.jpg
+       
+       +0.25
+       
+    .. figure:: _static/generated/lena_contrast1.jpg
+       
+       +1
+
+
+Adjusting brightness
+--------------------
+
+:meth:`tinyimg.image.Image.brightness` adjusts the brightness of an image.
+Value `0` is no-change operation. Values towards `-1` make image darker whilst
+calues towards `1` increase brightness.
+
+>>> image.brightness(-1)
+
+>>> image.brightness(-0.6)
+
+>>> image.brightness(-0.25)
+
+>>> image.brightness(0)
+
+>>> image.brightness(0.25)
+
+>>> image.brightness(0.75)
+
+>>> image.brightness(1)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena_brightness-1.jpg
+       
+       -1
+       
+    .. figure:: _static/generated/lena_brightness-0.6.jpg
+       
+       -0.6
+       
+    .. figure:: _static/generated/lena_brightness-0.25.jpg
+       
+       -0.25
+       
+    .. figure:: _static/generated/lena128.jpg
+       
+       0 (original)
+       
+    .. figure:: _static/generated/lena_brightness0.25.jpg
+       
+       +0.25
+       
+    .. figure:: _static/generated/lena_brightness0.75.jpg
+       
+       +0.75
+
+Modulation
+----------
+
+Modulation is an operation of adjusting hue, saturation and luminance of
+an image. It can be accomplished with :meth:`tinyimg.image.Image.modulate`.
+It accepts parameters in hue, saturation and luminance order. They all default
+to 0 meaning no change. Usable hue values start from -1 meaning rotation of hue
+by -180 degrees to 1 meaning +180 degrees. Saturation values towards `-1` 
+desaturte image whilst values towards infinity saturate it. Setting luminosity
+to `-1` yields completely black image whilst values towards infinity make it
+brighter.
+
+>>> image.modulate(-1, -0.25, 0.1)
+
+>>> image.modulate(-0.5, 0.25, 0)
+
+>>> image.modulate(-0.2, 0.5, -0.25)
+
+>>> image.modulate(0, 0, 0)
+
+>>> image.modulate(0.4, -0.5, 0)
+
+>>> image.modulate(0.8, 0, 0)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena_modulate-1,-0.25,0.1.jpg
+       
+       (-1, -0.25, 0.1)
+       
+    .. figure:: _static/generated/lena_modulate-0.5,0.25,0.jpg
+       
+       (-0.5, 0.25, 0)
+       
+    .. figure:: _static/generated/lena_modulate-0.2,0.5,-0.25.jpg
+       
+       (-0.2, 0.5, -0.25)
+       
+    .. figure:: _static/generated/lena128.jpg
+       
+       (0, 0, 0) Original
+       
+    .. figure:: _static/generated/lena_modulate0.4,-0.5,0.jpg
+       
+       (0.4, -0.5, 0)
+       
+    .. figure:: _static/generated/lena_modulate0.8,0,0.jpg
+       
+       (0.8, 0, 0)
+
+Desaturation
+------------
+
+You can peform desaturation with :meth:`tinyimg.image.Image.desaturate`. It is
+a shortcut to :meth:`tinyimg.image.Image.modulate` passing `-1` as saturation.
+
+>>> image.desaturate()
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_desaturate.jpg
+       
+       Desatured
+
+Colorization
+------------
+
+Sepia tone
+----------
+
+Equalization
+------------
+
+Invertion
 ---------
 
+Solarization
+------------
+
+Posterization
+-------------
+
+Bluring, denoising and enahncing
+================================
+
+Deforming
+=========
+
 Special effects
----------------
+===============
 
 Bundled standard images
 -----------------------

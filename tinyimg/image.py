@@ -533,6 +533,137 @@ class Image(object):
         guard(self.__wand, lambda: cdll.MagickRollImage(self.__wand, x, y))
     
     @only_live
+    def straighten(self, threshold):
+        """Attempt to straighten image.
+           
+           :param threshold: Separate background from foreground.
+           :type threshold: ``float``
+           
+           Removes skew from the image. Skew is an artifact that occurs in
+           scanned images because of the camera being misaligned,
+           imperfections in the scanning or surface, or simply because
+           the paper was not placed completely flat when scanned.
+           
+           This method can be chained.
+        """
+        guard(self.__wand,
+              lambda: cdll.MagickDeskewImage(self.__wand, threshold))
+    
+    def trim(self, similarity=.1, background=None):
+        """Attempt to trim off extra background around image.
+           
+           :param similarity: Smilarity factor
+           :type similarity: ``float``
+           :param background: background color, transparent by default
+           :type background: :class:`tinyimg.color.Color`
+           
+           Removes edges that are the background color from the image.
+           The greater similarity the more distant hues are considered the same
+           color. Simlarity of `0` means only this exact color.
+           
+           This method can be chained.
+        """
+        # TODO: guessing of background?
+        background_free = not(background)
+        if not background:
+            background = color.from_string('transparent')
+        
+        # preserve background color
+        old_color = color.Color()
+        guard(self.__wand,
+              lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
+                                                         old_color.wand))
+        guard(self.__wand,
+              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+                                                         background.wand))
+        
+        guard(self.__wand,
+              lambda: cdll.MagickTrimImage(self.__wand, similarity * 100))
+        
+        #restore background color
+        guard(self.__wand,
+              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+                                                         old_color.wand))
+        
+        if background_free:
+            background.close()
+    
+    @only_live
+    def brightness(self, factor):
+        """Brightens an image.
+           
+           :param factor: Brightness factor betwwen -1 and 1
+           :type factor: ``float``
+           
+           Brightens an image with specified factor. Factor of ``0`` is
+           no-change operation. Values towards ``-1`` make image darker.
+           ``-1`` makes image completely black. Values towards 1 make image
+           brigther. ``1`` makes image completely white.
+           
+           This method can be chained.
+        """
+        guard(self.__wand,
+              lambda: cdll.MagickBrightnessContrastImage(self.__wand,
+                                                         factor * 100, 0))
+    
+    @only_live
+    def contrast(self, factor):
+        """Change image contrast.
+           
+           :param factor: Contrast factor betwwen -1 and 1
+           :type factor: ``float``
+           
+           Change image contrast with specified factor. Factor of ``0`` is
+           no-change operation. Values towards ``-1`` make image less
+           contrasting. ``-1`` makes image completely gray. Values towards
+           ``1`` increase image constrast. ``1`` pulls channel values towards
+           0 and 1 resulting in a highly contrasting posterized image.
+           
+           This method can be chained.
+        """
+        guard(self.__wand,
+              lambda: cdll.MagickBrightnessContrastImage(self.__wand,
+                                                         0, factor * 100))
+    
+    @only_live
+    def modulate(self, hue=0, saturation=0, lightness=0):
+        """Modulate hue, saturation and lightness of the image
+           
+           :param hue: Hue value from -1 to 1
+           :type hue: ``float``
+           :param saturation: Saturation value from -1 to infinity
+           :type saturation: ``float``
+           :param lightness: Lightness value from -1 to inifinity
+           :type lightness: ``float``
+           
+           Setting any of the parameters to 0 is no-change operation.
+           Hue parameter represents hue rotation relatively to current
+           position. `-1` means rotation by 180 degrees counter-clockwise and
+           1 is rotation by 180 degrees clockwise. Setting saturation to ``-1``
+           completely desaturates image (makes it grayscale) while values from
+           ``0`` towards infinity make it more saturated. Setting lightness
+           to ``-1`` makes image completely black and values from ``0`` towards
+           infinity make it lighter eventually reaching pure white.
+           
+           This method can be chained.
+        """
+        guard(self.__wand,
+              lambda: cdll.MagickModulateImage(self.__wand,
+                                               lightness * 100 + 100,
+                                               saturation * 100 + 100,
+                                               hue * 100 + 100))
+    
+    def desaturate(self):
+        """Desatures an image.
+           
+           Reduces saturation level of all pixels to minimum yielding
+           grayscale image.
+           
+           This method can be chained.
+        """
+        self.modulate(saturation=-1)
+        
+    @only_live
     def set_alpha(self, alpha):
         """Set alpha channel of pixels in the image.
         
@@ -814,81 +945,6 @@ class Image(object):
             
         guard(self.__wand,
               lambda: cdll.MagickBlurImage(self.__wand, radius, strength))
-    
-    @only_live
-    def brightness(self, factor):
-        """Brightens an image.
-           
-           :param factor: Brightness factor betwwen -1 and 1
-           :type factor: ``float``
-           
-           Brightens an image with specified factor. Factor of ``0`` is
-           no-change operation. Values towards ``-1`` make image darker.
-           ``-1`` makes image completely black. Values towards 1 make image
-           brigther. ``1`` makes image completely white.
-           
-           This method can be chained.
-        """
-        guard(self.__wand,
-              lambda: cdll.MagickBrightnessContrastImage(self.__wand,
-                                                         factor * 100, 0))
-    
-    @only_live
-    def contrast(self, factor):
-        """Change image contrast.
-           
-           :param factor: Contrast factor betwwen -1 and 1
-           :type factor: ``float``
-           
-           Change image contrast with specified factor. Factor of ``0`` is
-           no-change operation. Values towards ``-1`` make image less
-           contrasting. ``-1`` makes image completely gray. Values towards
-           ``1`` increase image constrast. ``1`` pulls channel values towards
-           0 and 1 resulting in a highly contrasting posterized image.
-           
-           This method can be chained.
-        """
-        guard(self.__wand,
-              lambda: cdll.MagickBrightnessContrastImage(self.__wand,
-                                                         0, factor * 100))
-    
-    @only_live
-    def modulate(self, hue=0, saturation=0, lightness=0):
-        """Modulate hue, saturation and lightness of the image
-           
-           :param hue: Hue value from -1 to 1
-           :type hue: ``float``
-           :param saturation: Saturation value from -1 to infinity
-           :type saturation: ``float``
-           :param lightness: Lightness value from -1 to inifinity
-           :type lightness: ``float``
-           
-           Setting any of the parameters to 0 is no-change operation.
-           Hue parameter represents hue rotation relatively to current
-           position. `-1` means rotation by 180 degrees counter-clockwise and
-           1 is rotation by 180 degrees clockwise. Setting saturation to ``-1``
-           completely desaturates image (makes it grayscale) while values from
-           ``0`` towards infinity make it more saturated. Setting lightness
-           to ``-1`` makes image completely black and values from ``0`` towards
-           infinity make it lighter eventually reaching pure white.
-           
-           This method can be chained.
-        """
-        guard(self.__wand,
-              lambda: cdll.MagickModulateImage(self.__wand,
-                                               lightness * 100 + 100,
-                                               saturation * 100 + 100,
-                                               hue * 100 + 100))
-    
-    def desaturate(self):
-        """Desatures an image.
-           
-           Reduces saturation level of all pixels to minimum yielding
-           grayscale image.
-           
-           This method can be chained.
-        """
-        self.modulate(saturation=-1)
         
     @only_live
     def invert(self, only_gray=False):
@@ -1052,23 +1108,6 @@ class Image(object):
                                                 value, x, y))
     
     @only_live
-    def deskew(self, threshold):
-        """Attempt to deskew image.
-           
-           :param threshold: Separate background from foreground.
-           :type threshold: ``float``
-           
-           Removes skew from the image. Skew is an artifact that occurs in
-           scanned images because of the camera being misaligned,
-           imperfections in the scanning or surface, or simply because
-           the paper was not placed completely flat when scanned.
-           
-           This method can be chained.
-        """
-        guard(self.__wand,
-              lambda: cdll.MagickDeskewImage(self.__wand, threshold))
-    
-    @only_live
     def sepia(self, threshold=.8, saturation=-.4):
         """Sepia-tonne an image.
            
@@ -1172,45 +1211,6 @@ class Image(object):
         old_color.close()
         background.close()
     
-    def trim(self, similarity=.1, background=None):
-        """Attempt to trim off extra background around image.
-           
-           :param similarity: Smilarity factor
-           :type similarity: ``float``
-           :param background: background color, transparent by default
-           :type background: :class:`tinyimg.color.Color`
-           
-           Removes edges that are the background color from the image.
-           The greater similarity the more distant hues are considered the same
-           color. Simlarity of `0` means only this exact color.
-           
-           This method can be chained.
-        """
-        # TODO: guessing of background?
-        background_free = not(background)
-        if not background:
-            background = color.from_string('transparent')
-        
-        # preserve background color
-        old_color = color.Color()
-        guard(self.__wand,
-              lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
-                                                         old_color.wand))
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
-                                                         background.wand))
-        
-        guard(self.__wand,
-              lambda: cdll.MagickTrimImage(self.__wand, similarity * 100))
-        
-        #restore background color
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
-                                                         old_color.wand))
-        
-        if background_free:
-            background.close()
-        
     @property
     @only_live
     def wand(self):
