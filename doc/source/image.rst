@@ -322,6 +322,146 @@ to 0:
        
        (64, 128, 128, 128)
 
+Rotating
+--------
+
+You can rotate an image with :meth:`tinyimg.image.Image.rotate` method.
+Angle is mesaured in degrees. Positive
+angles yield clockwise rotation while negative ones counter-clockwise.
+The resulting empty spaces are filled with transparent pixels.
+
+>>> image.rotate(30)
+
+>>> image.rotate(90)
+
+>>> image.rotate(-45)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena128.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_rotate30.jpg
+       
+       30°
+       
+    .. figure:: _static/generated/lena_rotate90.jpg
+       
+       90°
+       
+    .. figure:: _static/generated/lena_rotate-45.jpg
+       
+       -45°
+
+Flipping
+--------
+
+Use :meth:`tinyimg.image.Image.flip` to flip (mirror) image around
+X or Y axis. Use :attr:`tinyimg.image.Image.axes` enumeration to
+specify axis.
+
+>>> image.flip(axes.x)
+
+>>> image.flip(axes.y)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_flipx.jpg
+       
+       Mirror X
+       
+    .. figure:: _static/generated/lena_flipy.jpg
+       
+       Mirror Y
+
+Transposing and transversing
+---------------------------
+
+Use :meth:`tinyimg.image.Image.transpose` and
+:meth:`tinyimg.image.Image.transverse` to transpose
+or transverse an image. Transposing creates a vertical mirror image by reflecting the
+pixels around the central x-axis while rotating them 90-degrees. Transversing
+creates a horizontal mirror image by reflecting the
+pixels around the central y-axis while rotating them 270-degrees.
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_transpose.jpg
+       
+       Transposed
+       
+    .. figure:: _static/generated/lena_transverse.jpg
+       
+       Transversed
+       
+Skewing
+_______
+
+Skewing is the action of pushing one of the edges of an image along X or Y
+axis. You can perform it with :meth:`tinyimg.image.Image.skew` passing
+offset in pixels and desired axis.
+
+>>> image.skew(10, axes.x)
+
+>>> image.skew(-5, axes.x)
+
+>>> image.skew(20, axes.y)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena128.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_skewx10.jpg
+       
+       10 pixels along X
+       
+    .. figure:: _static/generated/lena_skewx-5.jpg
+       
+       -5 pixels along X
+       
+    .. figure:: _static/generated/lena_skewy20.jpg
+       
+       20 pixels along Y
+
+Rolling
+-------
+
+Rolling in an action of offsetting an image and filling empty space
+with pixels that overflew on the edge. It can be performed with
+:meth:`tinyimg.image.Image.roll` method. It accepts offses in X and Y
+directions as arguments.
+
+>>> image.roll(100, 0)
+
+>>> image.roll(-30, 40)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_roll100_0.jpg
+       
+       Rolled by (100, 0)
+       
+    .. figure:: _static/generated/lena_roll-30_40.jpg
+       
+       Rolled by (-30, 40)
+
+
+
 Color transformation
 ====================
 

@@ -441,6 +441,96 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickRotateImage(self.__wand,
                                              color.transparent.wand, angle))
+        
+    @only_live
+    def flip(self, axis):
+        """Flip an image along given axis.
+           
+           :param axis: X or Y axis
+           :type axis: :class:`tinyimg.lazyenum.EnumValue`
+           
+           Flips (mirrors) an image along :attr:`axes.x` or :attr:`axes.y`.
+           
+           This method can be chained.
+        """
+        if axis.name == 'x':
+            guard(self.__wand, lambda: cdll.MagickFlipImage(self.__wand))
+        elif axis.name == 'y':
+            guard(self.__wand, lambda: cdll.MagickFlopImage(self.__wand))
+        else:
+            raise TinyException('axis must be X or Y')
+    
+    @only_live
+    def transpose(self):
+        """Transpose an image.
+           
+           Creates a vertical mirror image by reflecting the
+           pixels around the central x-axis while rotating them 90-degrees.
+           In other words each row of source image from top to bottom becomes
+           a column of new image from left to right.
+           
+           This method can be chained.
+        """
+        guard(self.__wand, lambda: cdll.MagickTransposeImage(self.__wand))
+        
+        return self
+    
+    @only_live
+    def transverse(self):
+        """Transverse an image.
+           
+           Creates a horizontal mirror image by reflecting the
+           pixels around the central y-axis while rotating them 270-degrees.
+           
+           This method can be chained.
+        """
+        guard(self.__wand, lambda: cdll.MagickTransverseImage(self.__wand))
+    
+    @only_live
+    def skew(self, offset, axis=None):
+        """Skews an image by given offsets.
+        
+           :param offset: offset in pixels along given axis
+           :type offset: ``int``
+           :param axis: axis along which to perform skew
+           :type axis: ``tinyimg.lazyenum.EnumValue``
+           
+           Skews an image along given axis. If no axis is given it defaults
+           to X axis.
+           
+           This method can be chained.
+        """
+        if not axis:
+            axis = axes.x
+            
+        if axis == axes.x:
+            x_angle = degrees(atan(offset / self.height))
+            y_angle = 0
+        elif axis == axes.y:
+            x_angle = 0
+            y_angle = degrees(atan(offset / self.width))
+            
+        guard(self.__wand,
+              lambda: cdll.MagickShearImage(self.__wand,
+                                            color.transparent.wand,
+                                            x_angle, y_angle))
+    
+    @only_live
+    def roll(self, x, y):
+        """Roll pixels in the image.
+           
+           :param x: offset in the x-axis direction
+           :type x: ``int``
+           :param y: offset in the y-axis direction
+           :type y: ``int``
+        
+           Rolls pixels in the image in the left-to-right direction along
+           x-axis and top-to-bottom direction along y-axis. Offsets can be
+           negative to roll in the opposite direction.
+           
+           This method can be chained.
+        """
+        guard(self.__wand, lambda: cdll.MagickRollImage(self.__wand, x, y))
     
     @only_live
     def set_alpha(self, alpha):
@@ -480,41 +570,6 @@ class Image(object):
             width, height = self.width, self.height
             cdll.DestroyMagickWand(self.__wand)
             self.__wand = blank(width, height, fill)._claim_wand()
-    
-    @only_live
-    def flip(self, axis):
-        """Flip an image along given axis.
-           
-           :param axis: X or Y axis
-           :type axis: :class:`tinyimg.lazyenum.EnumValue`
-           
-           Flips (mirrors) an image along :attr:`axes.x` or :attr:`axes.y`.
-           
-           This method can be chained.
-        """
-        if axis.name == 'x':
-            guard(self.__wand, lambda: cdll.MagickFlipImage(self.__wand))
-        elif axis.name == 'y':
-            guard(self.__wand, lambda: cdll.MagickFlopImage(self.__wand))
-        else:
-            raise TinyException('axis must be X or Y')
-    
-    @only_live
-    def roll(self, x, y):
-        """Roll pixels in the image.
-           
-           :param x: offset in the x-axis direction
-           :type x: ``int``
-           :param y: offset in the y-axis direction
-           :type y: ``int``
-        
-           Rolls pixels in the image in the left-to-right direction along
-           x-axis and top-to-bottom direction along y-axis. Offsets can be
-           negative to roll in the opposite direction.
-           
-           This method can be chained.
-        """
-        guard(self.__wand, lambda: cdll.MagickRollImage(self.__wand, x, y))
     
     @only_live
     def despeckle(self):
@@ -608,32 +663,6 @@ class Image(object):
         
         return (first, second)
     
-    @only_live
-    def transpose(self):
-        """Transpose an image.
-           
-           Creates a vertical mirror image by reflecting the
-           pixels around the central x-axis while rotating them 90-degrees.
-           In other words each row of source image from top to bottom becomes
-           a column of new image from left to right.
-           
-           This method can be chained.
-        """
-        guard(self.__wand, lambda: cdll.MagickTransposeImage(self.__wand))
-        
-        return self
-    
-    @only_live
-    def transverse(self):
-        """Transverse an image.
-           
-           Creates a horizontal mirror image by reflecting the
-           pixels around the central y-axis while rotating them 270-degrees.
-           
-           This method can be chained.
-        """
-        guard(self.__wand, lambda: cdll.MagickTransverseImage(self.__wand))
-        
     @only_live
     def wave(self, amplitude, length, offset=0, axis=None):
         """Apply wave like distortion to an image.
@@ -928,35 +957,6 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickShadowImage(self.__wand, opacity,
                                              radius, x, y))
-    
-    @only_live
-    def skew(self, offset, axis=None):
-        """Skews an image by given offsets.
-        
-           :param offset: offset in pixels along given axis
-           :type offset: ``int``
-           :param axis: axis along which to perform skew
-           :type axis: ``tinyimg.lazyenum.EnumValue``
-           
-           Skews an image along given axis. If no axis is given it defaults
-           to X axis.
-           
-           This method can be chained.
-        """
-        if not axis:
-            axis = axes.x
-            
-        if axis == axes.x:
-            x_angle = degrees(atan(offset / self.height))
-            y_angle = 0
-        elif axis == axes.y:
-            x_angle = 0
-            y_angle = degrees(atan(offset / self.width))
-            
-        guard(self.__wand,
-              lambda: cdll.MagickShearImage(self.__wand,
-                                            color.transparent.wand,
-                                            x_angle, y_angle))
     
     @only_live
     def solarize(self, factor):
@@ -1393,7 +1393,6 @@ class Image(object):
         webbrowser.open('file://' + tmpname)
         
         return tmpname
-    
     
     def checkerboard(self):
         """Fills transparent pixels with checkerboard.
