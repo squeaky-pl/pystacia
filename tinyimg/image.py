@@ -664,6 +664,93 @@ class Image(object):
         self.modulate(saturation=-1)
         
     @only_live
+    def colorize(self, color):
+        """Colorize image.
+           
+           :param color: color from which hue value is used
+           :type color: :class:`tinyimg.color.Color`
+           
+           Colorizes image resulting in image containing
+           only one hue value.
+           
+           This method can be chained.
+        """
+        overlay = blank(self.width, self.height, color)
+        
+        self.overlay(overlay, composite=composites.hue)
+        
+        overlay.close()
+    
+    @only_live
+    def sepia(self, threshold=.8, saturation=-.4):
+        """Sepia-tonne an image.
+           
+           :param threshold: Controls hue. Set to sepia tone by default.
+           :type threshold: ``float``
+           :param saturation: Saturation level
+           :type saturation:``float``
+           
+           Perform sepia-tonning of an image. You can control hue by
+           adjusting threshold parameter.
+           
+           This method can be chained.
+        """
+        threshold = 2 ** int(magick.get_options()['QuantumDepth']) * threshold
+        
+        guard(self.__wand,
+              lambda: cdll.MagickSepiaToneImage(self.__wand, threshold))
+        
+        if saturation:
+            self.modulate(saturation=saturation)
+    
+    @only_live
+    def equalize(self):
+        """Equalize image histogram.
+           
+           This method usually increases the global contrast of many images,
+           especially when the usable data of the image is represented by
+           close contrast values. Through this adjustment, the intensities
+           can be better distributed on the histogram. This allows for areas
+           of lower local contrast to gain a higher contrast. See also:
+           http://en.wikipedia.org/wiki/Histogram_equalization.
+           
+           This method can be chained.
+        """
+        guard(self.__wand, lambda: cdll.MagickEqualizeImage(self.__wand))
+    
+    @only_live
+    def invert(self, only_gray=False):
+        """Invert image colors.
+           
+           Inverts all image colors resulting in a negative image.
+           
+           This method can be chained.
+        """
+        guard(self.__wand,
+              lambda: cdll.MagickNegateImage(self.__wand, only_gray))
+    
+    @only_live
+    def solarize(self, factor):
+        """Solarizes an image.
+           
+           :param factor: solarize factor
+           :type factor: ``float``
+           
+           Applies solarization which is a color value opration similar to
+           what can be a result of partially exposing a photograph in a
+           darkroom. The usable range of factor is from ``0`` to ``1``
+           inclusive. Value of ``0`` is no-change operation whilst ``1``
+           produces a negative. Typically factor ``0.5`` produces
+           interesting effect.
+           
+           This method can be chained.
+        """
+        factor = (1 - factor) * 2 ** magick.get_depth()
+        
+        guard(self.__wand,
+              lambda: cdll.MagickSolarizeImage(self.__wand, factor))
+    
+    @only_live
     def set_alpha(self, alpha):
         """Set alpha channel of pixels in the image.
         
@@ -744,21 +831,6 @@ class Image(object):
            
         guard(self.__wand, lambda: cdll.MagickEnhanceImage(self.__wand))
     
-    @only_live
-    def equalize(self):
-        """Equalize image histogram.
-           
-           This method usually increases the global contrast of many images,
-           especially when the usable data of the image is represented by
-           close contrast values. Through this adjustment, the intensities
-           can be better distributed on the histogram. This allows for areas
-           of lower local contrast to gain a higher contrast. See also:
-           http://en.wikipedia.org/wiki/Histogram_equalization.
-           
-           This method can be chained.
-        """
-        guard(self.__wand, lambda: cdll.MagickEqualizeImage(self.__wand))
-        
     @only_live
     def dft(self, magnitude=True):
         """Applies inverse discrete Fourier transform to an image.
@@ -947,17 +1019,6 @@ class Image(object):
               lambda: cdll.MagickBlurImage(self.__wand, radius, strength))
         
     @only_live
-    def invert(self, only_gray=False):
-        """Invert image colors.
-           
-           Inverts all image colors resulting in a negative image.
-           
-           This method can be chained.
-        """
-        guard(self.__wand,
-              lambda: cdll.MagickNegateImage(self.__wand, only_gray))
-    
-    @only_live
     def oil_paint(self, radius):
         """Simulates oil paiting.
            
@@ -1015,45 +1076,6 @@ class Image(object):
                                              radius, x, y))
     
     @only_live
-    def solarize(self, factor):
-        """Solarizes an image.
-           
-           :param factor: solarize factor
-           :type factor: ``float``
-           
-           Applies solarization which is a color value opration similar to
-           what can be a result of partially exposing a photograph in a
-           darkroom. The usable range of factor is from ``0`` to ``1``
-           inclusive. Value of ``0`` is no-change operation whilst ``1``
-           produces a negative. Typically factor ``0.5`` produces
-           interesting effect.
-           
-           This method can be chained.
-        """
-        factor = (1 - factor) * 2 ** magick.get_depth()
-        
-        guard(self.__wand,
-              lambda: cdll.MagickSolarizeImage(self.__wand, factor))
-    
-    @only_live
-    def colorize(self, color):
-        """Colorize image.
-           
-           :param color: color from which hue value is used
-           :type color: :class:`tinyimg.color.Color`
-           
-           Colorizes image resulting in image containing
-           only one hue value.
-           
-           This method can be chained.
-        """
-        overlay = blank(self.width, self.height, color)
-        
-        self.overlay(overlay, composite=composites.hue)
-        
-        overlay.close()
-    
-    @only_live
     def sketch(self, radius, angle=45, strength=None):
         """Simulate sketched image.
            
@@ -1106,28 +1128,6 @@ class Image(object):
         guard(self.__wand,
               lambda: cdll.MagickCompositeImage(self.__wand, image.wand,
                                                 value, x, y))
-    
-    @only_live
-    def sepia(self, threshold=.8, saturation=-.4):
-        """Sepia-tonne an image.
-           
-           :param threshold: Controls hue. Set to sepia tone by default.
-           :type threshold: ``float``
-           :param saturation: Saturation level
-           :type saturation:``float``
-           
-           Perform sepia-tonning of an image. You can control hue by
-           adjusting threshold parameter.
-           
-           This method can be chained.
-        """
-        threshold = 2 ** int(magick.get_options()['QuantumDepth']) * threshold
-        
-        guard(self.__wand,
-              lambda: cdll.MagickSepiaToneImage(self.__wand, threshold))
-        
-        if saturation:
-            self.modulate(saturation=saturation)
     
     @only_live
     def color_overlay(self, color, blend=1):

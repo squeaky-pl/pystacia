@@ -39,3 +39,8 @@ import contrast
 import brightness
 import modulate
 import desaturate
+import colorize
+import sepia
+import equalize
+import invert
+import solarize

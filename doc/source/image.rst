@@ -649,17 +649,127 @@ a shortcut to :meth:`tinyimg.image.Image.modulate` passing `-1` as saturation.
 Colorization
 ------------
 
+Colorization in an action of replacing all hue values in an image with a hue
+from a given color. :meth:`tinyimg.image.Image.colorize` accepting single color
+parameter performs it.
+
+>>> image.colorize(color.from_string('red'))
+
+>>> image.colorize(color.from_string('yellow'))
+
+>>> image.colorize(color.from_string('blue'))
+
+>>> image.colorize(color.from_string('violet'))
+
+>>> image.colorize(color.from_string('green'))
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena128.jpg
+       
+       Original
+       
+       
+    .. figure:: _static/generated/lena_colorize_red.jpg
+       
+       red
+       
+    .. figure:: _static/generated/lena_colorize_yellow.jpg
+       
+       yellow
+       
+    .. figure:: _static/generated/lena_colorize_blue.jpg
+       
+       blue
+       
+    .. figure:: _static/generated/lena_colorize_violet.jpg
+       
+       violet
+
 Sepia tone
 ----------
+
+:meth:`tinyimg.image.Image.sepia` performs effect similar to old-fashined
+sepia image. You can adjust hue and saturation parameters but the default
+values are a good starting point.
+
+>>> image.sepia()
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_sepia.jpg
+       
+       Sepia tonning
 
 Equalization
 ------------
 
+:meth:`tinyimg.image.Image.equalize` is a method of streching channel information
+to fill full avaiable spectrum. It can result in drastic color quality improvement
+on low contrast, tainted images.
+
+>>> image.equalize()
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_equalize.jpg
+       
+       Equalized image
+
 Invertion
 ---------
 
+Invertion is a process of substractin original channel value from it's maximum
+value. It results in a negative and can be performed with
+:meth:`tinyimg.image.Image.invert`.
+
+>>> image.negative()
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_invert.jpg
+       
+       Inverted image
+
 Solarization
 ------------
+
+Solarization leads to effect similar of partly exposing an image in a darkroom.
+It can be performed with :meth:`tinyimg.image.Image.solarize`. It accepts single
+parameter - factor. Factor `0` is no change operation, Factor `1` is exactly the
+same as negative of original. Value of `0.5` yields particulary interesting effects.
+
+>>> image.solarize(0)
+
+>>> image.solarize(0.5)
+
+>>> image.solarize(1)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       0 (Original)
+       
+    .. figure:: _static/generated/lena_solarize0.5.jpg
+       
+       0.5
+       
+    .. figure:: _static/generated/lena_solarize1.jpg
+       
+       1 (Inverted original)
 
 Posterization
 -------------
