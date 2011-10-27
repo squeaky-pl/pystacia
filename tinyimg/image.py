@@ -157,6 +157,18 @@ def read_special(spec, width=None, height=None, factory=None):
     return image
 
 
+def checkerboard(width, height, factory=None):
+    """Returns standard checkerboard image
+      
+       :param width: width  in pixels
+       :type width: ``int``
+       :param height: height in pixels
+       :type height: ``int``
+       :rtype: :class:`tinyimg.image.Image` or factory
+    """
+    return read_special('pattern:checkerboard', width, height, factory)
+
+
 def blank(width, height, background=None):
     """Create :class:`Image` with monolithic background
        
@@ -1382,6 +1394,20 @@ class Image(object):
         
         return tmpname
     
+    
+    def checkerboard(self):
+        """Fills transparent pixels with checkerboard.
+           
+           Useful for presentation when you want to explicitely
+           mark transparent pixels when otherwise it might be
+           unclear where they are.
+        """
+        background = checkerboard(*self.size)
+        
+        self.overlay(background, composite=composites.dst_over)
+        
+        background.close()
+
     @only_live
     def close(self):
         """Close image and free resources.

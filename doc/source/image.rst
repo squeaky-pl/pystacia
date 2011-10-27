@@ -298,7 +298,7 @@ Resizing
 
 If you wanna crop out a portion of an image you can use
 :meth:`tinyimg.image.Image.resize`. it accepts four parameters describing cropped
-out region: width, height, x and y in this order. The former two default
+out region: width, height, x and y in this order. The latter two default
 to 0:
 
 >>> image.size
