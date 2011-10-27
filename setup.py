@@ -84,14 +84,14 @@ from zipfile import ZipFile
 
 # patch ZipFile to have extract method, py25
 if not hasattr(ZipFile, 'extract'):
-    def extract(z, name, path):
+    def zip_extract(z, name, path):
         f = open(join(path, name), 'wb')
         
         f.write(z.read(name))
         
         f.close()
         
-    ZipFile.extract = extract
+    ZipFile.extract = zip_extract
 
 from distutils.dir_util import mkpath
 from distutils.util import get_platform
