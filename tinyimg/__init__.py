@@ -100,12 +100,45 @@ def lena(width=None):
 
 
 def magick_logo():
-    """
-        Return ImageMagick logo image.
+    """Return ImageMagick logo image.
         
-        Resulting image is 640x480, pallette, RGB colorspace image.
+       Resulting image is 640x480, palette, RGB colorspace image.
     """
     return image.read_special('logo:')
+
+
+def rose():
+    """Return rose image.
+    
+       Resulting image is 70x48, RGB, truecolor.
+    """
+    return image.read_special('rose:')
+
+
+def wizard():
+    """Return wizard image.
+    
+       Resulting image is 480x640, palette, RGB image.
+    """
+    return image.read_special('wizard:')
+
+
+def granite():
+    """Return granite texture.
+    
+       Resulting image is 128x128 pallette, RGB image.
+    """
+    return image.read_special('granite:')
+
+
+def netscape():
+    """Return standard Netscape 216 color cube.
+       
+       Color cube also known as "Websafe Colors".
+       216x144, palette, RGB.
+    """
+    return image.read_special('netscape:')
+
 
 import tinyimg.api.enum as enum_api
 
@@ -156,7 +189,7 @@ from tinyimg import color
 
 
 __all__ = [
-    'lena', 'magick_logo',
+    'lena', 'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
     'read', 'read_blob', 'read_raw',
     'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
     'color']

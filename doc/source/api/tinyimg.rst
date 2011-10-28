@@ -2,4 +2,4 @@
 --------------
 
 .. automodule:: tinyimg
-    :members: lena, magick_logo
+    :members: lena, magick_logo, rose, wizard, granite, netscape

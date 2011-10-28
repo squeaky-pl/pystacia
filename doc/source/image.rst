@@ -1358,8 +1358,50 @@ Utilities
 Displaying on the screen
 ------------------------
 
+When in GUI session you can display image in available image preview program
+with :meth:`tinyimg.image.Image.show`. The call is non-blocking meaning that
+the control is immediately returned to your program
+
+>>> image.show()
+
 Marking transparent pixels
 --------------------------
 
-Bundled standard images
-======================
+Sometimes it might be not clear from the context which pixels are translucent
+and which are opaque. You can use :meth:`tinyimg.image.Image.checkerboard` to
+overlay your image on top of checkerboard pattern in the same manner that
+:term:`Photoshop` does.
+
+>>> image.checkerboard()
+
+Bundled images
+==============
+
+tinyimg comes with standard test images which can be used for testing purposes.
+Most of them are embedded in :term:`ImageMagick` library.
+
+:meth:`tinyimg.lena` optionally accepting size parameter:
+
+.. figure:: _static/generated/lena.jpg
+
+:meth:`tinyimg.magick_logo`:
+
+.. figure:: _static/generated/magick_logo.jpg
+
+:meth:`tinyimg.rose`:
+
+.. figure:: _static/generated/rose.jpg
+
+:meth:`tinyimg.wizard`
+
+.. figure:: _static/generated/wizard.jpg
+
+:meth:`tinyimg.granite`
+
+.. figure:: _static/generated/granite.jpg
+
+:meth:`tinyimg.netscape`
+
+.. figure:: _static/generated/netscape.jpg
+
+

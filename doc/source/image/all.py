@@ -1,4 +1,4 @@
-from tinyimg import lena, filters
+from tinyimg import lena, magick_logo, rose, wizard, granite, netscape, filters
 
 
 image = lena(256)
@@ -7,6 +7,26 @@ image.close()
 
 image = lena(128)
 image.write('../_static/generated/lena128.jpg')
+image.close()
+
+image = magick_logo()
+image.write('../_static/generated/magick_logo.jpg')
+image.close()
+
+image = rose()
+image.write('../_static/generated/rose.jpg')
+image.close()
+
+image = wizard()
+image.write('../_static/generated/wizard.jpg')
+image.close()
+
+image = granite()
+image.write('../_static/generated/granite.jpg')
+image.close()
+
+image = netscape()
+image.write('../_static/generated/netscape.jpg')
 image.close()
 
 def closeup(f = None, factor=4):

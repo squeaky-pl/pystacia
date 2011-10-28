@@ -39,6 +39,8 @@ TODO
 - rgb8, rgba8 color factory, and accessors [0.1.1]
 - @api_simple_call [0.1.1]
 - support for with protocol [0.1.1]
+- move all sample images into tinyimg.image.sample [0.1.1]
+- move all generic images (checkerboard, blank) into tinyimg.image.generic [0.1.1]
 - info method (returns all the crucial magick informations along with loaded libraries and paths)
 - extract base class TinyBase with closed, close, with protocol and constructor (under util)? [0.1.1]
 - implement other color factories [0.2]
@@ -68,6 +70,14 @@ TODO
 - > and < on color lightness comparison
 - color_overlay should become fill once we have blending everywhere
 - zip deployment technique with all binaries for all osses
+
+
+research functions
+-- auto_gamma
+-- auto_level
+-- shadow
+
+not documented: splice
 
 DOCS
 ====

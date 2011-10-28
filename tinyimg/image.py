@@ -951,47 +951,54 @@ class Image(object):
         transparent.close()
     
     @only_live
-    def set_alpha(self, alpha):
-        """Set alpha channel of pixels in the image.
-        
-           :param alpha: target alpha value
-           :type alpha: float
+    def sketch(self, radius, angle=45, strength=None):
+        """Simulate sketched image.
            
-           Resets alpha channel of all pixels in the image to given
-           value between 0 (transpanret) and 1 (opaque).
+           :param radius: stroke length.
+           :type radius: ``float``
+           :param angle: angle of strokes clockwise relative to horizontal axis
+           :type radius: ``float``
+           :param strength: effect strength (sigma)
+           :type strength: ``float``
+           
+           Simulates a sketch by adding strokes into an image.
+           
+           This method can be chained.
+        """
+        if strength == None:
+            strength = radius
+        guard(self.__wand,
+              lambda: cdll.MagickSketchImage(self.__wand, radius,
+                                             strength, angle))
+    
+    @only_live
+    def oil_paint(self, radius):
+        """Simulates oil paiting.
+           
+           :param radius: brush radius
+           :type radius: ``float``
+           
+           Each pixel is replaced by the most frequent color occurring in a
+           circular region defined by radius.
            
            This method can be chained.
         """
         guard(self.__wand,
-              lambda: cdll.MagickSetImageOpacity(self.__wand, alpha))
+              lambda: cdll.MagickOilPaintImage(self.__wand, radius))
     
     @only_live
-    def set_color(self, fill):
-        """Fill whole image with one color.
+    def spread(self, radius):
+        """Spread pixels in random direction.
+           
+           :param radius: Maximal distance from original position
+           :type radius: ``int``
+           
+           Applies special effect method that randomly displaces each
+           pixel in a block defined by the radius parameter.
         
-           :param fill: desired fill color
-           :type fill: :class:`tinyimg.color.Color`
-           
-           Fills whole image with a monolithic color.
-           
-           >>> img = read('example.jpg')
-           >>> img.fill(color.from_string('yellow'))
-           >>> img.get_pixel(20, 20) == color.from_string('yellow')
-           True
-           
            This method can be chained.
         """
-        if hasattr(cdll, 'MagickSetImageColor'):
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageColor(self.__wand, fill.wand))
-            
-            # MagickSetImageColor doesnt copy alpha
-            if fill.alpha != 1:
-                self.set_alpha(fill.alpha)
-        else:
-            width, height = self.width, self.height
-            cdll.DestroyMagickWand(self.__wand)
-            self.__wand = blank(width, height, fill)._claim_wand()
+        guard(self.__wand, lambda: cdll.MagickSpreadImage(self.__wand, radius))
     
     @only_live
     def dft(self, magnitude=True):
@@ -1045,60 +1052,93 @@ class Image(object):
         self.__wand = wand
     
     @only_live
-    def spread(self, radius):
-        """Spread pixels in random direction.
+    def get_pixel(self, x, y):
+        """Get pixel color at given coordinates.
            
-           :param radius: Maximal distance from original position
-           :type radius: ``int``
+           :param x: x coordinate of pixel
+           :type x: ``int``
+           :param y: y coordinate of pixel
+           :type y: ``int``
+           :rtype: :color:`tinyimg.color.Color`
            
-           Applies special effect method that randomly displaces each
-           pixel in a block defined by the radius parameter.
+           Reads pixel color at point ``(x,y)``.
+        """
+        color = color_module.Color()
         
-           This method can be chained.
-        """
-        guard(self.__wand, lambda: cdll.MagickSpreadImage(self.__wand, radius))
+        guard(self.__wand,
+              lambda: cdll.MagickGetImagePixelColor(self.__wand, x, y,
+                                                    color.wand))
+        
+        return color
     
     @only_live
-    def oil_paint(self, radius):
-        """Simulates oil paiting.
+    def fill(self, color, blend=1):
+        """Overlay color over whole image.
            
-           :param radius: brush radius
-           :type radius: ``float``
+           :param color: color to overlay
+           :type color: :class:`tinyimg.color.Color`
+           :param blend: overlay blending
+           :type blend: ``float``
            
-           Each pixel is replaced by the most frequent color occurring in a
-           circular region defined by radius.
+           Overlay a color over whole image. Blend is bleding factor of a
+           color with `0` being completely transparent and ``1`` fully opaque.
+           
+           This method can be chained.
+        """
+        # image magick ignores alpha setting of color
+        # let's incorporate it into blend
+        blend *= color.alpha
+        
+        blend = color_module.from_rgb(blend, blend, blend)
+        
+        guard(self.__wand,
+              lambda: cdll.MagickColorizeImage(self.__wand, color.wand,
+                                               blend.wand))
+        
+        blend.close()
+    
+    @only_live
+    def set_color(self, fill):
+        """Fill whole image with one color.
+        
+           :param fill: desired fill color
+           :type fill: :class:`tinyimg.color.Color`
+           
+           Fills whole image with a monolithic color.
+           
+           >>> img = read('example.jpg')
+           >>> img.fill(color.from_string('yellow'))
+           >>> img.get_pixel(20, 20) == color.from_string('yellow')
+           True
+           
+           This method can be chained.
+        """
+        if hasattr(cdll, 'MagickSetImageColor'):
+            guard(self.__wand,
+                  lambda: cdll.MagickSetImageColor(self.__wand, fill.wand))
+            
+            # MagickSetImageColor doesnt copy alpha
+            if fill.alpha != 1:
+                self.set_alpha(fill.alpha)
+        else:
+            width, height = self.width, self.height
+            cdll.DestroyMagickWand(self.__wand)
+            self.__wand = blank(width, height, fill)._claim_wand()
+    
+    @only_live
+    def set_alpha(self, alpha):
+        """Set alpha channel of pixels in the image.
+        
+           :param alpha: target alpha value
+           :type alpha: float
+           
+           Resets alpha channel of all pixels in the image to given
+           value between 0 (transpanret) and 1 (opaque).
            
            This method can be chained.
         """
         guard(self.__wand,
-              lambda: cdll.MagickOilPaintImage(self.__wand, radius))
-    
-    @only_live
-    def shadow(self, radius, x=0, y=0, opacity=0.5):
-        guard(self.__wand,
-              lambda: cdll.MagickShadowImage(self.__wand, opacity,
-                                             radius, x, y))
-    
-    @only_live
-    def sketch(self, radius, angle=45, strength=None):
-        """Simulate sketched image.
-           
-           :param radius: stroke length.
-           :type radius: ``float``
-           :param angle: angle of strokes clockwise relative to horizontal axis
-           :type radius: ``float``
-           :param strength: effect strength (sigma)
-           :type strength: ``float``
-           
-           Simulates a sketch by adding strokes into an image.
-           
-           This method can be chained.
-        """
-        if strength == None:
-            strength = radius
-        guard(self.__wand,
-              lambda: cdll.MagickSketchImage(self.__wand, radius,
-                                             strength, angle))
+              lambda: cdll.MagickSetImageOpacity(self.__wand, alpha))
     
     @only_live
     def overlay(self, image, x=0, y=0, composite=None):
@@ -1134,50 +1174,10 @@ class Image(object):
                                                 value, x, y))
     
     @only_live
-    def fill(self, color, blend=1):
-        """Overlay color over whole image.
-           
-           :param color: color to overlay
-           :type color: :class:`tinyimg.color.Color`
-           :param blend: overlay blending
-           :type blend: ``float``
-           
-           Overlay a color over whole image. Blend is bleding factor of a
-           color with `0` being completely transparent and ``1`` fully opaque.
-           
-           This method can be chained.
-        """
-        # image magick ignores alpha setting of color
-        # let's incorporate it into blend
-        blend *= color.alpha
-        
-        blend = color_module.from_rgb(blend, blend, blend)
-        
+    def shadow(self, radius, x=0, y=0, opacity=0.5):
         guard(self.__wand,
-              lambda: cdll.MagickColorizeImage(self.__wand, color.wand,
-                                               blend.wand))
-        
-        blend.close()
-    
-    @only_live
-    def get_pixel(self, x, y):
-        """Get pixel color at given coordinates.
-           
-           :param x: x coordinate of pixel
-           :type x: ``int``
-           :param y: y coordinate of pixel
-           :type y: ``int``
-           :rtype: :color:`tinyimg.color.Color`
-           
-           Reads pixel color at point ``(x,y)``.
-        """
-        color = color_module.Color()
-        
-        guard(self.__wand,
-              lambda: cdll.MagickGetImagePixelColor(self.__wand, x, y,
-                                                    color.wand))
-        
-        return color
+              lambda: cdll.MagickShadowImage(self.__wand, opacity,
+                                             radius, x, y))
     
     def splice(self, x, y, width, height):
         """Insert bands of transprent areas into an image.
