@@ -1028,8 +1028,137 @@ transparent.
 Special effects
 ===============
 
+Sketch effect
+-------------
+
+You can use :meth:`tinyimg.image.Image.sketch` to simulate sketch effect.
+You can control the effect with two parameters radius of strokes and angle of
+pencils (defaults to 45 degrees).
+
+>>> image.sketch(3)
+
+>>> image.sketch(6, 0)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_sketch3.jpg
+       
+       radius 3, angle 45
+       
+    .. figure:: _static/generated/lena_sketch6,0.jpg
+       
+       radius 6, angle 0
+
+Oil paint effect
+----------------
+
+:meth:`tinyimg.image.Image.oil_paint` simulates oil painting by covering image
+with circles filled with mean color value. It accepts single paramater -
+radius in pixels.
+
+>>> image.oil_paint(3)
+
+>>> image.oil_paint(8)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_oil_paint3.jpg
+       
+       radius 2
+       
+    .. figure:: _static/generated/lena_oil_paint8.jpg
+       
+       radius 8
+
+Spreading
+---------
+
+:meth:`tinyimg.image.Image.spread` fuzzes and image with pixel displacement
+within given radius.
+
+>>> image.spread(3)
+
+>>> image.spread(6)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_spread2.jpg
+       
+       radius 2
+       
+    .. figure:: _static/generated/lena_spread6.jpg
+       
+       radius 6
+
+Discrete Fourier transform
+--------------------------
+
+:meth:`tinyimg.image.Image.dft` performs Discrete Fourier transform on an input
+image. It returns a pair of images representing magnitude and phase components
+or real and imaginary part. These have many interesting applications. See
+http://www.imagemagick.org/Usage/fourier.
+
+>>> image.dft()
+
+>>> image.dft(False)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena128.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_magnitude.jpg
+       
+       Magnitude
+       
+    .. figure:: _static/generated/lena_phase.jpg
+       
+       Phase
+       
+    .. figure:: _static/generated/lena_real.jpg
+       
+       Real
+       
+    .. figure:: _static/generated/lena_imaginary.jpg
+       
+       Imaginary
+
+Fx method
+---------
+
 Pixel manipulation
 ==================
 
+Reading single pixels
+---------------------
+Filling
+-------
+Setting alpha
+-------------
+Overlaying
+----------
+
+Utilities
+=========
+
+Displaying on the screen
+------------------------
+
+Marking transparent pixels
+--------------------------
+
 Bundled standard images
------------------------
+======================

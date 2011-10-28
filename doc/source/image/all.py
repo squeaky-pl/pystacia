@@ -55,3 +55,8 @@ import emboss
 
 import swirl
 import wave
+
+import sketch
+import oil_paint
+import spread
+import dft

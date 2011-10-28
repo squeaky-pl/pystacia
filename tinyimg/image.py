@@ -903,6 +903,54 @@ class Image(object):
         guard(self.__wand, lambda: cdll.MagickSwirlImage(self.__wand, angle))
     
     @only_live
+    def wave(self, amplitude, length, offset=0, axis=None):
+        """Apply wave like distortion to an image.
+           
+           :param amplitude: amplitude (A) of wave in pixels
+           :type amplitude: ``int``
+           :param length: length (lambda) of wave in pixels.
+           :type length: ``int``
+           :param offset: offset (phi) from initial position in pixels
+           :type length: ``int``
+           :param axis: axis along which to apply deformation. Defaults to x.
+           :type axis: ``tinyimg.enum.EnumValue``
+           
+           Applies wave like distoration to an image along chosen
+           axis. Axis defaults to :attr:``axes.x``. Offset parameter is
+           not effective as for now. Will be implemented in the feature.
+           Resulting empty areas are filled with transparent pixels.
+           
+           This method can be chained.
+        """
+        if not axis:
+            axis = axes.x
+            
+        transparent = color.from_string('transparent')
+        
+        old_color = color.Color()
+        guard(self.__wand,
+              lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
+                                                         old_color.wand))
+        guard(self.__wand,
+              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+                                                         transparent.wand))
+        
+        if axis.name == 'y':
+            self.rotate(90)
+        
+        guard(self.__wand,
+              lambda: cdll.MagickWaveImage(self.__wand, amplitude, length))
+        
+        if axis.name == 'y':
+            self.rotate(-90)
+        
+        guard(self.__wand,
+              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+                                                         old_color.wand))
+        old_color.close()
+        transparent.close()
+    
+    @only_live
     def set_alpha(self, alpha):
         """Set alpha channel of pixels in the image.
         
@@ -975,54 +1023,6 @@ class Image(object):
         copy.close()
         
         return (first, second)
-    
-    @only_live
-    def wave(self, amplitude, length, offset=0, axis=None):
-        """Apply wave like distortion to an image.
-           
-           :param amplitude: amplitude (A) of wave in pixels
-           :type amplitude: ``int``
-           :param length: length (lambda) of wave in pixels.
-           :type length: ``int``
-           :param offset: offset (phi) from initial position in pixels
-           :type length: ``int``
-           :param axis: axis along which to apply deformation. Defaults to x.
-           :type axis: ``tinyimg.enum.EnumValue``
-           
-           Applies wave like distoration to an image along chosen
-           axis. Axis defaults to :attr:``axes.x``. Offset parameter is
-           not effective as for now. Will be implemented in the feature.
-           Resulting empty areas are filled with transparent pixels.
-           
-           This method can be chained.
-        """
-        if not axis:
-            axis = axes.x
-            
-        transparent = color.from_string('transparent')
-        
-        old_color = color.Color()
-        guard(self.__wand,
-              lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
-                                                         old_color.wand))
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
-                                                         transparent.wand))
-        
-        if axis.name == 'y':
-            self.rotate(90)
-        
-        guard(self.__wand,
-              lambda: cdll.MagickWaveImage(self.__wand, amplitude, length))
-        
-        if axis.name == 'y':
-            self.rotate(-90)
-        
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
-                                                         old_color.wand))
-        old_color.close()
-        transparent.close()
     
     @only_live
     def fx(self, expression):  # @ReservedAssignment
