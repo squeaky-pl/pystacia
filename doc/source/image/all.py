@@ -60,3 +60,9 @@ import sketch
 import oil_paint
 import spread
 import dft
+import fx
+
+import fill
+import set_color
+import set_alpha
+import overlay

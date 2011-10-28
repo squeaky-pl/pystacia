@@ -1139,17 +1139,218 @@ http://www.imagemagick.org/Usage/fourier.
 Fx method
 ---------
 
+With :meth:`tinyimg.image.Image.fx` you can perform custom operations using
+:term:`ImageMagick` tiny scripting language. Beware that this can be very
+slow on large images as it's directly interpreted and not compiled in any way.
+http://www.imagemagick.org/script/fx.php has infomration on syntax.
+
+>>> image.fx('u * 1/2')
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_fx.jpg
+       
+       After processing
+
 Pixel manipulation
 ==================
 
 Reading single pixels
 ---------------------
+
+To access pixel data anywhere in the image you cen use 
+:meth:`tinyimg.image.Image.get_pixel` passing it x and y
+coordinates.
+
+>>> image.get_pixel(128, 128)
+<Color(r=0.9396,g=0.5933,b=0.4317,a=1) object at 0x108002200L>
+
 Filling
 -------
+
+If you want to fill image with solid color you use
+:meth:`tinyimg.image.Image.fill` passing it color. You can
+optionally pass also blend parameter specyfing opacity with
+`1` meaning opaque.
+
+>>> image.fill(color.from_string('red'))
+
+>>> image.fill(color.from_string('green'), 0.5)
+
+>>> image.fill(color.from_string('blue'), 0.25)
+
+>>> image.fill(color.from_string('orange'), 0.2)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena128.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_fill_red.jpg
+       
+       red
+       
+    .. figure:: _static/generated/lena_fill_green.jpg
+       
+       green 0.5 blend
+       
+    .. figure:: _static/generated/lena_fill_blue.jpg
+       
+       blue 0.25 blend
+       
+    .. figure:: _static/generated/lena_fill_orange.jpg
+       
+       orange 0.2 blend
+
+Setting color
+-------------
+
+Another way to paint over whole image is using
+:meth:`tinyimg.image.Image.set_color`. Unlinke :meth:`tinyimg.image.fill` it always
+discards backgorund information replacing pixels. You can use alpha component
+of color to gain translucency.
+
+>>> image.set_color(color.from_string('red'))
+
+>>> image.set_color(color.from_rgba(0, 1, 0, 0.5))
+
+>>> image.set_color(color.from_rgba(0, 0, 0, 0.2))
+
+>>> image.set_color(color.from_rgba(1, 0, 1, 0.5))
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena128.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_set_color_red.jpg
+       
+       red
+       
+    .. figure:: _static/generated/lena_set_color_green.jpg
+       
+       green 0.5 alpha
+       
+    .. figure:: _static/generated/lena_set_color_black.jpg
+       
+       black 0.2 alpha
+       
+    .. figure:: _static/generated/lena_set_color_violet.jpg
+       
+       violet 0.5 alpha
+
 Setting alpha
 -------------
+
+Sometimes you may want to override alpha level for all pixels at once. You
+can do that with :meth:`tinyimg.image.Image.set_alpha`.
+
+>>> image.set_alpha(0.75)
+
+>>> image.set_color(0.5)
+
+>>> image.set_color(0.25)
+
+>>> image.set_color(0)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena128.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_alpha0.75.jpg
+       
+       0.75
+       
+    .. figure:: _static/generated/lena_alpha0.5.jpg
+       
+       0.5
+       
+    .. figure:: _static/generated/lena_alpha0.25.jpg
+       
+       0.25
+       
+    .. figure:: _static/generated/lena_alpha0.jpg
+       
+       0
+
 Overlaying
 ----------
+
+With :meth:`tinyimg.image.Image.overlay` you can overlay images on top of
+image the method is called from. It accepts the image that is going to be 
+overlaid as first parameter, x and y coordinates and composite mode.
+There are many composite modes available. `over` is the default one,
+other popular ones include `colorize`, `multiply`, `overlay`, `pin_light`.
+
+>>> image.overlay(other, 32, 32)
+
+>>> image.overlay(other, 32, 32, composites.colorize)
+
+>>> image.overlay(other, 32, 32, composites.multiply)
+
+>>> image.overlay(other, 32, 32, composites.overlay)
+
+>>> image.overlay(other, 32, 32, composites.pin_light)
+
+>>> image.overlay(pther, 32, 32, composites.saturate)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena128.jpg
+       
+       Original
+       
+    .. figure:: _static/generated/lena_overlay1.jpg
+       
+       Over (default)
+       
+    .. figure:: _static/generated/lena_overlay2.jpg
+       
+       colorize
+       
+    .. figure:: _static/generated/lena_overlay3.jpg
+       
+       multiply
+       
+    .. figure:: _static/generated/lena_overlay4.jpg
+       
+       overlay
+       
+    .. figure:: _static/generated/lena_overlay5.jpg
+       
+       pin_light
+       
+    .. figure:: _static/generated/lena_overlay6.jpg
+       
+       saturate
+       
+    .. figure:: _static/generated/lena_overlay7.jpg
+       
+       soft_light
+       
+    .. figure:: _static/generated/lena_overlay8.jpg
+       
+       modulus_add
+       
+    .. figure:: _static/generated/lena_overlay9.jpg
+       
+       modulus_substract
+       
+    .. figure:: _static/generated/lena_overlay10.jpg
+       
+       luminize
+       
+    .. figure:: _static/generated/lena_overlay11.jpg
+       
+       hard_light
 
 Utilities
 =========

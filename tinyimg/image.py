@@ -717,7 +717,7 @@ class Image(object):
         """
         overlay = blank(self.width, self.height, color)
         
-        self.overlay(overlay, composite=composites.hue)
+        self.overlay(overlay, composite=composites.colorize)
         
         overlay.close()
     
@@ -966,7 +966,7 @@ class Image(object):
               lambda: cdll.MagickSetImageOpacity(self.__wand, alpha))
     
     @only_live
-    def fill(self, fill):
+    def set_color(self, fill):
         """Fill whole image with one color.
         
            :param fill: desired fill color
@@ -984,6 +984,10 @@ class Image(object):
         if hasattr(cdll, 'MagickSetImageColor'):
             guard(self.__wand,
                   lambda: cdll.MagickSetImageColor(self.__wand, fill.wand))
+            
+            # MagickSetImageColor doesnt copy alpha
+            if fill.alpha != 1:
+                self.set_alpha(fill.alpha)
         else:
             width, height = self.width, self.height
             cdll.DestroyMagickWand(self.__wand)
@@ -1130,7 +1134,7 @@ class Image(object):
                                                 value, x, y))
     
     @only_live
-    def color_overlay(self, color, blend=1):
+    def fill(self, color, blend=1):
         """Overlay color over whole image.
            
            :param color: color to overlay

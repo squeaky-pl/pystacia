@@ -164,15 +164,15 @@ class SetAlpha(TestCase):
         img.close()
 
 
-class Fill(TestCase):
+class SetColor(TestCase):
     def test(self):
         img = lena()
         
         red = color.from_string('red')
-        img.fill(red)
+        img.set_color(red)
         self.assertEquals(img.get_pixel(32, 32), red)
         transparent = color.from_string('transparent')
-        img.fill(transparent)
+        img.set_color(transparent)
         self.assertEquals(img.get_pixel(128, 128).alpha, 0)
         
         img.close()
@@ -553,12 +553,12 @@ class Sepia(TestCase):
         img.close()
 
 
-class OverlayColor(TestCase):
+class Fill(TestCase):
     def test(self):
         img = lena()
         
         red = color.from_string('red')
-        img.color_overlay(red)
+        img.fill(red)
         self.assertEquals(img.get_pixel(40, 40), red)
         
         img.close()
