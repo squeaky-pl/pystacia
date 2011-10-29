@@ -1,4 +1,9 @@
 # coding: utf-8
+# setup.py
+# Copyright (C) 2011 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 base_urls = [
     'https://bitbucket.org/liquibits/pystacia/downloads/'
@@ -133,8 +138,8 @@ else:
 from setuptools import setup
 
 packages = ['pystacia',
-            'pystacia.api',
             'pystacia.tests',
+            'pystacia.api',
             'pystacia.api.tests']
 
 setup(

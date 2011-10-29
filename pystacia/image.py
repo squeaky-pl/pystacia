@@ -1,3 +1,10 @@
+# coding: utf-8
+# pystacia/image.py
+# Copyright (C) 2011 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
 from __future__ import division
 
 """:class:`Image` creation and management operations"""
@@ -34,8 +41,8 @@ def read(filename, factory=None):
     return image
 
 
-def read_blob(blob, format=None,
-              length=None, factory=None):  # @ReservedAssignment
+def read_blob(blob, format=None,  # @ReservedAssignment
+              length=None, factory=None):
     """Read :class:`Image` from a blob string or stream with a header.
        
        :param blob: blob data string or stream
@@ -91,8 +98,8 @@ def read_blob(blob, format=None,
     return image
 
 
-def read_raw(raw, format, width, height,
-             depth, factory=None):  # @ReservedAssignment
+def read_raw(raw, format, width, height,  # @ReservedAssignment
+             depth, factory=None):
     """Read :class:`Image` from raw string or stream.
        
        :param raw: raw data string or stream

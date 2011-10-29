@@ -1,3 +1,10 @@
+# coding: utf-8
+# pystacia/tests/image_tests.py
+# Copyright (C) 2011 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
 from pystacia.image import Image
 from pystacia.compat import TestCase, skipIf
 

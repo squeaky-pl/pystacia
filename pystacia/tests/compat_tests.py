@@ -1,3 +1,10 @@
+# coding: utf-8
+# pystacia/tests/compat_tests.py
+# Copyright (C) 2011 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
 from pystacia.compat import TestCase
 
 
@@ -30,4 +37,4 @@ class Compat(TestCase):
 
 
 from sys import version_info
-from pystacia.compat import formattable, native_str, c_ssize_t, TestCase
+from pystacia.compat import formattable, native_str, c_ssize_t

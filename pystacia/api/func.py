@@ -1,3 +1,11 @@
+# coding: utf-8
+# pystacia/api/func.py
+# Copyright (C) 2011 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
+
 def annote(cdll):
     cdll.MagickGetVersion.restype = c_char_p
     cdll.MagickGetVersion.argtypes = (POINTER(c_size_t),)
