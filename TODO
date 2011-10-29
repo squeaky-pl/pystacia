@@ -2,14 +2,9 @@
 TODO
 ====
 
-- coverage
-- docs
-- docstrings
-- factory parameter for factories
+
 - move lena to png, if no png support delete lena
 - dont rely in tests solely on lena
-- lib subfolder to cdll
-- group methods in image and refer to this order in documentation
 - exception in the tests causes os.exit(1) which doesnt trigger atexit
 - remove color paramname from everywhere - use fill,
   background and so on - future proof
