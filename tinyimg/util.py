@@ -49,11 +49,12 @@ def find_library(name, abis):
     else:
         paths.append(path)
     
+    osname = get_osname()
+    
     if not environ.get('TINYIMG_SKIP_PACKAGE'):
         import tinyimg
         path = dirname(tinyimg.__file__)
-        paths.append(join(path, 'lib'))
-        paths.append(join(path, 'dll'))
+        paths.append(join(path, 'cdll'))
     
     if not environ.get('TINYIMG_SKIP_VIRTUAL_ENV'):
         try:
@@ -72,7 +73,6 @@ def find_library(name, abis):
     factory = CDLL
 
     def dll_template(abi):
-        osname = get_osname()
         if osname == 'macos':
             return 'lib{name}.{abi}.dylib' if abi else 'lib{name}.dylib'
         elif osname == 'linux':

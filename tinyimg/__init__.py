@@ -51,34 +51,34 @@ from tinyimg.util import memoized
 
 
 @memoized
-def __raw_lena():
+def __raw_lena(factory=None):
     """Decode standard lena test image from bzipped YCbCr stream."""
     filename = join(dirname(__file__), 'lena.ycbcr.bz2')
     return dict(raw=bz2_readfile(filename), format='ycbcr',
-                height=512, width=512, depth=8)
+                height=512, width=512, depth=8, factory=factory)
 
 # weakref memoization to let garbage collector clear it when needed
 # helps pypy a lot
 __lena = None
 
 
-def __lena_image():
+def __lena_image(factory=None):
     """Perform weakref memoization of Lena."""
     global __lena
     
     if not __lena:
-        lena = image.read_raw(**__raw_lena())
+        lena = image.read_raw(**__raw_lena(factory))
         __lena = weakref.ref(lena)
     else:
         lena = __lena()
         if not lena:
-            lena = image.read_raw(**__raw_lena())
+            lena = image.read_raw(**__raw_lena(factory))
             __lena = weakref.ref(lena)
     
     return lena.copy()
 
 
-def lena(width=None):
+def lena(width=None, factory=None):
     """Return standard lena test image.
        
        Resulting :class:`.Image` object is a TrueType in, RGB colorspace,
@@ -89,7 +89,7 @@ def lena(width=None):
          defaults to 512x512 which is how the bitmap is stored internally.
        
     """
-    img = __lena_image()
+    img = __lena_image(factory)
     
     if width:
         img.rescale(width, width)
@@ -99,45 +99,45 @@ def lena(width=None):
     return img
 
 
-def magick_logo():
+def magick_logo(factory=None):
     """Return ImageMagick logo image.
         
        Resulting image is 640x480, palette, RGB colorspace image.
     """
-    return image.read_special('logo:')
+    return image.read_special('logo:', factory=factory)
 
 
-def rose():
+def rose(factory=None):
     """Return rose image.
     
        Resulting image is 70x48, RGB, truecolor.
     """
-    return image.read_special('rose:')
+    return image.read_special('rose:', factory=factory)
 
 
-def wizard():
+def wizard(factory=None):
     """Return wizard image.
     
        Resulting image is 480x640, palette, RGB image.
     """
-    return image.read_special('wizard:')
+    return image.read_special('wizard:', factory=factory)
 
 
-def granite():
+def granite(factory=None):
     """Return granite texture.
     
        Resulting image is 128x128 pallette, RGB image.
     """
-    return image.read_special('granite:')
+    return image.read_special('granite:', factory=factory)
 
 
-def netscape():
+def netscape(factory=None):
     """Return standard Netscape 216 color cube.
        
        Color cube also known as "Websafe Colors".
        216x144, palette, RGB.
     """
-    return image.read_special('netscape:')
+    return image.read_special('netscape:', factory=factory)
 
 
 import tinyimg.api.enum as enum_api
@@ -187,6 +187,7 @@ from tinyimg.image import blank, checkerboard
 from tinyimg.image import (
     composites, types, filters, colorspaces, compressions, axes)
 from tinyimg import color
+from tinyimg.image import Image
 
 
 __all__ = [
@@ -194,4 +195,5 @@ __all__ = [
     'read', 'read_blob', 'read_raw',
     'blank', 'checkerboard',
     'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
-    'color']
+    'color',
+    'Image']

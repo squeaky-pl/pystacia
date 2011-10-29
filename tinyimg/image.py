@@ -169,7 +169,7 @@ def checkerboard(width, height, factory=None):
     return read_special('pattern:checkerboard', width, height, factory)
 
 
-def blank(width, height, background=None):
+def blank(width, height, background=None, factory=None):
     """Create :class:`Image` with monolithic background
        
        :param width: Width in pixels
@@ -187,7 +187,7 @@ def blank(width, height, background=None):
     if not background:
         background = 'transparent'
     
-    return read_special('xc:' + str(background), width, height)
+    return read_special('xc:' + str(background), width, height, factory)
 
 from tinyimg.util import only_live
 

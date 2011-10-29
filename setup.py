@@ -110,7 +110,7 @@ class tinyimg_install(install):
         
         lib_base = join(self.build_base, 'libraries')
         if exists(lib_base):
-            self.copy_tree(lib_base, join(self.install_lib, 'tinyimg/lib'))
+            self.copy_tree(lib_base, join(self.install_lib, 'tinyimg/cdll'))
         
         return result
 
@@ -120,6 +120,15 @@ try:
     format
 except NameError:
     install_requires.append('StringFormat')
+
+from os import environ
+
+
+if not environ.get('TINYIMG_SKIP_BINARIES'):
+    cmdclass = dict(build=tinyimg_build,
+                    install=tinyimg_install)
+else:
+    cmdclass = {}
 
 from setuptools import setup
 
@@ -135,6 +144,5 @@ setup(
     license='MIT License',
     long_description=open('README').read(),
     install_requires=install_requires,
-    cmdclass=dict(build=tinyimg_build,
-                  install=tinyimg_install)
+    cmdclass=cmdclass
 )
