@@ -11,6 +11,9 @@ where you would import it.
 Reading and writing
 ===================
 
+Files, streams and byte strings
+-------------------------------
+
 To read a file from the disk you would use :func:`tinyimg.image.read` factory::
 
     from tinyimg import read
@@ -62,6 +65,46 @@ analogical to parameters you would pass to :meth:`tinyimg.image.read_raw` you
 can call :meth:`tinyimg.image.get_raw` passing it color space::
 
     image.get_raw('ycbcr')
+
+Generic images
+--------------
+
+Instead of reading an image from a file or stream you sometimes may want to
+start from blank image or well defined pattern.
+
+Use :func:`tinyimg.image.blank` to create empty blank image of given
+dimensions. By default it fills it with transparent pixels, but a third parameter
+specifying color can be used.
+
+>>> from tinyimg import blank, color
+>>> blank(100, 100)
+>>> blank(100, 100, color.from_string('red'))
+>>> blank(100, 100, color.from_rgba(0, 1, 0, 0.5))
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/transparent.jpg
+       
+       Transparent (default)
+    
+    .. figure:: _static/generated/red.jpg
+       
+       Red
+       
+    .. figure:: _static/generated/green.jpg
+       
+       Translucent green
+
+You can also generate a checkerboard pattern which is used in this documentation
+to mark transparent pixels with :func:`tinyimg.image.checkerboard` which
+accepts width and height.
+
+>>> from tinyimg import checkerboard
+>>> checkerboard(200, 200)
+
+.. figure:: _static/generated/checkerboard.png
+       
+   Checkerboard pattern
 
 Common properties
 =================
@@ -474,8 +517,41 @@ directions as arguments.
 Straightening image
 -------------------
 
+Sometimes you have an image that is not straightened since It could be scanned
+so. You can use :meth:`tinyimg.image.Image.straighten` to correct that.
+It accepts single parameter - threshold which tells tinyimg what is the
+difference between baackground and subject.
+
+>>> image.straighten(20)
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena_notstraight.jpg
+       
+       Rotated image
+       
+    .. figure:: _static/generated/lena_straightened.jpg
+       
+       Straightened up
+
 Trimming extra background
 -------------------------
+
+If your image has extra background around it you can trim it off with
+:meth:`tinyimg.image.Image.trim` method. It accepts two optional parameters
+similarity and background color of space to discard (defaults to transparent).
+
+>>> image.trim()
+
+.. container:: clearfix left
+
+    .. figure:: _static/generated/lena_extrabg.jpg
+       
+       Image with empty space
+       
+    .. figure:: _static/generated/lena_trim.jpg
+       
+       Trimmed off
 
 Color transformation
 ====================

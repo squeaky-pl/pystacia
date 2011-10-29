@@ -183,6 +183,7 @@ from tinyimg import image
 
 #convenience imports
 from tinyimg.image import read, read_blob, read_raw
+from tinyimg.image import blank, checkerboard
 from tinyimg.image import (
     composites, types, filters, colorspaces, compressions, axes)
 from tinyimg import color
@@ -191,5 +192,6 @@ from tinyimg import color
 __all__ = [
     'lena', 'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
     'read', 'read_blob', 'read_raw',
+    'blank', 'checkerboard',
     'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
     'color']

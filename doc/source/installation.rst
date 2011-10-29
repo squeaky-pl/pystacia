@@ -105,8 +105,57 @@ Internet.
 
 .. _ironpython:
 
-Installing tinying with IronPython on Windows
-=============================================
+Installing tinying with IronPython on Windows and .NET
+======================================================
+
+Installing tinyimg on IronPython is manual since at the time of writing
+IronPython couldn't handle :term:`virtualenv`, :term:`pip` or :term: `setuptools`
+properly. Though it's completely functional with a little bit of effort.
+
+First obtain latest version of IronPython from http://ironpython.net/. At the
+time of writing it was 2.7.1. Perform standard installation procedure.
+
+Create your sandbox folder where you install all the needed packages and
+perform testing. Let's say it's C:\sandbox.
+
+    C:\sandbox
+
+We need to manually satisfy all the dependencies. First grab :term:six library
+from http://pypi.python.org/pypi/six. Download, unpack and copy `six.py` file into
+your sandbox folder. Then go to http://pypi.python.org/pypi/decorator grab source
+distribution unpack it and grab file `decorator.py` from src subfolder directly
+into your sandbox folder. Now your sandbox folder should look like this:
+
+    C:\sandbox
+        decorator.py
+        six.py
+
+Now it's time to install tinyimg itself. Go to [TODO: link] and grab tinyimg
+source distribution, unpack it and put folder tinyimg under your sandbox folder.
+You also need a binary image distribution for your Windows. If you use 32 bit
+Windows grab it from [TODO: link] or from [TODO: link] if you are on 64 bit
+version. Unpack it and move all the files into `cdll` subdirectory under `tinyimg`
+folder. Your installation should look like this now::
+
+    C:\sandbox
+        decorator.py
+        six.py
+        tinyimg\
+            *some files here*
+            cdll\
+                *ImageMagick dlls here*
+
+You are almost done. Open your console program and type::
+
+    cd c:\sandbox
+    ipy.exe -X:Frames
+    >>> from tinyimg import *
+
+If it succeeds everything is configured propertly. Note that we assmued that
+`ipy.exe` is on your system path - otherwise you need to type full path to it
+Also -X:Frames switch is mandatory since :term:`IronPython` otherwise doesn't
+provide :func:`sys._getframe` which is referenced by :term:`decorator` and
+:term:`six` libraries. 
 
 What gets installed
 ===================

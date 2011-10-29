@@ -6,11 +6,8 @@ Miscellaneous
 Library search path
 -------------------
 
-Subclassing tinyimg classes
----------------------------
-
-Compiling ImageMagick from source
----------------------------------
+Subclassing tinyimg Image class
+-------------------------------
 
 Environment variables influencing tinyimg runtime
 -------------------------------------------------

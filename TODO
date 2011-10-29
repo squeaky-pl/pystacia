@@ -8,6 +8,7 @@ TODO
 - factory parameter for factories
 - move lena to png, if no png support delete lena
 - dont rely in tests solely on lena
+- lib subfolder to cdll
 - group methods in image and refer to this order in documentation
 - exception in the tests causes os.exit(1) which doesnt trigger atexit
 - remove color paramname from everywhere - use fill,
@@ -65,6 +66,7 @@ TODO
 - all functions should accept blend as param - merges result on top with this blend
 - visual testing framework with reference images
 - wave needs phi
+- copy parameter to each function as kw, along blend
 - blending gravity
 - checker in show, zoom, crop
 - > and < on color lightness comparison

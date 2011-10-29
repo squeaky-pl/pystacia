@@ -44,6 +44,8 @@ image = closeup()
 image.write('../_static/generated/lena_closeup.jpg')
 image.close()
 
+import generic
+
 import colorspace
 import type
 
@@ -54,6 +56,7 @@ import flip
 import trans
 import skew
 import roll
+import straighten
 
 import contrast
 import brightness
