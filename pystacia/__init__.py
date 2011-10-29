@@ -47,18 +47,6 @@ def init():
         template = formattable('Unsupported version of MagickWand {0}')
         warn(template.format(version))
 
-from pystacia.util import memoized
-
-
-@memoized
-def __raw_lena(factory=None):
-    """Decode standard lena test image from bzipped YCbCr stream."""
-    filename = join(dirname(__file__), 'lena.ycbcr.bz2')
-    return dict(raw=bz2_readfile(filename), format='ycbcr',
-                height=512, width=512, depth=8, factory=factory)
-
-# weakref memoization to let garbage collector clear it when needed
-# helps pypy a lot
 __lena = None
 
 
@@ -67,12 +55,12 @@ def __lena_image(factory=None):
     global __lena
     
     if not __lena:
-        lena = image.read_raw(**__raw_lena(factory))
+        lena = image.read(__lena_path)
         __lena = weakref.ref(lena)
     else:
         lena = __lena()
         if not lena:
-            lena = image.read_raw(**__raw_lena(factory))
+            lena = image.read(__lena_path)
             __lena = weakref.ref(lena)
     
     return lena.copy()
@@ -171,9 +159,9 @@ def enum_reverse_lookup(enum, value):
 cdll = None
 
 import weakref
-from os.path import dirname, join
+from os.path import dirname, join, exists
 
-from pystacia.compat import formattable, bz2_readfile
+from pystacia.compat import formattable
 from pystacia.util import TinyException
 
 init()
@@ -190,10 +178,18 @@ from pystacia import color
 from pystacia.image import Image
 
 
+__lena_path = join(dirname(__file__), 'lena.png')
+
+if not exists(__lena_path) or 'png' not in magick.get_delegates():
+    del lena
+
 __all__ = [
-    'lena', 'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
+    'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
     'read', 'read_blob', 'read_raw',
     'blank', 'checkerboard',
     'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
     'color',
     'Image']
+
+if globals().get('lena'):
+    __all__.append('lena')

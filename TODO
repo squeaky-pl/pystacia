@@ -2,12 +2,12 @@
 TODO
 ====
 
-
-- move lena to png, if no png support delete lena
-- dont rely in tests solely on lena
 - exception in the tests causes os.exit(1) which doesnt trigger atexit
 - remove color paramname from everywhere - use fill,
   background and so on - future proof
+- dont rely in tests solely on lena [0.1.1]
+- test if we can get delegates before we initialize ImageMagick (lena deletion) [0.1.1]
+- weakrefing cached lena should be only used in tests [0.1.1]
 - setting factories globally [0.1.1] if you want to use a subclass
 - i.e. registry module to use for paths, chainability and any other things
   that affect runtime

@@ -29,38 +29,6 @@ elif hasattr(platform, 'dist'):
     dist = platform.dist
 
 
-def fallback_bz2_readfile(filename):
-    tempdir = gettempdir()
-    template = formattable('cp "{src}" "{tmp}"')
-    system(template.format(src=filename, tmp=tempdir))
-    olddir = getcwd()
-    chdir(tempdir)
-    filename = basename(filename)
-    system(formattable('bunzip2 {0}').format(filename))
-    
-    filename = filename[:-4]
-    f = open(filename, 'rb')
-    data = f.read()
-    f.close()
-    
-    chdir(olddir)
-    
-    return data
-
-
-def bz2_readfile(filename):
-    f = bz2.BZ2File(filename, 'rb')
-    data = f.read()
-    f.close()
-    
-    return data
-
-try:
-    import bz2
-except ImportError:
-    bz2_readfile = fallback_bz2_readfile
-
-
 # python <=2.6 doesnt have c_ssize_t,
 # implementation copied from ctypes from 2.7
 def fallback_c_size_t():
@@ -86,7 +54,3 @@ except ImportError:
 from unittest import TestCase
 if not hasattr(TestCase, 'assertSequenceEqual'):
     from unittest2 import TestCase  # @UnusedImport @Reimport
-
-from tempfile import gettempdir
-from os import system, chdir, getcwd
-from os.path import basename

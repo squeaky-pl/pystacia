@@ -15,6 +15,7 @@ binaries = {
     'imagick-6.7.2.10-win32.zip': '1a9e7c9514fde117737de4f7e730db40'
 }
 
+lena_md5 = '525f53c89dbfaa81a9c94e5bf7e1c7fd'
 
 def md5_file(f, block_size=1 ** 20):
     f = open(f, 'rb')
@@ -42,6 +43,29 @@ class pystacia_build(build):
     def run(self):
         result = build.run(self)
         
+        local_file = join(self.build_base, 'lena.png')
+        
+        # download lena
+        found = False
+        for base in base_urls:
+            url = base + 'lena.png'
+            self.announce('==> Downloading: ' + url)
+            urlretrieve(url, local_file)
+            
+            if md5_file(local_file) == lena_md5:
+                self.announce('==> MD5 digest OK')
+                found = True
+                break
+            
+            self.warn('==> MD5 digest failed')
+        
+        if not found:
+            self.warn('==> All the mirrors for lena.png failed')
+        
+        if environ.get('PYSTACIA_SKIP_BINARIES'):
+            self.warn('==> Skipping binaries as requested')
+            return result
+        
         remote_file = ('imagick-' + magick_version + '-' +
                        get_platform() + '.zip')
         
@@ -55,6 +79,7 @@ class pystacia_build(build):
         
         mkpath(self.build_temp)
         
+        # download libraries
         found = False
         for base in base_urls:
             url = base + remote_file
@@ -69,6 +94,7 @@ class pystacia_build(build):
             self.warn('==> MD5 digest failed')
         
         if not found:
+            self.warn('==> All the mirrors for libraries failed')
             return result
         
         lib_base = join(self.build_base, 'libraries')
@@ -116,7 +142,11 @@ class pystacia_install(install):
         lib_base = join(self.build_base, 'libraries')
         if exists(lib_base):
             self.copy_tree(lib_base, join(self.install_lib, 'pystacia/cdll'))
-        
+            
+        lena = join(self.build_base, 'lena.png')
+        if exists(lena):
+            self.copy_file(lena, join(self.install_lib, 'pystacia/lena.png'))
+            
         return result
 
 install_requires = ['six', 'decorator']
@@ -127,20 +157,15 @@ except NameError:
     install_requires.append('StringFormat')
 
 from os import environ
-
-
-if not environ.get('PYSTACIA_SKIP_BINARIES'):
-    cmdclass = dict(build=pystacia_build,
-                    install=pystacia_install)
-else:
-    cmdclass = {}
-
 from setuptools import setup
 
 packages = ['pystacia',
             'pystacia.tests',
             'pystacia.api',
             'pystacia.api.tests']
+
+cmdclass = dict(build=pystacia_build,
+                install=pystacia_install)
 
 setup(
     name='pystacia',
@@ -150,7 +175,6 @@ setup(
     url='http://liquibits.bitbucket.org/',
     version='0.1dev',
     packages=packages,
-    package_data={'pystacia': ['lena.ycbcr.bz2']},
     license='MIT License',
     long_description=open('README').read(),
     install_requires=install_requires,

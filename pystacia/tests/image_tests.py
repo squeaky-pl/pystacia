@@ -515,7 +515,7 @@ class Solarize(TestCase):
         self.assertEquals(img.get_pixel(256, 256), before)
         img.solarize(1)
         self.assertEquals(img.get_pixel(256, 256).get_rgb(),
-                          tuple(1 - x for x in before.get_rgb()))
+                          tuple(round(1 - x, 4) for x in before.get_rgb()))
         
         img.close()
 
