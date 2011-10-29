@@ -1,7 +1,7 @@
 Copyright, Trademarks, and Attributions
 =======================================
 
-*The tinyimg image manipulation library, Version 0.1*
+*The Pystacia image manipulation library, Version 0.1*
 
 by `Paweł Piotr Przeradowski <http://gplus.to/przeradowski>`_
 
@@ -16,9 +16,9 @@ similar license to this one.
 
 .. note::
 
-   While the tinyimg documentation is offered under the
+   While the Pystacia documentation is offered under the
    Creative Commons Attribution-Nonconmmercial-Share Alike 3.0 United
-   States License, the tinyimg *software* is offered under a
+   States License, the Pystacia *software* is offered under a
    `less restrictive MIT license
    <http://www.opensource.org/licenses/mit-license.php>`_ . It's completely
    free of charge both for open-source and commercial project use.
@@ -40,9 +40,9 @@ This software relies on :term:`ImageMagick` for its internal operation.
 :term:`ImageMagick` is licensed under the
 `ImageMagick License <http://www.imagemagick.org/script/license.php>`_.
 
-     
-
-Logo
+Logo image is a derivative work based on image by user Ckim06 used in Wikipedia that can
+be found here: http://kk.wikipedia.org/wiki/%D0%A1%D1%83%D1%80%D0%B5%D1%82:PistachGrp_001_LR.jpg.
+Image is realesed into public domain.
 
 General documentation structure and many paragraphs were adapted from
 `Pyramid documentation <http://docs.pylonsproject.org/projects/pyramid/current/copyright.html>`_ by Chris McDonough.

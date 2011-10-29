@@ -1,7 +1,7 @@
 # coding: utf-8
 
 base_urls = [
-    'https://bitbucket.org/squeaky/tinyimg/downloads/'
+    'https://bitbucket.org/liquibits/pystacia/downloads/'
 ]
 
 magick_version = '6.7.2.10'
@@ -33,7 +33,7 @@ def extract(zipfile, path):
 from distutils.command.build import build
 
 
-class tinyimg_build(build):
+class pystacia_build(build):
     def run(self):
         result = build.run(self)
         
@@ -104,13 +104,13 @@ except ImportError:
     from distutils.command.install import install  # @Reimport
 
 
-class tinyimg_install(install):
+class pystacia_install(install):
     def run(self):
         result = install.run(self)
         
         lib_base = join(self.build_base, 'libraries')
         if exists(lib_base):
-            self.copy_tree(lib_base, join(self.install_lib, 'tinyimg/cdll'))
+            self.copy_tree(lib_base, join(self.install_lib, 'pystacia/cdll'))
         
         return result
 
@@ -124,23 +124,28 @@ except NameError:
 from os import environ
 
 
-if not environ.get('TINYIMG_SKIP_BINARIES'):
-    cmdclass = dict(build=tinyimg_build,
-                    install=tinyimg_install)
+if not environ.get('PYSTACIA_SKIP_BINARIES'):
+    cmdclass = dict(build=pystacia_build,
+                    install=pystacia_install)
 else:
     cmdclass = {}
 
 from setuptools import setup
 
+packages = ['pystacia',
+            'pystacia.api',
+            'pystacia.tests',
+            'pystacia.api.tests']
+
 setup(
-    name='tinyimg',
+    name='pystacia',
     description='Python raster imaging library',
     author='Paweł Piotr Przeradowski',
     author_email='przeradowski@gmail.com',
-    url='https://bitbucket.org/squeaky/tinyimg',
+    url='http://liquibits.bitbucket.org/',
     version='0.1dev',
-    packages=['tinyimg', 'tinyimg.api', 'tinyimg.tests', 'tinyimg.api.tests'],
-    package_data={'tinyimg': ['lena.ycbcr.bz2']},
+    packages=packages,
+    package_data={'pystacia': ['lena.ycbcr.bz2']},
     license='MIT License',
     long_description=open('README').read(),
     install_requires=install_requires,

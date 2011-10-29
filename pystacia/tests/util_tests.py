@@ -31,4 +31,4 @@ class Util(TestCase):
         self.assertEquals(producer.__doc__, 'doc')
 
 
-from tinyimg.util import memoized, only_live, TinyException
+from pystacia.util import memoized, only_live, TinyException

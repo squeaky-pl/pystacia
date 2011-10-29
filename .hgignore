@@ -7,8 +7,8 @@ syntax: regexp
 
 ^MANIFEST$
 ^\.tox/
-^tinyimg\.egg-info/
-^tinyimg-env/
+^pystacia\.egg-info/
+^pystacia-env/
 ^env/
 ^dist/
 ^build/

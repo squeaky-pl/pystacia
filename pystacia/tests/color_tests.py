@@ -1,4 +1,4 @@
-from tinyimg.compat import TestCase
+from pystacia.compat import TestCase
 
 
 class CloseTest(TestCase):
@@ -65,5 +65,5 @@ class SaturateTest(TestCase):
         self.assertIsInstance(color.saturate(1.0), int)
 
 
-from tinyimg import color
-from tinyimg.util import TinyException
+from pystacia import color
+from pystacia.util import TinyException

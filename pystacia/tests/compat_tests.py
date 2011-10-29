@@ -1,4 +1,4 @@
-from tinyimg.compat import TestCase
+from pystacia.compat import TestCase
 
 
 class Compat(TestCase):
@@ -30,4 +30,4 @@ class Compat(TestCase):
 
 
 from sys import version_info
-from tinyimg.compat import formattable, native_str, c_ssize_t, TestCase
+from pystacia.compat import formattable, native_str, c_ssize_t, TestCase

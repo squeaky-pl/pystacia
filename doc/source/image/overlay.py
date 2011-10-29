@@ -1,4 +1,4 @@
-from tinyimg import lena, composites
+from pystacia import lena, composites
 
 overlay = lena(64)
 

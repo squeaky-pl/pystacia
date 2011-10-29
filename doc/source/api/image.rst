@@ -1,7 +1,7 @@
-:mod:`tinyimg.image`
+:mod:`pystacia.image`
 --------------------
 
-.. automodule:: tinyimg.image
+.. automodule:: pystacia.image
 
 :class:`Image` factories
 ========================

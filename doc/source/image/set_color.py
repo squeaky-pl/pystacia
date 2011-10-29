@@ -1,4 +1,4 @@
-from tinyimg import lena, color
+from pystacia import lena, color
 
 image = lena(128)
 image.set_color(color.from_string('red'))

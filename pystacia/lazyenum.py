@@ -6,7 +6,7 @@ class Enum(object):
         return enum_value(self, name)
     
     def __repr__(self):
-        template = formattable("tinyimg.lazyenum.enum('{0}')")
+        template = formattable("pystacia.lazyenum.enum('{0}')")
         
         return template.format(self.name)
 
@@ -19,7 +19,7 @@ class EnumValue(object):
     def __repr__(self):
         return repr(self.enum) + '.' + self.name
 
-from tinyimg.util import memoized
+from pystacia.util import memoized
 
 
 @memoized
@@ -32,4 +32,4 @@ def enum_value(enum, name):
     return EnumValue(enum, name)
 
 
-from tinyimg.compat import formattable
+from pystacia.compat import formattable

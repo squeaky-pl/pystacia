@@ -1,7 +1,7 @@
-:mod:`tinyimg.color`
+:mod:`pystacia.color`
 --------------------
 
-.. automodule:: tinyimg.color
+.. automodule:: pystacia.color
 
 
 Color factories

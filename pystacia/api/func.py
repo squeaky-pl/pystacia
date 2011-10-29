@@ -317,8 +317,8 @@ def guard(wand, callable, msg=None):  # @ReservedAssignment
 from ctypes import (c_char_p, c_void_p, POINTER, byref,
                     cast, c_size_t, c_double, c_uint)
 
-from tinyimg.util import TinyException
-from tinyimg.compat import c_ssize_t
-from tinyimg import cdll
-from tinyimg.api.type import (MagickWand_p, PixelWand_p, MagickBoolean,
+from pystacia.util import TinyException
+from pystacia.compat import c_ssize_t
+from pystacia import cdll
+from pystacia.api.type import (MagickWand_p, PixelWand_p, MagickBoolean,
                            ExceptionType, enum)

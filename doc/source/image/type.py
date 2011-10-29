@@ -1,4 +1,4 @@
-from tinyimg import types
+from pystacia import types
 
 from all import closeup
 

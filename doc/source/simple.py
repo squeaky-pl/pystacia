@@ -1,7 +1,7 @@
-import tinyimg
+import pystacia
 
 
-image = tinyimg.read('example.png')
+image = pystacia.read('example.png')
 
 image.rescale(320, 240)
 image.rotate(30)

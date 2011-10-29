@@ -1,4 +1,4 @@
-from tinyimg import lena, colorspaces
+from pystacia import lena, colorspaces
 
 
 image = lena(256)

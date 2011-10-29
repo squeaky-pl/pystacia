@@ -17,4 +17,4 @@ class Enum(TestCase):
         self.assertNotEqual(composite.qwerty, composite.abc)
 
 
-from tinyimg.lazyenum import enum
+from pystacia.lazyenum import enum

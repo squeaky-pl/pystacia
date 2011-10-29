@@ -1,4 +1,4 @@
-from tinyimg import lena 
+from pystacia import lena 
 
 image = lena(256)
 image.fx('u * 1/2')

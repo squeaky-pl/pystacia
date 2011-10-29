@@ -1,11 +1,11 @@
 ===============================================
-The «tinyimg» raster image manipulation library
+The «Pystacia» raster image manipulation library
 ===============================================
 
-Tinyimg is a down-to-earth image manipulation library born out of practical
+Pystacia is a new image manipulation library born out of practical
 needs. It's simple, it's cross-platform, runs on Python 2.5+, 3.x,
 :term:`PyPy` and :term:`IronPython`. It's compact but still appropriate for most of your
-day to day image handling tasks. Tinyimg leverages powerful :term:`ImageMagick`
+day to day image handling tasks. Pystacia leverages powerful :term:`ImageMagick`
 library as a back-end exposing easily comprehensible Pythonic API.
 
 Here is one of the simplest code snippets showing what you can do with it:
@@ -16,7 +16,7 @@ When saved to ``simple.py``, the above script can be run via:
 
 .. code-block:: sh
 
-    $ pip install tinyimg
+    $ pip install pystacia
     $ python simple.py
 
 Provided you have file example.png in the same directory it would output
@@ -48,7 +48,7 @@ Narrative documentation
 Reference Material
 ==================
 
-Reference material includes documentation for tinyimg API.
+Reference material includes documentation for Pystacia API.
 
 .. toctree::
    :maxdepth: 2

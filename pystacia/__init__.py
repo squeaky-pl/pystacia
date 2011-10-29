@@ -1,23 +1,23 @@
 # coding: utf-8
-# tinyimg/__init__.py
+# pystacia/__init__.py
 # Copyright (C) 2011 by Paweł Piotr Przeradowski
 #
-# This module is part of tinyimg and is released under
+# This module is part of pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-"""tinyimg is a raster graphics library utilizing ImageMagick."""
+"""pystacia is a raster graphics library utilizing ImageMagick."""
 
 
 def init():
     """Find ImageMagick DLL and initialize it.
        
-       Searches available paths with :func:`tinyimg.util.find_library`
+       Searches available paths with :func:`pystacia.util.find_library`
        and then fallbacks to standard :func:`ctypes.util.find_liblrary`.
        Loads the DLL into memory, initializes it and warns if it has
        unsupported API and ABI versions.
     """
-    from tinyimg.util import find_library
-    from tinyimg.api import name, abis
+    from pystacia.util import find_library
+    from pystacia.api import name, abis
     # first let's look in some places that may override system-wide paths
     resolved_path = find_library(name, abis)
     # still nothing? let ctypes figure it out
@@ -31,7 +31,7 @@ def init():
     factory = CDLL
     global cdll
     cdll = factory(resolved_path)
-    from tinyimg.api.func import annote
+    from pystacia.api.func import annote
     annote(cdll)
     cdll.MagickWandGenesis()
     
@@ -39,15 +39,15 @@ def init():
     atexit.register(lambda: cdll.MagickWandTerminus())
     
     # warn if unsupported
-    from tinyimg import magick
-    from tinyimg.api import min_version
+    from pystacia import magick
+    from pystacia.api import min_version
     version = magick.get_version()
     if version < min_version:
         from warnings import warn
         template = formattable('Unsupported version of MagickWand {0}')
         warn(template.format(version))
 
-from tinyimg.util import memoized
+from pystacia.util import memoized
 
 
 @memoized
@@ -140,13 +140,13 @@ def netscape(factory=None):
     return image.read_special('netscape:', factory=factory)
 
 
-import tinyimg.api.enum as enum_api
+import pystacia.api.enum as enum_api
 
 
 def enum_lookup(mnemonic, throw=True):
     """Translate lazyenum's mnemonic into its numeral value.
         
-       :param mnemonic: A :class:`tinyimg.lazyenum.EnumValue` instance to be
+       :param mnemonic: A :class:`pystacia.lazyenum.EnumValue` instance to be
          looked up
         
        :param throw: Raises an exception if mnemonic cant be mapped when
@@ -173,21 +173,21 @@ cdll = None
 import weakref
 from os.path import dirname, join
 
-from tinyimg.compat import formattable, bz2_readfile
-from tinyimg.util import TinyException
+from pystacia.compat import formattable, bz2_readfile
+from pystacia.util import TinyException
 
 init()
 
-from tinyimg import magick
-from tinyimg import image
+from pystacia import magick
+from pystacia import image
 
 #convenience imports
-from tinyimg.image import read, read_blob, read_raw
-from tinyimg.image import blank, checkerboard
-from tinyimg.image import (
+from pystacia.image import read, read_blob, read_raw
+from pystacia.image import blank, checkerboard
+from pystacia.image import (
     composites, types, filters, colorspaces, compressions, axes)
-from tinyimg import color
-from tinyimg.image import Image
+from pystacia import color
+from pystacia.image import Image
 
 
 __all__ = [

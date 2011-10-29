@@ -2,10 +2,10 @@
 Working with images
 ===================
 
-The :class:`tinyimg.image.Image` is a central concept to the whole library.
+The :class:`pystacia.image.Image` is a central concept to the whole library.
 Though you typically don't use its constructor directly and rely on factories.
-All the functionality is implemented in :mod:`tinyimg.image` module but for
-convenience reasons attributes are imported to main :mod:`tinyimg` module from
+All the functionality is implemented in :mod:`pystacia.image` module but for
+convenience reasons attributes are imported to main :mod:`pystacia` module from
 where you would import it.
 
 Reading and writing
@@ -14,14 +14,14 @@ Reading and writing
 Files, streams and byte strings
 -------------------------------
 
-To read a file from the disk you would use :func:`tinyimg.image.read` factory::
+To read a file from the disk you would use :func:`pystacia.image.read` factory::
 
-    from tinyimg import read
+    from pystacia import read
     
     image = read('example.jpg')
 
 This reads file `example.jpg` from current working directory and returns
-:class:`tinyimg.image.Image` instance. To write it back to disk under different
+:class:`pystacia.image.Image` instance. To write it back to disk under different
 name and format you could write::
 
     image.write('output.png')
@@ -31,21 +31,21 @@ determined from the file extension.
 
 Sometimes instead of having your data stored in a file you already have it
 in byte string or stream (file-like object with :meth:`read` method). In such
-case you use :func:`tinyimg.image.read_blob` instead::
+case you use :func:`pystacia.image.read_blob` instead::
 
-     from tinyimg import read_blob
+     from pystacia import read_blob
      
      # data is byte string or stream in e.g. PNG format
      image = read_blob(data)
 
-Tinyimg can also deal with :term:`RAW` uncompressed data. You
-use :func:`tinyimg.image.read_raw` method in such cases. Note that you need to
+Pystacia can also deal with :term:`RAW` uncompressed data. You
+use :func:`pystacia.image.read_raw` method in such cases. Note that you need to
 explicitly specify :term:`RAW` format, width, height and depth per channel as
 it's not carried along data itself.
 
 ::
 
-    from tinyimg import read_raw
+    from pystacia import read_raw
     
     # create 2x2 pixel RGB image with red, green, blue and black pixel
     # from RGB triplets in 8 bit depth
@@ -61,8 +61,8 @@ as PNG blob you would call::
     image.get_blob('png')
 
 To get :term:`RAW` data along its format, dimensions, and depth as dictionary
-analogical to parameters you would pass to :meth:`tinyimg.image.read_raw` you 
-can call :meth:`tinyimg.image.get_raw` passing it color space::
+analogical to parameters you would pass to :meth:`pystacia.image.read_raw` you 
+can call :meth:`pystacia.image.get_raw` passing it color space::
 
     image.get_raw('ycbcr')
 
@@ -72,11 +72,11 @@ Generic images
 Instead of reading an image from a file or stream you sometimes may want to
 start from blank image or well defined pattern.
 
-Use :func:`tinyimg.image.blank` to create empty blank image of given
+Use :func:`pystacia.image.blank` to create empty blank image of given
 dimensions. By default it fills it with transparent pixels, but a third parameter
 specifying color can be used.
 
->>> from tinyimg import blank, color
+>>> from pystacia import blank, color
 >>> blank(100, 100)
 >>> blank(100, 100, color.from_string('red'))
 >>> blank(100, 100, color.from_rgba(0, 1, 0, 0.5))
@@ -96,10 +96,10 @@ specifying color can be used.
        Translucent green
 
 You can also generate a checkerboard pattern which is used in this documentation
-to mark transparent pixels with :func:`tinyimg.image.checkerboard` which
+to mark transparent pixels with :func:`pystacia.image.checkerboard` which
 accepts width and height.
 
->>> from tinyimg import checkerboard
+>>> from pystacia import checkerboard
 >>> checkerboard(200, 200)
 
 .. figure:: _static/generated/checkerboard.png
@@ -113,9 +113,9 @@ Dimensions
 ----------
 
 All images have some common properties like dimensions, color space, type and
-depth. To get dimensions of the image you can access :attr:`tinyimg.Image.size`
-property to get ``(width, height)`` tuple or :attr:`tinyimg.Image.width` and
-:attr:`tinyimg.Image.height` separately:
+depth. To get dimensions of the image you can access :attr:`pystacia.Image.size`
+property to get ``(width, height)`` tuple or :attr:`pystacia.Image.width` and
+:attr:`pystacia.Image.height` separately:
 
 >>> image.size
 (640, 480)
@@ -128,12 +128,12 @@ Color space
 -----------
 
 Color space represents combination of channels that image is internally stored
-in. You can query it with :attr:`tinyimg.Image.colorspace` property. It yields
-`tinyimg.image.colorspaces.rgb` for most images but other values are also 
+in. You can query it with :attr:`pystacia.Image.colorspace` property. It yields
+`pystacia.image.colorspaces.rgb` for most images but other values are also 
 possible.
 
 >>> image.colorspace
-tinyimg.lazyenum.enum('colorspace').rgb
+pystacia.lazyenum.enum('colorspace').rgb
 
 You can also assign to this property. It results in reinterpretation of stored
 color space i.e. if the original image was in :term:`RGB` color space assigning
@@ -160,7 +160,7 @@ since `CMY` is subtractive model complementing `RGB` i.e. each channel value is
 inversion of its counterpart.
 
 If you want to change (convert) underlying color space without affecting visual
-representation use :meth:`tinyimg.image.Image.convert_colorspace` method instead.
+representation use :meth:`pystacia.image.Image.convert_colorspace` method instead.
 
 Depth
 -----
@@ -168,7 +168,7 @@ Depth
 Depth represents number of bits used to store channel information. It's
 typically 8 bit for :term:`TrueColor` images but can be as well 16 bit
 for some :term:`TIFF` images. You query the image depth with
-:attr:`tinyimg.image.Image.depth` property.
+:attr:`pystacia.image.Image.depth` property.
 
 >>> image.depth
 8
@@ -192,12 +192,12 @@ black and white stored in one bit per pixel.
 Each of types mentioned above also has its :term:`matte` counterpart i.e.
 one that is accompanied by alpha channel. These have additional ``_matte`` suffix.
 
-You can read and set types with :attr:`tinyimg.Image.type` property.
+You can read and set types with :attr:`pystacia.Image.type` property.
 Setting a type which loses color information relative to original results
 in automatic :term:`dithering`:
 
 >>> image.type
-tinyimg.lazyenum.enum('type').truecolor
+pystacia.lazyenum.enum('type').truecolor
 
 >>> image.type = types.palette
 
@@ -235,7 +235,7 @@ Rescaling is an operation of changing size of original image
 that preserves all the original visual characteristics in the new
 viewport. Rescaling can be both proportional and not proportional.
 You typically perform this operation by suppling width and height
-into :meth:`tinyimg.image.Image.rescale`:
+into :meth:`pystacia.image.Image.rescale`:
 
 >>> image.size
 (256, 256)
@@ -351,7 +351,7 @@ Resizing
 --------
 
 If you wanna crop out a portion of an image you can use
-:meth:`tinyimg.image.Image.resize`. it accepts four parameters describing cropped
+:meth:`pystacia.image.Image.resize`. it accepts four parameters describing cropped
 out region: width, height, x and y in this order. The latter two default
 to 0:
 
@@ -379,7 +379,7 @@ to 0:
 Rotating
 --------
 
-You can rotate an image with :meth:`tinyimg.image.Image.rotate` method.
+You can rotate an image with :meth:`pystacia.image.Image.rotate` method.
 Angle is mesaured in degrees. Positive
 angles yield clockwise rotation while negative ones counter-clockwise.
 The resulting empty spaces are filled with transparent pixels.
@@ -411,8 +411,8 @@ The resulting empty spaces are filled with transparent pixels.
 Flipping
 --------
 
-Use :meth:`tinyimg.image.Image.flip` to flip (mirror) image around
-X or Y axis. Use :attr:`tinyimg.image.Image.axes` enumeration to
+Use :meth:`pystacia.image.Image.flip` to flip (mirror) image around
+X or Y axis. Use :attr:`pystacia.image.Image.axes` enumeration to
 specify axis.
 
 >>> image.flip(axes.x)
@@ -436,8 +436,8 @@ specify axis.
 Transposing and transversing
 ---------------------------
 
-Use :meth:`tinyimg.image.Image.transpose` and
-:meth:`tinyimg.image.Image.transverse` to transpose
+Use :meth:`pystacia.image.Image.transpose` and
+:meth:`pystacia.image.Image.transverse` to transpose
 or transverse an image. Transposing creates a vertical mirror image by reflecting the
 pixels around the central x-axis while rotating them 90-degrees. Transversing
 creates a horizontal mirror image by reflecting the
@@ -461,7 +461,7 @@ Skewing
 _______
 
 Skewing is the action of pushing one of the edges of an image along X or Y
-axis. You can perform it with :meth:`tinyimg.image.Image.skew` passing
+axis. You can perform it with :meth:`pystacia.image.Image.skew` passing
 offset in pixels and desired axis.
 
 >>> image.skew(10, axes.x)
@@ -493,7 +493,7 @@ Rolling
 
 Rolling in an action of offsetting an image and filling empty space
 with pixels that overflew on the edge. It can be performed with
-:meth:`tinyimg.image.Image.roll` method. It accepts offses in X and Y
+:meth:`pystacia.image.Image.roll` method. It accepts offses in X and Y
 directions as arguments.
 
 >>> image.roll(100, 0)
@@ -518,8 +518,8 @@ Straightening image
 -------------------
 
 Sometimes you have an image that is not straightened since It could be scanned
-so. You can use :meth:`tinyimg.image.Image.straighten` to correct that.
-It accepts single parameter - threshold which tells tinyimg what is the
+so. You can use :meth:`pystacia.image.Image.straighten` to correct that.
+It accepts single parameter - threshold which tells Pystacia what is the
 difference between baackground and subject.
 
 >>> image.straighten(20)
@@ -538,7 +538,7 @@ Trimming extra background
 -------------------------
 
 If your image has extra background around it you can trim it off with
-:meth:`tinyimg.image.Image.trim` method. It accepts two optional parameters
+:meth:`pystacia.image.Image.trim` method. It accepts two optional parameters
 similarity and background color of space to discard (defaults to transparent).
 
 >>> image.trim()
@@ -562,7 +562,7 @@ without changing pixel location in any way.
 Adjsuting contrast
 ------------------
 
-:meth:`tinyimg.image.Image.contrast` increases or decreases contrast of an image.
+:meth:`pystacia.image.Image.contrast` increases or decreases contrast of an image.
 Passing `0` is no change operation. Values towards `-1` decrease
 constract whilst values towards `1` increase it.
 
@@ -610,7 +610,7 @@ constract whilst values towards `1` increase it.
 Adjusting brightness
 --------------------
 
-:meth:`tinyimg.image.Image.brightness` adjusts the brightness of an image.
+:meth:`pystacia.image.Image.brightness` adjusts the brightness of an image.
 Value `0` is no-change operation. Values towards `-1` make image darker whilst
 calues towards `1` increase brightness.
 
@@ -657,7 +657,7 @@ calues towards `1` increase brightness.
 Gamma correction
 ----------------
 
-You can use :meth:`tinyimg.image.Image.gamma` to apply gamma correction. Value
+You can use :meth:`pystacia.image.Image.gamma` to apply gamma correction. Value
 of `1` is no-change operation. Values towards `0` make image darker. Values
 towards infinity make image lighter.
 
@@ -701,7 +701,7 @@ Modulation
 ----------
 
 Modulation is an operation of adjusting hue, saturation and luminance of
-an image. It can be accomplished with :meth:`tinyimg.image.Image.modulate`.
+an image. It can be accomplished with :meth:`pystacia.image.Image.modulate`.
 It accepts parameters in hue, saturation and luminance order. They all default
 to 0 meaning no change. Usable hue values start from -1 meaning rotation of hue
 by -180 degrees to 1 meaning +180 degrees. Saturation values towards `-1` 
@@ -750,8 +750,8 @@ brighter.
 Desaturation
 ------------
 
-You can peform desaturation with :meth:`tinyimg.image.Image.desaturate`. It is
-a shortcut to :meth:`tinyimg.image.Image.modulate` passing `-1` as saturation.
+You can peform desaturation with :meth:`pystacia.image.Image.desaturate`. It is
+a shortcut to :meth:`pystacia.image.Image.modulate` passing `-1` as saturation.
 
 >>> image.desaturate()
 
@@ -769,7 +769,7 @@ Colorization
 ------------
 
 Colorization in an action of replacing all hue values in an image with a hue
-from a given color. :meth:`tinyimg.image.Image.colorize` accepting single color
+from a given color. :meth:`pystacia.image.Image.colorize` accepting single color
 parameter performs it.
 
 >>> image.colorize(color.from_string('red'))
@@ -808,7 +808,7 @@ parameter performs it.
 Sepia tone
 ----------
 
-:meth:`tinyimg.image.Image.sepia` performs effect similar to old-fashined
+:meth:`pystacia.image.Image.sepia` performs effect similar to old-fashined
 sepia image. You can adjust hue and saturation parameters but the default
 values are a good starting point.
 
@@ -827,7 +827,7 @@ values are a good starting point.
 Equalization
 ------------
 
-:meth:`tinyimg.image.Image.equalize` is a method of streching channel information
+:meth:`pystacia.image.Image.equalize` is a method of streching channel information
 to fill full avaiable spectrum. It can result in drastic color quality improvement
 on low contrast, tainted images.
 
@@ -848,7 +848,7 @@ Invertion
 
 Invertion is a process of substractin original channel value from it's maximum
 value. It results in a negative and can be performed with
-:meth:`tinyimg.image.Image.invert`.
+:meth:`pystacia.image.Image.invert`.
 
 >>> image.negative()
 
@@ -866,7 +866,7 @@ Solarization
 ------------
 
 Solarization leads to effect similar of partly exposing an image in a darkroom.
-It can be performed with :meth:`tinyimg.image.Image.solarize`. It accepts single
+It can be performed with :meth:`pystacia.image.Image.solarize`. It accepts single
 parameter - factor. Factor `0` is no change operation, Factor `1` is exactly the
 same as negative of original. Value of `0.5` yields particulary interesting effects.
 
@@ -893,7 +893,7 @@ same as negative of original. Value of `0.5` yields particulary interesting effe
 Posterization
 -------------
 
-:meth:`tinyimg.image.Image.posterize` accepts single level parameter and
+:meth:`pystacia.image.Image.posterize` accepts single level parameter and
 reduces number of colors in the image
 to ``levels ** 3`` colors. Each channel has level final values distributed
 equally along its spectrum. So 1 level yields 1 color, 2 levels yield 8 color
@@ -935,7 +935,7 @@ Bluring, denoising and enhancing
 Blur
 ----
 
-You can blur image with :meth:`tinyimg.image.Image.blur`. Method accepts
+You can blur image with :meth:`pystacia.image.Image.blur`. Method accepts
 mandatory radius and optional strength parameter.
 
 >>> img.blur(3)
@@ -959,7 +959,7 @@ mandatory radius and optional strength parameter.
 Radial blur
 -----------
 
-To perform radial blur use :meth:`tinyimg.image.Image.radial_blur`. Pass in
+To perform radial blur use :meth:`pystacia.image.Image.radial_blur`. Pass in
 single parameter - blur angle in degrees.
 
 >>> img.blur(10)
@@ -984,7 +984,7 @@ Removing noise
 --------------
 
 If you want to perform noise removal you can use
-:meth:`tinyimg.image.Image.denoise` method.
+:meth:`pystacia.image.Image.denoise` method.
 
 >>> img.denoise()
 
@@ -1001,7 +1001,7 @@ If you want to perform noise removal you can use
 Removing speckles
 -----------------
 
-:meth:`tinyimg.image.Image.despeckle` on the other hand removes speckles
+:meth:`pystacia.image.Image.despeckle` on the other hand removes speckles
 - larger grain defects than noise.
 
 >>> img.despeckle()
@@ -1022,7 +1022,7 @@ Embossing
 
 Emboss raises detected edges in image creating 3D effect sharpening it at
 the same time.
-Call :meth:`tinyimg.image.Image.emboss` to use it.
+Call :meth:`pystacia.image.Image.emboss` to use it.
 
 >>> img.emboss()
 
@@ -1042,7 +1042,7 @@ Deforming
 Swirling
 --------
 
-To apply whirlpool like effect use :meth:`tinyimg.image.Image.swirl`. Positive
+To apply whirlpool like effect use :meth:`pystacia.image.Image.swirl`. Positive
 angles result in clockwise whirling, negative in counter-clockwise.
 
 >>> img.swirl(60)
@@ -1066,7 +1066,7 @@ angles result in clockwise whirling, negative in counter-clockwise.
 Waving
 ------
 
-:meth:`tinyimg.image.Image.wave` applies sinusoidal deformation along give axis
+:meth:`pystacia.image.Image.wave` applies sinusoidal deformation along give axis
 (defaults to x).
 You can control amplitude and length of the wave. Resulting extra pixels are
 transparent.
@@ -1107,7 +1107,7 @@ Special effects
 Sketch effect
 -------------
 
-You can use :meth:`tinyimg.image.Image.sketch` to simulate sketch effect.
+You can use :meth:`pystacia.image.Image.sketch` to simulate sketch effect.
 You can control the effect with two parameters radius of strokes and angle of
 pencils (defaults to 45 degrees).
 
@@ -1132,7 +1132,7 @@ pencils (defaults to 45 degrees).
 Oil paint effect
 ----------------
 
-:meth:`tinyimg.image.Image.oil_paint` simulates oil painting by covering image
+:meth:`pystacia.image.Image.oil_paint` simulates oil painting by covering image
 with circles filled with mean color value. It accepts single paramater -
 radius in pixels.
 
@@ -1157,7 +1157,7 @@ radius in pixels.
 Spreading
 ---------
 
-:meth:`tinyimg.image.Image.spread` fuzzes and image with pixel displacement
+:meth:`pystacia.image.Image.spread` fuzzes and image with pixel displacement
 within given radius.
 
 >>> image.spread(3)
@@ -1181,7 +1181,7 @@ within given radius.
 Discrete Fourier transform
 --------------------------
 
-:meth:`tinyimg.image.Image.dft` performs Discrete Fourier transform on an input
+:meth:`pystacia.image.Image.dft` performs Discrete Fourier transform on an input
 image. It returns a pair of images representing magnitude and phase components
 or real and imaginary part. These have many interesting applications. See
 http://www.imagemagick.org/Usage/fourier.
@@ -1215,7 +1215,7 @@ http://www.imagemagick.org/Usage/fourier.
 Fx method
 ---------
 
-With :meth:`tinyimg.image.Image.fx` you can perform custom operations using
+With :meth:`pystacia.image.Image.fx` you can perform custom operations using
 :term:`ImageMagick` tiny scripting language. Beware that this can be very
 slow on large images as it's directly interpreted and not compiled in any way.
 http://www.imagemagick.org/script/fx.php has infomration on syntax.
@@ -1239,7 +1239,7 @@ Reading single pixels
 ---------------------
 
 To access pixel data anywhere in the image you cen use 
-:meth:`tinyimg.image.Image.get_pixel` passing it x and y
+:meth:`pystacia.image.Image.get_pixel` passing it x and y
 coordinates.
 
 >>> image.get_pixel(128, 128)
@@ -1249,7 +1249,7 @@ Filling
 -------
 
 If you want to fill image with solid color you use
-:meth:`tinyimg.image.Image.fill` passing it color. You can
+:meth:`pystacia.image.Image.fill` passing it color. You can
 optionally pass also blend parameter specyfing opacity with
 `1` meaning opaque.
 
@@ -1287,7 +1287,7 @@ Setting color
 -------------
 
 Another way to paint over whole image is using
-:meth:`tinyimg.image.Image.set_color`. Unlinke :meth:`tinyimg.image.fill` it always
+:meth:`pystacia.image.Image.set_color`. Unlinke :meth:`pystacia.image.fill` it always
 discards backgorund information replacing pixels. You can use alpha component
 of color to gain translucency.
 
@@ -1325,7 +1325,7 @@ Setting alpha
 -------------
 
 Sometimes you may want to override alpha level for all pixels at once. You
-can do that with :meth:`tinyimg.image.Image.set_alpha`.
+can do that with :meth:`pystacia.image.Image.set_alpha`.
 
 >>> image.set_alpha(0.75)
 
@@ -1360,7 +1360,7 @@ can do that with :meth:`tinyimg.image.Image.set_alpha`.
 Overlaying
 ----------
 
-With :meth:`tinyimg.image.Image.overlay` you can overlay images on top of
+With :meth:`pystacia.image.Image.overlay` you can overlay images on top of
 image the method is called from. It accepts the image that is going to be 
 overlaid as first parameter, x and y coordinates and composite mode.
 There are many composite modes available. `over` is the default one,
@@ -1435,7 +1435,7 @@ Displaying on the screen
 ------------------------
 
 When in GUI session you can display image in available image preview program
-with :meth:`tinyimg.image.Image.show`. The call is non-blocking meaning that
+with :meth:`pystacia.image.Image.show`. The call is non-blocking meaning that
 the control is immediately returned to your program
 
 >>> image.show()
@@ -1444,7 +1444,7 @@ Marking transparent pixels
 --------------------------
 
 Sometimes it might be not clear from the context which pixels are translucent
-and which are opaque. You can use :meth:`tinyimg.image.Image.checkerboard` to
+and which are opaque. You can use :meth:`pystacia.image.Image.checkerboard` to
 overlay your image on top of checkerboard pattern in the same manner that
 :term:`Photoshop` does.
 
@@ -1453,30 +1453,30 @@ overlay your image on top of checkerboard pattern in the same manner that
 Bundled images
 ==============
 
-tinyimg comes with standard test images which can be used for testing purposes.
+pystacia comes with standard test images which can be used for testing purposes.
 Most of them are embedded in :term:`ImageMagick` library.
 
-:meth:`tinyimg.lena` optionally accepting size parameter:
+:meth:`pystacia.lena` optionally accepting size parameter:
 
 .. figure:: _static/generated/lena.jpg
 
-:meth:`tinyimg.magick_logo`:
+:meth:`pystacia.magick_logo`:
 
 .. figure:: _static/generated/magick_logo.jpg
 
-:meth:`tinyimg.rose`:
+:meth:`pystacia.rose`:
 
 .. figure:: _static/generated/rose.jpg
 
-:meth:`tinyimg.wizard`
+:meth:`pystacia.wizard`
 
 .. figure:: _static/generated/wizard.jpg
 
-:meth:`tinyimg.granite`
+:meth:`pystacia.granite`
 
 .. figure:: _static/generated/granite.jpg
 
-:meth:`tinyimg.netscape`
+:meth:`pystacia.netscape`
 
 .. figure:: _static/generated/netscape.jpg
 

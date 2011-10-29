@@ -1,4 +1,4 @@
-from tinyimg import lena, axes
+from pystacia import lena, axes
 
 image = lena(128)
 image.wave(20, 100)

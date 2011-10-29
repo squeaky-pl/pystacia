@@ -164,7 +164,7 @@ def checkerboard(width, height, factory=None):
        :type width: ``int``
        :param height: height in pixels
        :type height: ``int``
-       :rtype: :class:`tinyimg.image.Image` or factory
+       :rtype: :class:`pystacia.image.Image` or factory
     """
     return read_special('pattern:checkerboard', width, height, factory)
 
@@ -177,7 +177,7 @@ def blank(width, height, background=None, factory=None):
        :param height: Height in pixels
        :type height: ``int``
        :param background: background color, defaults to fully transparent
-       :type background: :class:`tinyimg.Color`
+       :type background: :class:`pystacia.Color`
        
        Creates blank image of given dimensions filled with background color.
        
@@ -189,7 +189,7 @@ def blank(width, height, background=None, factory=None):
     
     return read_special('xc:' + str(background), width, height, factory)
 
-from tinyimg.util import only_live
+from pystacia.util import only_live
 
 
 class Image(object):
@@ -201,7 +201,7 @@ class Image(object):
     def copy(self):
         """Create new independent copy of an image.
         
-           :rtype: :class:`tinyimg.image.Image`
+           :rtype: :class:`pystacia.image.Image`
         """
         wand = cdll.CloneMagickWand(self.__wand)
         
@@ -217,7 +217,7 @@ class Image(object):
            :param format: file format
            :type format: ``str``
            :param compression: compression algorithm
-           :type compression: :class:`tinyimg.lazyenum.EnumValue`
+           :type compression: :class:`pystacia.lazyenum.EnumValue`
            :param quality: output quality
            :type quality: ``int``
            
@@ -270,7 +270,7 @@ class Image(object):
            :param format: format of the output such as :term:`JPEG`
            :type format: ``str``
            :param compression: compression supported by format
-           :type compression: :class:`tinyimg.lazyenum.EnumValue`
+           :type compression: :class:`pystacia.lazyenum.EnumValue`
            :param quality: output quality
            :rtype: ``str`` (Python 2.x) / ``bytes`` (Python 3.x)
            
@@ -356,7 +356,7 @@ class Image(object):
            :param factor: Zoom factor
            :type factor: ``float`` or ``tuple`` of ``float``
            :param filter: Scaling filter
-           :type filter: :class:`tinyimg.lazuenym.Enums`
+           :type filter: :class:`pystacia.lazuenym.Enums`
            
            Rescales an image to a given width and height pixels. Instead of
            supplying width and height you can use factor parameter which is
@@ -447,7 +447,7 @@ class Image(object):
         """Flip an image along given axis.
            
            :param axis: X or Y axis
-           :type axis: :class:`tinyimg.lazyenum.EnumValue`
+           :type axis: :class:`pystacia.lazyenum.EnumValue`
            
            Flips (mirrors) an image along :attr:`axes.x` or :attr:`axes.y`.
            
@@ -493,7 +493,7 @@ class Image(object):
            :param offset: offset in pixels along given axis
            :type offset: ``int``
            :param axis: axis along which to perform skew
-           :type axis: ``tinyimg.lazyenum.EnumValue``
+           :type axis: ``pystacia.lazyenum.EnumValue``
            
            Skews an image along given axis. If no axis is given it defaults
            to X axis.
@@ -555,7 +555,7 @@ class Image(object):
            :param similarity: Smilarity factor
            :type similarity: ``float``
            :param background: background color, transparent by default
-           :type background: :class:`tinyimg.color.Color`
+           :type background: :class:`pystacia.color.Color`
            
            Removes edges that are the background color from the image.
            The greater similarity the more distant hues are considered the same
@@ -708,7 +708,7 @@ class Image(object):
         """Colorize image.
            
            :param color: color from which hue value is used
-           :type color: :class:`tinyimg.color.Color`
+           :type color: :class:`pystacia.color.Color`
            
            Colorizes image resulting in image containing
            only one hue value.
@@ -913,7 +913,7 @@ class Image(object):
            :param offset: offset (phi) from initial position in pixels
            :type length: ``int``
            :param axis: axis along which to apply deformation. Defaults to x.
-           :type axis: ``tinyimg.enum.EnumValue``
+           :type axis: ``pystacia.enum.EnumValue``
            
            Applies wave like distoration to an image along chosen
            axis. Axis defaults to :attr:``axes.x``. Offset parameter is
@@ -1059,7 +1059,7 @@ class Image(object):
            :type x: ``int``
            :param y: y coordinate of pixel
            :type y: ``int``
-           :rtype: :color:`tinyimg.color.Color`
+           :rtype: :color:`pystacia.color.Color`
            
            Reads pixel color at point ``(x,y)``.
         """
@@ -1076,7 +1076,7 @@ class Image(object):
         """Overlay color over whole image.
            
            :param color: color to overlay
-           :type color: :class:`tinyimg.color.Color`
+           :type color: :class:`pystacia.color.Color`
            :param blend: overlay blending
            :type blend: ``float``
            
@@ -1102,7 +1102,7 @@ class Image(object):
         """Fill whole image with one color.
         
            :param fill: desired fill color
-           :type fill: :class:`tinyimg.color.Color`
+           :type fill: :class:`pystacia.color.Color`
            
            Fills whole image with a monolithic color.
            
@@ -1145,13 +1145,13 @@ class Image(object):
         """Overlay another image on this image.
         
            :param image: imaged to be overlayed
-           :type image: :class:`tinyimg.image.Image`
+           :type image: :class:`pystacia.image.Image`
            :param x: x coordinate of overlay
            :type x: ``int``
            :param y: y coordinate of overlay
            :type y: ``int``
            :param composite: Composition operator
-           :type composite: :class:`tinyimg.lazyenum.EnumValue`
+           :type composite: :class:`pystacia.lazyenum.EnumValue`
            
            Overlays given image on this image at ``(x, y)`` using
            composite operator. There are many popular composite
@@ -1229,7 +1229,7 @@ class Image(object):
     def _claim_wand(self):
         """Reclaims wand from this image.
            
-           :rtype: :class:`tinyimg.api.type.MagickWand_p`
+           :rtype: :class:`pystacia.api.type.MagickWand_p`
            
            For internal use only. Do not use directly. Reclaims wand of this
            image from owning by this object. Object is closed afterwards.
@@ -1250,7 +1250,7 @@ class Image(object):
            use :attr:`convert_colorspace` instead. Popular colorspace include
            RGB, YCbCr, grayscale and so on.
            
-           :rtype: :class:`tinyimg.lazyenum.EnumValue`
+           :rtype: :class:`pystacia.lazyenum.EnumValue`
         """)
         
         @only_live
@@ -1272,7 +1272,7 @@ class Image(object):
         doc = (  # @UnusedVariable
         """Set or get image type.
            
-           :rtype: :class:`tinyimg.lazyenum.EnumValue`
+           :rtype: :class:`pystacia.lazyenum.EnumValue`
            
            Popular image types include truecolor, pallete, bilevel and their
            matter counterparts.
@@ -1301,7 +1301,7 @@ class Image(object):
         """Convert to given colorspace.
            
            :param colorspace: destination colorspace
-           :type colorspace: :class:`tinyimg.color.Color`
+           :type colorspace: :class:`pystacia.color.Color`
            
            Converts an image to a given colorspace.
            
@@ -1463,26 +1463,26 @@ from math import atan, degrees
 
 from six import b
 
-from tinyimg.compat import formattable
-from tinyimg import color
+from pystacia.compat import formattable
+from pystacia import color
 color_module = color
-from tinyimg.util import TinyException
-from tinyimg.api.func import guard
-from tinyimg import magick
-from tinyimg import cdll, enum_lookup, enum_reverse_lookup
-from tinyimg.lazyenum import enum
+from pystacia.util import TinyException
+from pystacia.api.func import guard
+from pystacia import magick
+from pystacia import cdll, enum_lookup, enum_reverse_lookup
+from pystacia.lazyenum import enum
 
 if not 'fftw' in magick.get_delegates():
     del Image.dft
 
 try:
-    disable_chains = environ['TINYIMG_NO_CHAINS']
+    disable_chains = environ['PYSTACIA_NO_CHAINS']
 except KeyError:
     disable_chains = False
     
 if not disable_chains:
     # perform chainability
-    from tinyimg.util import chainable
+    from pystacia.util import chainable
     
     for key in (key for key in Image.__dict__ if not key.startswith('_')):
         item = Image.__dict__[key]

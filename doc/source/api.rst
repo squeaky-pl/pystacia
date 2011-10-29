@@ -6,7 +6,7 @@ Something here
 .. toctree::
     :maxdepth: 1
     
-    api/tinyimg
+    api/pystacia
     api/color
     api/image
 

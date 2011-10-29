@@ -1,4 +1,4 @@
-from tinyimg import blank, color, checkerboard
+from pystacia import blank, color, checkerboard
 
 image = blank(100, 100)
 image.checkerboard()

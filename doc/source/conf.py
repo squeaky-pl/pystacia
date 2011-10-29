@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# tinyimg documentation build configuration file, created by
+# pystacia documentation build configuration file, created by
 # sphinx-quickstart on Sat Oct 15 12:19:13 2011.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'tinyimg'
+project = u'Pystacia'
 copyright = u'2011, Paweł Piotr Przeradowski'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -164,7 +164,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'tinyimgdoc'
+htmlhelp_basename = 'pystaciadoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -183,7 +183,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'tinyimg.tex', u'tinyimg Documentation',
+  ('index', 'pystacia.tex', u'Pystacia Documentation',
    u'Paweł Piotr Przeradowski', 'manual'),
 ]
 
@@ -213,7 +213,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'tinyimg', u'tinyimg Documentation',
+    ('index', 'pystacia', u'Pystacia Documentation',
      [u'Paweł Piotr Przeradowski'], 1)
 ]
 
@@ -227,8 +227,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'tinyimg', u'tinyimg Documentation', u'Paweł Piotr Przeradowski',
-   'tinyimg', 'One line description of project.', 'Miscellaneous'),
+  ('index', 'pystacia', u'Pystacia Documentation', u'Paweł Piotr Przeradowski',
+   'pystacia', 'One line description of project.', 'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.

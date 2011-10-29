@@ -1,4 +1,4 @@
-from tinyimg.util import memoized
+from pystacia.util import memoized
 
 
 @memoized
@@ -24,7 +24,7 @@ def get_options():
     
     from ctypes import c_size_t
     from six import b
-    from tinyimg.compat import native_str
+    from pystacia.compat import native_str
     
     size = c_size_t()
     keys = cdll.MagickQueryConfigureOptions(b('*'), size)
@@ -52,4 +52,4 @@ def get_depth():
     depth = get_options().get('QuantumDepth')
     return int(depth) if depth else None
 
-from tinyimg import cdll
+from pystacia import cdll

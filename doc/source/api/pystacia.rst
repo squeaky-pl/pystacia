@@ -1,5 +1,5 @@
-:mod:`tinyimg`
+:mod:`pystacia`
 --------------
 
-.. automodule:: tinyimg
+.. automodule:: pystacia
     :members: lena, magick_logo, rose, wizard, granite, netscape

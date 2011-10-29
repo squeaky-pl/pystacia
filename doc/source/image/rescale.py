@@ -1,4 +1,4 @@
-from tinyimg import lena, filters
+from pystacia import lena, filters
 
 from all import closeup
 

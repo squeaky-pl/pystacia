@@ -43,7 +43,7 @@ def find_library(name, abis):
     paths = []
     
     try:
-        path = environ['TINYIMG_LIBRARY_PATH']
+        path = environ['PYSTACIA_LIBRARY_PATH']
     except KeyError:
         pass
     else:
@@ -51,12 +51,12 @@ def find_library(name, abis):
     
     osname = get_osname()
     
-    if not environ.get('TINYIMG_SKIP_PACKAGE'):
-        import tinyimg
-        path = dirname(tinyimg.__file__)
+    if not environ.get('PYSTACIA_SKIP_PACKAGE'):
+        import pystacia
+        path = dirname(pystacia.__file__)
         paths.append(join(path, 'cdll'))
     
-    if not environ.get('TINYIMG_SKIP_VIRTUAL_ENV'):
+    if not environ.get('PYSTACIA_SKIP_VIRTUAL_ENV'):
         try:
             path = environ['VIRTUAL_ENV']
         except KeyError:
@@ -164,4 +164,4 @@ from sys import version_info
 from os import environ, pathsep
 from os.path import join, exists, dirname
 
-from tinyimg.compat import formattable, dist
+from pystacia.compat import formattable, dist

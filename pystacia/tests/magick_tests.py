@@ -1,4 +1,4 @@
-from tinyimg.compat import TestCase
+from pystacia.compat import TestCase
 
 
 class Magick(TestCase):
@@ -9,4 +9,4 @@ class Magick(TestCase):
         self.assertIsInstance(get_version(), (tuple, type(None)))
 
 
-from tinyimg.magick import get_options, get_version
+from pystacia.magick import get_options, get_version

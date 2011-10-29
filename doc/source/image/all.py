@@ -1,4 +1,4 @@
-from tinyimg import lena, magick_logo, rose, wizard, granite, netscape, filters
+from pystacia import lena, magick_logo, rose, wizard, granite, netscape, filters
 
 
 image = lena(256)

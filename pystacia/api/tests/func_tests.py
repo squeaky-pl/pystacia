@@ -1,4 +1,4 @@
-from tinyimg.compat import TestCase
+from pystacia.compat import TestCase
 
 
 class Guard(TestCase):
@@ -15,6 +15,6 @@ class Guard(TestCase):
 
 from six import b
 
-from tinyimg import lena, cdll
-from tinyimg.api.func import guard
-from tinyimg.util import TinyException
+from pystacia import lena, cdll
+from pystacia.api.func import guard
+from pystacia.util import TinyException

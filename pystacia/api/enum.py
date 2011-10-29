@@ -507,7 +507,7 @@ data =\
            'truecolor_matte': 7,
            'undefined': 0}]}
 
-from tinyimg.util import memoized
+from pystacia.util import memoized
 
 
 @memoized

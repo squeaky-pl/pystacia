@@ -1,4 +1,4 @@
-from tinyimg.compat import TestCase
+from pystacia.compat import TestCase
 
 
 class MagickLogo(TestCase):
@@ -23,5 +23,5 @@ class Lena(TestCase):
         img.close()
 
 
-from tinyimg import magick_logo, lena
-from tinyimg.image import types, colorspaces
+from pystacia import magick_logo, lena
+from pystacia.image import types, colorspaces

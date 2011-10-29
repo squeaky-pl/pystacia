@@ -1,5 +1,5 @@
-from tinyimg.image import Image
-from tinyimg.compat import TestCase, skipIf
+from pystacia.image import Image
+from pystacia.compat import TestCase, skipIf
 
 
 class Close(TestCase):
@@ -645,8 +645,8 @@ from tempfile import mkstemp
 
 from six import b, BytesIO
 
-from tinyimg.util import TinyException
-from tinyimg.image import (read, read_raw, read_blob, types,
+from pystacia.util import TinyException
+from pystacia.image import (read, read_raw, read_blob, types,
                            colorspaces, blank, axes)
-from tinyimg import color
-from tinyimg import lena
+from pystacia import color
+from pystacia import lena

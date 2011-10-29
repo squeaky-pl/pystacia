@@ -1,4 +1,4 @@
-from tinyimg import lena
+from pystacia import lena
 
 image = lena(128)
 images = image.dft()

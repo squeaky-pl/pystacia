@@ -1,8 +1,8 @@
 # coding: utf-8
-# tinyimg/color.py
+# pystacia/color.py
 # Copyright (C) 2011 by Paweł Piotr Przeradowski
 #
-# This module is part of tinyimg and is released under
+# This module is part of pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 """Various color-related functions and objects."""
@@ -93,7 +93,7 @@ def from_rgba(r, g, b, a, factory=None):
     
     return color
 
-from tinyimg.util import only_live
+from pystacia.util import only_live
 
 
 class Color(object):
@@ -104,7 +104,7 @@ class Color(object):
         """Create :class:`Color` object.
            
            :param wand: ImageMagick resource handle
-           :type wand: :class:`tinyimg.api.type.PixelWand_p`
+           :type wand: :class:`pystacia.api.type.PixelWand_p`
            
            Not to be used directly. Use one of color factory functions
            such as :func:`from_rgba` or :func:`from_string` instead.
@@ -318,7 +318,7 @@ class Color(object):
     def wand(self):
         """Return underlying ImageMagick resource.
         
-           :rtype: ``tinyimg.api.type.PixelWand_p``.
+           :rtype: ``pystacia.api.type.PixelWand_p``.
            
            This can be useful if you want to perform custom operations
            directly coping with ctypes.
@@ -365,8 +365,8 @@ from ctypes import addressof
 
 from six import b
 
-from tinyimg import cdll
-from tinyimg.api.func import guard
-from tinyimg.compat import formattable
+from pystacia import cdll
+from pystacia.api.func import guard
+from pystacia.compat import formattable
 
 transparent = from_string('transparent')

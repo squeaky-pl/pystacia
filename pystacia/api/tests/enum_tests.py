@@ -12,5 +12,5 @@ class Enum(TestCase):
         self.assertEquals(lookup(composite.darken_intensity, (6, 7, 2, 1)), 66)
 
 
-from tinyimg.api.enum import lookup
-from tinyimg.lazyenum import enum
+from pystacia.api.enum import lookup
+from pystacia.lazyenum import enum
