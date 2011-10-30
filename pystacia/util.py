@@ -162,6 +162,7 @@ class library_path_transaction:
             environ[self.key] = pathsep.join(parts)
         
         self.old_path = old_path
+        environ['MAGICK_HOME'] = self.path
         
         return self
         
@@ -173,6 +174,8 @@ class library_path_transaction:
             environ[self.key] = self.old_path
         else:
             del environ[self.key]
+            
+        del environ['MAGICK_HOME']
         
         return self
 
