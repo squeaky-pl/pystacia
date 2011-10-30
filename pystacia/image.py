@@ -1079,11 +1079,11 @@ class Image(object):
         return color
     
     @only_live
-    def fill(self, color, blend=1):
+    def fill(self, fill, blend=1):
         """Overlay color over whole image.
            
-           :param color: color to overlay
-           :type color: :class:`pystacia.color.Color`
+           :param fill: color to overlay
+           :type fill: :class:`pystacia.color.Color`
            :param blend: overlay blending
            :type blend: ``float``
            
@@ -1094,12 +1094,12 @@ class Image(object):
         """
         # image magick ignores alpha setting of color
         # let's incorporate it into blend
-        blend *= color.alpha
+        blend *= fill.alpha
         
         blend = color_module.from_rgb(blend, blend, blend)
         
         guard(self.__wand,
-              lambda: cdll.MagickColorizeImage(self.__wand, color.wand,
+              lambda: cdll.MagickColorizeImage(self.__wand, fill.wand,
                                                blend.wand))
         
         blend.close()

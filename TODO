@@ -3,8 +3,8 @@ TODO
 ====
 
 - exception in the tests causes os.exit(1) which doesnt trigger atexit
-- remove color paramname from everywhere - use fill,
-  background and so on - future proof
+- instead of relying on renames and get_platfom we could use our own solution [0.1.1]
+  if it can be loaded and test for OS and 64bit
 - dont rely in tests solely on lena [0.1.1]
 - test if we can get delegates before we initialize ImageMagick (lena deletion) [0.1.1]
 - weakrefing cached lena should be only used in tests [0.1.1]
