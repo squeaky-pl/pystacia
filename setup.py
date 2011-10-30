@@ -18,7 +18,21 @@ binaries = {
     'imagick-6.7.3.2-win32.zip': '3118b1b4f6fc0e2dab8930ea8171cd6e'
 }
 
+
+def pystacia_get_platform():
+    platform = get_platform()
+    
+    renames = {'macosx-10.6-intel': 'macosx-10.7-x86_64'}
+    
+    try:
+        platform = renames[platform]
+    except KeyError:
+        pass
+    
+    return platform
+
 lena_md5 = '525f53c89dbfaa81a9c94e5bf7e1c7fd'
+
 
 def md5_file(f, block_size=1 ** 20):
     f = open(f, 'rb')
@@ -70,7 +84,7 @@ class pystacia_build(build):
             return result
         
         remote_file = ('imagick-' + magick_version + '-' +
-                       get_platform() + '.zip')
+                       pystacia_get_platform() + '.zip')
         
         if remote_file not in binaries:
             self.warn('==> Couldnt find binary Imagick for your platform')
