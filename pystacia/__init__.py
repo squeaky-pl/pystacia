@@ -35,8 +35,11 @@ def init():
     annote(cdll)
     cdll.MagickWandGenesis()
     
+    def shutdown():
+        cdll.MagickWandTerminus()
+    
     import atexit
-    atexit.register(lambda: cdll.MagickWandTerminus())
+    atexit.register(shutdown)
     
     # warn if unsupported
     from pystacia import magick

@@ -9,10 +9,13 @@ base_urls = [
     'https://bitbucket.org/liquibits/pystacia/downloads/'
 ]
 
-magick_version = '6.7.2.10'
+magick_version = '6.7.3.2'
 
 binaries = {
-    'imagick-6.7.2.10-win32.zip': '1a9e7c9514fde117737de4f7e730db40'
+    'imagick-6.7.3.2-linux-i686.zip': '3674232d22c85320e49f5eced7aa8539',
+    'imagick-6.7.3.2-linux-x86_64.zip': 'b8a1a5ad33c424d668dad0b90b1183eb',
+    'imagick-6.7.3.2-macosx-10.7-x86_64.zip': 'ee90d32ff2bcf420ee8148de322dd36d',
+    'imagick-6.7.3.2-win32.zip': '3118b1b4f6fc0e2dab8930ea8171cd6e'
 }
 
 lena_md5 = '525f53c89dbfaa81a9c94e5bf7e1c7fd'

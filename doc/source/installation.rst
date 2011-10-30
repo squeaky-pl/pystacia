@@ -130,11 +130,11 @@ into your sandbox folder. Now your sandbox folder should look like this:
         decorator.py
         six.py
 
-Now it's time to install Pystacia itself. Go to [TODO: link] and grab Pystacia
+Now it's time to install Pystacia itself. Go to https://bitbucket.org/liquibits/pystacia/downloads and grab Pystacia
 source distribution, unpack it and put folder Pystacia under your sandbox folder.
-You also need a binary image distribution for your Windows. If you use 32 bit
-Windows grab it from [TODO: link] or from [TODO: link] if you are on 64 bit
-version. Unpack it and move all the files into `cdll` subdirectory under `pystacia`
+You also need a binary image distribution for your Windows. It can be grabbed from the same URL.
+Remember to choose correct version for your architecture (32 bit or 64 bit).
+Unpack it and move all the files into `cdll` subdirectory under `pystacia`
 folder. Your installation should look like this now::
 
     C:\sandbox
