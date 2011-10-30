@@ -93,6 +93,21 @@ def find_library(name, abis):
         if not exists(path):
             continue
         
+        depends_path = join(path, 'depends.txt')
+        if exists(depends_path):
+            depends = open(depends_path)
+            
+            for line in depends:
+                depname, depabi = line.split()
+                template = formattable(dll_template(depabi))
+                dll_path = join(path, template.format(name=depname, abi=depabi))
+                try:
+                    factory(dll_path)
+                except:
+                    pass
+            
+            depends.close()
+        
         for abi in abis:
             template = formattable(dll_template(abi))
             if not template:
