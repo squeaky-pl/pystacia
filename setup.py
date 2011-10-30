@@ -12,8 +12,8 @@ base_urls = [
 magick_version = '6.7.3.2'
 
 binaries = {
-    'imagick-6.7.3.2-linux-i686.zip': '3674232d22c85320e49f5eced7aa8539',
-    'imagick-6.7.3.2-linux-x86_64.zip': 'b8a1a5ad33c424d668dad0b90b1183eb',
+    'imagick-6.7.3.2-linux-i686.zip': '2fc957e0135bf10c388a5c18c0534cfe',
+    'imagick-6.7.3.2-linux-x86_64.zip': 'f7900063fb220b1e50530e91b24f4570',
     'imagick-6.7.3.2-macosx-10.7-x86_64.zip': 'ee90d32ff2bcf420ee8148de322dd36d',
     'imagick-6.7.3.2-win32.zip': '3118b1b4f6fc0e2dab8930ea8171cd6e'
 }
