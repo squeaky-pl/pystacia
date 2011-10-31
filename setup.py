@@ -14,7 +14,7 @@ magick_version = '6.7.3.2'
 binaries = {
     'imagick-6.7.3.2-linux-i686.zip': '2fc957e0135bf10c388a5c18c0534cfe',
     'imagick-6.7.3.2-linux-x86_64.zip': 'f7900063fb220b1e50530e91b24f4570',
-    'imagick-6.7.3.2-macosx-10.7-x86_64.zip': 'ee90d32ff2bcf420ee8148de322dd36d',
+    'imagick-6.7.3.2-macosx-10.7-x86_64.zip': '8052820d8e54d8cb3e998bd14b9bf786',
     'imagick-6.7.3.2-win32.zip': '3118b1b4f6fc0e2dab8930ea8171cd6e'
 }
 

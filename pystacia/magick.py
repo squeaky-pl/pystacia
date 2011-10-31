@@ -27,19 +27,39 @@ def get_version():
 
 @memoized
 def get_options():
-    options = {}
-    
-    from ctypes import c_size_t
-    from six import b
-    from pystacia.compat import native_str
-    
-    size = c_size_t()
-    keys = cdll.MagickQueryConfigureOptions(b('*'), size)
-    for key in (keys[i] for i in range(size.value)):
-        options[native_str(key)] =\
-        native_str(cdll.MagickQueryConfigureOption(key))
+    def get_options_real():
+        options = {}
+        
+        from ctypes import c_size_t
+        from six import b
+        from pystacia.compat import native_str
+        
+        size = c_size_t()
+        keys = cdll.MagickQueryConfigureOptions(b('*'), size)
+        for key in (keys[i] for i in range(size.value)):
+            options[native_str(key)] =\
+            native_str(cdll.MagickQueryConfigureOption(key))
             
-    return options
+        return options
+    
+    def get_options_hack(path):
+        options = {}
+        
+        parser = ElementTree()
+        root = parser.parse(path)
+        for element in root.iterfind('configure'):
+            attrs = element.attrib
+            options[attrs['name']] = attrs['value']
+            
+        return options
+    
+    dll_path = dirname(cdll._name)
+    config_path = join(dll_path, 'configure.xml')
+    
+    if exists(config_path):
+        return get_options_hack(config_path)
+    else:
+        return get_options_real()
 
 
 def get_version_str():
@@ -58,5 +78,12 @@ def get_delegates():
 def get_depth():
     depth = get_options().get('QuantumDepth')
     return int(depth) if depth else None
+
+from os.path import dirname, join, exists
+
+try:
+    from xml.etree.cElementTree import ElementTree
+except ImportError:
+    from xml.etree.ElementTree import ElementTree
 
 from pystacia import cdll
