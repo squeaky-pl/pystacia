@@ -122,9 +122,7 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
        You can optionally pass factory parameter to use alternative
        :class:`Image` subclass.
     
-       >>> img = read_raw(b'\xff\x00\x00', 'rgb', 1, 1, 8)
-       >>> img.get_pixel(0, 0) == color.from_string('red')
-       True
+       >>> img = read_raw(b'raw triplets', 'rgb', 1, 1, 8)
     """
     if hasattr(raw, 'read'):
         raw = raw.read()
