@@ -47,7 +47,7 @@ def get_options():
         
         parser = ElementTree()
         root = parser.parse(path)
-        for element in root.iterfind('configure'):
+        for element in root.findall('configure'):
             attrs = element.attrib
             options[attrs['name']] = attrs['value']
             
