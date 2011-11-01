@@ -203,6 +203,8 @@ class Image(object):
     def __init__(self, wand=None):
         self.__wand = wand if wand else cdll.NewMagickWand()
         self.__closed = False
+        
+        _register_cleanup(self)
     
     @only_live
     def copy(self):
@@ -1476,7 +1478,7 @@ color_module = color
 from pystacia.util import TinyException
 from pystacia.api.func import guard
 from pystacia import magick
-from pystacia import cdll, enum_lookup, enum_reverse_lookup
+from pystacia import cdll, enum_lookup, enum_reverse_lookup, _register_cleanup
 from pystacia.lazyenum import enum
 
 if not 'fftw' in magick.get_delegates():

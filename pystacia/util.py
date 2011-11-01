@@ -100,7 +100,8 @@ def find_library(name, abis):
             for line in depends:
                 depname, depabi = line.split()
                 template = formattable(dll_template(depabi))
-                dll_path = join(path, template.format(name=depname, abi=depabi))
+                dll_path = join(path, template.format(name=depname,
+                                                      abi=depabi))
                 try:
                     factory(dll_path)
                 except:

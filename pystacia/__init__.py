@@ -36,6 +36,7 @@ def init():
     cdll.MagickWandGenesis()
     
     def shutdown():
+        _cleanup()
         cdll.MagickWandTerminus()
     
     import atexit
@@ -49,6 +50,26 @@ def init():
         from warnings import warn
         template = formattable('Unsupported version of MagickWand {0}')
         warn(template.format(version))
+
+
+def _register_cleanup(obj):
+    """Registers cleanup of objects on exit"""
+    if not hasattr(cdll, '_registry'):
+        cdll._registry = WeakValueDictionary()
+    
+    cdll._registry[addressof(obj.wand.contents)] = obj
+
+
+def _cleanup():
+    if not hasattr(cdll, '_registry'):
+        return
+    
+    for ref in cdll._registry.itervaluerefs():
+        obj = ref()
+        if obj:
+            if not obj.closed:
+                obj.close()
+            del obj
 
 __lena = None
 
@@ -162,7 +183,9 @@ def enum_reverse_lookup(enum, value):
 cdll = None
 
 import weakref
+from weakref import WeakValueDictionary
 from os.path import dirname, join, exists
+from ctypes import addressof
 
 from pystacia.compat import formattable
 from pystacia.util import TinyException

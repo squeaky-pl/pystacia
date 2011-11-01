@@ -111,6 +111,8 @@ class Color(object):
         """
         self.__wand = wand if wand else cdll.NewPixelWand()
         self.__closed = False
+        
+        _register_cleanup(self)
     
     def red():  # @NoSelf
         d =\
@@ -365,7 +367,7 @@ from ctypes import addressof
 
 from six import b
 
-from pystacia import cdll
+from pystacia import cdll, _register_cleanup
 from pystacia.api.func import guard
 from pystacia.compat import formattable
 

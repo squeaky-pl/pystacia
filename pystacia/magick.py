@@ -84,6 +84,6 @@ from os.path import dirname, join, exists
 try:
     from xml.etree.cElementTree import ElementTree
 except ImportError:
-    from xml.etree.ElementTree import ElementTree
+    from xml.etree.ElementTree import ElementTree  # @Reimport
 
 from pystacia import cdll
