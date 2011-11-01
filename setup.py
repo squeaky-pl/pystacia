@@ -196,5 +196,17 @@ setup(
     license='MIT License',
     long_description=open('README').read(),
     install_requires=install_requires,
-    cmdclass=cmdclass
+    cmdclass=cmdclass,
+    classifiers=[
+          'Development Status :: 4 - Beta',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: MIT License',
+          'Operating System :: POSIX :: Linux',
+          'Operating System :: MacOS :: MacOS X',
+          'Operating System :: Microsoft :: Windows',
+          'Operating System :: POSIX',
+          'Programming Language :: Python',
+          'Programming Language :: Python :: 3',
+          'Topic :: Multimedia :: Graphics',
+    ],
 )
