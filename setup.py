@@ -191,7 +191,7 @@ setup(
     author='Paweł Piotr Przeradowski',
     author_email='przeradowski@gmail.com',
     url='http://liquibits.bitbucket.org/',
-    version='0.1beta',
+    version='0.2dev',
     packages=packages,
     license='MIT License',
     long_description=open('README').read(),

@@ -93,27 +93,34 @@ def from_rgba(r, g, b, a, factory=None):
     
     return color
 
-from pystacia.util import only_live
+from pystacia.common import Resource
 
 
-class Color(object):
+class Color(Resource):
     
     """Object representing color information."""
     
-    def __init__(self, wand=None):
-        """Create :class:`Color` object.
-           
-           :param wand: ImageMagick resource handle
-           :type wand: :class:`pystacia.api.type.PixelWand_p`
-           
-           Not to be used directly. Use one of color factory functions
-           such as :func:`from_rgba` or :func:`from_string` instead.
-        """
-        self.__wand = wand if wand else cdll.NewPixelWand()
-        self.__closed = False
+    def _alloc(self):
+        """Allocate C struct.
         
-        _register_cleanup(self)
+           Not to be called directly.
+        """
+        return cdll.NewPixelWand()
     
+    def _free(self):
+        """Free C struct.
+        
+           Not to be called directly.
+        """
+        cdll.DestroyPixelWand(self.resource)
+        
+    def _clone(self):
+        """Clone C struct.
+           
+           Not to be called directly.
+        """
+        return cdll.ClonePixelWand(self.resource)
+        
     def red():  # @NoSelf
         d =\
         """Set or get red channel information.
@@ -124,10 +131,10 @@ class Color(object):
         """
         
         def g(self):
-            return saturate(cdll.PixelGetRed(self.__wand))
+            return saturate(cdll.PixelGetRed(self.resource))
         
         def s(self, value):
-            cdll.PixelSetRed(self.__wand, value)
+            cdll.PixelSetRed(self.resource, value)
         
         return dict(fget=g, fset=s, doc=d)
         
@@ -146,10 +153,10 @@ class Color(object):
         """
         
         def g(self):
-            return saturate(cdll.PixelGetGreen(self.__wand))
+            return saturate(cdll.PixelGetGreen(self.resource))
         
         def s(self, value):
-            cdll.PixelSetGreen(self.__wand, value)
+            cdll.PixelSetGreen(self.resource, value)
         
         return dict(fget=g, fset=s, doc=d)
     
@@ -168,10 +175,10 @@ class Color(object):
         """
         
         def g(self):
-            return saturate(cdll.PixelGetBlue(self.__wand))
+            return saturate(cdll.PixelGetBlue(self.resource))
         
         def s(self, value):
-            cdll.PixelSetBlue(self.__wand, value)
+            cdll.PixelSetBlue(self.resource, value)
         
         return dict(fget=g, fset=s, doc=d)
     
@@ -190,10 +197,10 @@ class Color(object):
         """
         
         def g(self):
-            return saturate(cdll.PixelGetAlpha(self.__wand))
+            return saturate(cdll.PixelGetAlpha(self.resource))
         
         def s(self, value):
-            cdll.PixelSetAlpha(self.__wand, value)
+            cdll.PixelSetAlpha(self.resource, value)
         
         return dict(fget=g, fset=s, doc=d)
     
@@ -247,24 +254,6 @@ class Color(object):
         self.set_rgb(r, g, b)
         self.a = a
     
-    @only_live
-    def close(self):
-        """Free associted ImageMagick resources.
-           
-           Object cant be used after calling this method.
-        """
-        cdll.DestroyPixelWand(self.__wand)
-        self.__closed = True
-        
-    @property
-    def closed(self):
-        """Check if object is closed.
-        
-           :rtype: ``bool``
-        """
-        return self.__closed
-    
-    @only_live
     def get_string(self):
         """Return string representation of color.
            
@@ -299,7 +288,6 @@ class Color(object):
         """
         return self.alpha == 1
     
-    @property
     def transparent(self):
         """Check if color is fully transparent.
            
@@ -314,29 +302,6 @@ class Color(object):
            True
         """
         return self.alpha == 0
-     
-    @property
-    @only_live
-    def wand(self):
-        """Return underlying ImageMagick resource.
-        
-           :rtype: ``pystacia.api.type.PixelWand_p``.
-           
-           This can be useful if you want to perform custom operations
-           directly coping with ctypes.
-        """
-        return self.__wand
-    
-    @only_live
-    def copy(self):
-        """Return an independent new :class:`Color` object with copied state.
-        
-        >>> copy = red.copy()
-        >>> copy == red
-        True
-        """
-        wand = cdll.ClonePixelWand(self.__wand)
-        return Color(wand)
     
     def __eq__(self, other):
         return self.get_rgba() == other.get_rgba()
@@ -344,11 +309,10 @@ class Color(object):
     def __str__(self):
         return self.get_string()
     
-    @only_live
     def __repr__(self):
         template = ('<{class_}(r={0},g={1},b={2},a={3})'
                     ' object at {addr}>')
-        kw = dict(addr=hex(addressof(self.__wand[0])),
+        kw = dict(addr=hex(addressof(self.resource[0])),
                   class_=self.__class__.__name__)
         
         return formattable(template).format(*self.get_rgba(), **kw)
@@ -367,7 +331,7 @@ from ctypes import addressof
 
 from six import b
 
-from pystacia import cdll, _register_cleanup
+from pystacia import cdll
 from pystacia.api.func import guard
 from pystacia.compat import formattable
 

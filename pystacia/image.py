@@ -201,8 +201,6 @@ class Image(object):
     def __init__(self, wand=None):
         self.__wand = wand if wand else cdll.NewMagickWand()
         self.__closed = False
-        
-        _register_cleanup(self)
     
     @only_live
     def copy(self):
@@ -447,7 +445,7 @@ class Image(object):
         """
         guard(self.__wand,
               lambda: cdll.MagickRotateImage(self.__wand,
-                                             color.transparent.wand, angle))
+                                             color.transparent.resource, angle))
         
     @only_live
     def flip(self, axis):
@@ -519,7 +517,7 @@ class Image(object):
             
         guard(self.__wand,
               lambda: cdll.MagickShearImage(self.__wand,
-                                            color.transparent.wand,
+                                            color.transparent.resource,
                                             x_angle, y_angle))
     
     @only_live
@@ -579,10 +577,10 @@ class Image(object):
         old_color = color.Color()
         guard(self.__wand,
               lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
-                                                         old_color.wand))
+                                                         old_color.resource))
         guard(self.__wand,
               lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
-                                                         background.wand))
+                                                         background.resource))
         
         guard(self.__wand,
               lambda: cdll.MagickTrimImage(self.__wand, similarity * 100))
@@ -590,7 +588,7 @@ class Image(object):
         #restore background color
         guard(self.__wand,
               lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
-                                                         old_color.wand))
+                                                         old_color.resource))
         
         if background_free:
             background.close()
@@ -937,10 +935,10 @@ class Image(object):
         old_color = color.Color()
         guard(self.__wand,
               lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
-                                                         old_color.wand))
+                                                         old_color.resource))
         guard(self.__wand,
               lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
-                                                         transparent.wand))
+                                                         transparent.resource))
         
         if axis.name == 'y':
             self.rotate(90)
@@ -953,7 +951,7 @@ class Image(object):
         
         guard(self.__wand,
               lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
-                                                         old_color.wand))
+                                                         old_color.resource))
         old_color.close()
         transparent.close()
     
@@ -1074,7 +1072,7 @@ class Image(object):
         
         guard(self.__wand,
               lambda: cdll.MagickGetImagePixelColor(self.__wand, x, y,
-                                                    color.wand))
+                                                    color.resource))
         
         return color
     
@@ -1099,8 +1097,8 @@ class Image(object):
         blend = color_module.from_rgb(blend, blend, blend)
         
         guard(self.__wand,
-              lambda: cdll.MagickColorizeImage(self.__wand, fill.wand,
-                                               blend.wand))
+              lambda: cdll.MagickColorizeImage(self.__wand, fill.resource,
+                                               blend.resource))
         
         blend.close()
     
@@ -1122,7 +1120,7 @@ class Image(object):
         """
         if hasattr(cdll, 'MagickSetImageColor'):
             guard(self.__wand,
-                  lambda: cdll.MagickSetImageColor(self.__wand, fill.wand))
+                  lambda: cdll.MagickSetImageColor(self.__wand, fill.resource))
             
             # MagickSetImageColor doesnt copy alpha
             if fill.alpha != 1:
@@ -1206,10 +1204,10 @@ class Image(object):
         old_color = color.Color()
         guard(self.__wand,
               lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
-                                                         old_color.wand))
+                                                         old_color.resource))
         guard(self.__wand,
               lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
-                                                         background.wand))
+                                                         background.resource))
         
         guard(self.__wand,
               lambda: cdll.MagickSpliceImage(self.__wand, width,
@@ -1218,7 +1216,7 @@ class Image(object):
         #restore background color
         guard(self.__wand,
               lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
-                                                         old_color.wand))
+                                                         old_color.resource))
         old_color.close()
         background.close()
     
@@ -1476,7 +1474,7 @@ color_module = color
 from pystacia.util import TinyException
 from pystacia.api.func import guard
 from pystacia import magick
-from pystacia import cdll, enum_lookup, enum_reverse_lookup, _register_cleanup
+from pystacia import cdll, enum_lookup, enum_reverse_lookup
 from pystacia.lazyenum import enum
 
 if not 'fftw' in magick.get_delegates():

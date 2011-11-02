@@ -30,7 +30,7 @@ class Copy(TestCase):
         blue = color.from_string('white')
         blue_copy = blue.copy()
         
-        self.assertNotEqual(blue.wand, blue_copy.wand)
+        self.assertNotEqual(blue.resource, blue_copy.resource)
         self.assertEquals(blue, blue_copy)
 
 
