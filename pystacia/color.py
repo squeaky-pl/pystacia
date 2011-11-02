@@ -31,15 +31,17 @@ def from_string(value, factory=None):
        >>> from_string('hsla(50%, 100%, 100%, 0.5)')
        <Color(r=0,g=1,b=1,a=0.5) object at 0x103252a00L>
     """
-    #ensure we also get "bytes"
-    value = b(value)
-    wand = cdll.NewPixelWand()
-    guard(wand, lambda: cdll.PixelSetColor(wand, value))
-    
     if not factory:
         factory = Color
+        
+    color = factory()
+    r = color.resource
     
-    return factory(wand)
+    #ensure we also get "bytes"
+    value = b(value)
+    guard(r, lambda: cdll.PixelSetColor(r, value))
+    
+    return color
 
 
 def from_rgb(r, g, b, factory=None):
@@ -59,16 +61,13 @@ def from_rgb(r, g, b, factory=None):
        >>> from_rgb(0.5, 1, 0.5)
        <Color(r=0.5,g=1,b=0.5,a=1) object at 0x103266200L>
     """
-    wand = cdll.NewPixelWand()
-    
-    cdll.PixelSetRed(wand, r)
-    cdll.PixelSetGreen(wand, g)
-    cdll.PixelSetBlue(wand, b)
-    
     if not factory:
         factory = Color
+        
+    color = factory()
+    color.set_rgb(r, g, b)
     
-    return factory(wand)
+    return color
 
 
 def from_rgba(r, g, b, a, factory=None):
@@ -88,7 +87,6 @@ def from_rgba(r, g, b, a, factory=None):
        <Color(r=1,g=1,b=0,a=0.5) object at 0x103222600L>
     """
     color = from_rgb(r, g, b, factory)
-    
     color.alpha = a
     
     return color
@@ -219,6 +217,17 @@ class Color(Resource):
         """
         return (self.r, self.g, self.b)
     
+    def get_hsl(self):
+        """Return hue, saturation and lightness components.
+           
+           :rtype: tuple
+        """
+        hue, saturation, lightness = c_double(), c_double(), c_double()
+        
+        cdll.PixelGetHSL(self.resource, hue, saturation, lightness)
+        
+        return tuple(saturate(x.value) for x in (hue, saturation, lightness))
+        
     def get_rgba(self):
         """Return red, green, blue and alpha components.
            
@@ -327,7 +336,7 @@ def saturate(v):
         return round(v, 4)
 
 
-from ctypes import addressof
+from ctypes import addressof, c_double
 
 from six import b
 

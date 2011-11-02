@@ -302,6 +302,10 @@ def annote(cdll):
     
     cdll.PixelGetAlpha.argtypes = (PixelWand_p,)
     cdll.PixelGetAlpha.restype = c_double
+    
+    cdll.PixelGetHSL.argtypes = (PixelWand_p, POINTER(c_double),
+                                 POINTER(c_double), POINTER(c_double))
+    cdll.PixelGetHSL.restype = None
 
 
 def guard(wand, callable, msg=None):  # @ReservedAssignment
