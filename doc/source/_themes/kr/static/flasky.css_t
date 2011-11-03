@@ -54,6 +54,10 @@ img.floatingflask {
     float: right;
 }
 
+#disqus_thread {
+    margin: 20px 50px 30px 300px;
+}
+
 div.footer {
     margin: 20px 50px 30px;
     font-size: 14px;

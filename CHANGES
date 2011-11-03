@@ -1,10 +1,8 @@
 =======
 CHANGES
 =======
-0.0
+
+0.2
 ===
-- moved Image into its own submodule
-- show now tries png first before falling back to bmp
-- implemented memoized decorator to ease development
-- refactored underlying enum implementation to use lazy enums instead of
-  string constants
+
+- Extracted common Resource interface

@@ -90,7 +90,7 @@ class Copy(TestCase):
         img = lena()
         copy = img.copy()
         
-        self.assertNotEquals(img.wand, copy.wand)
+        self.assertNotEquals(img.resource, copy.resource)
         self.assertEquals(img.size, copy.size)
         copy.rescale(factor=(2, 0.5))
         self.assertNotEqual(img.size, copy.size)

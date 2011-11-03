@@ -22,7 +22,8 @@ class Resource(object):
             tmpl = formattable('{0} _alloc method returned None')
             raise TinyException(tmpl.format(self.__class__.__name__))
         
-        _registry[id(self)] = self
+        if not id(self) in _registry:
+            _registry[id(self)] = self
     
     def _claim(self):
         """Claim resource and close this instance.

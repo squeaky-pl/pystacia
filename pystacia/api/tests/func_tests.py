@@ -12,10 +12,10 @@ class Guard(TestCase):
     def test(self):
         img = lena()
         
-        ccall = lambda: cdll.MagickSetFormat(img.wand, b('lolz'))
-        self.assertRaises(TinyException, lambda: guard(img.wand, ccall))
+        ccall = lambda: cdll.MagickSetFormat(img.resource, b('lolz'))
+        self.assertRaises(TinyException, lambda: guard(img.resource, ccall))
         
-        guard(img.wand, lambda: cdll.MagickSetFormat(img.wand, b('bmp')))
+        guard(img.resource, lambda: cdll.MagickSetFormat(img.resource, b('bmp')))
         
         img.close()
 

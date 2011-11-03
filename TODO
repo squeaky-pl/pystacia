@@ -2,6 +2,7 @@
 TODO
 ====
 
+- use __ in front of property generators like __colorspace()
 - move common under utils [0.1.1]
 - subprocess loading of libraries optionall with pyro [0.1.1]
 - instead of relying on renames and get_platfom we could use our own solution [0.1.1]

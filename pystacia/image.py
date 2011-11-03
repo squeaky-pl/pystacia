@@ -36,7 +36,8 @@ def read(filename, factory=None):
     
     image = factory()
     
-    guard(image.wand, lambda: cdll.MagickReadImage(image.wand, filename))
+    resource = image.resource
+    guard(resource, lambda: cdll.MagickReadImage(resource, filename))
     
     return image
 
@@ -79,21 +80,22 @@ def read_blob(blob, format=None,  # @ReservedAssignment
     
     image = factory()
     
+    resource = image.resource
     if format:
         # ensure we always get bytes
         format = b(format.upper())  # @ReservedAssignment
-        old_format = cdll.MagickGetImageFormat(image.wand)
+        old_format = cdll.MagickGetImageFormat(resource)
         template = formattable('Format "{0}" unsupported')
-        guard(image.wand,
-              lambda: cdll.MagickSetFormat(image.wand, format),
+        guard(resource,
+              lambda: cdll.MagickSetFormat(resource, format),
               template.format(format))
     
-    guard(image.wand,
-          lambda: cdll.MagickReadImageBlob(image.wand, blob, len(blob)))
+    guard(resource,
+          lambda: cdll.MagickReadImageBlob(resource, blob, len(blob)))
     
     if format:
-        guard(image.wand,
-                  lambda: cdll.MagickSetFormat(image.wand, old_format))
+        guard(resource,
+                  lambda: cdll.MagickSetFormat(resource, old_format))
     
     return image
 
@@ -134,12 +136,13 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
     
     image = factory()
     
-    guard(image.wand, lambda: cdll.MagickSetSize(image.wand, width, height))
-    guard(image.wand, lambda: cdll.MagickSetDepth(image.wand, depth))
-    guard(image.wand, lambda: cdll.MagickSetFormat(image.wand, format))
+    resource = image.resource
+    guard(resource, lambda: cdll.MagickSetSize(resource, width, height))
+    guard(resource, lambda: cdll.MagickSetDepth(resource, depth))
+    guard(resource, lambda: cdll.MagickSetFormat(resource, format))
         
-    guard(image.wand,
-          lambda: cdll.MagickReadImageBlob(image.wand, raw, len(raw)))
+    guard(resource,
+          lambda: cdll.MagickReadImageBlob(resource, raw, len(raw)))
     
     return image
 
@@ -151,13 +154,14 @@ def read_special(spec, width=None, height=None, factory=None):
         
     image = factory()
     
+    resource = image.resource
     if width and height:
-        guard(image.wand, lambda:
-              cdll.MagickSetSize(image.wand, width, height))
+        guard(resource, lambda:
+              cdll.MagickSetSize(resource, width, height))
     
     spec = b(spec)
     
-    guard(image.wand, lambda: cdll.MagickReadImage(image.wand, spec))
+    guard(resource, lambda: cdll.MagickReadImage(resource, spec))
     
     return image
 
@@ -194,25 +198,18 @@ def blank(width, height, background=None, factory=None):
     
     return read_special('xc:' + str(background), width, height, factory)
 
-from pystacia.util import only_live
+from pystacia.common import Resource
 
-
-class Image(object):
-    def __init__(self, wand=None):
-        self.__wand = wand if wand else cdll.NewMagickWand()
-        self.__closed = False
+class Image(Resource):
+    def _alloc(self):
+        return cdll.NewMagickWand()
     
-    @only_live
-    def copy(self):
-        """Create new independent copy of an image.
-        
-           :rtype: :class:`pystacia.image.Image`
-        """
-        wand = cdll.CloneMagickWand(self.__wand)
-        
-        return Image(wand)
+    def _clone(self):
+        return cdll.CloneMagickWand(self.resource)
     
-    @only_live
+    def _free(self):
+        cdll.DestroyMagickWand(self.resource)
+    
     def write(self, filename, format=None,  # @ReservedAssignment
               compression=None, quality=None):
         """Write an image to filesystem.
@@ -240,34 +237,33 @@ class Image(object):
            
            This method can be chained.
         """
+        resource = self.resource
+        
         if format:
             format = b(format.upper())  # @ReservedAssignment
-            old_format = cdll.MagickGetImageFormat(self.__wand)
+            old_format = cdll.MagickGetImageFormat(resource)
             template = formattable('Format "{0}" unsupported')
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageFormat(self.__wand, format),
+            guard(resource,
+                  lambda: cdll.MagickSetImageFormat(resource, format),
                   template.format(format))
             
         if quality != None:
-            old_quality = cdll.MagickGetImageCompressionQuality(self.__wand)
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageCompressionQuality(self.__wand,
+            old_quality = cdll.MagickGetImageCompressionQuality(resource)
+            guard(resource,
+                  lambda: cdll.MagickSetImageCompressionQuality(resource,
                                                                 quality))
         
-        guard(self.__wand,
-              lambda: cdll.MagickWriteImage(self.__wand, b(filename)))
+        guard(resource,
+              lambda: cdll.MagickWriteImage(resource, b(filename)))
         
         if quality != None:
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageCompressionQuality(self.__wand,
+            guard(resource,
+                  lambda: cdll.MagickSetImageCompressionQuality(resource,
                                                                 old_quality))
         if format:
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageFormat(self.__wand, old_format))
-        
-        return self
+            guard(resource,
+                  lambda: cdll.MagickSetImageFormat(resource, old_format))
     
-    @only_live
     def get_blob(self, format, compression=None,  # @ReservedAssignment
                  quality=None, factory=None):
         """Return a blob representing an image
@@ -289,44 +285,46 @@ class Image(object):
            :term:`PNG` 0 means best compression. The default value is to choose
            best available compression that preserves good quality image.
         """
+        resource = self.resource
+        
         if compression != None:
-            old_compression = cdll.MagickGetImageCompression(self.__wand)
+            old_compression = cdll.MagickGetImageCompression(resource)
             compression = enum_lookup(compression)
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageCompression(self.__wand,
+            guard(resource,
+                  lambda: cdll.MagickSetImageCompression(resource,
                                                     compression))
             
         if quality != None:
-            old_quality = cdll.MagickGetImageCompressionQuality(self.__wand)
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageCompressionQuality(self.__wand,
+            old_quality = cdll.MagickGetImageCompressionQuality(resource)
+            guard(resource,
+                  lambda: cdll.MagickSetImageCompressionQuality(resource,
                                                                 quality))
             
         # ensure we always get bytes
         format = b(format.upper())  # @ReservedAssignment
-        old_format = cdll.MagickGetFormat(self.__wand)
+        old_format = cdll.MagickGetFormat(resource)
         template = formattable('Format "{0}" unsupported')
-        guard(self.__wand,
-              lambda: cdll.MagickSetFormat(self.__wand, format),
+        guard(resource,
+              lambda: cdll.MagickSetFormat(resource, format),
               template.format(format))
         
         size = c_size_t()
-        result = guard(self.__wand,
-                       lambda: cdll.MagickGetImageBlob(self.__wand,
+        result = guard(resource,
+                       lambda: cdll.MagickGetImageBlob(resource,
                                                        byref(size)))
         blob = string_at(result, size.value)
         cdll.MagickRelinquishMemory(result)
         
-        guard(self.__wand,
-              lambda: cdll.MagickSetFormat(self.__wand, old_format))
+        guard(resource,
+              lambda: cdll.MagickSetFormat(resource, old_format))
         
         if quality != None:
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageCompressionQuality(self.__wand,
+            guard(resource,
+                  lambda: cdll.MagickSetImageCompressionQuality(resource,
                                                                 old_quality))
         if compression != None:
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageCompression(self.__wand,
+            guard(resource,
+                  lambda: cdll.MagickSetImageCompression(resource,
                                                     old_compression))
         if factory:
             blob = factory(blob)
@@ -349,7 +347,6 @@ class Image(object):
                     height=self.height,
                     depth=self.depth)
         
-    @only_live
     def rescale(self, width=None, height=None,
                factor=None, filter=None, blur=1):  # @ReservedAssignment
         """Rescales an image to given dimensions.
@@ -400,11 +397,12 @@ class Image(object):
         
         value = enum_lookup(filter)
         
-        guard(self.__wand,
-              lambda: cdll.MagickResizeImage(self.__wand, width, height,
+        resource = self.resource
+        
+        guard(resource,
+              lambda: cdll.MagickResizeImage(resource, width, height,
                                              value, blur))
     
-    @only_live
     def resize(self, width, height, x=0, y=0):
         """Resize (crop) image to given dimensions.
            
@@ -428,10 +426,10 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickCropImage(self.__wand, width, height, x, y))
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickCropImage(resource, width, height, x, y))
     
-    @only_live
     def rotate(self, angle):
         """Rotate an image.
         
@@ -443,11 +441,11 @@ class Image(object):
            
            This method can be chained
         """
-        guard(self.__wand,
-              lambda: cdll.MagickRotateImage(self.__wand,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickRotateImage(resource,
                                              color.transparent.resource, angle))
         
-    @only_live
     def flip(self, axis):
         """Flip an image along given axis.
            
@@ -458,14 +456,14 @@ class Image(object):
            
            This method can be chained.
         """
+        resource = self.resource
         if axis.name == 'x':
-            guard(self.__wand, lambda: cdll.MagickFlipImage(self.__wand))
+            guard(resource, lambda: cdll.MagickFlipImage(resource))
         elif axis.name == 'y':
-            guard(self.__wand, lambda: cdll.MagickFlopImage(self.__wand))
+            guard(resource, lambda: cdll.MagickFlopImage(resource))
         else:
             raise TinyException('axis must be X or Y')
     
-    @only_live
     def transpose(self):
         """Transpose an image.
            
@@ -476,11 +474,11 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand, lambda: cdll.MagickTransposeImage(self.__wand))
+        resource = self.resource
+        guard(resource, lambda: cdll.MagickTransposeImage(resource))
         
         return self
     
-    @only_live
     def transverse(self):
         """Transverse an image.
            
@@ -489,9 +487,9 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand, lambda: cdll.MagickTransverseImage(self.__wand))
+        resource = self.resource
+        guard(resource, lambda: cdll.MagickTransverseImage(resource))
     
-    @only_live
     def skew(self, offset, axis=None):
         """Skews an image by given offsets.
         
@@ -514,13 +512,13 @@ class Image(object):
         elif axis == axes.y:
             x_angle = 0
             y_angle = degrees(atan(offset / self.width))
-            
-        guard(self.__wand,
-              lambda: cdll.MagickShearImage(self.__wand,
+        
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickShearImage(resource,
                                             color.transparent.resource,
                                             x_angle, y_angle))
     
-    @only_live
     def roll(self, x, y):
         """Roll pixels in the image.
            
@@ -535,9 +533,9 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand, lambda: cdll.MagickRollImage(self.__wand, x, y))
+        resource = self.resource
+        guard(resource, lambda: cdll.MagickRollImage(resource, x, y))
     
-    @only_live
     def straighten(self, threshold):
         """Attempt to straighten image.
            
@@ -551,8 +549,9 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickDeskewImage(self.__wand, threshold))
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickDeskewImage(resource, threshold))
     
     def trim(self, similarity=.1, background=None):
         """Attempt to trim off extra background around image.
@@ -575,25 +574,25 @@ class Image(object):
         
         # preserve background color
         old_color = color.Color()
-        guard(self.__wand,
-              lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickGetImageBackgroundColor(resource,
                                                          old_color.resource))
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+        guard(resource,
+              lambda: cdll.MagickSetImageBackgroundColor(resource,
                                                          background.resource))
         
-        guard(self.__wand,
-              lambda: cdll.MagickTrimImage(self.__wand, similarity * 100))
+        guard(resource,
+              lambda: cdll.MagickTrimImage(resource, similarity * 100))
         
         #restore background color
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+        guard(resource,
+              lambda: cdll.MagickSetImageBackgroundColor(resource,
                                                          old_color.resource))
         
         if background_free:
             background.close()
     
-    @only_live
     def brightness(self, factor):
         """Brightens an image.
            
@@ -607,11 +606,11 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickBrightnessContrastImage(self.__wand,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickBrightnessContrastImage(resource,
                                                          factor * 100, 0))
     
-    @only_live
     def contrast(self, factor):
         """Change image contrast.
            
@@ -626,11 +625,11 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickBrightnessContrastImage(self.__wand,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickBrightnessContrastImage(resource,
                                                          0, factor * 100))
     
-    @only_live
     def gamma(self, gamma):
         """Apply gamma correction to an image.
            
@@ -644,9 +643,9 @@ class Image(object):
            
            This method can be chained
         """
-        guard(self.__wand, lambda: cdll.MagickGammaImage(self.__wand, gamma))
+        resource = self.resource
+        guard(resource, lambda: cdll.MagickGammaImage(resource, gamma))
     
-    @only_live
     def auto_gamma(self):
         """Auto-gamma image.
         
@@ -655,10 +654,10 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickAutoGammaImage(self.__wand))
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickAutoGammaImage(resource))
     
-    @only_live
     def auto_level(self):
         """Auto-level image.
         
@@ -667,10 +666,10 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickAutoLevelImage(self.__wand))
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickAutoLevelImage(resource))
     
-    @only_live
     def modulate(self, hue=0, saturation=0, lightness=0):
         """Modulate hue, saturation and lightness of the image
            
@@ -692,8 +691,9 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickModulateImage(self.__wand,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickModulateImage(resource,
                                                lightness * 100 + 100,
                                                saturation * 100 + 100,
                                                hue * 100 + 100))
@@ -708,7 +708,6 @@ class Image(object):
         """
         self.modulate(saturation=-1)
         
-    @only_live
     def colorize(self, color):
         """Colorize image.
            
@@ -726,7 +725,6 @@ class Image(object):
         
         overlay.close()
     
-    @only_live
     def sepia(self, threshold=.8, saturation=-.4):
         """Sepia-tonne an image.
            
@@ -742,13 +740,13 @@ class Image(object):
         """
         threshold = 2 ** int(magick.get_options()['QuantumDepth']) * threshold
         
-        guard(self.__wand,
-              lambda: cdll.MagickSepiaToneImage(self.__wand, threshold))
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickSepiaToneImage(resource, threshold))
         
         if saturation:
             self.modulate(saturation=saturation)
     
-    @only_live
     def equalize(self):
         """Equalize image histogram.
            
@@ -761,9 +759,9 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand, lambda: cdll.MagickEqualizeImage(self.__wand))
+        resource = self.resource
+        guard(resource, lambda: cdll.MagickEqualizeImage(resource))
     
-    @only_live
     def invert(self, only_gray=False):
         """Invert image colors.
            
@@ -771,10 +769,10 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickNegateImage(self.__wand, only_gray))
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickNegateImage(resource, only_gray))
     
-    @only_live
     def solarize(self, factor):
         """Solarizes an image.
            
@@ -792,10 +790,10 @@ class Image(object):
         """
         factor = (1 - factor) * 2 ** magick.get_depth()
         
-        guard(self.__wand,
-              lambda: cdll.MagickSolarizeImage(self.__wand, factor))
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickSolarizeImage(resource, factor))
     
-    @only_live
     def posterize(self, levels, dither=False):
         """Reduces number of colors in the image.
            
@@ -813,10 +811,10 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickPosterizeImage(self.__wand, levels, dither))
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickPosterizeImage(resource, levels, dither))
     
-    @only_live
     def blur(self, radius, strength=None):
         """Blur image.
            
@@ -832,11 +830,11 @@ class Image(object):
         """
         if strength == None:
             strength = radius
-            
-        guard(self.__wand,
-              lambda: cdll.MagickBlurImage(self.__wand, radius, strength))
+        
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickBlurImage(resource, radius, strength))
     
-    @only_live
     #TODO: moving center here
     def radial_blur(self, angle):
         """Performs radial blur.
@@ -848,10 +846,10 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickRadialBlurImage(self.__wand, angle))
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickRadialBlurImage(resource, angle))
     
-    @only_live
     def denoise(self):
         """Attempt to remove noise preserving edges.
         
@@ -860,10 +858,9 @@ class Image(object):
            
            This method can be chained.
         """
-           
-        guard(self.__wand, lambda: cdll.MagickEnhanceImage(self.__wand))
+        resource = self.resource
+        guard(resource, lambda: cdll.MagickEnhanceImage(resource))
     
-    @only_live
     def despeckle(self):
         """Attempt to remove speckle preserving edges.
            
@@ -872,9 +869,9 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand, lambda: cdll.MagickDespeckleImage(self.__wand))
+        resource = self.resource
+        guard(resource, lambda: cdll.MagickDespeckleImage(resource))
     
-    @only_live
     def emboss(self, radius=0, strength=None):
         """Apply edge detecting algorithm.
            
@@ -889,11 +886,11 @@ class Image(object):
         """
         if strength == None:
             strength = radius
-            
-        guard(self.__wand,
-              lambda: cdll.MagickEmbossImage(self.__wand, radius, strength))
+        
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickEmbossImage(resource, radius, strength))
     
-    @only_live
     def swirl(self, angle):
         """Distort image with swirl effect.
            
@@ -905,9 +902,9 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand, lambda: cdll.MagickSwirlImage(self.__wand, angle))
+        resource = self.resource
+        guard(resource, lambda: cdll.MagickSwirlImage(resource, angle))
     
-    @only_live
     def wave(self, amplitude, length, offset=0, axis=None):
         """Apply wave like distortion to an image.
            
@@ -933,29 +930,29 @@ class Image(object):
         transparent = color.from_string('transparent')
         
         old_color = color.Color()
-        guard(self.__wand,
-              lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickGetImageBackgroundColor(resource,
                                                          old_color.resource))
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+        guard(resource,
+              lambda: cdll.MagickSetImageBackgroundColor(resource,
                                                          transparent.resource))
         
         if axis.name == 'y':
             self.rotate(90)
         
-        guard(self.__wand,
-              lambda: cdll.MagickWaveImage(self.__wand, amplitude, length))
+        guard(resource,
+              lambda: cdll.MagickWaveImage(resource, amplitude, length))
         
         if axis.name == 'y':
             self.rotate(-90)
         
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+        guard(resource,
+              lambda: cdll.MagickSetImageBackgroundColor(resource,
                                                          old_color.resource))
         old_color.close()
         transparent.close()
     
-    @only_live
     def sketch(self, radius, angle=45, strength=None):
         """Simulate sketched image.
            
@@ -972,11 +969,11 @@ class Image(object):
         """
         if strength == None:
             strength = radius
-        guard(self.__wand,
-              lambda: cdll.MagickSketchImage(self.__wand, radius,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickSketchImage(resource, radius,
                                              strength, angle))
     
-    @only_live
     def oil_paint(self, radius):
         """Simulates oil paiting.
            
@@ -988,10 +985,10 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickOilPaintImage(self.__wand, radius))
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickOilPaintImage(resource, radius))
     
-    @only_live
     def spread(self, radius):
         """Spread pixels in random direction.
            
@@ -1003,9 +1000,9 @@ class Image(object):
         
            This method can be chained.
         """
-        guard(self.__wand, lambda: cdll.MagickSpreadImage(self.__wand, radius))
+        resource = self.resource
+        guard(resource, lambda: cdll.MagickSpreadImage(resource, radius))
     
-    @only_live
     def dft(self, magnitude=True):
         """Applies inverse discrete Fourier transform to an image.
            
@@ -1023,8 +1020,9 @@ class Image(object):
         magnitude = bool(magnitude)
         copy = self.copy()
         
-        guard(copy.wand,
-            lambda: cdll.MagickForwardFourierTransformImage(copy.wand,
+        resource = copy.resource
+        guard(resource,
+            lambda: cdll.MagickForwardFourierTransformImage(resource,
                                                            magnitude))
         
         first = blank(*self.size)
@@ -1032,7 +1030,7 @@ class Image(object):
         
         first.overlay(copy, composite=composites.copy)
         
-        guard(copy.wand, lambda: cdll.MagickNextImage(copy.wand))
+        guard(resource, lambda: cdll.MagickNextImage(resource))
         
         second.overlay(copy, composite=composites.copy)
         
@@ -1040,7 +1038,6 @@ class Image(object):
         
         return (first, second)
     
-    @only_live
     def fx(self, expression):  # @ReservedAssignment
         """Perform expression using ImageMagick mini-language.
         
@@ -1051,12 +1048,12 @@ class Image(object):
            
            This method can be chained.
         """
-        wand = guard(self.__wand,
-                     lambda: cdll.MagickFxImage(self.__wand, b(expression)))
-        cdll.DestroyMagickWand(self.__wand)
-        self.__wand = wand
+        resource = self.resource
+        resource = guard(resource,
+                     lambda: cdll.MagickFxImage(resource, b(expression)))
+        self._free()
+        self.__init__(resource)
     
-    @only_live
     def get_pixel(self, x, y):
         """Get pixel color at given coordinates.
            
@@ -1070,13 +1067,13 @@ class Image(object):
         """
         color = color_module.Color()
         
-        guard(self.__wand,
-              lambda: cdll.MagickGetImagePixelColor(self.__wand, x, y,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickGetImagePixelColor(resource, x, y,
                                                     color.resource))
         
         return color
     
-    @only_live
     def fill(self, fill, blend=1):
         """Overlay color over whole image.
            
@@ -1096,13 +1093,13 @@ class Image(object):
         
         blend = color_module.from_rgb(blend, blend, blend)
         
-        guard(self.__wand,
-              lambda: cdll.MagickColorizeImage(self.__wand, fill.resource,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickColorizeImage(resource, fill.resource,
                                                blend.resource))
         
         blend.close()
     
-    @only_live
     def set_color(self, fill):
         """Fill whole image with one color.
         
@@ -1119,18 +1116,18 @@ class Image(object):
            This method can be chained.
         """
         if hasattr(cdll, 'MagickSetImageColor'):
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageColor(self.__wand, fill.resource))
+            resource = self.resource
+            guard(resource,
+                  lambda: cdll.MagickSetImageColor(resource, fill.resource))
             
             # MagickSetImageColor doesnt copy alpha
             if fill.alpha != 1:
                 self.set_alpha(fill.alpha)
         else:
-            width, height = self.width, self.height
-            cdll.DestroyMagickWand(self.__wand)
-            self.__wand = blank(width, height, fill)._claim_wand()
+            width, height = self.size
+            self._free()
+            self.__init__(blank(width, height, fill)._claim())
     
-    @only_live
     def set_alpha(self, alpha):
         """Set alpha channel of pixels in the image.
         
@@ -1142,10 +1139,10 @@ class Image(object):
            
            This method can be chained.
         """
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageOpacity(self.__wand, alpha))
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickSetImageOpacity(resource, alpha))
     
-    @only_live
     def overlay(self, image, x=0, y=0, composite=None):
         """Overlay another image on this image.
         
@@ -1174,14 +1171,15 @@ class Image(object):
             
         value = enum_lookup(composite)
         
-        guard(self.__wand,
-              lambda: cdll.MagickCompositeImage(self.__wand, image.wand,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickCompositeImage(resource, image.resource,
                                                 value, x, y))
     
-    @only_live
     def shadow(self, radius, x=0, y=0, opacity=0.5):
-        guard(self.__wand,
-              lambda: cdll.MagickShadowImage(self.__wand, opacity,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickShadowImage(resource, opacity,
                                              radius, x, y))
     
     def splice(self, x, y, width, height):
@@ -1202,48 +1200,24 @@ class Image(object):
             
         # preserve background color
         old_color = color.Color()
-        guard(self.__wand,
-              lambda: cdll.MagickGetImageBackgroundColor(self.__wand,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickGetImageBackgroundColor(resource,
                                                          old_color.resource))
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+        guard(resource,
+              lambda: cdll.MagickSetImageBackgroundColor(resource,
                                                          background.resource))
         
-        guard(self.__wand,
-              lambda: cdll.MagickSpliceImage(self.__wand, width,
+        guard(resource,
+              lambda: cdll.MagickSpliceImage(resource, width,
                                              height, x, y))
         
         #restore background color
-        guard(self.__wand,
-              lambda: cdll.MagickSetImageBackgroundColor(self.__wand,
+        guard(resource,
+              lambda: cdll.MagickSetImageBackgroundColor(resource,
                                                          old_color.resource))
         old_color.close()
         background.close()
-    
-    @property
-    @only_live
-    def wand(self):
-        """Return underlyimg ImageMagick resource.
-           
-           Useful when you want to perform custom operations directly
-           accessing ctypes.
-           :rtype: :class:`tinyimag.api.type.MagickWand_p`
-        """
-        return self.__wand
-    
-    def _claim_wand(self):
-        """Reclaims wand from this image.
-           
-           :rtype: :class:`pystacia.api.type.MagickWand_p`
-           
-           For internal use only. Do not use directly. Reclaims wand of this
-           image from owning by this object. Object is closed afterwards.
-        """
-        wand = self.__wand
-        self.__wand = None
-        self.close()
-        
-        return wand
     
     def colorspace():  # @NoSelf
         doc = (  # @UnusedVariable
@@ -1258,16 +1232,15 @@ class Image(object):
            :rtype: :class:`pystacia.lazyenum.EnumValue`
         """)
         
-        @only_live
         def fget(self):
-            value = cdll.MagickGetImageColorspace(self.__wand)
+            value = cdll.MagickGetImageColorspace(self.resource)
             return enum_reverse_lookup(colorspaces, value)
         
-        @only_live
         def fset(self, mnemonic):
             value = enum_lookup(mnemonic)
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageColorspace(self.__wand, value))
+            resource = self.resource
+            guard(resource,
+                  lambda: cdll.MagickSetImageColorspace(resource, value))
         
         return property(**locals())
     
@@ -1286,22 +1259,20 @@ class Image(object):
            >>> img.type == types.truecolor
         """)
         
-        @only_live
         def fget(self):
-            value = cdll.MagickGetImageType(self.__wand)
+            value = cdll.MagickGetImageType(self.resource)
             return enum_reverse_lookup(types, value)
         
-        @only_live
         def fset(self, mnemonic):
             value = enum_lookup(mnemonic)
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageType(self.__wand, value))
+            resource = self.resource
+            guard(resource,
+                  lambda: cdll.MagickSetImageType(resource, value))
             
         return property(**locals())
     
     type = type()  # @ReservedAssignment
     
-    @only_live
     def convert_colorspace(self, colorspace):
         """Convert to given colorspace.
            
@@ -1317,14 +1288,14 @@ class Image(object):
            
            This method can be chained.
         """
-           
+        
         colorspace = enum_lookup(colorspace)
-        guard(self.__wand,
-              lambda: cdll.MagickTransformImageColorspace(self.__wand,
+        resource = self.resource
+        guard(resource,
+              lambda: cdll.MagickTransformImageColorspace(resource,
                                                           colorspace))
     
     @property
-    @only_live
     def width(self):
         """Get image width.
            
@@ -1332,10 +1303,9 @@ class Image(object):
            
            Return image width in pixels.
         """
-        return cdll.MagickGetImageWidth(self.__wand)
+        return cdll.MagickGetImageWidth(self.resource)
     
     @property
-    @only_live
     def height(self):
         """Get image height.
            
@@ -1343,7 +1313,7 @@ class Image(object):
            
            Return image height in pixels.
         """
-        return cdll.MagickGetImageHeight(self.__wand)
+        return cdll.MagickGetImageHeight(self.resource)
     
     @property
     def size(self):
@@ -1369,14 +1339,13 @@ class Image(object):
            Set or get depth per channel in bits. Either 8 or 16.
         """)
         
-        @only_live
         def fget(self):
-            return cdll.MagickGetImageDepth(self.__wand)
+            return cdll.MagickGetImageDepth(self.resource)
         
-        @only_live
         def fset(self, value):
-            guard(self.__wand,
-                  lambda: cdll.MagickSetImageDepth(self.__wand, value))
+            resource = self.resource
+            guard(resource,
+                  lambda: cdll.MagickSetImageDepth(resource, value))
             
         return property(**locals())
     
@@ -1416,37 +1385,6 @@ class Image(object):
         
         background.close()
 
-    @only_live
-    def close(self):
-        """Close image and free resources.
-           
-           Closes image freeing underlying :term:`ImageMagick` resources.
-           After performing this operation image cant be used anymore
-           and will throw exceptions.
-           
-           :rtype: ``type(None)``
-        """
-        if self.__wand:
-            cdll.DestroyMagickWand(self.__wand)
-            self.__wand = None
-        
-        self.__closed = True
-    
-    @property
-    def closed(self):
-        """Check if image is closed.
-           
-           Returns ``True`` if image has been closed and cannot be
-           used anymore. ``False`` otherwise.
-           
-           :rtype: ``bool``
-        """
-        return self.__closed
-    
-    def __del__(self):
-        if not self.__closed:
-            self.close()
-    
     def __repr__(self):
         template = '<{class_}(w={w},h={h},{depth}bit'\
                    ',{colorspace},{type}) object at {addr}>'
