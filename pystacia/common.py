@@ -1,5 +1,6 @@
 """Resource management utilities."""
 
+
 class Resource(object):
     
     """Base class for :term:`ImageMagick` resources.
@@ -28,7 +29,8 @@ class Resource(object):
     def _claim(self):
         """Claim resource and close this instance.
            
-           This is used to transfer management of underlying resource to another
+           This is used to transfer management of underlying
+           resource to another
            entity. This instance is closed afterwards.
            
            Not to be called directly under normal circumstances
@@ -100,6 +102,8 @@ _registry = WeakValueDictionary()
 """Dictionary keeping references to all resources."""
 
 _cleaningup = False
+
+
 def _cleanup():
     """Free all tracked intances.
        
@@ -110,9 +114,6 @@ def _cleanup():
     _cleaningup = True
     
     for ref in _registry.itervaluerefs():
-        if not ref:
-            continue
-        
         obj = ref()
         if obj:
             if not obj.closed:

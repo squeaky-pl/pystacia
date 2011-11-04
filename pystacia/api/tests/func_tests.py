@@ -15,7 +15,8 @@ class Guard(TestCase):
         ccall = lambda: cdll.MagickSetFormat(img.resource, b('lolz'))
         self.assertRaises(TinyException, lambda: guard(img.resource, ccall))
         
-        guard(img.resource, lambda: cdll.MagickSetFormat(img.resource, b('bmp')))
+        guard(img.resource, lambda: cdll.MagickSetFormat(img.resource,
+                                                         b('bmp')))
         
         img.close()
 

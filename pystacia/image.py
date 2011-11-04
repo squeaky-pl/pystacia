@@ -200,6 +200,7 @@ def blank(width, height, background=None, factory=None):
 
 from pystacia.common import Resource
 
+
 class Image(Resource):
     def _alloc(self):
         return cdll.NewMagickWand()
@@ -444,7 +445,8 @@ class Image(Resource):
         resource = self.resource
         guard(resource,
               lambda: cdll.MagickRotateImage(resource,
-                                             color.transparent.resource, angle))
+                                             color.transparent.resource,
+                                             angle))
         
     def flip(self, axis):
         """Flip an image along given axis.

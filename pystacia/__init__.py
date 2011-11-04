@@ -164,7 +164,6 @@ cdll = None
 
 import weakref
 from os.path import dirname, join, exists
-from ctypes import addressof
 
 from pystacia.compat import formattable
 from pystacia.util import TinyException
