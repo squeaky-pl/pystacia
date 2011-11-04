@@ -9,19 +9,31 @@ from unittest import TestCase
 
 
 class Enum(TestCase):
-    def test(self):
+    def name_test(self):
         composite = enum('composite')
         
         self.assertEquals(composite.name, 'composite')
         self.assertEquals(composite.atop.name, 'atop')
         
-        #test memoized
+    
+    def memoize_test(self):
+        composite = enum('composite')
+        
         self.assertEquals(enum('qwerty'), enum('qwerty'))
         
         self.assertEquals(composite.qwerty, composite.qwerty)
         self.assertEquals(id(composite.qwerty), id(composite.qwerty))
         
         self.assertNotEqual(composite.qwerty, composite.abc)
+    
+    def cast_test(self):
+        xyz = cast('abc', 'xyz')
+        
+        self.assertEquals(xyz.name, 'xyz')
+        self.assertEquals(xyz.enum.name, 'abc')
+        self.assertEquals(xyz.enum, enum('abc'))
+        self.assertEquals(cast(xyz.enum, 'xyz'), xyz.enum.xyz)
+        
 
 
-from pystacia.lazyenum import enum
+from pystacia.lazyenum import enum, cast

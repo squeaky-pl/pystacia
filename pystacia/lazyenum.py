@@ -9,7 +9,7 @@
 class Enum(object):
     def __init__(self, name):
         self.name = name
-        
+    
     def __getattr__(self, name):
         return enum_value(self, name)
     
@@ -38,6 +38,13 @@ def enum(name):
 @memoized
 def enum_value(enum, name):
     return EnumValue(enum, name)
+
+
+def cast(enum_, name):
+    if isinstance(enum_, basestring):
+        enum_ = enum(enum_)
+        
+    return enum_value(enum_, name)
 
 
 from pystacia.compat import formattable
