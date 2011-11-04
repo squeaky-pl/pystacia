@@ -328,6 +328,14 @@ class Color(Resource):
         return formattable(template).format(*self.get_rgba(), **kw)
 
 
+class Factory(object):
+    
+    """Convenience color factory for SVG names"""
+    
+    def __getattr__(self, string):
+        return from_string(string)
+
+
 def saturate(v):
     if v == 0:
         return 0

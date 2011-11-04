@@ -70,6 +70,13 @@ class SaturateTest(TestCase):
         self.assertIsInstance(color.saturate(0.0), int)
         self.assertEquals(color.saturate(0.0), 0)
         self.assertIsInstance(color.saturate(1.0), int)
+        
+class FactoryTest(TestCase):
+    def test(self):
+        colors = color.Factory()
+        
+        self.assertEquals(colors.red, color.from_string('red'))
+        self.assertEquals(colors.gray, color.from_string('gray'))
 
 
 from pystacia import color

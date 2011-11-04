@@ -155,6 +155,9 @@ from pystacia import color
 from pystacia.image import Image
 
 
+colors = color.Factory()
+"""Convenience factory for SVG names"""
+
 __lena_path = join(dirname(__file__), 'lena.png')
 
 if not exists(__lena_path) or 'png' not in magick.get_delegates():
@@ -165,7 +168,7 @@ __all__ = [
     'read', 'read_blob', 'read_raw',
     'blank', 'checkerboard',
     'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
-    'color',
+    'color', 'colors',
     'Image']
 
 if globals().get('lena'):
