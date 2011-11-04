@@ -1221,7 +1221,7 @@ class Image(Resource):
         old_color.close()
         background.close()
     
-    def colorspace():  # @NoSelf
+    def __colorspace():  # @NoSelf
         doc = (  # @UnusedVariable
         """Return or set colorspace associated with image.
            
@@ -1246,9 +1246,9 @@ class Image(Resource):
         
         return property(**locals())
     
-    colorspace = colorspace()
+    colorspace = __colorspace()
     
-    def type():  # @ReservedAssignment @NoSelf
+    def __type():  # @ReservedAssignment @NoSelf
         doc = (  # @UnusedVariable
         """Set or get image type.
            
@@ -1273,7 +1273,7 @@ class Image(Resource):
             
         return property(**locals())
     
-    type = type()  # @ReservedAssignment
+    type = __type()  # @ReservedAssignment
     
     def convert_colorspace(self, colorspace):
         """Convert to given colorspace.
@@ -1332,7 +1332,7 @@ class Image(Resource):
         """
         return (self.width, self.height)
     
-    def depth():  # @NoSelf
+    def __depth():  # @NoSelf
         doc = (  # @UnusedVariable
         """Set or get image depth per channel.
         
@@ -1351,7 +1351,7 @@ class Image(Resource):
             
         return property(**locals())
     
-    depth = depth()
+    depth = __depth()
     
     def show(self):
         """Display an image in GUI.
