@@ -119,90 +119,90 @@ class Color(Resource):
         """
         return cdll.ClonePixelWand(self.resource)
         
-    def red():  # @NoSelf
-        d =\
+    def __red():  # @NoSelf
+        doc = (  # @UnusedVariable
         """Set or get red channel information.
                   
            The value ought to be a float between 0 and 1.
                   
            :rtype: ``float`` or ``int``
-        """
+        """)
         
-        def g(self):
+        def fget(self):
             return saturate(cdll.PixelGetRed(self.resource))
         
-        def s(self, value):
+        def fset(self, value):
             cdll.PixelSetRed(self.resource, value)
         
-        return dict(fget=g, fset=s, doc=d)
+        return property(**locals())
         
-    red = property(**red())
+    red = __red()
     
     r = red
     """Convenience synonym for :attr:`red`."""
     
-    def green():  # @NoSelf
-        d =\
+    def __green():  # @NoSelf
+        doc = (  # @UnusedVariable
         """Set or get green channel information.
                   
            The value ought to be a float between 0 and 1.
                   
            :rtype: ``float`` or ``int``
-        """
+        """)
         
-        def g(self):
+        def fget(self):
             return saturate(cdll.PixelGetGreen(self.resource))
         
-        def s(self, value):
+        def fset(self, value):
             cdll.PixelSetGreen(self.resource, value)
         
-        return dict(fget=g, fset=s, doc=d)
+        return property(**locals())
     
-    green = property(**green())
+    green = __green()
     
     g = green
     """Convenience synonym for :attr:`green`."""
     
-    def blue():  # @NoSelf
-        d =\
+    def __blue():  # @NoSelf
+        doc = (  # @UnusedVariable
         """Set or get blue channel information.
                   
            The value ought to be a float between 0 and 1.
                   
            :rtype: ``float`` or ``int``
-        """
+        """)
         
-        def g(self):
+        def fget(self):
             return saturate(cdll.PixelGetBlue(self.resource))
         
-        def s(self, value):
+        def fset(self, value):
             cdll.PixelSetBlue(self.resource, value)
         
-        return dict(fget=g, fset=s, doc=d)
+        return property(**locals())
     
-    blue = property(**blue())
+    blue = __blue()
 
     b = blue
     """Convenience synonym for :attr:`blue`."""
     
-    def alpha():  # @NoSelf
-        d =\
+    def __alpha():  # @NoSelf
+        doc = (  # @UnusedVariable
         """Set or get alpha channel information.
                   
            The value ought to be a float between 0 and 1.
                   
            :rtype: ``float`` or ``int``
-        """
+        """)
         
-        def g(self):
+        def fget(self):
             return saturate(cdll.PixelGetAlpha(self.resource))
         
-        def s(self, value):
+        def fset(self, value):
             cdll.PixelSetAlpha(self.resource, value)
         
-        return dict(fget=g, fset=s, doc=d)
+        return property(**locals())
     
-    alpha = property(**alpha())
+    alpha = __alpha()
     
     a = alpha
     """Convenience synonym for :attr:`alpha`."""
@@ -222,7 +222,7 @@ class Color(Resource):
            
            :rtype: tuple
         """
-        hue, saturation, lightness = c_double(), c_double(), c_double()
+        hue, saturation, lightness = tuple(x() for x in (c_double,) * 3)
         
         cdll.PixelGetHSL(self.resource, hue, saturation, lightness)
         
@@ -297,6 +297,7 @@ class Color(Resource):
         """
         return self.alpha == 1
     
+    @property
     def transparent(self):
         """Check if color is fully transparent.
            

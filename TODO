@@ -2,6 +2,7 @@
 TODO
 ====
 
+- move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
 - use __ in front of property generators like __colorspace()
 - move common under utils [0.1.1]
 - subprocess loading of libraries optionall with pyro [0.1.1]
@@ -16,8 +17,6 @@ TODO
   that affect runtime
 - move version and author from setup.py into __init__.py [0.1.1]
 - more methods for image [0.1.1]
-- those semaphores thing possibly should keep week references to any magick resource and clear it on exit [0.1.1]
-- move enum lookups based on versions to api.enum module (version param is None) [0.1.1]
 - implement colors __getattr__ style called Factory in tinyimg.color [0.1.1]
 - more generators from pseudoformats: plasma, checkerboard, gradients etc [0.1.1]
 - group tests according to their set up and tear down strategies
@@ -42,7 +41,6 @@ TODO
 - move all sample images into tinyimg.image.sample [0.1.1]
 - move all generic images (checkerboard, blank) into tinyimg.image.generic [0.1.1]
 - info method (returns all the crucial magick informations along with loaded libraries and paths)
-- extract base class TinyBase with closed, close, with protocol and constructor (under util)? [0.1.1]
 - implement other color factories [0.2]
 - add env variable to force immediate init of imagick [0.2]
 - implement better show tool detecting (eog on linux e.g) and fallback to webbrowser [0.2]
