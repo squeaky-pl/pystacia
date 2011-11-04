@@ -8,3 +8,4 @@ CHANGES
 - Extracted common Resource interface
 - reevaluated Python to C-API bridge
 - lazy loading of ImageMagick
+- deprecated pystacia.util.PystaciaException in favour of pystacia.util.PystaciaException

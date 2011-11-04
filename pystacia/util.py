@@ -177,9 +177,12 @@ class library_path_transaction:
         return self
 
 
-class TinyException(Exception):
+class PystaciaException(Exception):
     pass
 
+
+# deprecated
+TinyException = PystaciaException
 
 import platform
 from sys import version_info

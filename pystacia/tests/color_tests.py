@@ -8,13 +8,25 @@
 from pystacia.compat import TestCase
 
 
-class CloseTest(TestCase):
-    def test(self):
-        white = color.from_string('white')
-        self.assertEquals(white.closed, False)
-        white.close()
-        self.assertRaises(TinyException, lambda: white.close())
-        self.assertEquals(white.closed, True)
+class ColorTest(TestCase):
+    def test_int24(self):
+        black = color.from_int24(0)
+        self.assertEquals(black, color.from_rgb(0, 0, 0))
+        white = color.from_int24(0xffffff)
+        self.assertEquals(white, color.from_rgb(1, 1, 1))
+        green = color.from_int24(0x00ff00)
+        self.assertEquals(green, color.from_rgb(0, 1, 0))
+        
+    def test_cast(self):
+        self.assertEquals(color.cast(10), color.from_int24(10))
+        self.assertEquals(color.cast('violet'), color.from_string('violet'))
+        self.assertEquals(color.cast((0, 1, 0)), color.from_rgb(0, 1, 0))
+        self.assertEquals(color.cast((0, 1, 1, 0.5)),
+                          color.from_rgba(0, 1, 1, 0.5))
+        self.assertRaisesRegexp(PystaciaException, 'Cannot cast',
+                                lambda: color.cast((0, 1)))
+        self.assertRaisesRegexp(PystaciaException, 'Cannot cast',
+                                lambda: color.cast((0, 1, 2, 3, 4)))
 
 
 class GetStringTest(TestCase):
@@ -80,4 +92,4 @@ class FactoryTest(TestCase):
 
 
 from pystacia import color
-from pystacia.util import TinyException
+from pystacia.util import PystaciaException

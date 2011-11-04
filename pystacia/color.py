@@ -4,6 +4,8 @@
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
+from __future__ import division
+
 
 """Various color-related functions and objects."""
 
@@ -53,7 +55,7 @@ def from_rgb(r, g, b, factory=None):
        :param factory: alternative :class:`Color` subclass to use
        :rtype: :class:`Color` or factory instance
        
-       Red, gren and blue components should be numbers between 0 and 1
+       Red, green and blue components should be numbers between 0 and 1
        inclusive. Resulting color is opaque (alpha channel equal to 1).
        When factory is specified this type is used instead of
        default :class:`Color` type.
@@ -68,6 +70,26 @@ def from_rgb(r, g, b, factory=None):
     color.set_rgb(r, g, b)
     
     return color
+
+
+def from_rgb8(r, g, b, factory=None):
+    """Create opaque :class:`Color` from red, green and blue components.
+       
+       :param r: red component
+       :param g: green component
+       :param b: blue component
+       :param factory: alternative :class:`Color` subclass to use
+       :rtype: :class:`Color` or factory instance
+       
+       Red, green and blue components should be integral numbers between 0
+       and 255 inclusive. Resulting color is opaque (alpha channel equal to 1).
+       When factory is specified this type is used instead of
+       default :class:`Color` type.
+       
+       >>> from_rgb8(255, 0, 255)
+       <Color(r=1,g=0,b=1,a=1) object at 0x103266200L>
+    """
+    return from_rgb(r / 255, g / 255, b / 255, factory)
 
 
 def from_rgba(r, g, b, a, factory=None):
@@ -90,6 +112,22 @@ def from_rgba(r, g, b, a, factory=None):
     color.alpha = a
     
     return color
+
+
+def from_int24(value, factory=None):
+    """Create :class:`Color` from 24 bit integer representation.
+       
+       :param value: RGB triplet in 24 bits with high 8 bits being red
+       :param factory: alternative :class:`Color` subclass to use
+       :rtype: :class:`Color` or factory instance
+       
+       Interprets 
+       
+       >>> from_int24(0xffffff)
+       <Color(r=1,g=1,b=1,a=1) object at 0x103222600L>
+    """
+    return from_rgb8(value & 0xff0000, value & 0xff00, value & 0xff, factory)
+
 
 from pystacia.common import Resource
 
@@ -345,12 +383,28 @@ def saturate(v):
         return round(v, 4)
 
 
+def cast(value):
+    if isinstance(value, integer_types):
+        return from_int24(value)
+    elif isinstance(value, basestring):
+        return from_string(value)
+    elif value.__len__:
+        if len(value) == 3:
+            return from_rgb(*value)
+        elif len(value) == 4:
+            return from_rgba(*value)
+    
+    template = formattable('Cannot cast {0} to Color instance.')
+    raise PystaciaException(template.format(value))
+
+
 from ctypes import addressof, c_double
 
-from six import b
+from six import b, integer_types
 
 from pystacia import cdll
 from pystacia.api.func import guard
 from pystacia.compat import formattable
+from pystacia.util import PystaciaException
 
 transparent = from_string('transparent')
