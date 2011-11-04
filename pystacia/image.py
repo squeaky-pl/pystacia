@@ -1414,7 +1414,9 @@ color_module = color
 from pystacia.util import TinyException
 from pystacia.api.func import guard
 from pystacia import magick
-from pystacia import cdll, enum_lookup, enum_reverse_lookup
+from pystacia import cdll
+from pystacia.api.enum import (lookup as enum_lookup,
+                               reverse_lookup as enum_reverse_lookup)
 from pystacia.lazyenum import enum
 
 if not 'fftw' in magick.get_delegates():

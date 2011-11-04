@@ -28,12 +28,17 @@ class memoized(object):
         self.__doc__ = f.__doc__
         self.__name__ = f.__name__
         
-    def __call__(self, *args):
+    def __call__(self, *args, **kw):
+        if kw:
+            key = args, frozenset(kw.items())
+        else:
+            key = args
+            
         try:
-            return self.cache[args]
+            return self.cache[key]
         except KeyError:
-            value = self.f(*args)
-            self.cache[args] = value
+            value = self.f(*args, **kw)
+            self.cache[key] = value
             return value
 
 

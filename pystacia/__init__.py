@@ -132,34 +132,6 @@ def netscape(factory=None):
     return image.read_special('netscape:', factory=factory)
 
 
-import pystacia.api.enum as enum_api
-
-
-def enum_lookup(mnemonic, throw=True):
-    """Translate lazyenum's mnemonic into its numeral value.
-        
-       :param mnemonic: A :class:`pystacia.lazyenum.EnumValue` instance to be
-         looked up
-        
-       :param throw: Raises an exception if mnemonic cant be mapped when
-         ``True`` otherwise returns ``None``
-    """
-    value = enum_api.lookup(mnemonic, magick.get_version())
-    if throw and value == None:
-        template = "Enumeration '{enum}' cant map mnemonic '{mnemonic}'"
-        template = formattable(template)
-        enum = mnemonic.enum.name
-        mnemonic = mnemonic.name
-        raise TinyException(template.format(enum=enum, mnemonic=mnemonic))
-
-    return value
-
-
-def enum_reverse_lookup(enum, value):
-    """Translate numeral value into its lazyenum mnemonic"""
-    return enum_api.reverse_lookup(enum, value, magick.get_version())
-
-
 cdll = None
 
 import weakref

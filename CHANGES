@@ -6,3 +6,5 @@ CHANGES
 ===
 
 - Extracted common Resource interface
+- reevaluated Python to C-API bridge
+- lazy loading of ImageMagick
