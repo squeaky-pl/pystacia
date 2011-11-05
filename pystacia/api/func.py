@@ -316,7 +316,7 @@ def guard(wand, callable, msg=None):  # @ReservedAssignment
             exc_type = ExceptionType()
             description = cdll.MagickGetException(wand, byref(exc_type))
             msg = cast(description, c_char_p).value
-        exc = TinyException(msg)
+        exc = PystaciaException(msg)
         
         if description:
             cdll.MagickRelinquishMemory(description)
@@ -329,7 +329,7 @@ def guard(wand, callable, msg=None):  # @ReservedAssignment
 from ctypes import (c_char_p, c_void_p, POINTER, byref,
                     cast, c_size_t, c_double, c_uint)
 
-from pystacia.util import TinyException
+from pystacia.util import PystaciaException
 from pystacia.compat import c_ssize_t
 from pystacia import cdll
 from pystacia.api.type import (MagickWand_p, PixelWand_p, MagickBoolean,

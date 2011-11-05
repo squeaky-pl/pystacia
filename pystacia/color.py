@@ -386,7 +386,7 @@ def saturate(v):
 def cast(value):
     if isinstance(value, integer_types):
         return from_int24(value)
-    elif isinstance(value, basestring):
+    elif isinstance(value, string_types):
         return from_string(value)
     elif value.__len__:
         if len(value) == 3:
@@ -400,7 +400,7 @@ def cast(value):
 
 from ctypes import addressof, c_double
 
-from six import b, integer_types
+from six import b, integer_types, string_types
 
 from pystacia import cdll
 from pystacia.api.func import guard

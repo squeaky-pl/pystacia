@@ -76,13 +76,13 @@ class Common(TestCase):
         
         mock2.close()
         
-        self.assertRaisesRegexp(TinyException, 'closed',
+        self.assertRaisesRegexp(PystaciaException, 'closed',
                                 lambda: mock2.resource)
         
         resource = mock1._claim()
         self.assertEquals(resource, 42)
         
-        self.assertRaisesRegexp(TinyException, 'closed',
+        self.assertRaisesRegexp(PystaciaException, 'closed',
                                 lambda:  mock1.resource)
         
         self.assertEquals(len(common._registry), 0)
@@ -102,7 +102,7 @@ class Common(TestCase):
         
         mock.close()
         
-        self.assertRaisesRegexp(TinyException, 'closed',
+        self.assertRaisesRegexp(PystaciaException, 'closed',
                                 lambda: mock.copy())
         
         self.assertEquals(copy2.resource, copy1.resource)
@@ -113,12 +113,12 @@ class Common(TestCase):
         self.assertEquals(len(common._registry), 0)
     
     def test_badmock(self):
-        self.assertRaisesRegexp(TinyException, '_alloc',
+        self.assertRaisesRegexp(PystaciaException, '_alloc',
                                 lambda: BadMock())
         
         mock = BadMock(11)
         
-        self.assertRaisesRegexp(TinyException, '_clone',
+        self.assertRaisesRegexp(PystaciaException, '_clone',
                                 lambda: mock.copy())
         
 from pystacia.common import Resource
@@ -154,4 +154,4 @@ class BadMock(Mock):
         pass
 
 from pystacia import common
-from pystacia.util import TinyException
+from pystacia.util import PystaciaException

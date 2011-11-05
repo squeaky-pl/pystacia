@@ -534,7 +534,7 @@ def lookup(mnemonic, version=None, throw=True):
         template = formattable(template)
         enum = mnemonic.enum.name
         mnemonic = mnemonic.name
-        raise TinyException(template.format(enum=enum, mnemonic=mnemonic))
+        raise PystaciaException(template.format(enum=enum, mnemonic=mnemonic))
     
     return value
 
@@ -555,5 +555,5 @@ def reverse_lookup(enum, value, version=None):
     return mnemonic
 
 from pystacia.magick import get_version
-from pystacia.util import TinyException
+from pystacia.util import PystaciaException
 from pystacia.compat import formattable

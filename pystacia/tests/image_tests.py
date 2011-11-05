@@ -17,7 +17,7 @@ class Close(TestCase):
         img.close()
         self.assertEquals(img.closed, True)
         
-        self.assertRaises(TinyException, lambda: img.close())
+        self.assertRaises(PystaciaException, lambda: img.close())
 
 
 class ReadAndGetRaw(TestCase):
@@ -127,7 +127,7 @@ class Rescale(TestCase):
         img.rescale(factor=(1, .5))
         
         self.assertEquals(img.size, (128, 64))
-        self.assertRaises(TinyException, lambda: img.rescale())
+        self.assertRaises(PystaciaException, lambda: img.rescale())
         
         img.close()
 
@@ -652,7 +652,7 @@ from tempfile import mkstemp
 
 from six import b, BytesIO
 
-from pystacia.util import TinyException
+from pystacia.util import PystaciaException
 from pystacia.image import (read, read_raw, read_blob, types,
                            colorspaces, blank, axes)
 from pystacia import color

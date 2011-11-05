@@ -25,7 +25,7 @@ def init():
         from ctypes.util import find_library  # @Reimport
         resolved_path = find_library('MagickWand')
     if not resolved_path:
-        raise TinyException('Could not find or load magickWand')
+        raise PystaciaException('Could not find or load magickWand')
     
     from ctypes import CDLL
     factory = CDLL
@@ -138,7 +138,7 @@ import weakref
 from os.path import dirname, join, exists
 
 from pystacia.compat import formattable
-from pystacia.util import TinyException
+from pystacia.util import PystaciaException
 from pystacia import common
 
 init()

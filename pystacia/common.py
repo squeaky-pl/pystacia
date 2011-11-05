@@ -21,7 +21,7 @@ class Resource(object):
         
         if self.__resource == None:
             tmpl = formattable('{0} _alloc method returned None')
-            raise TinyException(tmpl.format(self.__class__.__name__))
+            raise PystaciaException(tmpl.format(self.__class__.__name__))
         
         if not id(self) in _registry:
             _registry[id(self)] = self
@@ -59,7 +59,7 @@ class Resource(object):
         
         if resource == None:
             tmpl = formattable('{0} _clone method returned None')
-            raise TinyException(tmpl.format(self.__class__.__name__))
+            raise PystaciaException(tmpl.format(self.__class__.__name__))
         
         return self.__class__(resource)
     
@@ -82,7 +82,7 @@ class Resource(object):
         """
         if self.__resource == None:
             tmpl = formattable('{0} already closed.')
-            raise TinyException(tmpl.format(self.__class__.__name__))
+            raise PystaciaException(tmpl.format(self.__class__.__name__))
         
         return self.__resource
     
@@ -94,7 +94,7 @@ class Resource(object):
 
 from weakref import WeakValueDictionary
 
-from pystacia.util import TinyException
+from pystacia.util import PystaciaException
 from pystacia.compat import formattable
 
 

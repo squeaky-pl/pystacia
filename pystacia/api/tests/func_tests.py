@@ -13,7 +13,7 @@ class Guard(TestCase):
         img = lena()
         
         ccall = lambda: cdll.MagickSetFormat(img.resource, b('lolz'))
-        self.assertRaises(TinyException, lambda: guard(img.resource, ccall))
+        self.assertRaises(PystaciaException, lambda: guard(img.resource, ccall))
         
         guard(img.resource, lambda: cdll.MagickSetFormat(img.resource,
                                                          b('bmp')))
@@ -25,4 +25,4 @@ from six import b
 
 from pystacia import lena, cdll
 from pystacia.api.func import guard
-from pystacia.util import TinyException
+from pystacia.util import PystaciaException

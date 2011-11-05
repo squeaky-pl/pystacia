@@ -41,10 +41,12 @@ def enum_value(enum, name):
 
 
 def cast(enum_, name):
-    if isinstance(enum_, basestring):
+    if isinstance(enum_, string_types):
         enum_ = enum(enum_)
         
     return enum_value(enum_, name)
 
+
+from six import string_types
 
 from pystacia.compat import formattable

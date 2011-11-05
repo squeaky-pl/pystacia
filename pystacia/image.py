@@ -389,7 +389,7 @@ class Image(Resource):
         if not width and not height:
             if not factor:
                 template = 'Either width, height or factor must be provided'
-                raise TinyException(template)
+                raise PystaciaException(template)
             
             width, height = self.size
             if not hasattr(factor, '__getitem__'):
@@ -464,7 +464,7 @@ class Image(Resource):
         elif axis.name == 'y':
             guard(resource, lambda: cdll.MagickFlopImage(resource))
         else:
-            raise TinyException('axis must be X or Y')
+            raise PystaciaException('axis must be X or Y')
     
     def transpose(self):
         """Transpose an image.
@@ -1411,7 +1411,7 @@ from six import b
 from pystacia.compat import formattable
 from pystacia import color
 color_module = color
-from pystacia.util import TinyException
+from pystacia.util import PystaciaException
 from pystacia.api.func import guard
 from pystacia import magick
 from pystacia import cdll

@@ -181,8 +181,8 @@ class PystaciaException(Exception):
     pass
 
 
-# deprecated
 TinyException = PystaciaException
+
 
 import platform
 from sys import version_info
@@ -190,3 +190,9 @@ from os import environ, pathsep
 from os.path import join, exists, dirname
 
 from pystacia.compat import formattable, dist
+
+
+from zope.deprecation import deprecated
+template = 'Please use tinyimg.util.PystaciaException instead'
+deprecated('TinyException', template)
+deprecated('TinyException', 'Please use pystacia.utils.PystaciaException instead.')

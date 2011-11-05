@@ -167,7 +167,7 @@ class pystacia_install(install):
             
         return result
 
-install_requires = ['six', 'decorator']
+install_requires = ['six', 'decorator', 'zope.deprecation']
 
 try:
     format

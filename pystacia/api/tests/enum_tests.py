@@ -14,7 +14,7 @@ class Enum(TestCase):
         
         self.assertEquals(lookup(composite.non_existant, (6, 6), throw=False),
                           None)
-        self.assertRaisesRegexp(TinyException, 'cannot map mnemonic',
+        self.assertRaisesRegexp(PystaciaException, 'cannot map mnemonic',
                                 lambda: lookup(composite.non_existant, (6, 0)))
         self.assertEquals(lookup(composite.undefined, (6, 6, 2, 10)), 0)
         self.assertEquals(lookup(composite.undefined, (2, 6), throw=False),
@@ -25,4 +25,4 @@ class Enum(TestCase):
 
 from pystacia.api.enum import lookup
 from pystacia.lazyenum import enum
-from pystacia.util import TinyException
+from pystacia.util import PystaciaException
