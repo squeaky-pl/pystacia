@@ -195,4 +195,3 @@ from pystacia.compat import formattable, dist
 from zope.deprecation import deprecated
 template = 'Please use tinyimg.util.PystaciaException instead'
 deprecated('TinyException', template)
-deprecated('TinyException', 'Please use pystacia.utils.PystaciaException instead.')

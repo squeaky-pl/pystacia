@@ -27,27 +27,14 @@ class ColorTest(TestCase):
                                 lambda: color.cast((0, 1)))
         self.assertRaisesRegexp(PystaciaException, 'Cannot cast',
                                 lambda: color.cast((0, 1, 2, 3, 4)))
-
-
-class GetStringTest(TestCase):
-    def test(self):
+    
+    def test_get_string(self):
         blue = color.from_string('blue')
         self.assertEquals(blue.get_string(), 'rgb(0, 0, 255)')
         blue.alpha = 0
         self.assertEquals(blue.get_string(), 'rgba(0, 0, 255, 0)')
-
-
-class Copy(TestCase):
-    def test(self):
-        blue = color.from_string('white')
-        blue_copy = blue.copy()
-        
-        self.assertNotEqual(blue.resource, blue_copy.resource)
-        self.assertEquals(blue, blue_copy)
-
-
-class RgbColor(TestCase):
-    def test(self):
+    
+    def test_rgb(self):
         rgb = (1, 0, 0)
         red = color.from_rgb(*rgb)
         
@@ -66,25 +53,20 @@ class RgbColor(TestCase):
         red.set_rgba(0, 1, 1, 0)
         
         self.assertEquals(red.get_rgba(), (0, 1, 1, 0))
-
-
-class String(TestCase):
-    def test(self):
+    
+    def test_from_string(self):
         white = color.from_string('white')
         self.assertEquals(white.get_rgba(), (1, 1, 1, 1))
         red = color.from_string('red')
         self.assertEquals(red.get_rgba(), (1, 0, 0, 1))
-
-
-class SaturateTest(TestCase):
-    def test(self):
+    
+    def test_saturate(self):
         self.assertEquals(color.saturate(0.5), 0.5)
         self.assertIsInstance(color.saturate(0.0), int)
         self.assertEquals(color.saturate(0.0), 0)
         self.assertIsInstance(color.saturate(1.0), int)
-        
-class FactoryTest(TestCase):
-    def test(self):
+    
+    def test_factory(self):
         colors = color.Factory()
         
         self.assertEquals(colors.red, color.from_string('red'))
