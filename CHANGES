@@ -5,6 +5,11 @@ CHANGES
 0.2
 ===
 
+Goal
+----
+
+Reduce boilerplate code and simplify architecture
+
 Additions
 ---------
 tinyimg.colors factory for well known colors
