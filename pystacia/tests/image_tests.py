@@ -50,9 +50,16 @@ class WithFactory(TestCase):
         img.close()
 
 
+import pystacia
+if hasattr(pystacia, 'lena'):
+    sample = pystacia.lena
+else:
+    sample = pystacia.magick_logo
+
+
 class WithSample(TestCase):
     def setUp(self):
-        self.img = lena()
+        self.img = sample()
         
     def tearDown(self):
         self.img.close()
@@ -498,4 +505,3 @@ from pystacia.image import (read, read_raw, read_blob, types,
                            colorspaces, blank, axes)
 from pystacia import color
 from random import randint
-from pystacia import lena
