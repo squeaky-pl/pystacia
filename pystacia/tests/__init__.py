@@ -16,7 +16,7 @@ if hasattr(pystacia, 'lena'):
 else:
     sample = pystacia.magick_logo
     sample.size = (640, 480)
-    sample.type = types.pallette
+    sample.type = types.palette
 
 
 from pystacia.compat import TestCase, skipIf
