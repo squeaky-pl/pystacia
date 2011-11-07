@@ -481,7 +481,7 @@ class ThreadedTest(TestCase):
             imgs = [blank(30, 30) for _ in range(randint(1, 10))]
             [i.close() for i in imgs]
             
-        threads = [Thread(target=thread) for _ in range(0)]
+        threads = [Thread(target=thread) for _ in range(1)]
         [t.start() for t in threads]
         [t.join() for t in threads]
             
