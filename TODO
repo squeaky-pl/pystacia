@@ -3,13 +3,12 @@ TODO
 ====
 
 - move common under utils [0.1.1]
+- sandboxing with process and
 - subprocess loading of libraries optionall with pyro [0.1.1]
 - instead of relying on renames and get_platfom we could use our own solution [0.1.1]
   if it can be loaded and test for OS and 64bit in setyp.py
-- introduce reasonable exception hierarchy name
 - research auto_level, auto_gamma
 - document splice, implement implode
-- dont rely in tests solely on lena [0.1.1]
 - test if we can get delegates before we initialize ImageMagick (lena deletion) [0.1.1]
 - weakrefing cached lena should be only used in tests [0.1.1]
 - setting factories globally [0.1.1] if you want to use a subclass

@@ -246,7 +246,7 @@ class WithSample(TestCase):
         self.assertEquals(pix.get_rgba(), rgba)
         img.gamma(2)
         pix = img.get_pixel(128, 128)
-        self.assertGreater(pix.get_rgba(), rgba)
+        self.assertGreaterEqual(pix.get_rgba(), rgba)
     
     # only test if it doesnt blow up
     def test_swirl(self):
@@ -478,8 +478,8 @@ class WithSample(TestCase):
 class ThreadedTest(TestCase):
     def test(self):
         def thread():
-            print 'threadsss'
-            imgs = [magick_logo() for _ in range(randint(1, 10))]
+            print('threadsss')
+            imgs = [blank(512, 512) for _ in range(randint(1, 10))]
             [i.close() for i in imgs]
             
         threads = [Thread(target=thread) for _ in range(10)]
