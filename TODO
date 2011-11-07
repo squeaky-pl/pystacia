@@ -17,9 +17,7 @@ TODO
   that affect runtime
 - move version and author from setup.py into __init__.py [0.1.1]
 - more methods for image [0.1.1]
-- implement colors __getattr__ style called Factory in tinyimg.color [0.1.1]
 - more generators from pseudoformats: plasma, checkerboard, gradients etc [0.1.1]
-- group tests according to their set up and tear down strategies
 - Image.write should obey format when explicitely set, ImageMagick always does it
   from filename, if format is set call get_blob() instead and save to fs in py
   into one class with many test methods [0.1.1]
