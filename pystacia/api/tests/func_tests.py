@@ -10,7 +10,7 @@ from pystacia.compat import TestCase
 
 class Guard(TestCase):
     def test(self):
-        img = lena()
+        img = sample()
         
         ccall = lambda: cdll.MagickSetFormat(img.resource, b('lolz'))
         self.assertRaises(PystaciaException, lambda: guard(img.resource, ccall))
@@ -23,6 +23,7 @@ class Guard(TestCase):
 
 from six import b
 
-from pystacia import lena, cdll
+from pystacia import cdll
+from pystacia.tests import sample
 from pystacia.api.func import guard
 from pystacia.util import PystaciaException

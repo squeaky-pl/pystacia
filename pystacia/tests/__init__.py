@@ -5,10 +5,22 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
+import pystacia
+from pystacia.image import types
+
+
+if hasattr(pystacia, 'lena'):
+    sample = pystacia.lena
+    sample.size = (512, 512)
+    sample.type = types.truecolor
+else:
+    sample = pystacia.magick_logo
+    sample.size = (640, 480)
+    sample.type = types.pallette
+
+
 from pystacia.compat import TestCase, skipIf
 
-
-import pystacia
 
 class MagickLogo(TestCase):
     def test(self):
@@ -33,4 +45,4 @@ class Lena(TestCase):
         img.close()
 
 
-from pystacia.image import types, colorspaces
+from pystacia.image import colorspaces

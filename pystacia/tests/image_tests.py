@@ -50,13 +50,6 @@ class WithFactory(TestCase):
         img.close()
 
 
-import pystacia
-if hasattr(pystacia, 'lena'):
-    sample = pystacia.lena
-else:
-    sample = pystacia.magick_logo
-
-
 class WithSample(TestCase):
     def setUp(self):
         self.img = sample()
@@ -72,8 +65,8 @@ class WithSample(TestCase):
         for i in (bmp, BytesIO(bmp)):
             img = read_blob(i)
             
-            self.assertEquals(img.size, (512, 512))
-            self.assertEquals(img.type, types.truecolor)
+            self.assertEquals(img.size, sample.size)
+            self.assertEquals(img.type, sample.type)
             self.assertEquals(img.colorspace, colorspaces.rgb)
             self.assertEquals(img.depth, 8)
     
@@ -87,8 +80,8 @@ class WithSample(TestCase):
         
         img = read(tmpname)
         
-        self.assertSequenceEqual(img.size, (512, 512))
-        self.assertEquals(img.type, types.truecolor)
+        self.assertSequenceEqual(img.size, sample.size)
+        self.assertEquals(img.type, sample.type)
         self.assertEquals(img.colorspace, colorspaces.rgb)
         self.assertEquals(img.depth, 8)
             
@@ -101,9 +94,9 @@ class WithSample(TestCase):
         img.write(tmpname)
         
         img = read(tmpname)
-        self.assertEquals(img.size, (512, 512))
+        self.assertEquals(img.size, sample.size)
         self.assertEquals(img.colorspace, colorspaces.rgb)
-        self.assertEquals(img.type, types.truecolor)
+        self.assertEquals(img.type, sample.type)
         img.close()
     
     def test_rescale(self):
@@ -233,7 +226,8 @@ class WithSample(TestCase):
         img = self.img
         
         img.wave(10, 100)
-        self.assertEquals(img.size, (512, 512 + 20))
+        new_size = (sample.size[0], sample.size[1] + 20)
+        self.assertEquals(img.size, new_size)
         self.assertEquals(img.get_pixel(25, 10).alpha, 0)
         self.assertEquals(img.get_pixel(128, 128).alpha, 1)
     
@@ -291,7 +285,7 @@ class WithSample(TestCase):
         img.brightness(0)
         self.assertEquals(img.get_pixel(*coords), before)
         img.brightness(0.5)
-        self.assertGreater(img.get_pixel(*coords).get_rgba(),
+        self.assertGreaterEqual(img.get_pixel(*coords).get_rgba(),
                            before.get_rgba())
     
     def test_brightness_darken(self):
@@ -300,7 +294,7 @@ class WithSample(TestCase):
         coords = (40, 40)
         before = img.get_pixel(*coords)
         img.brightness(-0.5)
-        self.assertLess(img.get_pixel(*coords).get_rgba(),
+        self.assertLessEqual(img.get_pixel(*coords).get_rgba(),
                         before.get_rgba())
         img.brightness(-1)
         self.assertEquals(img.get_pixel(*coords), color.from_string('black'))
@@ -365,7 +359,7 @@ class WithSample(TestCase):
         img.radial_blur(5)
         self.assertEquals(img.get_pixel(*coords), before)
     
-    def test_skiew(self):
+    def test_skew(self):
         img = self.img
         
         width, height = img.size
@@ -465,14 +459,14 @@ class WithSample(TestCase):
     def test_type(self):
         img = self.img
         
-        self.assertEquals(img.type, types.truecolor)
+        self.assertEquals(img.type, sample.type)
         img.type = types.bilevel
         self.assertEquals(img.type, types.bilevel)
     
     def test_size(self):
         img = self.img
         
-        self.assertSequenceEqual(img.size, (512, 512))
+        self.assertSequenceEqual(img.size, sample.size)
         self.assertSequenceEqual((img.width, img.height), img.size)
     
     def test_depth(self):
@@ -504,4 +498,5 @@ from pystacia.util import PystaciaException
 from pystacia.image import (read, read_raw, read_blob, types,
                            colorspaces, blank, axes)
 from pystacia import color
+from pystacia.tests import sample
 from random import randint
