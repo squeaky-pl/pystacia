@@ -149,31 +149,33 @@ def get_dll(init=True):
                 get_dll.__dll = CDLL(path)
                 get_dll.__dll.__inited = False
         
-        dll = get_dll.__dll
+    dll = get_dll.__dll
 
-        if init and not dll.__inited:
-            with __lock:
-                if not dll.__inited:
-                    call(None, 'genesis', __init=False)
-                    
-                    def shutdown():
-                        _cleanup()
-                        call(None, 'terminus')
-                        get_bridge().shutdown()
-                    
-                    atexit.register(shutdown)
+    if init and not dll.__inited:
+        def shutdown():
+            _cleanup()
+            simple_call(None, 'terminus')
+            get_bridge().shutdown()
+            
+        with __lock:
+            if not dll.__inited:
+                simple_call(None, 'genesis', __init=False)
                 
-                # should be delayed on initialization
-                # warn if unsupported
-                # from pystacia import magick
-                # from pystacia.api import min_version
-                #version = magick.get_version()
-                #if version < min_version:
-                #    from warnings import warn
-                #    template = formattable('Unsupported version of MagickWand {0}')
-                #    warn(template.format(version))
-        
-        return dll
+                print('registered'); from sys import stdout; stdout.flush()
+                atexit.register(shutdown)
+            
+                dll.__inited = True
+            # should be delayed on initialization
+            # warn if unsupported
+            # from pystacia import magick
+            # from pystacia.api import min_version
+            #version = magick.get_version()
+            #if version < min_version:
+            #    from warnings import warn
+            #    template = formattable('Unsupported version of MagickWand {0}')
+            #    warn(template.format(version))
+    
+    return dll
 
 
 from os import environ, pathsep
@@ -185,6 +187,7 @@ import atexit
 from pystacia.util import get_osname, PystaciaException
 from pystacia.compat import formattable
 from pystacia.common import _cleanup
+from pystacia.api.func import get_bridge, simple_call, call
 
 
 

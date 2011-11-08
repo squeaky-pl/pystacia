@@ -3,10 +3,11 @@ from __future__ import with_statement
 """A many to one thread bridge"""
 
 class Bridge(object):
-    def __init__(self, worker):
+    def __init__(self, worker, daemon=False):
         self.__requests = queue.Queue()
         self.__responses = queue.Queue()
         self.__worker = worker
+        self.__daemon = daemon
         self.__lock = Lock()
         self.__loop = None
         
@@ -21,6 +22,8 @@ class Bridge(object):
             with self.__lock:
                 if not self.__loop:
                     self.__loop = Loop(self, self.__worker)
+                    if self.__daemon:
+                        self.__loop.daemon = True
                     self.__loop.start()
         
         this = get_ident()
@@ -78,12 +81,12 @@ class CallBridge(Bridge):
     
     """A bridge that calls functions"""
     
-    def __init__(self):
+    def __init__(self, daemon=False):
         def worker(request):
             callable_, args, kw = request
             return callable_(*args, **kw)
             
-        super(CallBridge, self).__init__(worker)
+        super(CallBridge, self).__init__(worker, daemon)
         
     def call(self, callable_, *args, **kw):
         return self.request((callable_, args, kw))

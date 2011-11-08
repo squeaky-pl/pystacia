@@ -325,22 +325,61 @@ def guard(wand, callable, msg=None):  # @ReservedAssignment
         
     return result
 
+
+data = {
+    None:    {
+        'format': lambda name: 'MagickWand' + name.title(),
+        'symbols': {
+            'genesis': ((), None),
+            'terminus': ((), None)
+        }
+    }
+}
+
 from pystacia.util import memoized
 
 
 @memoized
 def get_bridge():
-    bridge = CallBridge()
+    bridge = CallBridge(True)
     
     return bridge
 
-def call(obj, method, *args, **kw):
+
+def call(callable_, *args, **kw):
+    bridge = get_bridge()
+    
+    return bridge.call(callable_, *args, **kw)
+
+
+def simple_call(obj, method, *args, **kw):
+    call(lambda: c_call(obj, method, *args, **kw))
+
+
+def c_call(obj, method, *args, **kw):
+    if hasattr(obj.__class__, '_api_type'):
+        api_type = obj.__class__._api_type
+    else:
+        api_type = obj
+    
+    type_data = data[api_type]
+    c_method = type_data['format'](method)
+    c_method = getattr(get_dll(False), c_method)
+    
+    if c_method.argtypes == None:
+        method_data = type_data['symbols'][method]
+        c_method.argtypes = method_data[0]
+        c_method.restype = method_data[1]
+    
     try:
         init = kw.pop('__init')
     except KeyError:
         init = True
-        
-    get_bridge().call(lambda: getattr(get_dll(init), method)(*args))
+    
+    if init:
+        get_dll()
+    
+    return c_method(*args)
 
 
 from ctypes import (c_char_p, c_void_p, POINTER, byref,
