@@ -360,6 +360,14 @@ data = {
             'clone': ((MagickWand_p,),),
             'destroy': ((MagickWand_p,),)
         }
+    },
+        
+    'image': {
+        'format': lambda name: 'Magick' + name.title() + 'Image',
+        'arg': MagickWand_p,
+        'symbols': {
+            'read': ((c_char_p,), MagickBoolean)
+        } 
     }
 }
 
@@ -380,7 +388,7 @@ def call(callable_, *args, **kw):
 
 
 def simple_call(obj, method, *args, **kw):
-    call(lambda: c_call(obj, method, *args, **kw))
+    return call(lambda: c_call(obj, method, *args, **kw))
 
 
 def c_call(obj, method, *args, **kw):
@@ -423,17 +431,22 @@ def c_call(obj, method, *args, **kw):
     logger.debug(msg.format(c_method.name))
     
     if isinstance(obj, Resource):
-        args = (obj.resource,) + args
+        args = (obj,) + args
     
     args_ = []
     for arg in args:
+        if isinstance(arg, Resource):
+            arg = arg.resource
+        elif isinstance(arg, string_types):
+            arg = b(arg)
+            
         args_.append(arg)
     
     return c_method(*args_)
 
+from six import string_types, b
 
 from pystacia.util import PystaciaException
-
 from pystacia.api import get_dll 
 from pystacia.bridge import CallBridge
 from pystacia.common import Resource

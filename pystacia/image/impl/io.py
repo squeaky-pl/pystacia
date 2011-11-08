@@ -5,15 +5,12 @@ def read_special(spec, width=None, height=None, factory=None):
         
     image = factory()
     
-    resource = image.resource
     if width and height:
-        guard(resource, lambda:
-              cdll.MagickSetSize(resource, width, height))
+        c_call('magick', 'set_size', image, width, height)
     
-    spec = b(spec)
-    
-    guard(resource, lambda: cdll.MagickReadImage(resource, spec))
+    c_call(image, 'read', spec)
     
     return image
 
 from pystacia.image import Image
+from pystacia.api.func import c_call

@@ -180,13 +180,16 @@ def blank(width, height, background=None, factory=None):
     if not background:
         background = 'transparent'
     
-    return read_special('xc:' + str(background), width, height, factory)
+    return call(io.read_special, 'xc:' + str(background),
+                width, height, factory)
 
 from pystacia.common import Resource
 
 from pystacia.image.impl import alloc, clone, free
 
 class Image(Resource):
+    _api_type = 'image'
+    
     _alloc = alloc
     
     _clone = clone
@@ -1390,8 +1393,10 @@ from math import atan, degrees
 
 from six import b
 
+from pystacia.image.impl import io
 from pystacia.compat import formattable
 from pystacia import color
+from pystacia.api.func import call
 color_module = color
 from pystacia.util import PystaciaException
 from pystacia.api.func import guard
