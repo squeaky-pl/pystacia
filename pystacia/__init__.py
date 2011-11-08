@@ -8,6 +8,11 @@
 """pystacia is a raster graphics library utilizing ImageMagick."""
 
 
+from logging import getLogger
+
+logger = getLogger('pystacia')
+
+
 __lena = None
 
 

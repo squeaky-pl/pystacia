@@ -361,12 +361,17 @@ def c_call(obj, method, *args, **kw):
         api_type = obj.__class__._api_type
     else:
         api_type = obj
+        
+    msg = 'Calling method {0}.{1}'
+    logger.debug(msg.format(api_type, method))
     
     type_data = data[api_type]
     c_method = type_data['format'](method)
     c_method = getattr(get_dll(False), c_method)
     
     if c_method.argtypes == None:
+        msg = 'Annoting {0}'
+        logger.debug(msg.format(c_method.name))
         method_data = type_data['symbols'][method]
         c_method.argtypes = method_data[0]
         c_method.restype = method_data[1]
@@ -378,6 +383,9 @@ def c_call(obj, method, *args, **kw):
     
     if init:
         get_dll()
+    
+    msg = 'Calling {0}'
+    logger.debug(msg.format(c_method.name))
     
     return c_method(*args)
 
@@ -392,3 +400,4 @@ from pystacia.api.type import (MagickWand_p, PixelWand_p, MagickBoolean,
                            ExceptionType, enum)
 from pystacia.api import get_dll 
 from pystacia.bridge import CallBridge
+from pystacia import logger

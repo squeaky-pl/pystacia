@@ -146,6 +146,8 @@ def get_dll(init=True):
                 if not path:
                     raise PystaciaException('Could not find or load MagickWand')
                 
+                msg = formattable('Loading MagickWand from {0}')
+                logger.debug(msg.format(path))
                 get_dll.__dll = CDLL(path)
                 get_dll.__dll.__inited = False
         
@@ -153,15 +155,19 @@ def get_dll(init=True):
 
     if init and not dll.__inited:
         def shutdown():
+            logger.debug('Cleaning up traced instances')
             _cleanup()
+            
             simple_call(None, 'terminus')
+            
+            logger.debug('Shutting down the bridge')
             get_bridge().shutdown()
             
         with __lock:
             if not dll.__inited:
                 simple_call(None, 'genesis', __init=False)
                 
-                print('registered'); from sys import stdout; stdout.flush()
+                logger.debug('Registering atexit handler')
                 atexit.register(shutdown)
             
                 dll.__inited = True
@@ -184,6 +190,7 @@ from ctypes import CDLL
 import ctypes.util
 import atexit
 
+from pystacia import logger
 from pystacia.util import get_osname, PystaciaException
 from pystacia.compat import formattable
 from pystacia.common import _cleanup
