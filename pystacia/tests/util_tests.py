@@ -5,7 +5,7 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from unittest import TestCase
+from pystacia.tests import TestCase
 
 
 class Util(TestCase):
