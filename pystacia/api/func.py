@@ -402,12 +402,12 @@ def c_call(obj, method, *args, **kw):
     logger.debug(msg.format(api_type, method))
     
     type_data = data[api_type]
-    c_method = type_data['format'](method)
-    c_method = getattr(get_dll(False), c_method)
+    method_name = type_data['format'](method)
+    c_method = getattr(get_dll(False), method_name)
     
     if c_method.argtypes == None:
         msg = 'Annoting {0}'
-        logger.debug(msg.format(c_method.name))
+        logger.debug(msg.format(method_name))
         method_data = type_data['symbols'][method]
         
         argtypes = method_data[0]
@@ -429,7 +429,7 @@ def c_call(obj, method, *args, **kw):
         get_dll()
     
     msg = 'Calling {0}'
-    logger.debug(msg.format(c_method.name))
+    logger.debug(msg.format(method_name))
     
     if isinstance(obj, Resource):
         args = (obj,) + args
