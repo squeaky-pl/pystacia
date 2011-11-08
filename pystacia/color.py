@@ -406,5 +406,3 @@ from pystacia import cdll
 from pystacia.api.func import guard
 from pystacia.compat import formattable
 from pystacia.util import PystaciaException
-
-transparent = from_string('transparent')

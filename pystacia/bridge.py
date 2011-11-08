@@ -89,12 +89,6 @@ class CallBridge(Bridge):
         return self.request((callable_, args, kw))
 
 
-def get_bridge():
-    if not hasattr(get_bridge, '__bridge'):
-        get_bridge.__bridge = CallBridge()
-    
-    return get_bridge.__bridge
-
 import six
 queue = six.moves.queue
 from time import sleep

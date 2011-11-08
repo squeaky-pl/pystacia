@@ -325,6 +325,23 @@ def guard(wand, callable, msg=None):  # @ReservedAssignment
         
     return result
 
+from pystacia.util import memoized
+
+
+@memoized
+def get_bridge():
+    bridge = CallBridge()
+    
+    return bridge
+
+def call(obj, method, *args, **kw):
+    try:
+        init = kw.pop('__init')
+    except KeyError:
+        init = True
+        
+    get_bridge().call(lambda: getattr(get_dll(init), method)(*args))
+
 
 from ctypes import (c_char_p, c_void_p, POINTER, byref,
                     cast, c_size_t, c_double, c_uint)
@@ -334,3 +351,5 @@ from pystacia.compat import c_ssize_t
 from pystacia import cdll
 from pystacia.api.type import (MagickWand_p, PixelWand_p, MagickBoolean,
                            ExceptionType, enum)
+from pystacia.api import get_dll 
+from pystacia.bridge import CallBridge

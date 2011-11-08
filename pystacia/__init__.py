@@ -8,49 +8,6 @@
 """pystacia is a raster graphics library utilizing ImageMagick."""
 
 
-def init():
-    """Find ImageMagick DLL and initialize it.
-       
-       Searches available paths with :func:`pystacia.util.find_library`
-       and then fallbacks to standard :func:`ctypes.util.find_liblrary`.
-       Loads the DLL into memory, initializes it and warns if it has
-       unsupported API and ABI versions.
-    """
-    from pystacia.util import find_library
-    from pystacia.api import name, abis
-    # first let's look in some places that may override system-wide paths
-    resolved_path = find_library(name, abis)
-    # still nothing? let ctypes figure it out
-    if not resolved_path:
-        from ctypes.util import find_library  # @Reimport
-        resolved_path = find_library('MagickWand')
-    if not resolved_path:
-        raise PystaciaException('Could not find or load magickWand')
-    
-    from ctypes import CDLL
-    factory = CDLL
-    global cdll
-    cdll = factory(resolved_path)
-    from pystacia.api.func import annote
-    annote(cdll)
-    cdll.MagickWandGenesis()
-    
-    def shutdown():
-        common._cleanup()
-        cdll.MagickWandTerminus()
-    
-    import atexit
-    atexit.register(shutdown)
-    
-    # warn if unsupported
-    from pystacia import magick
-    from pystacia.api import min_version
-    version = magick.get_version()
-    if version < min_version:
-        from warnings import warn
-        template = formattable('Unsupported version of MagickWand {0}')
-        warn(template.format(version))
-
 __lena = None
 
 
@@ -131,7 +88,6 @@ def netscape(factory=None):
     """
     return image.read_special('netscape:', factory=factory)
 
-
 cdll = None
 
 import weakref
@@ -141,18 +97,16 @@ from pystacia.compat import formattable
 from pystacia.util import PystaciaException
 from pystacia import common
 
-init()
-
 from pystacia import magick
-from pystacia import image
+#from pystacia import image
 
 #convenience imports
-from pystacia.image import read, read_blob, read_raw
-from pystacia.image import blank, checkerboard
-from pystacia.image import (
-    composites, types, filters, colorspaces, compressions, axes)
+#from pystacia.image import read, read_blob, read_raw
+#from pystacia.image import blank, checkerboard
+#from pystacia.image import (
+#    composites, types, filters, colorspaces, compressions, axes)
 from pystacia import color
-from pystacia.image import Image
+#from pystacia.image import Image
 
 
 colors = color.Factory()
@@ -160,16 +114,16 @@ colors = color.Factory()
 
 __lena_path = join(dirname(__file__), 'lena.png')
 
-if not exists(__lena_path) or 'png' not in magick.get_delegates():
-    del lena
+#if not exists(__lena_path) or 'png' not in magick.get_delegates():
+#    del lena
 
-__all__ = [
-    'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
-    'read', 'read_blob', 'read_raw',
-    'blank', 'checkerboard',
-    'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
-    'color', 'colors',
-    'Image']
+#__all__ = [
+#    'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
+#    'read', 'read_blob', 'read_raw',
+#    'blank', 'checkerboard',
+#    'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
+#    'color', 'colors',
+#    'Image']
 
-if globals().get('lena'):
-    __all__.append('lena')
+#if globals().get('lena'):
+#    __all__.append('lena')
