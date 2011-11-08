@@ -366,7 +366,8 @@ data = {
         'format': lambda name: 'Magick' + name.title() + 'Image',
         'arg': MagickWand_p,
         'symbols': {
-            'read': ((c_char_p,), MagickBoolean)
+            'read': ((c_char_p,), MagickBoolean),
+            'write': ((c_char_p,), MagickBoolean)
         } 
     }
 }

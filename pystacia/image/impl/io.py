@@ -12,5 +12,31 @@ def read_special(spec, width=None, height=None, factory=None):
     
     return image
 
+def write(image, filename, format=None,  # @ReservedAssignment
+              compression=None, quality=None):
+#    if format:
+#        format = b(format.upper())  # @ReservedAssignment
+#        old_format = cdll.MagickGetImageFormat(resource)
+#        template = formattable('Format "{0}" unsupported')
+#        guard(resource,
+#              lambda: cdll.MagickSetImageFormat(resource, format),
+#              template.format(format))
+#        
+#    if quality != None:
+#        old_quality = cdll.MagickGetImageCompressionQuality(resource)
+#        guard(resource,
+#              lambda: cdll.MagickSetImageCompressionQuality(resource,
+#                                                            quality))
+    
+    c_call(image, 'write', filename)
+    
+#    if quality != None:
+#        guard(resource,
+#              lambda: cdll.MagickSetImageCompressionQuality(resource,
+#                                                            old_quality))
+#    if format:
+#        guard(resource,
+#              lambda: cdll.MagickSetImageFormat(resource, old_format))
+
 from pystacia.image import Image
 from pystacia.api.func import c_call

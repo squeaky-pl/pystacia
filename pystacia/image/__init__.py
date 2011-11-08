@@ -223,32 +223,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        
-        if format:
-            format = b(format.upper())  # @ReservedAssignment
-            old_format = cdll.MagickGetImageFormat(resource)
-            template = formattable('Format "{0}" unsupported')
-            guard(resource,
-                  lambda: cdll.MagickSetImageFormat(resource, format),
-                  template.format(format))
-            
-        if quality != None:
-            old_quality = cdll.MagickGetImageCompressionQuality(resource)
-            guard(resource,
-                  lambda: cdll.MagickSetImageCompressionQuality(resource,
-                                                                quality))
-        
-        guard(resource,
-              lambda: cdll.MagickWriteImage(resource, b(filename)))
-        
-        if quality != None:
-            guard(resource,
-                  lambda: cdll.MagickSetImageCompressionQuality(resource,
-                                                                old_quality))
-        if format:
-            guard(resource,
-                  lambda: cdll.MagickSetImageFormat(resource, old_format))
+        call(io.write, self, filename, format, compression, quality)
     
     def get_blob(self, format, compression=None,  # @ReservedAssignment
                  quality=None, factory=None):
@@ -1349,9 +1324,9 @@ class Image(Resource):
            file since it will be typically deleted when image gets closed.
         """
         extension = 'bmp'
-        delegates = magick.get_delegates()
-        if 'png' in delegates:
-            extension = 'png'
+        #delegates = magick.get_delegates()
+        #if 'png' in delegates:
+        #    extension = 'png'
             
         tmpname = mkstemp()[1] + '.' + extension
         self.write(tmpname)
