@@ -136,6 +136,7 @@ def get_dll(init=True):
        unsupported API and ABI versions.
     """
     if not hasattr(get_dll, '__dll'):
+        logger.debug('Critical section - load MagickWand')
         with __lock:
             if not hasattr(get_dll, '__dll'):
                 # first let's look in some places that may override system-wide paths
@@ -162,7 +163,8 @@ def get_dll(init=True):
             
             logger.debug('Shutting down the bridge')
             get_bridge().shutdown()
-            
+        
+        logger.debug('Critical section - init MagickWand')
         with __lock:
             if not dll.__inited:
                 simple_call(None, 'genesis', __init=False)

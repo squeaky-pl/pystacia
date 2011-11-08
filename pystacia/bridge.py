@@ -26,17 +26,21 @@ class Bridge(object):
                         self.__loop.daemon = True
                     self.__loop.start()
         
-        this = get_ident()
-        self.__requests.put((this, request))
-        while 1:
-            responses = self.__responses
-            data = responses.get()
-            ident, response = data
-            if ident != this:
-                responses.put(data)
-                sleep(0)  # yield control to another thread
-            else:
-                break
+        # prevent from deadlocking on nested calls
+        if self.__loop == current_thread():
+            response = self.__worker(request)
+        else:
+            this = get_ident()
+            self.__requests.put((this, request))
+            while 1:
+                responses = self.__responses
+                data = responses.get()
+                ident, response = data
+                if ident != this:
+                    responses.put(data)
+                    sleep(0)  # yield control to another thread
+                else:
+                    break
         
         return response
     
@@ -95,7 +99,7 @@ class CallBridge(Bridge):
 import six
 queue = six.moves.queue
 from time import sleep
-from threading import Lock
+from threading import Lock, current_thread
 try:
     from thread import get_ident
 except ImportError:

@@ -147,23 +147,7 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
     return image
 
 
-def read_special(spec, width=None, height=None, factory=None):
-    """Read special :term:`ImageMagick` image resource"""
-    if not factory:
-        factory = Image
-        
-    image = factory()
-    
-    resource = image.resource
-    if width and height:
-        guard(resource, lambda:
-              cdll.MagickSetSize(resource, width, height))
-    
-    spec = b(spec)
-    
-    guard(resource, lambda: cdll.MagickReadImage(resource, spec))
-    
-    return image
+
 
 
 def checkerboard(width, height, factory=None):
@@ -200,16 +184,14 @@ def blank(width, height, background=None, factory=None):
 
 from pystacia.common import Resource
 
+from pystacia.image.impl import alloc, clone, free
 
 class Image(Resource):
-    def _alloc(self):
-        return cdll.NewMagickWand()
+    _alloc = alloc
     
-    def _clone(self):
-        return cdll.CloneMagickWand(self.resource)
+    _clone = clone
     
-    def _free(self):
-        cdll.DestroyMagickWand(self.resource)
+    _free = free
     
     def write(self, filename, format=None,  # @ReservedAssignment
               compression=None, quality=None):
@@ -1414,13 +1396,12 @@ color_module = color
 from pystacia.util import PystaciaException
 from pystacia.api.func import guard
 from pystacia import magick
-from pystacia import cdll
 from pystacia.api.enum import (lookup as enum_lookup,
                                reverse_lookup as enum_reverse_lookup)
 from pystacia.lazyenum import enum
 
-if not 'fftw' in magick.get_delegates():
-    del Image.dft
+#if not 'fftw' in magick.get_delegates():
+#    del Image.dft
 
 try:
     disable_chains = environ['PYSTACIA_NO_CHAINS']

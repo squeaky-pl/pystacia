@@ -326,12 +326,39 @@ def guard(wand, callable, msg=None):  # @ReservedAssignment
     return result
 
 
+from pystacia.api.type import (MagickWand_p, PixelWand_p, MagickBoolean,
+                           ExceptionType, enum)
+from ctypes import (c_char_p, c_void_p, POINTER, byref,
+                    cast, c_size_t, c_double, c_uint)
+from pystacia.compat import c_ssize_t
+
+def magick_format(name):
+    return 'Magick' + ''.join(x.title() for x in name.split('_'))
+
 data = {
-    None:    {
+    None: {
         'format': lambda name: 'MagickWand' + name.title(),
         'symbols': {
-            'genesis': ((), None),
-            'terminus': ((), None)
+            'genesis': ((),),
+            'terminus': ((),)
+        }
+    },
+    
+    'magick': {
+        'format': magick_format,
+        'arg': MagickWand_p,
+        'symbols': {
+            'set_size': ((c_size_t, c_size_t), MagickBoolean)
+        }
+    },
+    
+    'wand': {
+        'format': lambda name: name.title() + 'MagickWand',
+        'result': MagickWand_p,
+        'symbols': {
+            'new': ((),),
+            'clone': ((MagickWand_p,),),
+            'destroy': ((MagickWand_p,),)
         }
     }
 }
@@ -373,8 +400,16 @@ def c_call(obj, method, *args, **kw):
         msg = 'Annoting {0}'
         logger.debug(msg.format(c_method.name))
         method_data = type_data['symbols'][method]
-        c_method.argtypes = method_data[0]
-        c_method.restype = method_data[1]
+        
+        argtypes = method_data[0]
+        if 'arg' in type_data:
+            argtypes = (type_data['arg'],) + argtypes
+        c_method.argtypes = argtypes
+        
+        restype = type_data.get('result')
+        if len(method_data) == 2:
+            restype = method_data[1]
+        c_method.restype = restype
     
     try:
         init = kw.pop('__init')
@@ -387,17 +422,19 @@ def c_call(obj, method, *args, **kw):
     msg = 'Calling {0}'
     logger.debug(msg.format(c_method.name))
     
-    return c_method(*args)
+    if isinstance(obj, Resource):
+        args = (obj.resource,) + args
+    
+    args_ = []
+    for arg in args:
+        args_.append(arg)
+    
+    return c_method(*args_)
 
-
-from ctypes import (c_char_p, c_void_p, POINTER, byref,
-                    cast, c_size_t, c_double, c_uint)
 
 from pystacia.util import PystaciaException
-from pystacia.compat import c_ssize_t
-from pystacia import cdll
-from pystacia.api.type import (MagickWand_p, PixelWand_p, MagickBoolean,
-                           ExceptionType, enum)
+
 from pystacia.api import get_dll 
 from pystacia.bridge import CallBridge
+from pystacia.common import Resource
 from pystacia import logger

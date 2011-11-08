@@ -8,9 +8,15 @@
 """pystacia is a raster graphics library utilizing ImageMagick."""
 
 
-from logging import getLogger
+from os import environ
+from logging import getLogger, basicConfig
 
 logger = getLogger('pystacia')
+
+level = environ.get('PYSTACIA_LOG')
+if level:
+    level = int(level)
+    basicConfig(level=level)
 
 
 __lena = None
