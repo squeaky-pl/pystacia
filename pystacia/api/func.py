@@ -344,8 +344,9 @@ data = {
         'arg': MagickWand_p,
         'symbols': {
             'set_size': ((c_size_t, c_size_t), MagickBoolean),
+            'get_format': ((), c_char_p),
             'set_format': ((c_char_p,), MagickBoolean),
-            'set_depth': ((c_size_t,), MagickBoolean)
+            'set_depth': ((c_size_t,), MagickBoolean),
         }
     },
         

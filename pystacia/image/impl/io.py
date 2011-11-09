@@ -84,24 +84,21 @@ def write(image, filename, format=None,  # @ReservedAssignment
 
 def get_blob(image, format, compression=None,  # @ReservedAssignment
              quality=None):
-    with state(compression=compression, compression_quality=quality):
-        # ensure we always get bytes
-        # format = b(format.upper())  # @ReservedAssignment
-        # old_format = cdll.MagickGetFormat(resource)
-        # template = formattable('Format "{0}" unsupported')
-        # guard(resource,
-        #     lambda: cdll.MagickSetFormat(resource, format),
-        #      template.format(format))
+    with state(image, compression=compression, compression_quality=quality):
+        format = format.upper()  # @ReservedAssignment
+        old_format = c_call('magick', 'get_format', image)
+        c_call('magick', 'set_format', image, format)
+
         size = c_size_t()
         result = c_call(image, ('get', 'blob'), size)
         blob = string_at(result, size.value)
         
         c_call('magick_', 'relinquish_memory', result)
         
+        c_call('magick', 'set_format', image, old_format)
+        
         return blob
-        #guard(resource,
-        #      lambda: cdll.MagickSetFormat(resource, old_format))
-        #
+        
 
 from ctypes import c_size_t, string_at
 
