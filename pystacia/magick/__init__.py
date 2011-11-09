@@ -26,22 +26,7 @@ def get_version():
 
 
 @memoized
-def get_options():
-    def get_options_real():
-        options = {}
-        
-        from ctypes import c_size_t
-        from six import b
-        from pystacia.compat import native_str
-        
-        size = c_size_t()
-        keys = cdll.MagickQueryConfigureOptions(b('*'), size)
-        for key in (keys[i] for i in range(size.value)):
-            options[native_str(key)] =\
-            native_str(cdll.MagickQueryConfigureOption(key))
-            
-        return options
-    
+def get_options():    
     def get_options_hack(path):
         options = {}
         
@@ -53,13 +38,13 @@ def get_options():
             
         return options
     
-    dll_path = dirname(cdll._name)
+    dll_path = dirname(get_dll(False)._name)
     config_path = join(dll_path, 'configure.xml')
     
     if exists(config_path):
         return get_options_hack(config_path)
     else:
-        return get_options_real()
+        return call(impl.get_options)
 
 
 def get_version_str():
@@ -86,4 +71,6 @@ try:
 except ImportError:
     from xml.etree.ElementTree import ElementTree  # @Reimport
 
-from pystacia import cdll
+from pystacia.api import get_dll
+from pystacia.api.func import call
+from pystacia.magick import impl

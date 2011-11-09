@@ -335,12 +335,24 @@ from pystacia.compat import c_ssize_t
 def magick_format(name):
     return 'Magick' + ''.join(x.title() for x in name.split('_'))
 
+def image_format(name):
+    if isinstance(name, string_types):
+        verb = name
+        noun = ''
+    elif hasattr(name, '__getitem__') and len(name) == 2:
+        verb = name[0]
+        noun = name[1]
+    else:
+        raise PystaciaException('Incorrect name format')
+    
+    return ('Magick' + ''.join(x.title() for x in verb.split('_')) + 'Image' +
+            ''.join(x.title() for x in noun.split('_')))
 data = {
     None: {
         'format': lambda name: 'MagickWand' + name.title(),
         'symbols': {
             'genesis': ((),),
-            'terminus': ((),)
+            'terminus': ((),),
         }
     },
     
@@ -348,7 +360,16 @@ data = {
         'format': magick_format,
         'arg': MagickWand_p,
         'symbols': {
-            'set_size': ((c_size_t, c_size_t), MagickBoolean)
+            'set_size': ((c_size_t, c_size_t), MagickBoolean),
+        }
+    },
+        
+    'magick_': {
+        'format': magick_format,
+        'symbols': {
+            'query_configure_options': ((c_char_p, POINTER(c_size_t)),
+                                        POINTER(c_char_p)),
+            'query_configure_option': ((c_char_p,), c_char_p)
         }
     },
     
@@ -363,11 +384,15 @@ data = {
     },
         
     'image': {
-        'format': lambda name: 'Magick' + name.title() + 'Image',
+        'format': image_format,
         'arg': MagickWand_p,
         'symbols': {
             'read': ((c_char_p,), MagickBoolean),
-            'write': ((c_char_p,), MagickBoolean)
+            'write': ((c_char_p,), MagickBoolean),
+            ('set', 'format'): ((c_char_p,), MagickBoolean),
+            ('get', 'format'): ((), c_char_p),
+            ('set', 'compression_quality'): ((c_size_t,), MagickBoolean),
+            ('get', 'compression_quality'): ((), c_size_t)
         } 
     }
 }
@@ -443,11 +468,17 @@ def c_call(obj, method, *args, **kw):
             
         args_.append(arg)
     
-    return c_method(*args_)
+    result = c_method(*args_)
+    
+    if c_method.restype == c_char_p:
+        result = native_str(result)
+    
+    return result
 
 from six import string_types, b
 
 from pystacia.util import PystaciaException
+from pystacia.compat import native_str
 from pystacia.api import get_dll 
 from pystacia.bridge import CallBridge
 from pystacia.common import Resource

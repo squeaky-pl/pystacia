@@ -1,3 +1,6 @@
+from __future__ import with_statement
+
+
 def read_special(spec, width=None, height=None, factory=None):
     """Read special :term:`ImageMagick` image resource"""
     if not factory:
@@ -12,8 +15,10 @@ def read_special(spec, width=None, height=None, factory=None):
     
     return image
 
+
 def write(image, filename, format=None,  # @ReservedAssignment
               compression=None, quality=None):
+    with state(image, format=format, compression_quality=quality):
 #    if format:
 #        format = b(format.upper())  # @ReservedAssignment
 #        old_format = cdll.MagickGetImageFormat(resource)
@@ -27,9 +32,7 @@ def write(image, filename, format=None,  # @ReservedAssignment
 #        guard(resource,
 #              lambda: cdll.MagickSetImageCompressionQuality(resource,
 #                                                            quality))
-    
-    c_call(image, 'write', filename)
-    
+        c_call(image, 'write', filename)
 #    if quality != None:
 #        guard(resource,
 #              lambda: cdll.MagickSetImageCompressionQuality(resource,
@@ -38,5 +41,6 @@ def write(image, filename, format=None,  # @ReservedAssignment
 #        guard(resource,
 #              lambda: cdll.MagickSetImageFormat(resource, old_format))
 
+from pystacia.common import state
 from pystacia.image import Image
 from pystacia.api.func import c_call

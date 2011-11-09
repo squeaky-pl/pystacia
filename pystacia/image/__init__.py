@@ -184,8 +184,8 @@ def blank(width, height, background=None, factory=None):
                 width, height, factory)
 
 from pystacia.common import Resource
-
 from pystacia.image.impl import alloc, clone, free
+
 
 class Image(Resource):
     _api_type = 'image'
@@ -195,6 +195,12 @@ class Image(Resource):
     _clone = clone
     
     _free = free
+    
+    def _set_state(self, key, value):
+        simple_call(self, ('set', key), value)
+        
+    def _get_state(self, key):
+        return simple_call(self, ('get', key))
     
     def write(self, filename, format=None,  # @ReservedAssignment
               compression=None, quality=None):
@@ -1371,7 +1377,7 @@ from six import b
 from pystacia.image.impl import io
 from pystacia.compat import formattable
 from pystacia import color
-from pystacia.api.func import call
+from pystacia.api.func import call, simple_call
 color_module = color
 from pystacia.util import PystaciaException
 from pystacia.api.func import guard
