@@ -130,32 +130,17 @@ def from_int24(value, factory=None):
 
 
 from pystacia.common import Resource
-
+from pystacia.color.impl import alloc, free, clone
 
 class Color(Resource):
     
     """Object representing color information."""
     
-    def _alloc(self):
-        """Allocate C struct.
-        
-           Not to be called directly.
-        """
-        return cdll.NewPixelWand()
+    _alloc = alloc
     
-    def _free(self):
-        """Free C struct.
+    _free = free
         
-           Not to be called directly.
-        """
-        cdll.DestroyPixelWand(self.resource)
-        
-    def _clone(self):
-        """Clone C struct.
-           
-           Not to be called directly.
-        """
-        return cdll.ClonePixelWand(self.resource)
+    _clone = clone
         
     def __red():  # @NoSelf
         doc = (  # @UnusedVariable

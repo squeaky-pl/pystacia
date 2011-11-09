@@ -118,17 +118,17 @@ from pystacia import magick
 #from pystacia.image import blank, checkerboard
 #from pystacia.image import (
 #    composites, types, filters, colorspaces, compressions, axes)
-from pystacia import color
+#from pystacia import color
 #from pystacia.image import Image
 
 
-colors = color.Factory()
+#colors = color.Factory()
 """Convenience factory for SVG names"""
 
-__lena_path = join(dirname(__file__), 'lena.png')
+#__lena_path = join(dirname(__file__), 'lena.png')
 
-if not exists(__lena_path) or 'png' not in magick.get_delegates():
-    del lena
+#if not exists(__lena_path) or 'png' not in magick.get_delegates():
+del lena
 
 #__all__ = [
 #    'magick_logo', 'rose', 'wizard', 'granite', 'netscape',

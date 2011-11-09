@@ -5,7 +5,6 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-
 def annote(cdll):
     cdll.MagickGetVersion.restype = c_char_p
     cdll.MagickGetVersion.argtypes = (POINTER(c_size_t),)
@@ -369,6 +368,16 @@ data = {
             'new': ((),),
             'clone': ((MagickWand_p,),),
             'destroy': ((MagickWand_p,),)
+        }
+    },
+        
+    'pwand': {
+        'format': lambda name: name.title() + 'PixelWand',
+        'result': PixelWand_p,
+        'symbols': {
+            'new': ((),),
+            'clone': ((PixelWand_p,),),
+            'destroy': ((PixelWand_p,),)
         }
     },
         
