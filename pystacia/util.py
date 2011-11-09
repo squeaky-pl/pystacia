@@ -4,6 +4,8 @@
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
+from __future__ import with_statement
+
 
 from decorator import decorator
 
@@ -15,32 +17,42 @@ def chainable(f, obj, *args, **kw):
     return obj
 
 
-# adapted from http://wiki.python.org/moin/PythonDecoratorLibrary#Memoize
-class memoized(object):
+@decorator
+def memoized(f, *args, **kw):
     """Decorator that caches a function's return value each time it is called.
     
     If called later with the same arguments, the cached value is returned, and
-    not re-evaluated.
+    not re-evaluated. This decorator performs proper synchronization to make it
+    thread-safe.
     """
-    def __init__(self, f):
-        self.f = f
-        self.cache = {}
-        self.__doc__ = f.__doc__
-        self.__name__ = f.__name__
-        
-    def __call__(self, *args, **kw):
-        if kw:
-            key = args, frozenset(kw.items())
-        else:
-            key = args
-            
-        try:
-            return self.cache[key]
-        except KeyError:
-            value = self.f(*args, **kw)
-            self.cache[key] = value
-            return value
+    if not hasattr(memoized, '__cache'):
+        with __lock:
+            if not hasattr(memoized, '__cache'):
+                memoized.__cache = {}
+                
+    if f not in memoized.__cache:
+        with __lock:
+            if not f in memoized.__cache:
+                memoized.__cache[f] = {}
+    
+    f_cache = memoized.__cache[f] 
+    key = args, frozenset(kw.items())
+    if key not in f_cache:
+        with __lock:
+            if key not in f_cache:
+                f_cache[key] = {'lock': RLock()}
+                
+    key_cache = f_cache[key]
+    if 'value' not in key_cache:
+        with key_cache['lock']:
+            if 'value' not in key_cache:
+                key_cache['value'] = f(*args, **kw)
+                
+    return key_cache['value']
 
+from threading import RLock, Lock
+
+__lock = Lock()
 
 @memoized
 def get_osname():
