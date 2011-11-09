@@ -1,6 +1,45 @@
 """Resource management utilities."""
 
 
+class state(object):
+    
+    """State management context guard
+       
+       Used for push - pop paradigm with objects supporting
+       _get_state and _set_state contract. Typically used with
+       "with" statement.
+       
+       >>> with state(resource, quality=10, format='png'):
+       >>>    resource.do_sth()
+    """
+    
+    def __init__(self, resource, **kw):
+        self.__resource = resource
+        self.__state = []
+        self.__kw = kw
+    
+    def push(self):
+        """Push state"""
+        resource = self.__resource
+        
+        for prop, value in self.__kw.items():
+            if value == None:
+                continue
+            old_value = resource._get_state(prop)
+            self.__state.append((prop, old_value))
+            resource._set_state(prop, value)
+    
+    def pop(self):
+        """Pop state"""
+        for prop, value in reversed(self.__state):
+            self.__resource._set_state(prop, value)
+            
+    __enter__ = push
+    
+    def __exit__(self, type, value, traceback):  # @ReservedAssignment
+        self.pop()
+
+
 class Resource(object):
     
     """Base class for :term:`ImageMagick` resources.

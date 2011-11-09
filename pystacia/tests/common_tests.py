@@ -1,7 +1,70 @@
-from pystacia.compat import TestCase
+from __future__ import with_statement
+
+from pystacia.tests import TestCase
 
 
-class Common(TestCase):
+class StateTest(TestCase):
+    def setUp(self):
+        self.stateful = Stateful()
+    
+    def test_empty(self):
+        stateful = self.stateful
+        state_ = stateful.state.copy()
+        
+        with state(stateful):
+            self.assertEquals(state_, stateful.state)
+            
+        self.assertEquals(state_, stateful.state)
+            
+    def test_one(self):
+        stateful = self.stateful
+        stateful.state['a'] = 1
+        state_ = stateful.state.copy()
+        
+        with state(stateful, b=3):
+            self.assertEquals(stateful.state, {'a': 1, 'b': 3, 'c': None})
+            
+        self.assertEquals(state_, stateful.state)
+        
+    def test_nested(self):
+        stateful = self.stateful
+        stateful.state['b'] = 4
+        state_ = stateful.state.copy()
+        
+        with state(stateful, a=1, c=2):
+            self.assertEquals(stateful.state, {'a': 1, 'b': 4, 'c': 2})
+            with state(stateful, a=0, b=0):
+                self.assertEquals(stateful.state, {'a': 0, 'b': 0, 'c': 2})
+            self.assertEquals(stateful.state, {'a': 1, 'b': 4, 'c': 2})
+            
+        self.assertEquals(state_, stateful.state)
+        
+    def test_exception(self):
+        stateful = self.stateful
+        stateful.state['b'] = 4
+        state_ = stateful.state.copy()
+        
+        try:
+            with state(stateful, a=0):
+                self.assertEquals(stateful.state['a'], 0)
+                
+                raise PystaciaException('dummy')
+        except PystaciaException:
+            self.assertEquals(stateful.state, state_)
+
+
+class Stateful(object):
+    def __init__(self):
+        self.state = {'a': None, 'b': None, 'c': None}
+        
+    def _set_state(self, k, v):
+        self.state[k] = v
+        
+    def _get_state(self, k):
+        return self.state[k]
+
+
+class ResourceTest(TestCase):
     def setUp(self):
         self._store_registry = common._registry
         common._registry = self._store_registry.__class__()
@@ -120,7 +183,7 @@ class Common(TestCase):
         
         self.assertRaisesRegexp(PystaciaException, '_clone',
                                 lambda: mock.copy())
-        
+
 from pystacia.common import Resource
 
 
@@ -154,4 +217,5 @@ class BadMock(Mock):
         pass
 
 from pystacia import common
+from pystacia.common import state
 from pystacia.util import PystaciaException
