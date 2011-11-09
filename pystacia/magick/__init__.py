@@ -47,10 +47,12 @@ def get_options():
         return call(impl.get_options)
 
 
+@memoized
 def get_version_str():
-    return cdll.MagickGetVersion(None)
+    return simple_call('magick_', 'get_version', None)
 
 
+@memoized
 def get_delegates():
     try:
         delegates = get_options()['DELEGATES']
@@ -60,6 +62,7 @@ def get_delegates():
     return delegates.split()
 
 
+@memoized
 def get_depth():
     depth = get_options().get('QuantumDepth')
     return int(depth) if depth else None
@@ -72,5 +75,5 @@ except ImportError:
     from xml.etree.ElementTree import ElementTree  # @Reimport
 
 from pystacia.api import get_dll
-from pystacia.api.func import call
+from pystacia.api.func import call, simple_call
 from pystacia.magick import impl

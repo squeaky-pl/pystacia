@@ -369,7 +369,8 @@ data = {
         'symbols': {
             'query_configure_options': ((c_char_p, POINTER(c_size_t)),
                                         POINTER(c_char_p)),
-            'query_configure_option': ((c_char_p,), c_char_p)
+            'query_configure_option': ((c_char_p,), c_char_p),
+            'get_version': ((POINTER(c_size_t),), c_char_p)
         }
     },
     
