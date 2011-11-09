@@ -42,11 +42,15 @@ class Bridge(object):
                 else:
                     break
         
+        if isinstance(response, PassException):
+            exc_info = response.exc_info
+            raise exc_info[0], exc_info[1], exc_info[2]
+        
         return response
     
     def shutdown(self):
         """Shutdown bridge loop"""
-        self.__requests.put('shutdown')
+        self.__requests.put(Shutdown())
     
     @property
     def requests(self):
@@ -61,6 +65,16 @@ class Bridge(object):
 from threading import Thread
 
 
+class Shutdown():
+    pass
+
+
+class PassException():
+    def __init__(self):
+        from sys import exc_info
+        self.exc_info = exc_info()
+
+
 class Loop(Thread):
     def __init__(self, bridge, worker):
         self.__bridge = bridge
@@ -73,11 +87,16 @@ class Loop(Thread):
         while 1:
             data = bridge.requests.get()
             
-            if data == 'shutdown':
+            if isinstance(data, Shutdown):
                 break
             
             ident, request = data
-            response = self.__worker(request)
+            
+            try:
+                response = self.__worker(request)
+            except:
+                response = PassException()
+                
             bridge.responses.put((ident, response))
 
 

@@ -84,7 +84,7 @@ def write(image, filename, format=None,  # @ReservedAssignment
 
 def get_blob(image, format, compression=None,  # @ReservedAssignment
              quality=None):
-    with state(image, compression=compression, compression_quality=quality):
+    with state(compression=compression, compression_quality=quality):
         # ensure we always get bytes
         # format = b(format.upper())  # @ReservedAssignment
         # old_format = cdll.MagickGetFormat(resource)
