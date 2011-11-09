@@ -8,22 +8,17 @@
 from pystacia.tests import TestCase
 
 
-class Guard(TestCase):
-    def test(self):
+class FuncTest(TestCase):
+    def test_exception(self):
         img = sample()
         
-        ccall = lambda: cdll.MagickSetFormat(img.resource, b('lolz'))
-        self.assertRaises(PystaciaException, lambda: guard(img.resource, ccall))
-        
-        guard(img.resource, lambda: cdll.MagickSetFormat(img.resource,
-                                                         b('bmp')))
+        self.assertRaises(PystaciaException,
+                          lambda: simple_call('magick', 'set_format',
+                                              img, 'lolz'))
+        simple_call('magick', 'set_format', img, 'bmp')
         
         img.close()
 
-
-from six import b
-
-from pystacia import cdll
 from pystacia.tests import sample
-from pystacia.api.func import guard
+from pystacia.api.func import simple_call
 from pystacia.util import PystaciaException

@@ -347,6 +347,7 @@ data = {
             'get_format': ((), c_char_p),
             'set_format': ((c_char_p,), MagickBoolean),
             'set_depth': ((c_size_t,), MagickBoolean),
+            'get_exception': ((POINTER(ExceptionType),), c_void_p)
         }
     },
         
@@ -466,8 +467,17 @@ def c_call(obj, method, *args, **kw):
     
     if c_method.restype == c_char_p:
         result = native_str(result)
+    elif c_method.restype == MagickBoolean and not result:
+        exc_type = ExceptionType()
+        description = c_call('magick', 'get_exception', args_[0], exc_type)
+        try:
+            raise PystaciaException(native_str(string_at(description)))
+        finally:
+            c_call('magick_', 'relinquish_memory', description)
     
     return result
+
+from ctypes import string_at
 
 from six import string_types, b
 

@@ -127,8 +127,8 @@ colors = color.Factory()
 
 __lena_path = join(dirname(__file__), 'lena.png')
 
-#if not exists(__lena_path) or 'png' not in magick.get_delegates():
-#    del lena
+if not exists(__lena_path) or 'png' not in magick.get_delegates():
+    del lena
 
 #__all__ = [
 #    'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
