@@ -64,7 +64,7 @@ def magick_logo(factory=None):
         
        Resulting image is 640x480, palette, RGB colorspace image.
     """
-    return image.read_special('logo:', factory=factory)
+    return call(io.read, 'logo:', factory=factory)
 
 
 def rose(factory=None):
@@ -106,6 +106,8 @@ from os.path import dirname, join, exists
 
 from pystacia.compat import formattable
 from pystacia.util import PystaciaException
+from pystacia.api.func import call
+from pystacia.image.impl import io
 from pystacia import common
 
 from pystacia import magick

@@ -22,10 +22,6 @@ def annote(cdll):
     cdll.MagickWandTerminus.argtypes = ()
     cdll.MagickWandTerminus.restype = None
     
-    #memory
-    cdll.MagickRelinquishMemory.restype = c_void_p
-    cdll.MagickRelinquishMemory.argtypes = (c_void_p,)
-    
     #exceptions
     cdll.MagickGetException.restype = c_void_p
     cdll.MagickGetException.argtypes = (MagickWand_p, POINTER(ExceptionType))
@@ -84,9 +80,6 @@ def annote(cdll):
     cdll.MagickSetImageCompressionQuality.argtypes = (MagickWand_p, c_size_t)
     cdll.MagickSetImageCompressionQuality.restype = MagickBoolean
     
-    cdll.MagickSetImageDepth.argtypes = (MagickWand_p, c_size_t)
-    cdll.MagickSetImageDepth.restype = MagickBoolean
-    
     cdll.MagickSetImageType.argtypes = (MagickWand_p, c_size_t)
     cdll.MagickSetImageType.restype = MagickBoolean
     
@@ -112,16 +105,6 @@ def annote(cdll):
         pass
     else:
         cdll.MagickSetImageColor.restype = MagickBoolean
-    
-    #size
-    cdll.MagickGetImageWidth.restype = c_size_t
-    cdll.MagickGetImageWidth.argtypes = (MagickWand_p,)
-    
-    cdll.MagickGetImageHeight.restype = c_size_t
-    cdll.MagickGetImageHeight.argtypes = (MagickWand_p,)
-    
-    cdll.MagickGetImageDepth.restype = c_size_t
-    cdll.MagickGetImageDepth.argtypes = (MagickWand_p,)
     
     #resize
     cdll.MagickResizeImage.argtypes = (MagickWand_p, c_size_t, c_size_t,
@@ -361,6 +344,8 @@ data = {
         'arg': MagickWand_p,
         'symbols': {
             'set_size': ((c_size_t, c_size_t), MagickBoolean),
+            'set_format': ((c_char_p,), MagickBoolean),
+            'set_depth': ((c_size_t,), MagickBoolean)
         }
     },
         
@@ -370,7 +355,8 @@ data = {
             'query_configure_options': ((c_char_p, POINTER(c_size_t)),
                                         POINTER(c_char_p)),
             'query_configure_option': ((c_char_p,), c_char_p),
-            'get_version': ((POINTER(c_size_t),), c_char_p)
+            'get_version': ((POINTER(c_size_t),), c_char_p),
+            'relinquish_memory': ((c_void_p,), c_void_p)
         }
     },
     
@@ -390,10 +376,16 @@ data = {
         'symbols': {
             'read': ((c_char_p,), MagickBoolean),
             'write': ((c_char_p,), MagickBoolean),
+            ('read', 'blob'): ((c_void_p, c_size_t), MagickBoolean),
+            ('get', 'blob'): ((POINTER(c_size_t),), c_void_p),
             ('set', 'format'): ((c_char_p,), MagickBoolean),
             ('get', 'format'): ((), c_char_p),
             ('set', 'compression_quality'): ((c_size_t,), MagickBoolean),
-            ('get', 'compression_quality'): ((), c_size_t)
+            ('get', 'compression_quality'): ((), c_size_t),
+            ('get', 'width'): ((), c_size_t),
+            ('get', 'height'): ((), c_size_t),
+            ('get', 'depth'): ((), c_size_t),
+            ('set', 'depth'): ((c_size_t,), MagickBoolean),
         } 
     }
 }

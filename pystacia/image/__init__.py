@@ -29,17 +29,7 @@ def read(filename, factory=None):
         template = formattable('No such file or directory: {0}')
         raise IOError((2, template.format(filename)))
     
-    filename = b(filename)
-    
-    if not factory:
-        factory = Image
-    
-    image = factory()
-    
-    resource = image.resource
-    guard(resource, lambda: cdll.MagickReadImage(resource, filename))
-    
-    return image
+    return call(io.read, filename, factory=factory)
 
 
 def read_blob(blob, format=None,  # @ReservedAssignment
@@ -75,29 +65,7 @@ def read_blob(blob, format=None,  # @ReservedAssignment
     if hasattr(blob, 'read'):
         blob = blob.read(length)
     
-    if not factory:
-        factory = Image
-    
-    image = factory()
-    
-    resource = image.resource
-    if format:
-        # ensure we always get bytes
-        format = b(format.upper())  # @ReservedAssignment
-        old_format = cdll.MagickGetImageFormat(resource)
-        template = formattable('Format "{0}" unsupported')
-        guard(resource,
-              lambda: cdll.MagickSetFormat(resource, format),
-              template.format(format))
-    
-    guard(resource,
-          lambda: cdll.MagickReadImageBlob(resource, blob, len(blob)))
-    
-    if format:
-        guard(resource,
-                  lambda: cdll.MagickSetFormat(resource, old_format))
-    
-    return image
+    return io.read_blob(blob, format, factory)
 
 
 def read_raw(raw, format, width, height,  # @ReservedAssignment
@@ -129,25 +97,7 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
     if hasattr(raw, 'read'):
         raw = raw.read()
     
-    format = b(format.upper())  # @ReservedAssignment
-    
-    if not factory:
-        factory = Image
-    
-    image = factory()
-    
-    resource = image.resource
-    guard(resource, lambda: cdll.MagickSetSize(resource, width, height))
-    guard(resource, lambda: cdll.MagickSetDepth(resource, depth))
-    guard(resource, lambda: cdll.MagickSetFormat(resource, format))
-        
-    guard(resource,
-          lambda: cdll.MagickReadImageBlob(resource, raw, len(raw)))
-    
-    return image
-
-
-
+    return call(io.read_raw(raw, format, width, height, depth, factory))
 
 
 def checkerboard(width, height, factory=None):
@@ -159,7 +109,8 @@ def checkerboard(width, height, factory=None):
        :type height: ``int``
        :rtype: :class:`pystacia.image.Image` or factory
     """
-    return read_special('pattern:checkerboard', width, height, factory)
+    return call(io.read('pattern:checkerboard',
+                                width, height, factory))
 
 
 def blank(width, height, background=None, factory=None):
@@ -180,7 +131,7 @@ def blank(width, height, background=None, factory=None):
     if not background:
         background = 'transparent'
     
-    return call(io.read_special, 'xc:' + str(background),
+    return call(io.read, 'xc:' + str(background),
                 width, height, factory)
 
 from pystacia.common import Resource
@@ -252,47 +203,8 @@ class Image(Resource):
            :term:`PNG` 0 means best compression. The default value is to choose
            best available compression that preserves good quality image.
         """
-        resource = self.resource
+        blob = call(io.get_blob, self, format, compression, quality)
         
-        if compression != None:
-            old_compression = cdll.MagickGetImageCompression(resource)
-            compression = enum_lookup(compression)
-            guard(resource,
-                  lambda: cdll.MagickSetImageCompression(resource,
-                                                    compression))
-            
-        if quality != None:
-            old_quality = cdll.MagickGetImageCompressionQuality(resource)
-            guard(resource,
-                  lambda: cdll.MagickSetImageCompressionQuality(resource,
-                                                                quality))
-            
-        # ensure we always get bytes
-        format = b(format.upper())  # @ReservedAssignment
-        old_format = cdll.MagickGetFormat(resource)
-        template = formattable('Format "{0}" unsupported')
-        guard(resource,
-              lambda: cdll.MagickSetFormat(resource, format),
-              template.format(format))
-        
-        size = c_size_t()
-        result = guard(resource,
-                       lambda: cdll.MagickGetImageBlob(resource,
-                                                       byref(size)))
-        blob = string_at(result, size.value)
-        cdll.MagickRelinquishMemory(result)
-        
-        guard(resource,
-              lambda: cdll.MagickSetFormat(resource, old_format))
-        
-        if quality != None:
-            guard(resource,
-                  lambda: cdll.MagickSetImageCompressionQuality(resource,
-                                                                old_quality))
-        if compression != None:
-            guard(resource,
-                  lambda: cdll.MagickSetImageCompression(resource,
-                                                    old_compression))
         if factory:
             blob = factory(blob)
             
@@ -1271,7 +1183,7 @@ class Image(Resource):
            
            Return image width in pixels.
         """
-        return cdll.MagickGetImageWidth(self.resource)
+        return self._get_state('width')
     
     @property
     def height(self):
@@ -1281,7 +1193,7 @@ class Image(Resource):
            
            Return image height in pixels.
         """
-        return cdll.MagickGetImageHeight(self.resource)
+        return self._get_state('height')
     
     @property
     def size(self):
@@ -1308,12 +1220,10 @@ class Image(Resource):
         """)
         
         def fget(self):
-            return cdll.MagickGetImageDepth(self.resource)
+            return self._get_state('depth')
         
         def fset(self, value):
-            resource = self.resource
-            guard(resource,
-                  lambda: cdll.MagickSetImageDepth(resource, value))
+            return self._set_state('depth', value)
             
         return property(**locals())
     
@@ -1330,9 +1240,9 @@ class Image(Resource):
            file since it will be typically deleted when image gets closed.
         """
         extension = 'bmp'
-        #delegates = magick.get_delegates()
-        #if 'png' in delegates:
-        #    extension = 'png'
+        delegates = magick.get_delegates()
+        if 'png' in delegates:
+            extension = 'png'
             
         tmpname = mkstemp()[1] + '.' + extension
         self.write(tmpname)

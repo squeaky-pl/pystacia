@@ -3,6 +3,8 @@ TODO
 ====
 
 - move common under utils [0.1.1]
+- move factory choosing code to a separate function
+- thread/local, global registry
 - figure out how to do basicConfig
 - make @memoized properly thread safe
 - subprocess loading of libraries optionall with pyro [0.1.1]
