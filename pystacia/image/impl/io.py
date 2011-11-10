@@ -31,7 +31,7 @@ def read_blob(blob, format=None, factory=None):  # @ReservedAssignment
     #          lambda: cdll.MagickSetFormat(resource, format),
     #          template.format(format))
     
-    c_call(image, 'read_blob', blob, len(blob))
+    c_call(image, ('read', 'blob'), blob, len(blob))
     
     #if format:
     #    guard(resource,

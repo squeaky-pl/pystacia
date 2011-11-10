@@ -403,6 +403,10 @@ data = {
             ('get', 'height'): ((), c_size_t),
             ('get', 'depth'): ((), c_size_t),
             ('set', 'depth'): ((c_size_t,), MagickBoolean),
+            ('get', 'type'): ((), enum),
+            ('set', 'type'): ((enum,), MagickBoolean),
+            ('get', 'colorspace'): ((), enum),
+            ('set', 'colorspace') : ((enum,), MagickBoolean),
             ('get', 'pixel_color'): ((c_ssize_t, c_ssize_t, PixelWand_p),
                                      MagickBoolean)
         } 
@@ -488,10 +492,10 @@ def c_call(obj, method, *args, **kw):
         args = (obj,) + args
     
     args_ = []
-    for arg in args:
+    for arg, type in zip(args, c_method.argtypes):  # @ReservedAssignment
         if isinstance(arg, Resource):
             arg = arg.resource
-        elif isinstance(arg, string_types):
+        elif type == c_char_p:
             arg = b(arg)
             
         args_.append(arg)
@@ -500,7 +504,9 @@ def c_call(obj, method, *args, **kw):
     
     if c_method.restype == c_char_p:
         result = native_str(result)
-    elif c_method.restype == MagickBoolean and not result:
+    elif c_method.restype == enum:
+        result = result.value
+    elif c_method.restype == MagickBoolean and not result.value:
         exc_type = ExceptionType()
         description = c_call('magick', 'get_exception', args_[0], exc_type)
         try:
@@ -517,6 +523,8 @@ from six import string_types, b
 from pystacia.util import PystaciaException
 from pystacia.compat import native_str
 from pystacia.api import get_dll 
+from pystacia.api.enum import (lookup as enum_lookup,
+                               reverse_lookup as reverse_enum_lookup)
 from pystacia.bridge import CallBridge
 from pystacia.common import Resource
 from pystacia import logger

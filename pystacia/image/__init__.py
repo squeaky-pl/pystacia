@@ -147,11 +147,19 @@ class Image(Resource):
     
     _free = free
     
-    def _set_state(self, key, value):
+    def _set_state(self, key, value, enum=None):
+        if enum:
+            value = enum_lookup(value)
+            
         simple_call(self, ('set', key), value)
         
-    def _get_state(self, key):
-        return simple_call(self, ('get', key))
+    def _get_state(self, key, enum=None):
+        value = simple_call(self, ('get', key))
+        
+        if enum:
+            value = enum_reverse_lookup(enum, value)
+            
+        return value
     
     def write(self, filename, format=None,  # @ReservedAssignment
               compression=None, quality=None):
@@ -1113,14 +1121,10 @@ class Image(Resource):
         """)
         
         def fget(self):
-            value = cdll.MagickGetImageColorspace(self.resource)
-            return enum_reverse_lookup(colorspaces, value)
+            return self._get_state('colorspace', enum=colorspaces)
         
-        def fset(self, mnemonic):
-            value = enum_lookup(mnemonic)
-            resource = self.resource
-            guard(resource,
-                  lambda: cdll.MagickSetImageColorspace(resource, value))
+        def fset(self, value):
+            self._set_state('colorspace', value, enum=colorspaces)
         
         return property(**locals())
     
@@ -1140,14 +1144,10 @@ class Image(Resource):
         """)
         
         def fget(self):
-            value = cdll.MagickGetImageType(self.resource)
-            return enum_reverse_lookup(types, value)
+            return self._get_state('type', enum=types)
         
-        def fset(self, mnemonic):
-            value = enum_lookup(mnemonic)
-            resource = self.resource
-            guard(resource,
-                  lambda: cdll.MagickSetImageType(resource, value))
+        def fset(self, value):
+            self._set_state('type', value, enum=types)
             
         return property(**locals())
     
