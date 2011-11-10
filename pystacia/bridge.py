@@ -4,8 +4,7 @@ from __future__ import with_statement
 
 class Bridge(object):
     def __init__(self, worker, daemon=False):
-        self.__requests = queue.Queue()
-        self.__responses = queue.Queue()
+        self.__queue = queue.Queue()
         self.__worker = worker
         self.__daemon = daemon
         self.__lock = Lock()
@@ -30,24 +29,11 @@ class Bridge(object):
         if self.__loop == current_thread():
             response = self.__worker(request)
         else:
-            this = get_ident()
-            self.__requests.put((this, request))
-            while 1:
-                responses = self.__responses
-                while 1:
-                    try:
-                        data = responses.get(timeout=1)
-                    except queue.Empty:
-                        pass
-                    else:
-                        break
-                
-                ident, response = data
-                if ident != this:
-                    responses.put(data)
-                    sleep(0)  # yield control to another thread
-                else:
-                    break
+            event = Event()
+            event.request = request
+            self.__queue.put(event)
+            event.wait()
+            response = event.response
         
         if isinstance(response, PassException):
             exc_info = response.exc_info
@@ -57,20 +43,15 @@ class Bridge(object):
     
     def shutdown(self):
         """Shutdown bridge loop"""
-        self.__requests.put(Shutdown())
+        self.__queue.put(Shutdown())
         self.__loop.join()
     
     @property
-    def requests(self):
-        """Get requests queue"""
-        return self.__requests
-    
-    @property
-    def responses(self):
-        """Get responses queue"""
-        return self.__responses
+    def queue(self):
+        """Get bus dictionary"""
+        return self.__queue
 
-from threading import Thread
+from threading import Thread, Event
 
 
 class Shutdown():
@@ -95,21 +76,22 @@ class Loop(Thread):
         logger.debug('Starting bridge loop thread')
         
         while 1:
-            data = bridge.requests.get()
+            event = bridge.queue.get()
             
-            if isinstance(data, Shutdown):
+            if isinstance(event, Shutdown):
                 logger.debug('Received Shutdown message')
                 break
             
-            ident, request = data
+            request = event.request
             
             try:
                 response = self.__worker(request)
             except:
                 logger.debug('Passing exception from loop')
                 response = PassException()
-                
-            bridge.responses.put((ident, response))
+            
+            event.response = response
+            event.set()
         
         logger.debug('Exiting bridge loop thread')
 

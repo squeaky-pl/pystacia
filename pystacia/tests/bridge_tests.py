@@ -1,4 +1,4 @@
-from pystacia.compat import TestCase
+from pystacia.tests import TestCase
 
 
 class BridgeTest(TestCase):
