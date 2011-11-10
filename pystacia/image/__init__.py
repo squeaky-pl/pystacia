@@ -307,11 +307,7 @@ class Image(Resource):
            
            This method can be chained
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickRotateImage(resource,
-                                             color.transparent.resource,
-                                             angle))
+        call(geometry.rotate, self, angle)
         
     def flip(self, axis):
         """Flip an image along given axis.
@@ -323,13 +319,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        if axis.name == 'x':
-            guard(resource, lambda: cdll.MagickFlipImage(resource))
-        elif axis.name == 'y':
-            guard(resource, lambda: cdll.MagickFlopImage(resource))
-        else:
-            raise PystaciaException('axis must be X or Y')
+        call(geometry.flip, self, axis)
     
     def transpose(self):
         """Transpose an image.
@@ -341,10 +331,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource, lambda: cdll.MagickTransposeImage(resource))
-        
-        return self
+        call(geometry.transpose, self)
     
     def transverse(self):
         """Transverse an image.
@@ -354,8 +341,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource, lambda: cdll.MagickTransverseImage(resource))
+        call(geometry.transverse, self)
     
     def skew(self, offset, axis=None):
         """Skews an image by given offsets.

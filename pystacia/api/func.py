@@ -410,7 +410,12 @@ data = {
             ('get', 'pixel_color'): ((c_ssize_t, c_ssize_t, PixelWand_p),
                                      MagickBoolean),
             'resize': ((c_size_t, c_size_t, enum, c_double), MagickBoolean),
-            'crop': ((c_size_t, c_size_t, c_ssize_t, c_ssize_t), MagickBoolean)
+            'crop': ((c_size_t, c_size_t, c_ssize_t, c_ssize_t), MagickBoolean),
+            'rotate': ((PixelWand_p, c_double), MagickBoolean),
+            'flip': ((), MagickBoolean),
+            'flop': ((), MagickBoolean),
+            'transpose': ((), MagickBoolean),
+            'transverse': ((), MagickBoolean)
         } 
     },
         
