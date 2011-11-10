@@ -65,7 +65,7 @@ def read_blob(blob, format=None,  # @ReservedAssignment
     if hasattr(blob, 'read'):
         blob = blob.read(length)
     
-    return io.read_blob(blob, format, factory)
+    return call(io.read_blob, blob, format, factory)
 
 
 def read_raw(raw, format, width, height,  # @ReservedAssignment
@@ -97,7 +97,7 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
     if hasattr(raw, 'read'):
         raw = raw.read()
     
-    return call(io.read_raw(raw, format, width, height, depth, factory))
+    return call(io.read_raw, raw, format, width, height, depth, factory)
 
 
 def checkerboard(width, height, factory=None):
@@ -109,8 +109,8 @@ def checkerboard(width, height, factory=None):
        :type height: ``int``
        :rtype: :class:`pystacia.image.Image` or factory
     """
-    return call(io.read('pattern:checkerboard',
-                                width, height, factory))
+    return call(io.read, 'pattern:checkerboard',
+                                width, height, factory)
 
 
 def blank(width, height, background=None, factory=None):
@@ -934,7 +934,7 @@ class Image(Resource):
         self._free()
         self.__init__(resource)
     
-    def get_pixel(self, x, y):
+    def get_pixel(self, x, y, factory=None):
         """Get pixel color at given coordinates.
            
            :param x: x coordinate of pixel
@@ -945,14 +945,14 @@ class Image(Resource):
            
            Reads pixel color at point ``(x,y)``.
         """
-        color = color_module.Color()
+        if not factory:
+            factory = color.Color
         
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickGetImagePixelColor(resource, x, y,
-                                                    color.resource))
+        color_ = factory()
         
-        return color
+        simple_call(self, ('get', 'pixel_color'), x, y, color_)
+        
+        return color_
     
     def fill(self, fill, blend=1):
         """Overlay color over whole image.

@@ -317,6 +317,7 @@ from pystacia.compat import c_ssize_t
 def magick_format(name):
     return 'Magick' + ''.join(x.title() for x in name.split('_'))
 
+
 def image_format(name):
     if isinstance(name, string_types):
         verb = name
@@ -329,6 +330,11 @@ def image_format(name):
     
     return ('Magick' + ''.join(x.title() for x in verb.split('_')) + 'Image' +
             ''.join(x.title() for x in noun.split('_')))
+
+
+def pixel_format(name):
+    return 'Pixel' + ''.join(x.title() for x in name.split('_'))
+
 data = {
     None: {
         'format': lambda name: 'MagickWand' + name.title(),
@@ -397,7 +403,25 @@ data = {
             ('get', 'height'): ((), c_size_t),
             ('get', 'depth'): ((), c_size_t),
             ('set', 'depth'): ((c_size_t,), MagickBoolean),
+            ('get', 'pixel_color'): ((c_ssize_t, c_ssize_t, PixelWand_p),
+                                     MagickBoolean)
         } 
+    },
+        
+    'pixel' : {
+        'format': pixel_format,
+        'arg': PixelWand_p,
+        'symbols': {
+            'set_red': ((c_double,),),
+            'get_red': ((), c_double),
+            'set_green': ((c_double,),),
+            'get_green': ((), c_double),
+            'set_blue': ((c_double,),),
+            'get_blue': ((), c_double),
+            'set_alpha': ((c_double,),),
+            'get_alpha': ((), c_double),
+            'set_color': ((c_char_p,), MagickBoolean)
+        }
     }
 }
 
@@ -427,7 +451,7 @@ def c_call(obj, method, *args, **kw):
     else:
         api_type = obj
         
-    msg = 'Calling method {0}.{1}'
+    msg = 'Translating method {0}.{1}'
     logger.debug(msg.format(api_type, method))
     
     type_data = data[api_type]

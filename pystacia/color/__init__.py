@@ -37,11 +37,8 @@ def from_string(value, factory=None):
         factory = Color
         
     color = factory()
-    r = color.resource
     
-    #ensure we also get "bytes"
-    value = b(value)
-    guard(r, lambda: cdll.PixelSetColor(r, value))
+    simple_call(color, 'set_color', value)
     
     return color
 
@@ -136,6 +133,8 @@ class Color(Resource):
     
     """Object representing color information."""
     
+    _api_type = 'pixel'
+    
     _alloc = alloc
     
     _free = free
@@ -152,10 +151,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(cdll.PixelGetRed(self.resource))
+            return saturate(simple_call(self, 'get_red'))
         
         def fset(self, value):
-            cdll.PixelSetRed(self.resource, value)
+            simple_call(self, 'set_red', value)
         
         return property(**locals())
         
@@ -174,10 +173,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(cdll.PixelGetGreen(self.resource))
+            return saturate(simple_call(self, 'get_green'))
         
         def fset(self, value):
-            cdll.PixelSetGreen(self.resource, value)
+            simple_call(self, 'set_green', value)
         
         return property(**locals())
     
@@ -196,10 +195,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(cdll.PixelGetBlue(self.resource))
+            return saturate(simple_call(self, 'get_blue'))
         
         def fset(self, value):
-            cdll.PixelSetBlue(self.resource, value)
+            simple_call(self, 'set_blue', value)
         
         return property(**locals())
     
@@ -218,10 +217,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(cdll.PixelGetAlpha(self.resource))
+            return saturate(simple_call(self, 'get_alpha'))
         
         def fset(self, value):
-            cdll.PixelSetAlpha(self.resource, value)
+            simple_call(self, 'set_alpha', value)
         
         return property(**locals())
     
@@ -388,6 +387,6 @@ from ctypes import addressof, c_double
 from six import b, integer_types, string_types
 
 from pystacia import cdll
-from pystacia.api.func import guard
+from pystacia.api.func import guard, simple_call
 from pystacia.compat import formattable
 from pystacia.util import PystaciaException
