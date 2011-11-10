@@ -34,7 +34,14 @@ class Bridge(object):
             self.__requests.put((this, request))
             while 1:
                 responses = self.__responses
-                data = responses.get()
+                while 1:
+                    try:
+                        data = responses.get(timeout=1)
+                    except queue.Empty:
+                        pass
+                    else:
+                        break
+                
                 ident, response = data
                 if ident != this:
                     responses.put(data)
