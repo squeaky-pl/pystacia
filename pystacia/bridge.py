@@ -51,6 +51,7 @@ class Bridge(object):
     def shutdown(self):
         """Shutdown bridge loop"""
         self.__requests.put(Shutdown())
+        self.__loop.join()
     
     @property
     def requests(self):
