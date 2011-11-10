@@ -71,8 +71,6 @@ TODO
 - blending gravity
 - checker in show, zoom, crop
 - > and < on color lightness comparison
-- color_overlay should become fill once we have blending everywhere
-- zip deployment technique with all binaries for all osses
 
 
 research functions

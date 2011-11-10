@@ -424,9 +424,10 @@ data = {
             'roll': ((c_ssize_t, c_ssize_t), MagickBoolean),
             'deskew': ((c_double,), MagickBoolean),
             'trim': ((c_double,), MagickBoolean),
+            'splice': ((c_size_t, c_size_t, c_ssize_t, c_ssize_t), MagickBoolean),
             
             'brightness_contrast': ((c_double, c_double), MagickBoolean),
-            'gamma': ((c_double), MagickBoolean),
+            'gamma': ((c_double,), MagickBoolean),
             'auto_gamma': ((), MagickBoolean),
             'auto_level': ((), MagickBoolean),
             'modulate': ((c_double, c_double, c_double), MagickBoolean),
@@ -450,6 +451,11 @@ data = {
             'spread': ((c_double,), MagickBoolean),
             'forward_fourier_transform': ((MagickBoolean,), MagickBoolean),
             'fx': ((c_char_p,), MagickWand_p),
+            
+            'colorize': ((PixelWand_p, PixelWand_p), MagickBoolean),
+            ('set', 'color'): ((PixelWand_p,), MagickBoolean),
+            ('set', 'opacity'): ((c_double,), MagickBoolean),
+            'composite': ((MagickWand_p, enum, c_ssize_t, c_ssize_t), MagickBoolean),
             
             'next': ((), MagickBoolean)
         } 
@@ -491,8 +497,7 @@ def call(callable_, *args, **kw):
 def simple_call(obj, method, *args, **kw):
     return call(lambda: c_call(obj, method, *args, **kw))
 
-
-def c_call(obj, method, *args, **kw):
+def get_c_method(obj, method, throw=True):
     if hasattr(obj.__class__, '_api_type'):
         api_type = obj.__class__._api_type
     else:
@@ -503,6 +508,10 @@ def c_call(obj, method, *args, **kw):
     
     type_data = data[api_type]
     method_name = type_data['format'](method)
+    
+    if not throw and not hasattr(get_dll(False), method_name):
+        return False
+    
     c_method = getattr(get_dll(False), method_name)
     
     if c_method.argtypes == None:
@@ -519,6 +528,12 @@ def c_call(obj, method, *args, **kw):
         if len(method_data) == 2:
             restype = method_data[1]
         c_method.restype = restype
+        
+    return method_name, c_method
+
+
+def c_call(obj, method, *args, **kw):
+    method_name, c_method = get_c_method(obj, method)
     
     try:
         init = kw.pop('__init')

@@ -387,7 +387,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.straigten, self, threshold)
+        call(geometry.straighten, self, threshold)
     
     def trim(self, similarity=.1, background=None):
         """Attempt to trim off extra background around image.
@@ -772,14 +772,7 @@ class Image(Resource):
            
            Reads pixel color at point ``(x,y)``.
         """
-        if not factory:
-            factory = color.Color
-        
-        color_ = factory()
-        
-        simple_call(self, ('get', 'pixel_color'), x, y, color_)
-        
-        return color_
+        return call(pixel.get_pixel, self, x, y, factory)
     
     def fill(self, fill, blend=1):
         """Overlay color over whole image.
@@ -794,18 +787,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        # image magick ignores alpha setting of color
-        # let's incorporate it into blend
-        blend *= fill.alpha
-        
-        blend = color_module.from_rgb(blend, blend, blend)
-        
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickColorizeImage(resource, fill.resource,
-                                               blend.resource))
-        
-        blend.close()
+        call(pixel.fill, self, fill, blend)
     
     def set_color(self, fill):
         """Fill whole image with one color.
@@ -822,18 +804,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        if hasattr(cdll, 'MagickSetImageColor'):
-            resource = self.resource
-            guard(resource,
-                  lambda: cdll.MagickSetImageColor(resource, fill.resource))
-            
-            # MagickSetImageColor doesnt copy alpha
-            if fill.alpha != 1:
-                self.set_alpha(fill.alpha)
-        else:
-            width, height = self.size
-            self._free()
-            self.__init__(blank(width, height, fill)._claim())
+        call(pixel.set_color, self, fill)
     
     def set_alpha(self, alpha):
         """Set alpha channel of pixels in the image.
@@ -846,9 +817,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickSetImageOpacity(resource, alpha))
+        call(pixel.set_alpha, self, alpha)
     
     def overlay(self, image, x=0, y=0, composite=None):
         """Overlay another image on this image.
@@ -873,15 +842,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        if not composite:
-            composite = composites.over
-            
-        value = enum_lookup(composite)
-        
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickCompositeImage(resource, image.resource,
-                                                value, x, y))
+        call(pixel.overlay, self, image, x, y, composite)
     
     def shadow(self, radius, x=0, y=0, opacity=0.5):
         resource = self.resource
@@ -903,28 +864,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        background = color.from_string('transparent')
-            
-        # preserve background color
-        old_color = color.Color()
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickGetImageBackgroundColor(resource,
-                                                         old_color.resource))
-        guard(resource,
-              lambda: cdll.MagickSetImageBackgroundColor(resource,
-                                                         background.resource))
-        
-        guard(resource,
-              lambda: cdll.MagickSpliceImage(resource, width,
-                                             height, x, y))
-        
-        #restore background color
-        guard(resource,
-              lambda: cdll.MagickSetImageBackgroundColor(resource,
-                                                         old_color.resource))
-        old_color.close()
-        background.close()
+        call(geometry.splice, self, x, y, width, height)
     
     def __colorspace():  # @NoSelf
         doc = (  # @UnusedVariable
@@ -1087,7 +1027,7 @@ class Image(Resource):
                    ',{colorspace},{type}) object at {addr}>'
         w, h = self.size
         depth, type = self.depth, self.type.name  # @ReservedAssignment
-        colorspace, addr = self.colorspace.name, hex(addressof(self.__wand[0]))
+        colorspace, addr = self.colorspace.name, hex(addressof(self.resource[0]))
         class_ = self.__class__.__name__
         
         return formattable(template).format(class_=class_, w=w, h=h,
@@ -1115,7 +1055,7 @@ from pystacia.api.enum import (lookup as enum_lookup,
 from pystacia.lazyenum import enum
 
 #if not 'fftw' in magick.get_delegates():
-#    del Image.dft
+del Image.dft
 
 try:
     disable_chains = environ['PYSTACIA_NO_CHAINS']
@@ -1139,4 +1079,4 @@ composites = enum('composite')
 axes = enum('axis')
 
 from pystacia.image.impl import (io, geometry, color as color_impl,
-                                 blur as blur_impl, deform, special)
+                                 blur as blur_impl, deform, special, pixel)

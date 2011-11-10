@@ -79,6 +79,20 @@ def trim(image, similarity, background):
     c_call(image, ('set', 'background_color'), old_color)
 
 
+def splice(image, x, y, width, height):
+    background = from_string('transparent')
+            
+    # preserve background color
+    old_color = Color()
+
+    c_call(image, ('get', 'background_color'), old_color)
+    c_call(image, ('set', 'background_color'), background)
+    
+    c_call(image, 'splice', width, height, x, y)
+    
+    c_call(image, ('set', 'background_color'), old_color)
+
+
 from math import degrees, atan
 
 from pystacia.image import filters, axes
