@@ -668,8 +668,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource, lambda: cdll.MagickSwirlImage(resource, angle))
+        call(deform.swirl, self, angle)
     
     def wave(self, amplitude, length, offset=0, axis=None):
         """Apply wave like distortion to an image.
@@ -690,34 +689,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        if not axis:
-            axis = axes.x
-            
-        transparent = color.from_string('transparent')
-        
-        old_color = color.Color()
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickGetImageBackgroundColor(resource,
-                                                         old_color.resource))
-        guard(resource,
-              lambda: cdll.MagickSetImageBackgroundColor(resource,
-                                                         transparent.resource))
-        
-        if axis.name == 'y':
-            self.rotate(90)
-        
-        guard(resource,
-              lambda: cdll.MagickWaveImage(resource, amplitude, length))
-        
-        if axis.name == 'y':
-            self.rotate(-90)
-        
-        guard(resource,
-              lambda: cdll.MagickSetImageBackgroundColor(resource,
-                                                         old_color.resource))
-        old_color.close()
-        transparent.close()
+        call(deform.wave, self, amplitude, length, offset, axis)
     
     def sketch(self, radius, angle=45, strength=None):
         """Simulate sketched image.
@@ -1198,4 +1170,4 @@ composites = enum('composite')
 axes = enum('axis')
 
 from pystacia.image.impl import (io, geometry, color as color_impl,
-                                 blur as blur_impl)
+                                 blur as blur_impl, deform)

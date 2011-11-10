@@ -2,6 +2,7 @@
 TODO
 ====
 
+- check proper locking around cleanup code
 - minimize type names to one or two letters in func
 - clear all the default params in impl
 - make every image, color method atomic

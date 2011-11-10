@@ -440,7 +440,10 @@ data = {
             'radial_blur': ((c_double,), MagickBoolean),
             'enhance': ((), MagickBoolean),
             'despeckle': ((), MagickBoolean),
-            'emboss': ((c_double, c_double), MagickBoolean)
+            'emboss': ((c_double, c_double), MagickBoolean),
+            
+            'swirl': ((c_double,), MagickBoolean),
+            'wave': ((c_double, c_double), MagickBoolean)
         } 
     },
         
