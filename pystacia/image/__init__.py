@@ -418,10 +418,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickBrightnessContrastImage(resource,
-                                                         factor * 100, 0))
+        call(color_impl.brightness, self, factor)
     
     def contrast(self, factor):
         """Change image contrast.
@@ -437,10 +434,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickBrightnessContrastImage(resource,
-                                                         0, factor * 100))
+        call(color_impl.contrast, self, factor)
     
     def gamma(self, gamma):
         """Apply gamma correction to an image.
@@ -455,8 +449,7 @@ class Image(Resource):
            
            This method can be chained
         """
-        resource = self.resource
-        guard(resource, lambda: cdll.MagickGammaImage(resource, gamma))
+        call(color_impl.gamma, self, gamma)
     
     def auto_gamma(self):
         """Auto-gamma image.
@@ -466,9 +459,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickAutoGammaImage(resource))
+        call(color_impl.auto_gamma, self)
     
     def auto_level(self):
         """Auto-level image.
@@ -1210,8 +1201,8 @@ from six import b
 
 from pystacia.compat import formattable
 from pystacia import color
-from pystacia.api.func import call, simple_call
 color_module = color
+from pystacia.api.func import call, simple_call
 from pystacia.util import PystaciaException
 from pystacia.api.func import guard
 from pystacia import magick
@@ -1243,4 +1234,4 @@ compressions = enum('compression')
 composites = enum('composite')
 axes = enum('axis')
 
-from pystacia.image.impl import io, geometry
+from pystacia.image.impl import io, geometry, color as color_impl

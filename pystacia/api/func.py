@@ -423,7 +423,11 @@ data = {
             'shear': ((PixelWand_p, c_double, c_double), MagickBoolean),
             'roll': ((c_ssize_t, c_ssize_t), MagickBoolean),
             'deskew': ((c_double,), MagickBoolean),
-            'trim': ((c_double,), MagickBoolean)
+            'trim': ((c_double,), MagickBoolean),
+            
+            'brightness_contrast': ((c_double, c_double), MagickBoolean),
+            'gamma': ((c_double), MagickBoolean),
+            'auto_gamma': ((), MagickBoolean)
         } 
     },
         

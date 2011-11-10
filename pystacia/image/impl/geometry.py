@@ -1,3 +1,6 @@
+from __future__ import division
+
+
 def rescale(image, width, height, factor, filter, blur):  # @ReservedAssignment
     if not filter:
         filter = filters.undefined  # @ReservedAssignment
