@@ -469,9 +469,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickAutoLevelImage(resource))
+        call(color_impl.auto_level, self)
     
     def modulate(self, hue=0, saturation=0, lightness=0):
         """Modulate hue, saturation and lightness of the image
@@ -494,12 +492,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickModulateImage(resource,
-                                               lightness * 100 + 100,
-                                               saturation * 100 + 100,
-                                               hue * 100 + 100))
+        call(color_impl.modulate, self, hue, saturation, lightness)
     
     def desaturate(self):
         """Desatures an image.

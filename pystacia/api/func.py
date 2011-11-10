@@ -427,7 +427,9 @@ data = {
             
             'brightness_contrast': ((c_double, c_double), MagickBoolean),
             'gamma': ((c_double), MagickBoolean),
-            'auto_gamma': ((), MagickBoolean)
+            'auto_gamma': ((), MagickBoolean),
+            'auto_level': ((), MagickBoolean),
+            'modulate': ((c_double, c_double, c_double), MagickBoolean)
         } 
     },
         
