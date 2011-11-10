@@ -84,10 +84,13 @@ class Loop(Thread):
         
     def run(self):
         bridge = self.__bridge
+        logger.debug('Starting bridge loop thread')
+        
         while 1:
             data = bridge.requests.get()
             
             if isinstance(data, Shutdown):
+                logger.debug('Received Shutdown message')
                 break
             
             ident, request = data
@@ -95,10 +98,12 @@ class Loop(Thread):
             try:
                 response = self.__worker(request)
             except:
+                logger.debug('Passing exception from loop')
                 response = PassException()
                 
             bridge.responses.put((ident, response))
-
+        
+        logger.debug('Exiting bridge loop thread')
 
 class CallBridge(Bridge):
     
@@ -123,3 +128,5 @@ try:
     from thread import get_ident
 except ImportError:
     from _thread import get_ident
+    
+from pystacia import logger
