@@ -705,12 +705,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        if strength == None:
-            strength = radius
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickSketchImage(resource, radius,
-                                             strength, angle))
+        call(special.sketch, self, radius, angle, strength)
     
     def oil_paint(self, radius):
         """Simulates oil paiting.
@@ -723,9 +718,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickOilPaintImage(resource, radius))
+        call(special.oil_paint, self, radius)
     
     def spread(self, radius):
         """Spread pixels in random direction.
@@ -738,8 +731,7 @@ class Image(Resource):
         
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource, lambda: cdll.MagickSpreadImage(resource, radius))
+        call(special.spread, self, radius)
     
     def dft(self, magnitude=True):
         """Applies inverse discrete Fourier transform to an image.
@@ -755,26 +747,7 @@ class Image(Resource):
            accomplished with it. This method will not be present if your
            ImageMagick installation wasn't compiled against FFTW.
         """
-        magnitude = bool(magnitude)
-        copy = self.copy()
-        
-        resource = copy.resource
-        guard(resource,
-            lambda: cdll.MagickForwardFourierTransformImage(resource,
-                                                           magnitude))
-        
-        first = blank(*self.size)
-        second = blank(*self.size)
-        
-        first.overlay(copy, composite=composites.copy)
-        
-        guard(resource, lambda: cdll.MagickNextImage(resource))
-        
-        second.overlay(copy, composite=composites.copy)
-        
-        copy.close()
-        
-        return (first, second)
+        return call(special.dft, self, magnitude)
     
     def fx(self, expression):  # @ReservedAssignment
         """Perform expression using ImageMagick mini-language.
@@ -786,11 +759,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        resource = guard(resource,
-                     lambda: cdll.MagickFxImage(resource, b(expression)))
-        self._free()
-        self.__init__(resource)
+        return call(special.fx, self, expression)
     
     def get_pixel(self, x, y, factory=None):
         """Get pixel color at given coordinates.
@@ -1170,4 +1139,4 @@ composites = enum('composite')
 axes = enum('axis')
 
 from pystacia.image.impl import (io, geometry, color as color_impl,
-                                 blur as blur_impl, deform)
+                                 blur as blur_impl, deform, special)

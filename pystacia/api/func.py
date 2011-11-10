@@ -443,7 +443,15 @@ data = {
             'emboss': ((c_double, c_double), MagickBoolean),
             
             'swirl': ((c_double,), MagickBoolean),
-            'wave': ((c_double, c_double), MagickBoolean)
+            'wave': ((c_double, c_double), MagickBoolean),
+            
+            'sketch': ((c_double, c_double, c_double), MagickBoolean),
+            'oil_paint': ((c_double,), MagickBoolean),
+            'spread': ((c_double,), MagickBoolean),
+            'forward_fourier_transform': ((MagickBoolean,), MagickBoolean),
+            'fx': ((c_char_p,), MagickWand_p),
+            
+            'next': ((), MagickBoolean)
         } 
     },
         
