@@ -155,7 +155,7 @@ class Image(Resource):
         
     def _get_state(self, key, enum=None):
         value = simple_call(self, ('get', key))
-        
+            
         if enum:
             value = enum_reverse_lookup(enum, value)
             
@@ -356,21 +356,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        if not axis:
-            axis = axes.x
-            
-        if axis == axes.x:
-            x_angle = degrees(atan(offset / self.height))
-            y_angle = 0
-        elif axis == axes.y:
-            x_angle = 0
-            y_angle = degrees(atan(offset / self.width))
-        
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickShearImage(resource,
-                                            color.transparent.resource,
-                                            x_angle, y_angle))
+        call(geometry.skew, self, offset, axis)
     
     def roll(self, x, y):
         """Roll pixels in the image.
@@ -386,8 +372,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource, lambda: cdll.MagickRollImage(resource, x, y))
+        call(geometry.roll, self, x, y)
     
     def straighten(self, threshold):
         """Attempt to straighten image.
@@ -402,9 +387,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickDeskewImage(resource, threshold))
+        call(geometry.straigten, self, threshold)
     
     def trim(self, similarity=.1, background=None):
         """Attempt to trim off extra background around image.
@@ -420,31 +403,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        # TODO: guessing of background?
-        background_free = not(background)
-        if not background:
-            background = color.from_string('transparent')
-        
-        # preserve background color
-        old_color = color.Color()
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickGetImageBackgroundColor(resource,
-                                                         old_color.resource))
-        guard(resource,
-              lambda: cdll.MagickSetImageBackgroundColor(resource,
-                                                         background.resource))
-        
-        guard(resource,
-              lambda: cdll.MagickTrimImage(resource, similarity * 100))
-        
-        #restore background color
-        guard(resource,
-              lambda: cdll.MagickSetImageBackgroundColor(resource,
-                                                         old_color.resource))
-        
-        if background_free:
-            background.close()
+        call(geometry.trim, self, similarity, background)
     
     def brightness(self, factor):
         """Brightens an image.

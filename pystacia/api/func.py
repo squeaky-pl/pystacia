@@ -395,6 +395,7 @@ data = {
             'write': ((c_char_p,), MagickBoolean),
             ('read', 'blob'): ((c_void_p, c_size_t), MagickBoolean),
             ('get', 'blob'): ((POINTER(c_size_t),), c_void_p),
+            
             ('set', 'format'): ((c_char_p,), MagickBoolean),
             ('get', 'format'): ((), c_char_p),
             ('set', 'compression_quality'): ((c_size_t,), MagickBoolean),
@@ -409,13 +410,20 @@ data = {
             ('set', 'colorspace') : ((enum,), MagickBoolean),
             ('get', 'pixel_color'): ((c_ssize_t, c_ssize_t, PixelWand_p),
                                      MagickBoolean),
+            ('set', 'background_color'): ((PixelWand_p,), MagickBoolean),
+            ('get', 'background_color'): ((PixelWand_p,), MagickBoolean),
+            
             'resize': ((c_size_t, c_size_t, enum, c_double), MagickBoolean),
             'crop': ((c_size_t, c_size_t, c_ssize_t, c_ssize_t), MagickBoolean),
             'rotate': ((PixelWand_p, c_double), MagickBoolean),
             'flip': ((), MagickBoolean),
             'flop': ((), MagickBoolean),
             'transpose': ((), MagickBoolean),
-            'transverse': ((), MagickBoolean)
+            'transverse': ((), MagickBoolean),
+            'shear': ((PixelWand_p, c_double, c_double), MagickBoolean),
+            'roll': ((c_ssize_t, c_ssize_t), MagickBoolean),
+            'deskew': ((c_double,), MagickBoolean),
+            'trim': ((c_double,), MagickBoolean)
         } 
     },
         

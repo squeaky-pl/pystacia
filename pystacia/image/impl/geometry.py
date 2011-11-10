@@ -38,8 +38,48 @@ def transpose(image):
 def transverse(image):
     c_call(image, 'transverse')
 
-from pystacia.image import filters
+
+def skew(image, offset, axis):
+    if not axis:
+        axis = axes.x
+        
+    if axis == axes.x:
+        x_angle = degrees(atan(offset / image.height))
+        y_angle = 0
+    elif axis == axes.y:
+        x_angle = 0
+        y_angle = degrees(atan(offset / image.width))
+    c_call(image, 'shear', from_string('transparent'), x_angle, y_angle)
+
+
+def roll(image, x, y):
+    c_call(image, 'roll', x, y)
+
+
+def straighten(image, threshold):
+    c_call(image, 'deskew', threshold)
+
+
+def trim(image, similarity, background):
+    # TODO: guessing of background?
+    if not background:
+        background = from_string('transparent')
+    
+    # preserve background color
+    old_color = Color()
+
+    c_call(image, ('get', 'background_color'), old_color)
+    c_call(image, ('set', 'background_color'), background)
+    
+    c_call(image, 'trim', similarity * 000)
+    
+    c_call(image, ('set', 'background_color'), old_color)
+
+
+from math import degrees, atan
+
+from pystacia.image import filters, axes
 from pystacia.util import PystaciaException
 from pystacia.api.enum import lookup as enum_lookup
 from pystacia.api.func import c_call
-from pystacia.color import from_string
+from pystacia.color import from_string, Color
