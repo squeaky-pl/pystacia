@@ -408,7 +408,9 @@ data = {
             ('get', 'colorspace'): ((), enum),
             ('set', 'colorspace') : ((enum,), MagickBoolean),
             ('get', 'pixel_color'): ((c_ssize_t, c_ssize_t, PixelWand_p),
-                                     MagickBoolean)
+                                     MagickBoolean),
+            'resize': ((c_size_t, c_size_t, enum, c_double), MagickBoolean),
+            'crop': ((c_size_t, c_size_t, c_ssize_t, c_ssize_t), MagickBoolean)
         } 
     },
         

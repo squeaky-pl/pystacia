@@ -269,26 +269,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        if not filter:
-            filter = filters.undefined  # @ReservedAssignment
-        
-        if not width and not height:
-            if not factor:
-                template = 'Either width, height or factor must be provided'
-                raise PystaciaException(template)
-            
-            width, height = self.size
-            if not hasattr(factor, '__getitem__'):
-                factor = (factor, factor)
-            width, height = int(width * factor[0]), int(height * factor[1])
-        
-        value = enum_lookup(filter)
-        
-        resource = self.resource
-        
-        guard(resource,
-              lambda: cdll.MagickResizeImage(resource, width, height,
-                                             value, blur))
+        call(geometry.rescale, self, width, height, factor, filter, blur)
     
     def resize(self, width, height, x=0, y=0):
         """Resize (crop) image to given dimensions.
@@ -313,9 +294,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickCropImage(resource, width, height, x, y))
+        call(geometry.resize, self, width, height, x, y)
     
     def rotate(self, angle):
         """Rotate an image.
@@ -1284,7 +1263,6 @@ from math import atan, degrees
 
 from six import b
 
-from pystacia.image.impl import io
 from pystacia.compat import formattable
 from pystacia import color
 from pystacia.api.func import call, simple_call
@@ -1319,3 +1297,5 @@ colorspaces = enum('colorspace')
 compressions = enum('compression')
 composites = enum('composite')
 axes = enum('axis')
+
+from pystacia.image.impl import io, geometry

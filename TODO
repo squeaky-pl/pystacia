@@ -2,6 +2,7 @@
 TODO
 ====
 
+- clear all the default params in impl
 - move common under utils [0.1.1]
 - move factory choosing code to a separate function
 - thread/local, global registry
