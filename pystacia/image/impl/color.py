@@ -23,4 +23,32 @@ def modulate(image, hue, saturation, lightness):
                               hue * 100 + 100)
 
 
+def sepia(image, threshold, saturation):
+    threshold = (2 ** magick.get_depth() - 1) * threshold
+    
+    c_call(image, 'sepia_tone', threshold)
+    
+    if saturation:
+        modulate(image, 0, saturation, 0)
+
+
+def equalize(image):
+    c_call(image, 'equalize')
+
+
+def invert(image, only_gray):
+    c_call(image, 'negate', only_gray)
+
+
+def solarize(image, factor):
+    factor = (1 - factor) * (2 ** magick.get_depth() - 1)
+    
+    c_call(image, 'solarize', factor)
+
+
+def posterize(image, levels, dither=False):
+    c_call(image, 'posterize', levels, dither)
+
+
+from pystacia import magick
 from pystacia.api.func import c_call

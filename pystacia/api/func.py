@@ -429,7 +429,12 @@ data = {
             'gamma': ((c_double), MagickBoolean),
             'auto_gamma': ((), MagickBoolean),
             'auto_level': ((), MagickBoolean),
-            'modulate': ((c_double, c_double, c_double), MagickBoolean)
+            'modulate': ((c_double, c_double, c_double), MagickBoolean),
+            'sepia_tone': ((c_double,), MagickBoolean),
+            'equalize': ((), MagickBoolean),
+            'negate': ((MagickBoolean,), MagickBoolean),
+            'solarize': ((c_double,), MagickBoolean),
+            'posterize': ((c_uint, MagickBoolean), MagickBoolean)
         } 
     },
         

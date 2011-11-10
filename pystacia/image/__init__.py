@@ -534,14 +534,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        threshold = 2 ** int(magick.get_options()['QuantumDepth']) * threshold
-        
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickSepiaToneImage(resource, threshold))
-        
-        if saturation:
-            self.modulate(saturation=saturation)
+        call(color_impl.sepia, self, threshold, saturation)
     
     def equalize(self):
         """Equalize image histogram.
@@ -555,8 +548,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource, lambda: cdll.MagickEqualizeImage(resource))
+        call(color_impl.equalize, self)
     
     def invert(self, only_gray=False):
         """Invert image colors.
@@ -565,9 +557,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickNegateImage(resource, only_gray))
+        call(color_impl.invert, self, only_gray)
     
     def solarize(self, factor):
         """Solarizes an image.
@@ -584,11 +574,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        factor = (1 - factor) * 2 ** magick.get_depth()
-        
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickSolarizeImage(resource, factor))
+        call(color_impl.solarize, self, factor)
     
     def posterize(self, levels, dither=False):
         """Reduces number of colors in the image.
@@ -607,9 +593,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickPosterizeImage(resource, levels, dither))
+        call(color_impl.posterize, self, levels, dither)
     
     def blur(self, radius, strength=None):
         """Blur image.

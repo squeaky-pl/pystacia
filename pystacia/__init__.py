@@ -72,7 +72,7 @@ def rose(factory=None):
     
        Resulting image is 70x48, RGB, truecolor.
     """
-    return image.read_special('rose:', factory=factory)
+    return call(io.read, 'rose:', factory=factory)
 
 
 def wizard(factory=None):
