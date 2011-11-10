@@ -434,7 +434,13 @@ data = {
             'equalize': ((), MagickBoolean),
             'negate': ((MagickBoolean,), MagickBoolean),
             'solarize': ((c_double,), MagickBoolean),
-            'posterize': ((c_uint, MagickBoolean), MagickBoolean)
+            'posterize': ((c_uint, MagickBoolean), MagickBoolean),
+            
+            'blur': ((c_double, c_double), MagickBoolean),
+            'radial_blur': ((c_double,), MagickBoolean),
+            'enhance': ((), MagickBoolean),
+            'despeckle': ((), MagickBoolean),
+            'emboss': ((c_double, c_double), MagickBoolean)
         } 
     },
         

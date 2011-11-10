@@ -608,12 +608,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        if strength == None:
-            strength = radius
-        
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickBlurImage(resource, radius, strength))
+        call(blur_impl.blur, self, radius, strength)
     
     #TODO: moving center here
     def radial_blur(self, angle):
@@ -626,9 +621,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickRadialBlurImage(resource, angle))
+        call(blur_impl.radial_blur, self, angle)
     
     def denoise(self):
         """Attempt to remove noise preserving edges.
@@ -638,8 +631,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource, lambda: cdll.MagickEnhanceImage(resource))
+        call(blur_impl.denoise, self)
     
     def despeckle(self):
         """Attempt to remove speckle preserving edges.
@@ -649,8 +641,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        resource = self.resource
-        guard(resource, lambda: cdll.MagickDespeckleImage(resource))
+        call(blur_impl.despeckle, self)
     
     def emboss(self, radius=0, strength=None):
         """Apply edge detecting algorithm.
@@ -664,12 +655,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        if strength == None:
-            strength = radius
-        
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickEmbossImage(resource, radius, strength))
+        call(blur_impl.emboss, self, radius, strength)
     
     def swirl(self, angle):
         """Distort image with swirl effect.
@@ -1211,4 +1197,5 @@ compressions = enum('compression')
 composites = enum('composite')
 axes = enum('axis')
 
-from pystacia.image.impl import io, geometry, color as color_impl
+from pystacia.image.impl import (io, geometry, color as color_impl,
+                                 blur as blur_impl)
