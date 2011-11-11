@@ -74,8 +74,7 @@ class Resource(object):
            
            Not to be called directly under normal circumstances
         """
-        resource = self.resource
-        self.__resource = None
+        self.__resource, resource = None, self.__resource
         
         if untrack:
             _untrack(self)
