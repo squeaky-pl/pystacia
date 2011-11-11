@@ -216,6 +216,7 @@ class BadMock(Mock):
     def _clone(self):
         pass
 
+
 from pystacia import common
 from pystacia.common import state
 from pystacia.util import PystaciaException

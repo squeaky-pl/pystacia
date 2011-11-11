@@ -64,7 +64,7 @@ class Resource(object):
         
         _track(self)
     
-    def _claim(self):
+    def _claim(self, untrack=True):
         """Claim resource and close this instance.
            
            This is used to transfer management of underlying
@@ -76,11 +76,12 @@ class Resource(object):
         resource = self.resource
         self.__resource = None
         
-        _untrack(self)
+        if untrack:
+            _untrack(self)
         
         return resource
     
-    def close(self):
+    def close(self, untrack=True):
         """Free resource and close the object
            
            Call this method when the object is no longer needed or to free
@@ -88,7 +89,7 @@ class Resource(object):
            use with context protocol.
         """
         self._free()
-        self._claim()
+        self._claim(untrack=untrack)
     
     def copy(self):
         """Get independent copy of this resource."""
@@ -131,9 +132,6 @@ class Resource(object):
 
 from weakref import WeakValueDictionary
 
-from pystacia.util import PystaciaException
-from pystacia.compat import formattable
-
 
 _registry = WeakValueDictionary()
 """Dictionary keeping references to all resources."""
@@ -142,18 +140,23 @@ _cleaningup = False
 
 from threading import Lock
 
+
 __lock = Lock()
 
 def _track(resource):
-    with __lock:
-        if not id(resource) in _registry:
-            _registry[id(resource)] = resource
+    key = id(resource)
+    if key not in _registry:
+        with __lock:
+            if key not in _registry:
+                _registry[key] = resource
 
 
 def _untrack(resource):
-    with __lock:
-        if id(resource) in _registry:
-            del _registry[id(resource)]
+    key = id(resource)
+    if key in _registry:
+        with __lock:
+            if key in _registry:
+                del _registry[key]
 
 
 def _cleanup():
@@ -162,10 +165,17 @@ def _cleanup():
        Closes and destroys all currently allocated resources. This gets called
        from atexit handler just before :term:`ImageMagick` gets uninitialized.
     """
-    with __lock:
-        for ref in _registry.itervaluerefs():
-            obj = ref()
-            if obj:
-                if not obj.closed:
-                    obj.close()
-                del obj
+    msg = formattable('Tracked weakrefs: {0}')
+    logger.debug(msg.format(len(_registry)))
+    for ref in _registry.itervaluerefs(): 
+        obj = ref()
+        if obj:
+            if not obj.closed:
+                obj.close(untrack=False)
+            del obj
+    
+    logger.debug('Finished cleanup')
+    
+from pystacia import logger
+from pystacia.util import PystaciaException
+from pystacia.compat import formattable

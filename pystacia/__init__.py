@@ -19,6 +19,11 @@ if level:
     basicConfig(level=level)
 
 
+if environ.get('PYSTACIA_TRACE'):
+    import stacktracer
+    stacktracer.trace_start('trace.html', interval=1, auto=True)
+
+
 __lena = None
 
 
