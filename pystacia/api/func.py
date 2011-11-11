@@ -503,7 +503,7 @@ def get_c_method(obj, method, throw=True):
     else:
         api_type = obj
         
-    msg = 'Translating method {0}.{1}'
+    msg = formattable('Translating method {0}.{1}')
     logger.debug(msg.format(api_type, method))
     
     type_data = data[api_type]
@@ -515,7 +515,7 @@ def get_c_method(obj, method, throw=True):
     c_method = getattr(get_dll(False), method_name)
     
     if c_method.argtypes == None:
-        msg = 'Annoting {0}'
+        msg = formattable('Annoting {0}')
         logger.debug(msg.format(method_name))
         method_data = type_data['symbols'][method]
         
@@ -543,7 +543,7 @@ def c_call(obj, method, *args, **kw):
     if init:
         get_dll()
     
-    msg = 'Calling {0}'
+    msg = formattable('Calling {0}')
     logger.debug(msg.format(method_name))
     
     if isinstance(obj, Resource):
@@ -579,7 +579,7 @@ from ctypes import string_at
 from six import string_types, b
 
 from pystacia.util import PystaciaException
-from pystacia.compat import native_str
+from pystacia.compat import native_str, formattable
 from pystacia.api import get_dll 
 from pystacia.api.enum import (lookup as enum_lookup,
                                reverse_lookup as reverse_enum_lookup)

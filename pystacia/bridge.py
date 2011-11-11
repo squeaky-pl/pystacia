@@ -113,7 +113,13 @@ class CallBridge(Bridge):
 from six import moves, reraise
 queue = moves.queue
 from time import sleep
-from threading import Lock, current_thread
+from threading import Lock
+
+try:
+   from threading import current_thread
+except ImportError:
+   from threading import currentThread as current_thread
+
 try:
     from thread import get_ident
 except ImportError:
