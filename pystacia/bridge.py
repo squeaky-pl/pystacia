@@ -37,7 +37,7 @@ class Bridge(object):
         
         if isinstance(response, PassException):
             exc_info = response.exc_info
-            raise exc_info[0], exc_info[1], exc_info[2]
+            reraise(*exc_info)
         
         return response
     
@@ -110,8 +110,8 @@ class CallBridge(Bridge):
         return self.request((callable_, args, kw))
 
 
-import six
-queue = six.moves.queue
+from six import moves, reraise
+queue = moves.queue
 from time import sleep
 from threading import Lock, current_thread
 try:

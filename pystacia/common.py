@@ -167,12 +167,23 @@ def _cleanup():
     """
     msg = formattable('Tracked weakrefs: {0}')
     logger.debug(msg.format(len(_registry)))
-    for ref in _registry.itervaluerefs(): 
-        obj = ref()
-        if obj:
-            if not obj.closed:
-                obj.close(untrack=False)
-            del obj
+    alive = 0
+    unclosed = 0
+    with __lock:
+        for ref in _registry.itervaluerefs(): 
+            obj = ref()
+            if obj:
+                alive += 1
+                if not obj.closed:
+                    unclosed += 1
+                    obj.close(untrack=False)
+                del obj
+    
+    msg = formattable('Alive weakrefs: {0}')
+    logger.debug(msg.format(alive))
+    
+    msg = formattable('Unclosed resources: {0}')
+    logger.debug(msg.format(unclosed))
     
     logger.debug('Finished cleanup')
     
