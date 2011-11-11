@@ -483,7 +483,14 @@ from pystacia.util import memoized
 
 @memoized
 def get_bridge():
-    bridge = CallBridge(True)
+    if environ.get('PYSTACIA_IMPL', '').upper() == 'SIMPLE':
+        logger.debug('Using Simple implementation')
+        impl = SimpleImpl()
+    else:
+        logger.debug('Using Thread implementation')
+        impl = ThreadImpl(True)
+        
+    bridge = CallBridge(impl)
     
     return bridge
 
@@ -574,6 +581,7 @@ def c_call(obj, method, *args, **kw):
     
     return result
 
+from os import environ 
 from ctypes import string_at
 
 from six import string_types, b
@@ -583,6 +591,6 @@ from pystacia.compat import native_str, formattable
 from pystacia.api import get_dll 
 from pystacia.api.enum import (lookup as enum_lookup,
                                reverse_lookup as reverse_enum_lookup)
-from pystacia.bridge import CallBridge
+from pystacia.bridge import CallBridge, ThreadImpl, SimpleImpl
 from pystacia.common import Resource
 from pystacia import logger

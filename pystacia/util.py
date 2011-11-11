@@ -25,6 +25,9 @@ def memoized(f, *args, **kw):
     not re-evaluated. This decorator performs proper synchronization to make it
     thread-safe.
     """
+    if environ.get('PYSTACIA_SKIP_MEMOIZE'):
+        return f(*args, **kw)
+
     if not hasattr(memoized, '__cache'):
         with __lock:
             if not hasattr(memoized, '__cache'):
@@ -82,6 +85,7 @@ TinyException = PystaciaException
 
 import platform
 from sys import version_info
+from os import environ
 
 from pystacia.compat import formattable, dist
 

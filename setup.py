@@ -188,7 +188,7 @@ cmdclass = dict(build=pystacia_build,
 setup(
     name='pystacia',
     description='Python raster imaging library',
-    author='Paweł Piotr Przeradowski',
+    author='Paweł Piotr Przeradowski'.replace('ł', 'l'),
     author_email='przeradowski@gmail.com',
     url='http://liquibits.bitbucket.org/',
     version='0.2dev',
