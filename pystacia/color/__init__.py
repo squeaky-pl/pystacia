@@ -151,10 +151,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(simple_call(self, 'get_red'))
+            return call(impl.get_red, self)
         
         def fset(self, value):
-            simple_call(self, 'set_red', value)
+            call(impl.set_red, self, value)
         
         return property(**locals())
         
@@ -173,10 +173,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(simple_call(self, 'get_green'))
+            return call(impl.get_green, self)
         
         def fset(self, value):
-            simple_call(self, 'set_green', value)
+            call(impl.set_green, self, value)
         
         return property(**locals())
     
@@ -195,10 +195,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(simple_call(self, 'get_blue'))
+            return call(impl.get_blue, self)
         
         def fset(self, value):
-            simple_call(self, 'set_blue', value)
+            call(impl.set_blue, self, value)
         
         return property(**locals())
     
@@ -217,10 +217,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(simple_call(self, 'get_alpha'))
+            return call(impl.get_alpha, self)
         
         def fset(self, value):
-            simple_call(self, 'set_alpha', value)
+            call(impl.set_alpha, self, value)
         
         return property(**locals())
     
@@ -387,6 +387,7 @@ from ctypes import addressof, c_double
 from six import b, integer_types, string_types
 
 from pystacia import cdll
-from pystacia.api.func import guard, simple_call
+from pystacia.api.func import guard, simple_call, call
 from pystacia.compat import formattable
+from pystacia.color import impl
 from pystacia.util import PystaciaException
