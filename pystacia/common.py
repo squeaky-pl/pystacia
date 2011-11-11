@@ -62,8 +62,7 @@ class Resource(object):
             tmpl = formattable('{0} _alloc method returned None')
             raise PystaciaException(tmpl.format(self.__class__.__name__))
         
-        if not id(self) in _registry:
-            _registry[id(self)] = self
+        _track(self)
     
     def _claim(self):
         """Claim resource and close this instance.
@@ -77,8 +76,7 @@ class Resource(object):
         resource = self.resource
         self.__resource = None
         
-        if not _cleaningup and id(self) in _registry:
-            del _registry[id(self)]
+        _untrack(self)
         
         return resource
     
@@ -142,6 +140,21 @@ _registry = WeakValueDictionary()
 
 _cleaningup = False
 
+from threading import Lock
+
+__lock = Lock()
+
+def _track(resource):
+    with __lock:
+        if not id(resource) in _registry:
+            _registry[id(resource)] = resource
+
+
+def _untrack(resource):
+    with __lock:
+        if id(resource) in _registry:
+            del _registry[id(resource)]
+
 
 def _cleanup():
     """Free all tracked intances.
@@ -149,12 +162,10 @@ def _cleanup():
        Closes and destroys all currently allocated resources. This gets called
        from atexit handler just before :term:`ImageMagick` gets uninitialized.
     """
-    global _cleaningup
-    _cleaningup = True
-    
-    for ref in _registry.itervaluerefs():
-        obj = ref()
-        if obj:
-            if not obj.closed:
-                obj.close()
-            del obj
+    with __lock:
+        for ref in _registry.itervaluerefs():
+            obj = ref()
+            if obj:
+                if not obj.closed:
+                    obj.close()
+                del obj
