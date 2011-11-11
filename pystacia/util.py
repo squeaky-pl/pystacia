@@ -46,7 +46,9 @@ def memoized(f, *args, **kw):
     if 'value' not in key_cache:
         with key_cache['lock']:
             if 'value' not in key_cache:
-                key_cache['value'] = f(*args, **kw)
+                result = f(*args, **kw)
+                if 'value' not in key_cache:
+                    key_cache['value'] = result
                 
     return key_cache['value']
 
