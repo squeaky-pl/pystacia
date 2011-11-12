@@ -19,16 +19,7 @@ else:
     sample.size = (640, 480)
     sample.type = types.palette
 
-
-try:
-    from unittest import skip, skipIf
-except ImportError:
-    from unittest2 import skip, skipIf  # @UnusedImport @Reimport
-
-from unittest import TestCase
-if not hasattr(TestCase, 'assertSequenceEqual'):
-    from unittest2 import TestCase  # @UnusedImport @Reimport
-
+from pystacia.tests.common import TestCase, skipIf
 
 class MagickLogo(TestCase):
     def test(self):

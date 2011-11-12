@@ -5,7 +5,7 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from pystacia.tests import TestCase
+from pystacia.tests.common import TestCase
 
 
 class ColorTest(TestCase):

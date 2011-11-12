@@ -6,7 +6,7 @@
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 from pystacia.image import Image
-from pystacia.tests import TestCase, skipIf
+from pystacia.tests.common import TestCase, skipIf
 
 
 class WithFactory(TestCase):

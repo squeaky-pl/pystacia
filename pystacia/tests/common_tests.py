@@ -1,6 +1,6 @@
 from __future__ import with_statement
 
-from pystacia.tests import TestCase
+from pystacia.tests.common import TestCase
 
 
 class StateTest(TestCase):

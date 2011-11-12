@@ -1,4 +1,4 @@
-from pystacia.tests import TestCase
+from pystacia.tests.common import TestCase
 from pystacia.bridge import SimpleImpl, ThreadImpl
 
 
