@@ -30,20 +30,44 @@ class SimpleImpl(Impl):
         pass
 
 
-class ThreadImpl(Impl):
+class IsolatedImpl(Impl):
     def __init__(self, daemon=False):
         self.__worker = None
         self.__loop = None
         self.__queue = None
-        self.__lock = Lock()
+        self.__lock = threading.Lock()
         self.__daemon = daemon
+    
+    @staticmethod
+    def __loop(queue, worker):
+        logger.debug('Starting loop thread')
         
+        while 1:
+            event = queue.get()
+            
+            if isinstance(event, Shutdown):
+                logger.debug('Received Shutdown message')
+                break
+            
+            request = event.request
+            
+            try:
+                response = worker(request)
+            except:
+                logger.debug('Passing exception from loop')
+                response = PassException()
+            
+            event.response = response
+            event.set()
+        
+        logger.debug('Exiting loop thread')
+    
     def lazy_start(self):
         if not self.__loop:
             with self.__lock:
                 if not self.__loop:
-                    self.__queue = queue.Queue()
-                    self.__loop = ThreadLoop(self.__queue, self.worker)
+                    self.__queue = self.Queue()
+                    self.__loop = self.Isolation(target=self.__class__.__loop, args=(self.__queue, self.worker))
                     if self.__daemon:
                         self.__loop.daemon = True
                     self.__loop.start()
@@ -53,7 +77,7 @@ class ThreadImpl(Impl):
         if self.loop == current_thread():
             response = self.worker(request)
         else:
-            event = Event()
+            event = self.Event()
             event.request = request
             self.__queue.put(event)
             event.wait()
@@ -88,38 +112,24 @@ class ThreadImpl(Impl):
         
         return self.__loop
 
-from threading import Thread, Event
+
+class ThreadImpl(IsolatedImpl):
+    def __init__(self, daemon=False):
+        self.Queue = queue.Queue
+        self.Event = threading.Event
+        self.Isolation = threading.Thread
+        
+        super(ThreadImpl, self).__init__(daemon)
 
 
-class ThreadLoop(Thread):
-    def __init__(self, queue, worker):
-        self.__queue = queue
-        self.__worker = worker
+class ProcessImpl(IsolatedImpl):
+    def __init__(self, daemon=False):
+        self.manager = multiprocessing.Manager()
+        self.Queue = self.manager.Queue
+        self.Event = self.manager.Event
+        self.Isolation = multiprocessing.Process
         
-        super(ThreadLoop, self).__init__()
-        
-    def run(self):
-        logger.debug('Starting loop thread')
-        
-        while 1:
-            event = self.__queue.get()
-            
-            if isinstance(event, Shutdown):
-                logger.debug('Received Shutdown message')
-                break
-            
-            request = event.request
-            
-            try:
-                response = self.__worker(request)
-            except:
-                logger.debug('Passing exception from loop')
-                response = PassException()
-            
-            event.response = response
-            event.set()
-        
-        logger.debug('Exiting loop thread')
+        super(ProcessImpl, self).__init__(daemon)
 
 
 class Bridge(object):
@@ -170,10 +180,11 @@ class CallBridge(Bridge):
         return self.request((callable_, args, kw))
 
 
-from six import moves, reraise
+from six import reraise
+from six import moves
 queue = moves.queue
-from time import sleep
-from threading import Lock
+import threading
+import multiprocessing
 
 try:
     from threading import current_thread
