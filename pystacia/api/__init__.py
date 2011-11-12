@@ -176,10 +176,10 @@ def get_dll(init=True):
             
                 dll.__inited = True
         
-        #version = magick.get_version()
-        #if version < min_version:
-        #    msg = formattable('Unsupported version of MagickWand {0}')
-        #    warn(msg.format(version))
+        version = magick.get_version()
+        if version < min_version:
+            msg = formattable('Unsupported version of MagickWand {0}')
+            warn(msg.format(version))
     
     return dll
 

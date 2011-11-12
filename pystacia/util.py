@@ -29,30 +29,23 @@ def memoized(f, *args, **kw):
         with __lock:
             if not hasattr(memoized, '__cache'):
                 memoized.__cache = {}
-                
-    if f not in memoized.__cache:
-        with __lock:
-            if not f in memoized.__cache:
-                memoized.__cache[f] = {}
     
-    f_cache = memoized.__cache[f]
-    key = args, frozenset(kw.items())
-    if key not in f_cache:
+    cache = memoized.__cache 
+    key = f, args, frozenset(kw.items())
+    if key not in cache:
         with __lock:
-            if key not in f_cache:
-                f_cache[key] = {'lock': RLock()}
+            if key not in cache:
+                cache[key] = {'lock': Lock()}
                 
-    key_cache = f_cache[key]
+    key_cache = cache[key]
     if 'value' not in key_cache:
         with key_cache['lock']:
             if 'value' not in key_cache:
-                result = f(*args, **kw)
-                if 'value' not in key_cache:
-                    key_cache['value'] = result
+                key_cache['value'] = f(*args, **kw)
                 
     return key_cache['value']
 
-from threading import RLock, Lock
+from threading import Lock
 
 __lock = Lock()
 

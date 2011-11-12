@@ -54,8 +54,8 @@ class IsolatedImpl(Impl):
             try:
                 response = worker(request)
             except:
-                logger.debug('Passing exception from loop')
                 response = PassException()
+                logger.debug('Passing exception from loop')
             
             event.response = response
             event.set()
@@ -137,7 +137,7 @@ class ProcessImpl(IsolatedImpl):
 class Bridge(object):
     def __init__(self, worker, impl=None):
         if not impl:
-            impl = ThreadImpl(self)
+            impl = ThreadImpl()
         impl.worker = worker
         self.__impl = impl
         
