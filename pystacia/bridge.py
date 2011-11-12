@@ -124,16 +124,6 @@ class ThreadImpl(IsolatedImpl):
         super(ThreadImpl, self).__init__(daemon)
 
 
-class ProcessImpl(IsolatedImpl):
-    def __init__(self, daemon=False):
-        self.manager = multiprocessing.Manager()
-        self.Queue = self.manager.Queue
-        self.Event = self.manager.Event
-        self.Isolation = multiprocessing.Process
-        
-        super(ProcessImpl, self).__init__(daemon)
-
-
 class Bridge(object):
     def __init__(self, worker, impl=None):
         if not impl:
@@ -186,7 +176,6 @@ from six import reraise
 from six import moves
 queue = moves.queue
 import threading
-import multiprocessing
 
 try:
     from threading import current_thread
