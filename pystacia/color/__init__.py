@@ -382,7 +382,7 @@ from ctypes import addressof, c_double
 
 from six import b, integer_types, string_types
 
-from pystacia.api.func import guard, simple_call, call
+from pystacia.api.func import simple_call, call
 from pystacia.compat import formattable
 from pystacia.color import impl
 from pystacia.util import PystaciaException

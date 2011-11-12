@@ -1043,7 +1043,6 @@ from pystacia import color
 color_module = color
 from pystacia.api.func import call, simple_call
 from pystacia.util import PystaciaException
-from pystacia.api.func import guard
 from pystacia import magick
 from pystacia.api.enum import (lookup as enum_lookup,
                                reverse_lookup as enum_reverse_lookup)
