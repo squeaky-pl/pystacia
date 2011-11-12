@@ -3,8 +3,14 @@ TODO
 ====
 
 
-- use seprate logger for api and impl
-- clear all the default params in impl
+- implement compare method and is_same shortcut
+- check for deprecated functions in test
+- TinyException should use new deprecation model
+- get rid of zope.deprecation
+- rename impl to _impl
+- there's a deadlock possibility in memoized. Use bridge to ensure everything
+  runs in one thread
+- use separate logger for api and impl
 - make every image, color method atomic
 - move common under utils [0.1.1]
 - move factory choosing code to a separate function

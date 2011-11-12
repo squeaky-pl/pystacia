@@ -47,5 +47,6 @@ def overlay(image, other, x, y, composite):
 
 from pystacia.api.func import get_c_method, c_call
 from pystacia.api.enum import lookup as enum_lookup
-from pystacia.image import composites, blank
+from pystacia.image.enum import composites
+from pystacia.image.generic import blank
 from pystacia.color import from_rgb, Color

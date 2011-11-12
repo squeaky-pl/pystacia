@@ -2,7 +2,6 @@ from __future__ import with_statement
 
 
 def read(spec, width=None, height=None, factory=None):
-    """Read special :term:`ImageMagick` image resource"""
     if not factory:
         factory = Image
         

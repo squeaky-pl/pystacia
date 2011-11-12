@@ -21,4 +21,4 @@ def wave(image, amplitude, length, offset, axis):
 
 from pystacia.api.func import c_call
 from pystacia.color import from_string, Color
-from pystacia.image import axes
+from pystacia.image.enum import axes

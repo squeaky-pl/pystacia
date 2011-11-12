@@ -41,4 +41,5 @@ def fx(image, expression):
 
 
 from pystacia.api.func import c_call
-from pystacia.image import blank, composites
+from pystacia.image.generic import blank
+from pystacia.image.enum import composites

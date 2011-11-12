@@ -176,10 +176,10 @@ def get_dll(init=True):
             
                 dll.__inited = True
         
-        version = magick.get_version()
-        if version < min_version:
-            msg = formattable('Unsupported version of MagickWand {0}')
-            warn(msg.format(version))
+        #version = magick.get_version()
+        #if version < min_version:
+        #    msg = formattable('Unsupported version of MagickWand {0}')
+        #    warn(msg.format(version))
     
     return dll
 
@@ -196,7 +196,7 @@ from pystacia.util import get_osname, PystaciaException
 from pystacia.compat import formattable
 from pystacia.common import _cleanup
 from pystacia import magick
-from pystacia.api.func import get_bridge, simple_call, call
+from pystacia.api.func import get_bridge, simple_call
 
 
 min_version = (6, 5, 9, 0)

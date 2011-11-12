@@ -96,7 +96,7 @@ def splice(image, x, y, width, height):
 
 from math import degrees, atan
 
-from pystacia.image import filters, axes
+from pystacia.image.enum import filters, axes
 from pystacia.util import PystaciaException
 from pystacia.api.enum import lookup as enum_lookup
 from pystacia.api.func import c_call

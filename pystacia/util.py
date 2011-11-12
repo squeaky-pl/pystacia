@@ -83,9 +83,8 @@ TinyException = PystaciaException
 
 import platform
 from sys import version_info
-from os import environ
 
-from pystacia.compat import formattable, dist
+from pystacia.compat import dist
 
 
 from zope.deprecation import deprecated

@@ -21,8 +21,10 @@ Changes
 - lazy loading of C-function definitions
 - support for logging debug events pystacia logger
 - bridge sandboxing of client code from C-API
+- Color.get_hsb
 
 Deprecated
 ----------
 - Deprecated pystacia.util.TinyException in favor
   of new name pystacia.util.PystaciaException
+- Deprecated importing several symbols from main pystacia module

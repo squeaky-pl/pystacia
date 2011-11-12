@@ -99,41 +99,6 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
     
     return call(io.read_raw, raw, format, width, height, depth, factory)
 
-
-def checkerboard(width, height, factory=None):
-    """Returns standard checkerboard image
-      
-       :param width: width  in pixels
-       :type width: ``int``
-       :param height: height in pixels
-       :type height: ``int``
-       :rtype: :class:`pystacia.image.Image` or factory
-    """
-    return call(io.read, 'pattern:checkerboard',
-                                width, height, factory)
-
-
-def blank(width, height, background=None, factory=None):
-    """Create :class:`Image` with monolithic background
-       
-       :param width: Width in pixels
-       :type width: ``int``
-       :param height: Height in pixels
-       :type height: ``int``
-       :param background: background color, defaults to fully transparent
-       :type background: :class:`pystacia.Color`
-       
-       Creates blank image of given dimensions filled with background color.
-       
-       >>> blank(32, 32, color.from_string('red'))
-       <Image(w=32,h=32,16bit,rgb,palette) object at 0x108006000L>
-    """
-    if not background:
-        background = 'transparent'
-    
-    return call(io.read, 'xc:' + str(background),
-                width, height, factory)
-
 from pystacia.common import Resource
 from pystacia.image.impl import alloc, clone, free
 
@@ -844,11 +809,11 @@ class Image(Resource):
         """
         call(pixel.overlay, self, image, x, y, composite)
     
-    def shadow(self, radius, x=0, y=0, opacity=0.5):
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickShadowImage(resource, opacity,
-                                             radius, x, y))
+    #def shadow(self, radius, x=0, y=0, opacity=0.5):
+    #    resource = self.resource
+    #    guard(resource,
+    #          lambda: cdll.MagickShadowImage(resource, opacity,
+    #                                         radius, x, y))
     
     def splice(self, x, y, width, height):
         """Insert bands of transprent areas into an image.
@@ -1032,22 +997,17 @@ class Image(Resource):
 
 import webbrowser
 from tempfile import mkstemp
-from ctypes import c_size_t, byref, string_at, addressof
 from os import environ
 from os.path import exists
-from math import atan, degrees
-
-from six import b
+from ctypes import addressof
 
 from pystacia.compat import formattable
 from pystacia import color
 color_module = color
 from pystacia.api.func import call, simple_call
-from pystacia.util import PystaciaException
 from pystacia import magick
 from pystacia.api.enum import (lookup as enum_lookup,
                                reverse_lookup as enum_reverse_lookup)
-from pystacia.lazyenum import enum
 
 #if not 'fftw' in magick.get_delegates():
 del Image.dft
@@ -1066,12 +1026,13 @@ if not disable_chains:
         if callable(item) and item.__doc__ and ':rtype:' not in item.__doc__:
             setattr(Image, key, chainable(item))
 
-types = enum('type')
-filters = enum('filter')
-colorspaces = enum('colorspace')
-compressions = enum('compression')
-composites = enum('composite')
-axes = enum('axis')
 
 from pystacia.image.impl import (io, geometry, color as color_impl,
                                  blur as blur_impl, deform, special, pixel)
+
+# convenience imports
+from pystacia.image.enum import (types, filters, colorspaces,  # @UnusedImport
+                                 compressions, composites, axes)
+from pystacia.image.generic import blank, checkerboard  # @UnusedImport
+from pystacia.image.sample import (lena, magick_logo, rose, # @UnusedImport
+                                   wizard, granite, netscape)

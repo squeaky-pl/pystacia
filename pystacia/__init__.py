@@ -20,126 +20,71 @@ if level:
 
 
 if environ.get('PYSTACIA_TRACE'):
+    logger.debug('Starting tracing')
     import stacktracer
-    stacktracer.trace_start('trace.html', interval=1, auto=True)
+    stacktracer.trace_start('trace.html', interval=5, auto=True)
 
+from pystacia import color
 
-__lena = None
-
-
-def __lena_image(factory=None):
-    """Perform weakref memoization of Lena."""
-    global __lena
-    
-    if not __lena:
-        lena = image.read(__lena_path)
-        __lena = weakref.ref(lena)
-    else:
-        lena = __lena()
-        if not lena:
-            lena = image.read(__lena_path)
-            __lena = weakref.ref(lena)
-    
-    return lena.copy()
-
-
-def lena(width=None, factory=None):
-    """Return standard lena test image.
-       
-       Resulting :class:`.Image` object is a TrueType in, RGB colorspace,
-       8bit per channel image. For background on the test image see:
-       http://en.wikipedia.org/wiki/Lenna.
-       
-       :param width: Returned image will be of this size. When not specified
-         defaults to 512x512 which is how the bitmap is stored internally.
-       
-    """
-    img = __lena_image(factory)
-    
-    if width:
-        img.rescale(width, width)
-
-    img.convert_colorspace(image.colorspaces.rgb)
-        
-    return img
-
-
-def magick_logo(factory=None):
-    """Return ImageMagick logo image.
-        
-       Resulting image is 640x480, palette, RGB colorspace image.
-    """
-    return call(io.read, 'logo:', factory=factory)
-
-
-def rose(factory=None):
-    """Return rose image.
-    
-       Resulting image is 70x48, RGB, truecolor.
-    """
-    return call(io.read, 'rose:', factory=factory)
-
-
-def wizard(factory=None):
-    """Return wizard image.
-    
-       Resulting image is 480x640, palette, RGB image.
-    """
-    return image.read_special('wizard:', factory=factory)
-
-
-def granite(factory=None):
-    """Return granite texture.
-    
-       Resulting image is 128x128 pallette, RGB image.
-    """
-    return image.read_special('granite:', factory=factory)
-
-
-def netscape(factory=None):
-    """Return standard Netscape 216 color cube.
-       
-       Color cube also known as "Websafe Colors".
-       216x144, palette, RGB.
-    """
-    return image.read_special('netscape:', factory=factory)
-
-import weakref
-from os.path import dirname, join, exists
-
-from pystacia.compat import formattable
-from pystacia.util import PystaciaException
-from pystacia.api.func import call
-from pystacia.image.impl import io
-from pystacia import common
-
-from pystacia import magick
-#from pystacia import image
-
-#convenience imports
-#from pystacia.image import read, read_blob, read_raw
-#from pystacia.image import blank, checkerboard
-#from pystacia.image import (
-#    composites, types, filters, colorspaces, compressions, axes)
-#from pystacia import color
-#from pystacia.image import Image
-
-
-#colors = color.Factory()
+colors = color.Factory()
 """Convenience factory for SVG names"""
 
-#__lena_path = join(dirname(__file__), 'lena.png')
 
-#if not exists(__lena_path) or 'png' not in magick.get_delegates():
-del lena
+def lazy_imported(key):
+    def call(*args, **kw):
+        msg = formattable('Deprecated. Use pystacia.image.{0} instead')
+        warn(msg.format(key))
+        
+        from pystacia import image
+        
+        return getattr(image, key)(*args, **kw)
+    
+    return call
 
-#__all__ = [
-#    'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
-#    'read', 'read_blob', 'read_raw',
-#    'blank', 'checkerboard',
-#    'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
-#    'color', 'colors',
-#    'Image']
 
-#if globals().get('lena'):
-#    __all__.append('lena')
+def really_lazy_enum(key):
+    class Proxy(object):
+        def __init__(self, key):
+            self.__key = key
+            
+        def __getattr__(self, attr_key):
+            msg = formattable('Deprecated. Use pystacia.image.{0} instead')
+            warn(msg.format(key))
+        
+            from pystacia import image
+            
+            enum = getattr(image, key)
+            return getattr(enum, attr_key)
+        
+    return Proxy(key)
+
+# lazy importing proxies
+read = lazy_imported('read')
+read_blob = lazy_imported('read_blob')
+read_raw = lazy_imported('read_raw')
+blank = lazy_imported('blank')
+checkerboard = lazy_imported('checkerboard')
+magick_logo = lazy_imported('magick_logo')
+rose = lazy_imported('rose')
+wizard = lazy_imported('wizard')
+granite = lazy_imported('granite')
+netscape = lazy_imported('netscape')
+Image = lazy_imported('Image')
+
+composites = really_lazy_enum('composites')
+types = really_lazy_enum('types')
+filters = really_lazy_enum('filters')
+colorspaces = really_lazy_enum('colorspaces')
+compressions = really_lazy_enum('compressions')
+axes = really_lazy_enum('axes')
+
+from warnings import warn
+from pystacia.compat import formattable
+
+__all__ = [
+    'read', 'read_blob', 'read_raw',
+    'blank', 'checkerboard',
+    'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
+    'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
+    'color', 'colors',
+    'Image']

@@ -379,9 +379,9 @@ def cast(value):
     raise PystaciaException(template.format(value))
 
 
-from ctypes import addressof, c_double
+from ctypes import addressof
 
-from six import b, integer_types, string_types
+from six import integer_types, string_types
 
 from pystacia.api.func import simple_call, call
 from pystacia.compat import formattable

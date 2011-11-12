@@ -191,12 +191,7 @@ import multiprocessing
 try:
     from threading import current_thread
 except ImportError:
-    from threading import currentThread as current_thread
+    from threading import currentThread as current_thread  # @Reimport
 
-try:
-    from thread import get_ident
-except ImportError:
-    from _thread import get_ident
-    
 from pystacia import logger
 from pystacia.util import PystaciaException
