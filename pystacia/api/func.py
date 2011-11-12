@@ -333,7 +333,11 @@ def image_format(name):
 
 
 def pixel_format(name):
-    return 'Pixel' + ''.join(x.title() for x in name.split('_'))
+    if name == 'get_hsl':
+        name = 'GetHSL'
+    else:
+        name = ''.join(x.title() for x in name.split('_'))
+    return 'Pixel' + name
 
 data = {
     None: {
@@ -412,6 +416,7 @@ data = {
                                      MagickBoolean),
             ('set', 'background_color'): ((PixelWand_p,), MagickBoolean),
             ('get', 'background_color'): ((PixelWand_p,), MagickBoolean),
+            ('transform', 'colorspace'): ((enum,), MagickBoolean),
             
             'resize': ((c_size_t, c_size_t, enum, c_double), MagickBoolean),
             'crop': ((c_size_t, c_size_t, c_ssize_t, c_ssize_t), MagickBoolean),
@@ -473,7 +478,8 @@ data = {
             'get_blue': ((), c_double),
             'set_alpha': ((c_double,),),
             'get_alpha': ((), c_double),
-            'set_color': ((c_char_p,), MagickBoolean)
+            'set_color': ((c_char_p,), MagickBoolean),
+            'get_hsl': ((POINTER(c_double), POINTER(c_double), POINTER(c_double)),)
         }
     }
 }

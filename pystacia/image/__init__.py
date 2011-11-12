@@ -927,12 +927,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        
-        colorspace = enum_lookup(colorspace)
-        resource = self.resource
-        guard(resource,
-              lambda: cdll.MagickTransformImageColorspace(resource,
-                                                          colorspace))
+        call(color_impl.convert_colorspace, self, colorspace)
     
     @property
     def width(self):

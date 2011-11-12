@@ -54,6 +54,14 @@ class ColorTest(TestCase):
         
         self.assertEquals(red.get_rgba(), (0, 1, 1, 0))
     
+    def test_hsl(self):
+        red = color.from_string('red')
+        self.assertEquals(red.get_hsl(), (0, 1, 0.5))
+        white = color.from_string('white')
+        self.assertEquals(white.get_hsl(), (0, 0, 1))
+        white = color.from_string('black')
+        self.assertEquals(white.get_hsl(), (0, 0, 0))
+    
     def test_from_string(self):
         white = color.from_string('white')
         self.assertEquals(white.get_rgba(), (1, 1, 1, 1))

@@ -104,8 +104,6 @@ def netscape(factory=None):
     """
     return image.read_special('netscape:', factory=factory)
 
-cdll = None
-
 import weakref
 from os.path import dirname, join, exists
 

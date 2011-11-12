@@ -50,5 +50,11 @@ def posterize(image, levels, dither=False):
     c_call(image, 'posterize', levels, dither)
 
 
+def convert_colorspace(image, colorspace):
+    colorspace = enum_lookup(colorspace)
+    c_call(image, ('transform', 'colorspace'), colorspace)
+
+
 from pystacia import magick
 from pystacia.api.func import c_call
+from pystacia.api.enum import lookup as enum_lookup

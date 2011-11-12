@@ -473,12 +473,16 @@ class WithSample(TestCase):
         img = self.img
         
         self.assertEquals(img.depth, 8)
+        
+    def test_convert_colorspace(self):
+        img = self.img
+        img.convert_colorspace(colorspaces.ycbcr)
+        self.assertEquals(img.colorspace, colorspaces.ycbcr)
 
 
 class ThreadedTest(TestCase):
     def test(self):
         def thread():
-            print('threadsss')
             imgs = [blank(512, 512) for _ in range(randint(1, 10))]
             [i.close() for i in imgs]
             

@@ -244,11 +244,7 @@ class Color(Resource):
            
            :rtype: tuple
         """
-        hue, saturation, lightness = tuple(x() for x in (c_double,) * 3)
-        
-        cdll.PixelGetHSL(self.resource, hue, saturation, lightness)
-        
-        return tuple(saturate(x.value) for x in (hue, saturation, lightness))
+        return call(impl.get_hsl, self)
         
     def get_rgba(self):
         """Return red, green, blue and alpha components.
@@ -386,7 +382,6 @@ from ctypes import addressof, c_double
 
 from six import b, integer_types, string_types
 
-from pystacia import cdll
 from pystacia.api.func import guard, simple_call, call
 from pystacia.compat import formattable
 from pystacia.color import impl
