@@ -44,7 +44,7 @@ def lena_available():
         __lena_image()
     except PystaciaException:
         e = sys.exc_info()[1]
-        if e.message == 'Not available':
+        if e.args[0] == 'Not available':
             return False
         
         raise
