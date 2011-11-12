@@ -30,7 +30,7 @@ def memoized(f, *args, **kw):
             if not hasattr(memoized, '__cache'):
                 memoized.__cache = {}
     
-    cache = memoized.__cache 
+    cache = memoized.__cache
     key = f, args, frozenset(kw.items())
     if key not in cache:
         with __lock:

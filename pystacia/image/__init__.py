@@ -1034,5 +1034,5 @@ from pystacia.image.impl import (io, geometry, color as color_impl,
 from pystacia.image.enum import (types, filters, colorspaces,  # @UnusedImport
                                  compressions, composites, axes)
 from pystacia.image.generic import blank, checkerboard  # @UnusedImport
-from pystacia.image.sample import (lena, magick_logo, rose, # @UnusedImport
+from pystacia.image.sample import (lena, magick_logo, rose,  # @UnusedImport
                                    wizard, granite, netscape)
