@@ -36,8 +36,8 @@ def get_data():
         else:
             raise PystaciaException('Incorrect name format')
         
-        return ('Magick' + ''.join(x.title() for x in verb.split('_')) + 'Image' +
-                ''.join(x.title() for x in noun.split('_')))
+        return ('Magick' + ''.join(x.title() for x in verb.split('_')) +
+                'Image' + ''.join(x.title() for x in noun.split('_')))
     
     
     def pixel_format(name):
@@ -58,136 +58,135 @@ def get_data():
         
         'magick': {
             'format': magick_format,
-            'arg': MagickWand_p,
+            'arg': w,
             'symbols': {
-                'set_size': ((c_size_t, c_size_t), MagickBoolean),
-                'get_format': ((), c_char_p),
-                'set_format': ((c_char_p,), MagickBoolean),
-                'set_depth': ((c_size_t,), MagickBoolean),
-                'get_exception': ((POINTER(ExceptionType),), c_void_p)
+                'set_size': ((s, s), b),
+                'get_format': ((), ch),
+                'set_format': ((ch,), b),
+                'set_depth': ((s,), b),
+                'get_exception': ((P(ExceptionType),), v)
             }
         },
             
         'magick_': {
             'format': magick_format,
             'symbols': {
-                'query_configure_options': ((c_char_p, POINTER(c_size_t)),
-                                            POINTER(c_char_p)),
-                'query_configure_option': ((c_char_p,), c_char_p),
-                'get_version': ((POINTER(c_size_t),), c_char_p),
-                'relinquish_memory': ((c_void_p,), c_void_p)
+                'query_configure_options': ((ch, P(s)), P(ch)),
+                'query_configure_option': ((ch,), ch),
+                'get_version': ((P(s),), ch),
+                'relinquish_memory': ((v,), v)
             }
         },
         
         'wand': {
             'format': lambda name: name.title() + 'MagickWand',
-            'result': MagickWand_p,
+            'result': w,
             'symbols': {
                 'new': ((),),
-                'clone': ((MagickWand_p,),),
-                'destroy': ((MagickWand_p,),)
+                'clone': ((w,),),
+                'destroy': ((w,),)
             }
         },
             
         'pwand': {
             'format': lambda name: name.title() + 'PixelWand',
-            'result': PixelWand_p,
+            'result': pw,
             'symbols': {
                 'new': ((),),
-                'clone': ((PixelWand_p,),),
-                'destroy': ((PixelWand_p,),)
+                'clone': ((pw,),),
+                'destroy': ((pw,),)
             }
         },
             
         'image': {
             'format': image_format,
-            'arg': MagickWand_p,
+            'arg': w,
             'symbols': {
-                'read': ((c_char_p,), MagickBoolean),
-                'write': ((c_char_p,), MagickBoolean),
-                ('read', 'blob'): ((c_void_p, c_size_t), MagickBoolean),
-                ('get', 'blob'): ((POINTER(c_size_t),), c_void_p),
+                'read': ((ch,), b),
+                'write': ((ch,), b),
+                ('read', 'blob'): ((v, s), b),
+                ('get', 'blob'): ((P(s),), v),
                 
-                ('set', 'format'): ((c_char_p,), MagickBoolean),
-                ('get', 'format'): ((), c_char_p),
-                ('set', 'compression_quality'): ((c_size_t,), MagickBoolean),
-                ('get', 'compression_quality'): ((), c_size_t),
-                ('get', 'width'): ((), c_size_t),
-                ('get', 'height'): ((), c_size_t),
-                ('get', 'depth'): ((), c_size_t),
-                ('set', 'depth'): ((c_size_t,), MagickBoolean),
-                ('get', 'type'): ((), enum),
-                ('set', 'type'): ((enum,), MagickBoolean),
-                ('get', 'colorspace'): ((), enum),
-                ('set', 'colorspace') : ((enum,), MagickBoolean),
-                ('get', 'pixel_color'): ((c_ssize_t, c_ssize_t, PixelWand_p),
-                                         MagickBoolean),
-                ('set', 'background_color'): ((PixelWand_p,), MagickBoolean),
-                ('get', 'background_color'): ((PixelWand_p,), MagickBoolean),
-                ('transform', 'colorspace'): ((enum,), MagickBoolean),
+                ('set', 'format'): ((ch,), b),
+                ('get', 'format'): ((), ch),
+                ('set', 'compression_quality'): ((s,), b),
+                ('get', 'compression_quality'): ((), s),
+                ('get', 'width'): ((), s),
+                ('get', 'height'): ((), s),
+                ('get', 'depth'): ((), s),
+                ('set', 'depth'): ((s,), b),
+                ('get', 'type'): ((), e),
+                ('set', 'type'): ((e,), b),
+                ('get', 'colorspace'): ((), e),
+                ('set', 'colorspace') : ((e,), b),
+                ('get', 'pixel_color'): ((ss, ss, pw),
+                                         b),
+                ('set', 'background_color'): ((pw,), b),
+                ('get', 'background_color'): ((pw,), b),
+                ('transform', 'colorspace'): ((e,), b),
                 
-                'resize': ((c_size_t, c_size_t, enum, c_double), MagickBoolean),
-                'crop': ((c_size_t, c_size_t, c_ssize_t, c_ssize_t), MagickBoolean),
-                'rotate': ((PixelWand_p, c_double), MagickBoolean),
-                'flip': ((), MagickBoolean),
-                'flop': ((), MagickBoolean),
-                'transpose': ((), MagickBoolean),
-                'transverse': ((), MagickBoolean),
-                'shear': ((PixelWand_p, c_double, c_double), MagickBoolean),
-                'roll': ((c_ssize_t, c_ssize_t), MagickBoolean),
-                'deskew': ((c_double,), MagickBoolean),
-                'trim': ((c_double,), MagickBoolean),
-                'splice': ((c_size_t, c_size_t, c_ssize_t, c_ssize_t), MagickBoolean),
+                'resize': ((s, s, e, d), b),
+                'crop': ((s, s, ss, ss), b),
+                'rotate': ((pw, d), b),
+                'flip': ((), b),
+                'flop': ((), b),
+                'transpose': ((), b),
+                'transverse': ((), b),
+                'shear': ((pw, d, d), b),
+                'roll': ((ss, ss), b),
+                'deskew': ((d,), b),
+                'trim': ((d,), b),
+                'splice': ((s, s, ss, ss), b),
                 
-                'brightness_contrast': ((c_double, c_double), MagickBoolean),
-                'gamma': ((c_double,), MagickBoolean),
-                'auto_gamma': ((), MagickBoolean),
-                'auto_level': ((), MagickBoolean),
-                'modulate': ((c_double, c_double, c_double), MagickBoolean),
-                'sepia_tone': ((c_double,), MagickBoolean),
-                'equalize': ((), MagickBoolean),
-                'negate': ((MagickBoolean,), MagickBoolean),
-                'solarize': ((c_double,), MagickBoolean),
-                'posterize': ((c_uint, MagickBoolean), MagickBoolean),
+                'brightness_contrast': ((d, d), b),
+                'gamma': ((d,), b),
+                'auto_gamma': ((), b),
+                'auto_level': ((), b),
+                'modulate': ((d, d, d), b),
+                'sepia_tone': ((d,), b),
+                'equalize': ((), b),
+                'negate': ((b,), b),
+                'solarize': ((d,), b),
+                'posterize': ((u, b), b),
                 
-                'blur': ((c_double, c_double), MagickBoolean),
-                'radial_blur': ((c_double,), MagickBoolean),
-                'enhance': ((), MagickBoolean),
-                'despeckle': ((), MagickBoolean),
-                'emboss': ((c_double, c_double), MagickBoolean),
+                'blur': ((d, d), b),
+                'radial_blur': ((d,), b),
+                'enhance': ((), b),
+                'despeckle': ((), b),
+                'emboss': ((d, d), b),
                 
-                'swirl': ((c_double,), MagickBoolean),
-                'wave': ((c_double, c_double), MagickBoolean),
+                'swirl': ((d,), b),
+                'wave': ((d, d), b),
                 
-                'sketch': ((c_double, c_double, c_double), MagickBoolean),
-                'oil_paint': ((c_double,), MagickBoolean),
-                'spread': ((c_double,), MagickBoolean),
-                'forward_fourier_transform': ((MagickBoolean,), MagickBoolean),
-                'fx': ((c_char_p,), MagickWand_p),
+                'sketch': ((d, d, d), b),
+                'oil_paint': ((d,), b),
+                'spread': ((d,), b),
+                'forward_fourier_transform': ((b,), b),
+                'fx': ((ch,), w),
                 
-                'colorize': ((PixelWand_p, PixelWand_p), MagickBoolean),
-                ('set', 'color'): ((PixelWand_p,), MagickBoolean),
-                ('set', 'opacity'): ((c_double,), MagickBoolean),
-                'composite': ((MagickWand_p, enum, c_ssize_t, c_ssize_t), MagickBoolean),
+                'colorize': ((pw, pw), b),
+                ('set', 'color'): ((pw,), b),
+                ('set', 'opacity'): ((d,), b),
+                'composite': ((w, e, ss, ss), b),
                 
-                'next': ((), MagickBoolean)
+                'next': ((), b)
             } 
         },
             
         'pixel' : {
             'format': pixel_format,
-            'arg': PixelWand_p,
+            'arg': pw,
             'symbols': {
-                'set_red': ((c_double,),),
-                'get_red': ((), c_double),
-                'set_green': ((c_double,),),
-                'get_green': ((), c_double),
-                'set_blue': ((c_double,),),
-                'get_blue': ((), c_double),
-                'set_alpha': ((c_double,),),
-                'get_alpha': ((), c_double),
-                'set_color': ((c_char_p,), MagickBoolean),
-                'get_hsl': ((POINTER(c_double), POINTER(c_double), POINTER(c_double)),)
+                'set_red': ((d,),),
+                'get_red': ((), d),
+                'set_green': ((d,),),
+                'get_green': ((), d),
+                'set_blue': ((d,),),
+                'get_blue': ((), d),
+                'set_alpha': ((d,),),
+                'get_alpha': ((), d),
+                'set_color': ((ch,), b),
+                'get_hsl': ((P(d), P(d), P(d)),)
             }
         }
     }
