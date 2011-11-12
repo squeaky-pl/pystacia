@@ -14,7 +14,6 @@ class Enum(TestCase):
         
         self.assertEquals(composite.name, 'composite')
         self.assertEquals(composite.atop.name, 'atop')
-        
     
     def memoize_test(self):
         composite = enum('composite')
@@ -33,7 +32,6 @@ class Enum(TestCase):
         self.assertEquals(xyz.enum.name, 'abc')
         self.assertEquals(xyz.enum, enum('abc'))
         self.assertEquals(cast(xyz.enum, 'xyz'), xyz.enum.xyz)
-        
 
 
 from pystacia.lazyenum import enum, cast

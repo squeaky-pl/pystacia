@@ -15,7 +15,8 @@ def read(spec, width=None, height=None, factory=None):
     
     return image
 
-def read_blob(blob, format=None, factory=None):  # @ReservedAssignment
+
+def read_blob(blob, format, factory):  # @ReservedAssignment
     if not factory:
         factory = Image
     
@@ -57,33 +58,14 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
     return image
 
 
-def write(image, filename, format=None,  # @ReservedAssignment
-              compression=None, quality=None):
+def write(image, filename, format,  # @ReservedAssignment
+              compression, quality):
     with state(image, format=format, compression_quality=quality):
-#    if format:
-#        format = b(format.upper())  # @ReservedAssignment
-#        old_format = cdll.MagickGetImageFormat(resource)
-#        template = formattable('Format "{0}" unsupported')
-#        guard(resource,
-#              lambda: cdll.MagickSetImageFormat(resource, format),
-#              template.format(format))
-#        
-#    if quality != None:
-#        old_quality = cdll.MagickGetImageCompressionQuality(resource)
-#        guard(resource,
-#              lambda: cdll.MagickSetImageCompressionQuality(resource,
-#                                                            quality))
         c_call(image, 'write', filename)
-#    if quality != None:
-#        guard(resource,
-#              lambda: cdll.MagickSetImageCompressionQuality(resource,
-#                                                            old_quality))
-#    if format:
-#        guard(resource,
-#              lambda: cdll.MagickSetImageFormat(resource, old_format))
 
-def get_blob(image, format, compression=None,  # @ReservedAssignment
-             quality=None):
+
+def get_blob(image, format, compression,  # @ReservedAssignment
+             quality):
     with state(image, compression=compression, compression_quality=quality):
         format = format.upper()  # @ReservedAssignment
         old_format = c_call('magick', 'get_format', image)
@@ -98,7 +80,7 @@ def get_blob(image, format, compression=None,  # @ReservedAssignment
         c_call('magick', 'set_format', image, old_format)
         
         return blob
-        
+
 
 from ctypes import c_size_t, string_at
 

@@ -1022,7 +1022,8 @@ class Image(Resource):
                    ',{colorspace},{type}) object at {addr}>'
         w, h = self.size
         depth, type = self.depth, self.type.name  # @ReservedAssignment
-        colorspace, addr = self.colorspace.name, hex(addressof(self.resource[0]))
+        colorspace, addr = (
+            self.colorspace.name, hex(addressof(self.resource[0])))
         class_ = self.__class__.__name__
         
         return formattable(template).format(class_=class_, w=w, h=h,

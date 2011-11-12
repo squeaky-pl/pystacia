@@ -29,6 +29,7 @@ class MemoizedTest(TestCase):
         
     def test_nested(self):
         funcs = [add3, add3, add]
+        
         def thread():
             for _ in range(randint(0, 20)):
                 func = choice(funcs)
@@ -86,4 +87,3 @@ def recurse(i):
 
 from threading import Thread
 from random import randint, choice
-

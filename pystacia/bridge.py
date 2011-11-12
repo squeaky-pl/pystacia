@@ -4,7 +4,7 @@ from __future__ import with_statement
 
 
 class Impl(object):
-    def ___worker(): #@NoSelf
+    def ___worker():  # @NoSelf
         def fget(self):
             if not self.__worker:
                 raise PystaciaException('Worker not set')
@@ -67,7 +67,9 @@ class IsolatedImpl(Impl):
             with self.__lock:
                 if not self.__loop:
                     self.__queue = self.Queue()
-                    self.__loop = self.Isolation(target=self.__class__.__loop, args=(self.__queue, self.worker))
+                    self.__loop = self.Isolation(target=self.__class__.__loop,
+                                                 args=(self.__queue,
+                                                       self.worker))
                     if self.__daemon:
                         self.__loop.daemon = True
                     self.__loop.start()

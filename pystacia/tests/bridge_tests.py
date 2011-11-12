@@ -1,6 +1,6 @@
 from pystacia.tests import TestCase
-
 from pystacia.bridge import SimpleImpl, ThreadImpl
+
 
 class BridgeTest(TestCase):
     impls = [ThreadImpl, SimpleImpl]
@@ -37,8 +37,10 @@ class BridgeTest(TestCase):
             self.assertEquals(bridge.call(lambda: 0), 0)
             self.assertEquals(bridge.call(lambda x: x - 2, 2), 0)
             self.assertEquals(bridge.call(lambda x, y: x * y, 2, 3), 6)
+            
             def kw(one, two):
                 return one + 2 * two
+            
             self.assertEquals(bridge.call(kw, one=1, two=2), 5)
             
             bridge.shutdown()

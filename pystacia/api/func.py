@@ -7,6 +7,7 @@
 
 from pystacia.util import memoized
 
+
 @memoized
 def get_data():
     # convenience shortcuts
@@ -25,7 +26,6 @@ def get_data():
     def magick_format(name):
         return 'Magick' + ''.join(x.title() for x in name.split('_'))
     
-    
     def image_format(name):
         if isinstance(name, string_types):
             verb = name
@@ -38,7 +38,6 @@ def get_data():
         
         return ('Magick' + ''.join(x.title() for x in verb.split('_')) +
                 'Image' + ''.join(x.title() for x in noun.split('_')))
-    
     
     def pixel_format(name):
         if name == 'get_hsl':
@@ -67,7 +66,7 @@ def get_data():
                 'get_exception': ((P(ExceptionType),), v)
             }
         },
-            
+        
         'magick_': {
             'format': magick_format,
             'symbols': {
@@ -87,7 +86,7 @@ def get_data():
                 'destroy': ((w,),)
             }
         },
-            
+        
         'pwand': {
             'format': lambda name: name.title() + 'PixelWand',
             'result': pw,
@@ -97,7 +96,7 @@ def get_data():
                 'destroy': ((pw,),)
             }
         },
-            
+        
         'image': {
             'format': image_format,
             'arg': w,
@@ -118,7 +117,7 @@ def get_data():
                 ('get', 'type'): ((), e),
                 ('set', 'type'): ((e,), b),
                 ('get', 'colorspace'): ((), e),
-                ('set', 'colorspace') : ((e,), b),
+                ('set', 'colorspace'): ((e,), b),
                 ('get', 'pixel_color'): ((ss, ss, pw),
                                          b),
                 ('set', 'background_color'): ((pw,), b),
@@ -170,10 +169,10 @@ def get_data():
                 'composite': ((w, e, ss, ss), b),
                 
                 'next': ((), b)
-            } 
+            }
         },
-            
-        'pixel' : {
+        
+        'pixel': {
             'format': pixel_format,
             'arg': pw,
             'symbols': {
@@ -214,6 +213,7 @@ def call(callable_, *args, **kw):
 
 def simple_call(obj, method, *args, **kw):
     return call(lambda: c_call(obj, method, *args, **kw))
+
 
 def get_c_method(obj, method, throw=True):
     if hasattr(obj.__class__, '_api_type'):
@@ -292,7 +292,8 @@ def c_call(obj, method, *args, **kw):
     
     return result
 
-from os import environ 
+
+from os import environ
 from ctypes import (string_at, c_char_p, c_void_p, POINTER,
                     c_size_t, c_double, c_uint)
 
@@ -300,11 +301,9 @@ from six import string_types, b
 
 from pystacia.util import PystaciaException
 from pystacia.compat import native_str, formattable, c_ssize_t
-from pystacia.api import get_dll 
-from pystacia.api.enum import (lookup as enum_lookup,
-                               reverse_lookup as reverse_enum_lookup)
+from pystacia.api import get_dll
+from pystacia.api.type import (
+    MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, enum)
 from pystacia.bridge import CallBridge, ThreadImpl, SimpleImpl
 from pystacia.common import Resource
 from pystacia import logger
-from pystacia.api.type import (
-    MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, enum)

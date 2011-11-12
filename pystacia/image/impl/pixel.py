@@ -43,7 +43,8 @@ def overlay(image, other, x, y, composite):
     composite = enum_lookup(composite)
     
     c_call(image, 'composite', other, composite, x, y)
-        
+
+
 from pystacia.api.func import get_c_method, c_call
 from pystacia.api.enum import lookup as enum_lookup
 from pystacia.image import composites, blank

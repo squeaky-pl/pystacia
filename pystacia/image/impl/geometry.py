@@ -33,7 +33,8 @@ def flip(image, axis):
         c_call(image, 'flop')
     else:
         raise PystaciaException('axis must be X or Y')
-    
+
+
 def transpose(image):
     c_call(image, 'transpose')
 

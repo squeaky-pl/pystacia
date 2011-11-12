@@ -35,7 +35,7 @@ def memoized(f, *args, **kw):
             if not f in memoized.__cache:
                 memoized.__cache[f] = {}
     
-    f_cache = memoized.__cache[f] 
+    f_cache = memoized.__cache[f]
     key = args, frozenset(kw.items())
     if key not in f_cache:
         with __lock:
@@ -55,6 +55,7 @@ def memoized(f, *args, **kw):
 from threading import RLock, Lock
 
 __lock = Lock()
+
 
 @memoized
 def get_osname():

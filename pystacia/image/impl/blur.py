@@ -4,6 +4,7 @@ def blur(image, radius, strength):
     
     c_call(image, 'blur', radius, strength)
 
+
 #TODO: moving center here
 def radial_blur(image, angle):
     """Performs radial blur.
@@ -17,6 +18,7 @@ def radial_blur(image, angle):
     """
     c_call(image, 'radial_blur', angle)
 
+
 def denoise(image):
     """Attempt to remove noise preserving edges.
     
@@ -26,6 +28,7 @@ def denoise(image):
        This method can be chained.
     """
     c_call(image, 'enhance')
+
 
 def despeckle(image):
     """Attempt to remove speckle preserving edges.
@@ -37,7 +40,8 @@ def despeckle(image):
     """
     c_call(image, 'despeckle')
 
-def emboss(image, radius=0, strength=None):
+
+def emboss(image, radius, strength):
     """Apply edge detecting algorithm.
        
        :param radius: filter radius

@@ -140,8 +140,8 @@ _cleaningup = False
 
 from threading import Lock
 
-
 __lock = Lock()
+
 
 def _track(resource):
     key = id(resource)
@@ -170,7 +170,7 @@ def _cleanup():
     alive = 0
     unclosed = 0
     with __lock:
-        for ref in _registry.itervaluerefs(): 
+        for ref in _registry.itervaluerefs():
             obj = ref()
             if obj:
                 alive += 1

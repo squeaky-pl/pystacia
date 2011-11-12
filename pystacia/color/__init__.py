@@ -118,16 +118,17 @@ def from_int24(value, factory=None):
        :param factory: alternative :class:`Color` subclass to use
        :rtype: :class:`Color` or factory instance
        
-       Interprets 
+       Interprets an integer as an 24 bit integer representation of RGB with
+       highest 8 bits representing red channel.
        
        >>> from_int24(0xffffff)
        <Color(r=1,g=1,b=1,a=1) object at 0x103222600L>
     """
     return from_rgb8(value & 0xff0000, value & 0xff00, value & 0xff, factory)
 
-
 from pystacia.common import Resource
 from pystacia.color.impl import alloc, free, clone
+
 
 class Color(Resource):
     

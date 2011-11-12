@@ -1,8 +1,10 @@
 def alloc(color):
     return simple_call('pwand', 'new')
 
+
 def free(color):
     return simple_call('pwand', 'destroy', color)
+
 
 def clone(color):
     return simple_call('pwand', 'destroy', color)
@@ -39,12 +41,14 @@ def get_alpha(color):
 def set_alpha(color, value):
     c_call(color, 'set_alpha', value)
 
+
 def get_hsl(color):
     h, s, l = tuple(x() for x in (c_double,) * 3)
         
     c_call(color, 'get_hsl', h, s, l)
     
     return tuple(saturate(x.value) for x in (h, s, l))
+
 
 def saturate(v):
     if v == 0:
@@ -53,6 +57,7 @@ def saturate(v):
         return 1
     else:
         return round(v, 4)
+
 
 from ctypes import c_double
 

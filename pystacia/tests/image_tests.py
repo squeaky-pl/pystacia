@@ -489,7 +489,6 @@ class ThreadedTest(TestCase):
         threads = [Thread(target=thread) for _ in range(10)]
         [t.start() for t in threads]
         [t.join() for t in threads]
-            
 
 
 from threading import Thread
@@ -497,7 +496,6 @@ from tempfile import mkstemp
 
 from six import b, BytesIO
 
-from pystacia import magick_logo
 from pystacia.util import PystaciaException
 from pystacia.image import (read, read_raw, read_blob, types,
                            colorspaces, blank, axes)

@@ -122,10 +122,10 @@ class library_path_transaction:
         
         return self
 
-
 from threading import Lock
 
 __lock = Lock()
+
 
 def get_dll(init=True):
     """Find ImageMagick DLL and initialize it.
@@ -139,13 +139,15 @@ def get_dll(init=True):
         logger.debug('Critical section - load MagickWand')
         with __lock:
             if not hasattr(get_dll, '__dll'):
-                # first let's look in some places that may override system-wide paths
+                # first let's look in some places that may
+                # override system-wide paths
                 path = find_library(name, abis)
                 # still nothing? let ctypes figure it out
                 if not path:
                     path = ctypes.util.find_library(name)
                 if not path:
-                    raise PystaciaException('Could not find or load MagickWand')
+                    msg = 'Could not find or load MagickWand'
+                    raise PystaciaException(msg)
                 
                 msg = formattable('Loading MagickWand from {0}')
                 logger.debug(msg.format(path))
@@ -173,15 +175,11 @@ def get_dll(init=True):
                 atexit.register(shutdown)
             
                 dll.__inited = True
-            # should be delayed on initialization
-            # warn if unsupported
-            # from pystacia import magick
-            # from pystacia.api import min_version
-            #version = magick.get_version()
-            #if version < min_version:
-            #    from warnings import warn
-            #    template = formattable('Unsupported version of MagickWand {0}')
-            #    warn(template.format(version))
+        
+        version = magick.get_version()
+        if version < min_version:
+            msg = formattable('Unsupported version of MagickWand {0}')
+            warn(msg.format(version))
     
     return dll
 
@@ -190,14 +188,15 @@ from os import environ, pathsep
 from os.path import join, exists, dirname
 from ctypes import CDLL
 import ctypes.util
+from warnings import warn
 import atexit
 
 from pystacia import logger
 from pystacia.util import get_osname, PystaciaException
 from pystacia.compat import formattable
 from pystacia.common import _cleanup
+from pystacia import magick
 from pystacia.api.func import get_bridge, simple_call, call
-
 
 
 min_version = (6, 5, 9, 0)

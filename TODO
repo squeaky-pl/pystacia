@@ -2,15 +2,14 @@
 TODO
 ====
 
-- check proper locking around cleanup code
-- minimize type names to one or two letters in func
+
+- use seprate logger for api and impl
 - clear all the default params in impl
 - make every image, color method atomic
 - move common under utils [0.1.1]
 - move factory choosing code to a separate function
 - thread/local, global registry
 - figure out how to do basicConfig
-- make @memoized properly thread safe
 - subprocess loading of libraries optionall with pyro [0.1.1]
 - instead of relying on renames and get_platfom we could use our own solution [0.1.1]
   if it can be loaded and test for OS and 64bit in setyp.py

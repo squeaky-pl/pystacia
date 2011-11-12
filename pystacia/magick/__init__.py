@@ -26,7 +26,7 @@ def get_version():
 
 
 @memoized
-def get_options():    
+def get_options():
     def get_options_hack(path):
         options = {}
         
@@ -66,6 +66,7 @@ def get_delegates():
 def get_depth():
     depth = get_options().get('QuantumDepth')
     return int(depth) if depth else None
+
 
 from os.path import dirname, join, exists
 

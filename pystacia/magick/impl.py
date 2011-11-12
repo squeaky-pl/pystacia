@@ -8,7 +8,8 @@ def get_options():
         c_call('magick_', 'query_configure_option', key))
         
     return options
-    
+
+
 from ctypes import c_size_t
 from pystacia.api.func import c_call
 from pystacia.compat import native_str
