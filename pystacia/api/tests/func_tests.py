@@ -19,6 +19,6 @@ class FuncTest(TestCase):
         
         img.close()
 
-from pystacia.tests import sample
+from pystacia.tests.common import sample
 from pystacia.api.func import simple_call
 from pystacia.util import PystaciaException

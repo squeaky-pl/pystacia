@@ -4,9 +4,11 @@
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
+from __future__ import with_statement
 
 from pystacia.tests.common import TestCase, skipIf
 from pystacia.image.sample import lena_available
+
 
 class MagickLogo(TestCase):
     def test(self):
