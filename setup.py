@@ -196,7 +196,7 @@ import pystacia
 setup(
     name='pystacia',
     description='Python raster imaging library',
-    author=pystacia.__author__.replace('ł', 'l'),  # Paweł Piotr Przeradowski 
+    author=pystacia.__author__,  # Paweł Piotr Przeradowski 
     author_email='przeradowski@gmail.com',
     url='http://liquibits.bitbucket.org/',
     version=pystacia.__version__,

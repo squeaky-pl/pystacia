@@ -9,7 +9,7 @@
 
 
 __version__ = '0.2dev'
-__author__ = 'Paweł Piotr Przeradowski'
+__author__ = 'Pawel Piotr Przeradowski'
 
 
 from os import environ
@@ -83,7 +83,7 @@ if not environ.get('PYSTACIA_SETUP'):
     __all__ = [
         'read', 'read_blob', 'read_raw',
         'blank', 'checkerboard',
-        'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
+        'lena', 'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
         'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
         'color', 'colors',
         'Image']

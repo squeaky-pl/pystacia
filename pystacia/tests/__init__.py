@@ -85,7 +85,10 @@ class DeprecationTest(TestCase):
                 self.assertTrue(name in w[-1].message.args[0])
 
 
-from warnings import catch_warnings, simplefilter
+try:
+    from warnings import catch_warnings, simplefilter
+except ImportError:
+    pass
 from tempfile import mkstemp
 
 from pystacia import image
