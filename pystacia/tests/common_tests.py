@@ -12,9 +12,9 @@ class StateTest(TestCase):
         state_ = stateful.state.copy()
         
         with state(stateful):
-            self.assertEquals(state_, stateful.state)
+            self.assertEqual(state_, stateful.state)
             
-        self.assertEquals(state_, stateful.state)
+        self.assertEqual(state_, stateful.state)
             
     def test_one(self):
         stateful = self.stateful
@@ -22,9 +22,9 @@ class StateTest(TestCase):
         state_ = stateful.state.copy()
         
         with state(stateful, b=3):
-            self.assertEquals(stateful.state, {'a': 1, 'b': 3, 'c': None})
+            self.assertEqual(stateful.state, {'a': 1, 'b': 3, 'c': None})
             
-        self.assertEquals(state_, stateful.state)
+        self.assertEqual(state_, stateful.state)
         
     def test_nested(self):
         stateful = self.stateful
@@ -32,12 +32,12 @@ class StateTest(TestCase):
         state_ = stateful.state.copy()
         
         with state(stateful, a=1, c=2):
-            self.assertEquals(stateful.state, {'a': 1, 'b': 4, 'c': 2})
+            self.assertEqual(stateful.state, {'a': 1, 'b': 4, 'c': 2})
             with state(stateful, a=0, b=0):
-                self.assertEquals(stateful.state, {'a': 0, 'b': 0, 'c': 2})
-            self.assertEquals(stateful.state, {'a': 1, 'b': 4, 'c': 2})
+                self.assertEqual(stateful.state, {'a': 0, 'b': 0, 'c': 2})
+            self.assertEqual(stateful.state, {'a': 1, 'b': 4, 'c': 2})
             
-        self.assertEquals(state_, stateful.state)
+        self.assertEqual(state_, stateful.state)
         
     def test_exception(self):
         stateful = self.stateful
@@ -46,11 +46,11 @@ class StateTest(TestCase):
         
         try:
             with state(stateful, a=0):
-                self.assertEquals(stateful.state['a'], 0)
+                self.assertEqual(stateful.state['a'], 0)
                 
                 raise PystaciaException('dummy')
         except PystaciaException:
-            self.assertEquals(stateful.state, state_)
+            self.assertEqual(stateful.state, state_)
 
 
 class Stateful(object):
@@ -73,24 +73,24 @@ class ResourceTest(TestCase):
         
         mock1 = Mock()
         
-        self.assertEquals(len(common._registry), count + 1)
+        self.assertEqual(len(common._registry), count + 1)
         
         mock1.close()
         
-        self.assertEquals(len(common._registry), count)
+        self.assertEqual(len(common._registry), count)
         
         mock1 = Mock()
         mock2 = Mock()
         
-        self.assertEquals(len(common._registry), count + 2)
+        self.assertEqual(len(common._registry), count + 2)
         
         mock1.close()
         
-        self.assertEquals(len(common._registry), count + 1)
+        self.assertEqual(len(common._registry), count + 1)
         
         mock2._claim()
         
-        self.assertEquals(len(common._registry), count)
+        self.assertEqual(len(common._registry), count)
         
     def test_called(self):
         count = self.count
@@ -104,7 +104,7 @@ class ResourceTest(TestCase):
         
         self.assertTrue(mock1.free_called)
         
-        self.assertEquals(len(common._registry), count)
+        self.assertEqual(len(common._registry), count)
         
         mock2 = Mock(34)
         
@@ -116,7 +116,7 @@ class ResourceTest(TestCase):
         self.assertFalse(mock3.alloc_called)
         self.assertFalse(mock2.free_called)
         
-        self.assertEquals(len(common._registry), count + 2)
+        self.assertEqual(len(common._registry), count + 2)
         
         mock2.close()
         
@@ -126,14 +126,14 @@ class ResourceTest(TestCase):
         
         self.assertFalse(mock3.free_called)
         
-        self.assertEquals(len(common._registry), count)
+        self.assertEqual(len(common._registry), count)
         
     def test_resource(self):
         mock1 = Mock()
         mock2 = Mock(0)
         
-        self.assertEquals(mock1.resource, 42)
-        self.assertEquals(mock2.resource, 0)
+        self.assertEqual(mock1.resource, 42)
+        self.assertEqual(mock2.resource, 0)
         
         mock2.close()
         
@@ -141,12 +141,12 @@ class ResourceTest(TestCase):
                                 lambda: mock2.resource)
         
         resource = mock1._claim()
-        self.assertEquals(resource, 42)
+        self.assertEqual(resource, 42)
         
         self.assertRaisesRegexp(PystaciaException, 'closed',
                                 lambda:  mock1.resource)
         
-        self.assertEquals(len(common._registry), self.count)
+        self.assertEqual(len(common._registry), self.count)
         
     def test_copy(self):
         count = self.count
@@ -156,24 +156,24 @@ class ResourceTest(TestCase):
         copy1 = mock.copy()
         copy2 = mock.copy()
         
-        self.assertEquals(mock.copy_count, 2)
+        self.assertEqual(mock.copy_count, 2)
         
-        self.assertEquals(mock.resource, copy1.resource)
-        self.assertEquals(copy2.resource, copy1.resource)
+        self.assertEqual(mock.resource, copy1.resource)
+        self.assertEqual(copy2.resource, copy1.resource)
         
-        self.assertEquals(len(common._registry), count + 3)
+        self.assertEqual(len(common._registry), count + 3)
         
         mock.close()
         
         self.assertRaisesRegexp(PystaciaException, 'closed',
                                 lambda: mock.copy())
         
-        self.assertEquals(copy2.resource, copy1.resource)
+        self.assertEqual(copy2.resource, copy1.resource)
         
         copy1.close()
-        self.assertEquals(copy2._claim(), 3)
+        self.assertEqual(copy2._claim(), 3)
         
-        self.assertEquals(len(common._registry), count)
+        self.assertEqual(len(common._registry), count)
     
     def test_badmock(self):
         self.assertRaisesRegexp(PystaciaException, '_alloc',

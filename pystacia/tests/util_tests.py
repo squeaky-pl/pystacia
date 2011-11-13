@@ -21,7 +21,7 @@ class MemoizedTest(TestCase):
             for _ in range(randint(0, 20)):
                 a = randint(0, 100)
                 b = randint(0, 100)
-                self.assertEquals(add(a, b), a + b)
+                self.assertEqual(add(a, b), a + b)
         
         threads = [Thread(target=thread) for _ in range(randint(0, 50))]
         [t.start() for t in threads]
@@ -36,10 +36,10 @@ class MemoizedTest(TestCase):
                 a = randint(0, 100)
                 b = randint(0, 100)
                 if func == add:
-                    self.assertEquals(func(a, b), a + b)
+                    self.assertEqual(func(a, b), a + b)
                 elif func == add3:
                     c = randint(0, 100)
-                    self.assertEquals(func(a, b, c), a + b + c)
+                    self.assertEqual(func(a, b, c), a + b + c)
         
         threads = [Thread(target=thread) for _ in range(randint(0, 50))]
         [t.start() for t in threads]
@@ -49,7 +49,7 @@ class MemoizedTest(TestCase):
         def thread():
             for _ in range(randint(0, 20)):
                 a = randint(0, 100)
-                self.assertEquals(recurse(a), a)
+                self.assertEqual(recurse(a), a)
         
         threads = [Thread(target=thread) for _ in range(randint(0, 50))]
         [t.start() for t in threads]

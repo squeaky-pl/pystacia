@@ -15,38 +15,38 @@ class WithFactory(TestCase):
                     depth=8, width=1, height=1)
         img = read_raw(**data)
         
-        self.assertEquals(img.size, (1, 1))
-        self.assertEquals(img.depth, 8)
-        self.assertEquals(img.get_blob('rgb'), data['raw'])
+        self.assertEqual(img.size, (1, 1))
+        self.assertEqual(img.depth, 8)
+        self.assertEqual(img.get_blob('rgb'), data['raw'])
         self.assertDictEqual(img.get_raw('rgb'), data)
-        self.assertEquals(img.get_pixel(0, 0), color.from_string('white'))
+        self.assertEqual(img.get_pixel(0, 0), color.from_string('white'))
         
     def test_blank(self):
         img = blank(10, 20)
         
-        self.assertEquals(img.get_pixel(5, 5).alpha, 0)
-        self.assertEquals(img.size, (10, 20))
+        self.assertEqual(img.get_pixel(5, 5).alpha, 0)
+        self.assertEqual(img.size, (10, 20))
         
         img.close()
         
         background = color.from_rgba(1, 0, 0, 0.5)
         img = blank(30, 40, background)
-        self.assertEquals(img.size, (30, 40))
-        self.assertEquals(img.get_pixel(10, 10), background)
+        self.assertEqual(img.size, (30, 40))
+        self.assertEqual(img.get_pixel(10, 10), background)
 
         img.close()
         
     def test_get_pixel(self):
         img = blank(5, 5, color.from_string('red'))
-        self.assertEquals(img.get_pixel(0, 0), color.from_string('red'))
+        self.assertEqual(img.get_pixel(0, 0), color.from_string('red'))
         img.close()
         
         img = blank(5, 5, color.from_string('blue'))
-        self.assertEquals(img.get_pixel(0, 1), color.from_string('blue'))
+        self.assertEqual(img.get_pixel(0, 1), color.from_string('blue'))
         img.close()
         
         img = blank(5, 5, color.from_string('white'))
-        self.assertEquals(img.get_pixel(1, 1), color.from_string('white'))
+        self.assertEqual(img.get_pixel(1, 1), color.from_string('white'))
         img.close()
 
 
@@ -65,10 +65,10 @@ class WithSample(TestCase):
         for i in (bmp, BytesIO(bmp)):
             img = read_blob(i)
             
-            self.assertEquals(img.size, sample.size)
-            self.assertEquals(img.type, sample.type)
-            self.assertEquals(img.colorspace, colorspaces.rgb)
-            self.assertEquals(img.depth, 8)
+            self.assertEqual(img.size, sample.size)
+            self.assertEqual(img.type, sample.type)
+            self.assertEqual(img.colorspace, colorspaces.rgb)
+            self.assertEqual(img.depth, 8)
     
     def test_read(self):
         self.assertRaises(IOError, lambda: read('/non/existant.qwerty'))
@@ -81,9 +81,9 @@ class WithSample(TestCase):
         img = read(tmpname)
         
         self.assertSequenceEqual(img.size, sample.size)
-        self.assertEquals(img.type, sample.type)
-        self.assertEquals(img.colorspace, colorspaces.rgb)
-        self.assertEquals(img.depth, 8)
+        self.assertEqual(img.type, sample.type)
+        self.assertEqual(img.colorspace, colorspaces.rgb)
+        self.assertEqual(img.depth, 8)
             
         img.close()
     
@@ -94,31 +94,31 @@ class WithSample(TestCase):
         img.write(tmpname)
         
         img = read(tmpname)
-        self.assertEquals(img.size, sample.size)
-        self.assertEquals(img.colorspace, colorspaces.rgb)
-        self.assertEquals(img.type, sample.type)
+        self.assertEqual(img.size, sample.size)
+        self.assertEqual(img.colorspace, colorspaces.rgb)
+        self.assertEqual(img.type, sample.type)
         img.close()
     
     def test_rescale(self):
         img = self.img
         
         img.rescale(256, 256)
-        self.assertEquals(img.size, (256, 256))
+        self.assertEqual(img.size, (256, 256))
         img.rescale(factor=.5)
-        self.assertEquals(img.size, (128, 128))
+        self.assertEqual(img.size, (128, 128))
         
         img.rescale(factor=(1, .5))
         
-        self.assertEquals(img.size, (128, 64))
+        self.assertEqual(img.size, (128, 64))
         self.assertRaises(PystaciaException, lambda: img.rescale())
     
     def test_resize(self):
         img = self.img
         
         img.resize(128, 128)
-        self.assertEquals(img.size, (128, 128))
+        self.assertEqual(img.size, (128, 128))
         img.resize(64, 64, 64, 64)
-        self.assertEquals(img.size, (64, 64))
+        self.assertEqual(img.size, (64, 64))
     
     def test_rotate(self):
         img = self.img
@@ -126,29 +126,29 @@ class WithSample(TestCase):
         size = img.size
         img.rotate(30)
         self.assertGreater(img.size, size)
-        self.assertEquals(img.get_pixel(5, 5).alpha, 0)
+        self.assertEqual(img.get_pixel(5, 5).alpha, 0)
     
     def test_set_alpha(self):
         img = self.img
         
         img.set_alpha(0.5)
-        self.assertEquals(img.get_pixel(32, 32).alpha, 0.5)
+        self.assertEqual(img.get_pixel(32, 32).alpha, 0.5)
         img.set_alpha(0.7)
-        self.assertEquals(img.get_pixel(5, 5).alpha, 0.7)
+        self.assertEqual(img.get_pixel(5, 5).alpha, 0.7)
         img.set_alpha(0)
-        self.assertEquals(img.get_pixel(10, 50).alpha, 0)
+        self.assertEqual(img.get_pixel(10, 50).alpha, 0)
         img.set_alpha(1)
-        self.assertEquals(img.get_pixel(64, 64).alpha, 1)
+        self.assertEqual(img.get_pixel(64, 64).alpha, 1)
 
     def test_set_color(self):
         img = self.img
         
         red = color.from_string('red')
         img.set_color(red)
-        self.assertEquals(img.get_pixel(32, 32), red)
+        self.assertEqual(img.get_pixel(32, 32), red)
         transparent = color.from_string('transparent')
         img.set_color(transparent)
-        self.assertEquals(img.get_pixel(128, 128).alpha, 0)
+        self.assertEqual(img.get_pixel(128, 128).alpha, 0)
     
     def test_flip(self):
         img = self.img
@@ -156,10 +156,10 @@ class WithSample(TestCase):
         before = img.get_pixel(10, 10)
         img.flip(axes.x)
         pix = img.get_pixel(10, img.height - 1 - 10)
-        self.assertEquals(pix, before)
+        self.assertEqual(pix, before)
         img.flip(axes.y)
         pix = img.get_pixel(img.width - 1 - 10, img.height - 1 - 10)
-        self.assertEquals(pix, before)
+        self.assertEqual(pix, before)
     
     def test_roll(self):
         img = self.img
@@ -167,10 +167,10 @@ class WithSample(TestCase):
         before = img.get_pixel(img.width - 1 - 10, 10)
         img.roll(20, 0)
         pix = img.get_pixel(9, 10)
-        self.assertEquals(pix, before)
+        self.assertEqual(pix, before)
         img.roll(0, 20)
         pix = img.get_pixel(9, 30)
-        self.assertEquals(pix, before)
+        self.assertEqual(pix, before)
         
     # only checks if it doesnt blow up
     def test_despeckle(self):
@@ -212,7 +212,7 @@ class WithSample(TestCase):
         
         before = img.get_pixel(10, 0)
         img.transpose()
-        self.assertEquals(img.get_pixel(0, 10), before)
+        self.assertEqual(img.get_pixel(0, 10), before)
     
     def test_transverse(self):
         img = self.img
@@ -220,16 +220,16 @@ class WithSample(TestCase):
         before = img.get_pixel(20, 40)
         img.transverse()
         pix = img.get_pixel(img.width - 1 - 40, img.height - 1 - 20)
-        self.assertEquals(pix, before)
+        self.assertEqual(pix, before)
     
     def test_wave(self):
         img = self.img
         
         img.wave(10, 100)
         new_size = (sample.size[0], sample.size[1] + 20)
-        self.assertEquals(img.size, new_size)
-        self.assertEquals(img.get_pixel(25, 10).alpha, 0)
-        self.assertEquals(img.get_pixel(128, 128).alpha, 1)
+        self.assertEqual(img.size, new_size)
+        self.assertEqual(img.get_pixel(25, 10).alpha, 0)
+        self.assertEqual(img.get_pixel(128, 128).alpha, 1)
     
     # only test if it doesnt blow up
     def test_fx(self):
@@ -243,7 +243,7 @@ class WithSample(TestCase):
         rgba = img.get_pixel(128, 128).get_rgba()
         img.gamma(1)
         pix = img.get_pixel(128, 128)
-        self.assertEquals(pix.get_rgba(), rgba)
+        self.assertEqual(pix.get_rgba(), rgba)
         img.gamma(2)
         pix = img.get_pixel(128, 128)
         self.assertGreaterEqual(pix.get_rgba(), rgba)
@@ -283,7 +283,7 @@ class WithSample(TestCase):
         coords = (40, 40)
         before = img.get_pixel(*coords)
         img.brightness(0)
-        self.assertEquals(img.get_pixel(*coords), before)
+        self.assertEqual(img.get_pixel(*coords), before)
         img.brightness(0.5)
         self.assertGreaterEqual(img.get_pixel(*coords).get_rgba(),
                            before.get_rgba())
@@ -297,9 +297,9 @@ class WithSample(TestCase):
         self.assertLessEqual(img.get_pixel(*coords).get_rgba(),
                         before.get_rgba())
         img.brightness(-1)
-        self.assertEquals(img.get_pixel(*coords), color.from_string('black'))
+        self.assertEqual(img.get_pixel(*coords), color.from_string('black'))
         img.brightness(1)
-        self.assertEquals(img.get_pixel(*coords), color.from_string('white'))
+        self.assertEqual(img.get_pixel(*coords), color.from_string('white'))
     
     def test_contrast(self):
         img = self.img
@@ -307,9 +307,9 @@ class WithSample(TestCase):
         coords = (40, 40)
         before = img.get_pixel(*coords)
         img.contrast(0)
-        self.assertEquals(img.get_pixel(*coords), before)
+        self.assertEqual(img.get_pixel(*coords), before)
         img.contrast(-1)
-        self.assertEquals(img.get_pixel(*coords), color.from_rgb(.5, .5, .5))
+        self.assertEqual(img.get_pixel(*coords), color.from_rgb(.5, .5, .5))
     
     def test_modulate(self):
         img = self.img
@@ -317,18 +317,18 @@ class WithSample(TestCase):
         coords = (40, 40)
         before = img.get_pixel(*coords)
         img.modulate()
-        self.assertEquals(img.get_pixel(*coords), before)
+        self.assertEqual(img.get_pixel(*coords), before)
         
         img.modulate(lightness=-1)
-        self.assertEquals(img.get_pixel(*coords), color.from_string('black'))
+        self.assertEqual(img.get_pixel(*coords), color.from_string('black'))
     
     def test_desaturate(self):
         img = self.img
         
         img.desaturate()
         pix = img.get_pixel(40, 40)
-        self.assertEquals(pix.r, pix.g)
-        self.assertEquals(pix.g, pix.b)
+        self.assertEqual(pix.r, pix.g)
+        self.assertEqual(pix.g, pix.b)
     
     def test_invert(self):
         img = self.img
@@ -337,7 +337,7 @@ class WithSample(TestCase):
         before = img.get_pixel(*coords).get_rgb()
         img.invert()
         after = img.get_pixel(*coords).get_rgb()
-        self.assertEquals(tuple(x + y for x, y in zip(before, after)),
+        self.assertEqual(tuple(x + y for x, y in zip(before, after)),
                          (1, 1, 1))
     
     # test if it doesnt blow
@@ -357,7 +357,7 @@ class WithSample(TestCase):
         coords = (256, 256)
         before = img.get_pixel(*coords)
         img.radial_blur(5)
-        self.assertEquals(img.get_pixel(*coords), before)
+        self.assertEqual(img.get_pixel(*coords), before)
     
     def test_skew(self):
         img = self.img
@@ -367,12 +367,12 @@ class WithSample(TestCase):
         img.skew(5)
         self.assertTrue(img.get_pixel(2, 0).transparent)
         self.assertTrue(img.get_pixel(256, 256).opaque)
-        self.assertEquals(img.width, width + 5)
+        self.assertEqual(img.width, width + 5)
         
         img.skew(5, axes.y)
         self.assertTrue(img.get_pixel(256, 1).transparent)
         self.assertTrue(img.get_pixel(256, 256).opaque)
-        self.assertEquals(img.height, height + 5)
+        self.assertEqual(img.height, height + 5)
 
     def test_solarize(self):
         img = self.img
@@ -380,9 +380,9 @@ class WithSample(TestCase):
         before = img.get_pixel(256, 256)
         
         img.solarize(0)
-        self.assertEquals(img.get_pixel(256, 256), before)
+        self.assertEqual(img.get_pixel(256, 256), before)
         img.solarize(1)
-        self.assertEquals(img.get_pixel(256, 256).get_rgb(),
+        self.assertEqual(img.get_pixel(256, 256).get_rgb(),
                           tuple(round(1 - x, 4) for x in before.get_rgb()))
     
     # test only if it doesnt blow up
@@ -398,19 +398,19 @@ class WithSample(TestCase):
         img2.rescale(50, 50)
         before = img2.get_pixel(10, 10)
         img.overlay(img2, 50, 50)
-        self.assertEquals(img.get_pixel(60, 60), before)
+        self.assertEqual(img.get_pixel(60, 60), before)
     
     def test_compare(self):
         img = self.img
         
         result = img.compare(img)
-        self.assertEquals(result[1], 0)
+        self.assertEqual(result[1], 0)
         self.assertIsInstance(result[0], Image)
         
         img2 = img.copy()
         
         result = img.compare(img2)
-        self.assertEquals(result[1], 0)
+        self.assertEqual(result[1], 0)
         
         img2.gamma(2)
         
@@ -452,19 +452,19 @@ class WithSample(TestCase):
         
         red = color.from_string('red')
         img.fill(red)
-        self.assertEquals(img.get_pixel(40, 40), red)
+        self.assertEqual(img.get_pixel(40, 40), red)
 
     def test_get_pixel_red(self):
         img = blank(5, 5, color.from_string('red'))
-        self.assertEquals(img.get_pixel(0, 0), color.from_string('red'))
+        self.assertEqual(img.get_pixel(0, 0), color.from_string('red'))
         img.close()
         
         img = blank(5, 5, color.from_string('blue'))
-        self.assertEquals(img.get_pixel(0, 1), color.from_string('blue'))
+        self.assertEqual(img.get_pixel(0, 1), color.from_string('blue'))
         img.close()
         
         img = blank(5, 5, color.from_string('white'))
-        self.assertEquals(img.get_pixel(1, 1), color.from_string('white'))
+        self.assertEqual(img.get_pixel(1, 1), color.from_string('white'))
         img.close()
     
     def test_splice(self):
@@ -472,7 +472,7 @@ class WithSample(TestCase):
         
         img.splice(10, 10, 10, 10)
         self.assertTrue(img.get_pixel(5, 5).opaque)
-        self.assertEquals(img.get_pixel(15, 15).alpha, 0)
+        self.assertEqual(img.get_pixel(15, 15).alpha, 0)
     
     def test_trim(self):
         img = self.img
@@ -486,16 +486,16 @@ class WithSample(TestCase):
     def test_colorspace(self):
         img = self.img
         
-        self.assertEquals(img.colorspace, colorspaces.rgb)
+        self.assertEqual(img.colorspace, colorspaces.rgb)
         img.colorspace = colorspaces.ycbcr
-        self.assertEquals(img.colorspace, colorspaces.ycbcr)
+        self.assertEqual(img.colorspace, colorspaces.ycbcr)
     
     def test_type(self):
         img = self.img
         
-        self.assertEquals(img.type, sample.type)
+        self.assertEqual(img.type, sample.type)
         img.type = types.bilevel
-        self.assertEquals(img.type, types.bilevel)
+        self.assertEqual(img.type, types.bilevel)
     
     def test_size(self):
         img = self.img
@@ -506,12 +506,12 @@ class WithSample(TestCase):
     def test_depth(self):
         img = self.img
         
-        self.assertEquals(img.depth, 8)
+        self.assertEqual(img.depth, 8)
         
     def test_convert_colorspace(self):
         img = self.img
         img.convert_colorspace(colorspaces.ycbcr)
-        self.assertEquals(img.colorspace, colorspaces.ycbcr)
+        self.assertEqual(img.colorspace, colorspaces.ycbcr)
 
 
 class ThreadedTest(TestCase):

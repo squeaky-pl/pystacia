@@ -14,22 +14,22 @@ class MagickLogo(TestCase):
     def test(self):
         img = image.magick_logo()
         
-        self.assertEquals(img.size, (640, 480))
-        self.assertEquals(img.type, types.palette)
+        self.assertEqual(img.size, (640, 480))
+        self.assertEqual(img.type, types.palette)
 
 
 class Lena(TestCase):
     @skipIf(not lena_available(), 'Lena not available')
     def test(self):
         img = image.lena()
-        self.assertEquals(img.size, (512, 512))
-        self.assertEquals(img.type, types.truecolor)
-        self.assertEquals(img.colorspace, colorspaces.rgb)
+        self.assertEqual(img.size, (512, 512))
+        self.assertEqual(img.type, types.truecolor)
+        self.assertEqual(img.colorspace, colorspaces.rgb)
         img.close()
         
         img = image.lena(32)
-        self.assertEquals(img.size, (32, 32))
-        self.assertEquals(img.colorspace, colorspaces.rgb)
+        self.assertEqual(img.size, (32, 32))
+        self.assertEqual(img.colorspace, colorspaces.rgb)
         img.close()
 
 from sys import version_info
