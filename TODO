@@ -2,6 +2,7 @@
 TODO
 ====
 
+assertEquals is deprecated
 ------
 - move factory choosing code to a separate function
 - thread/local, global registry

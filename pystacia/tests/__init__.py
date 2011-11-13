@@ -32,8 +32,11 @@ class Lena(TestCase):
         self.assertEquals(img.colorspace, colorspaces.rgb)
         img.close()
 
+from sys import version_info
+
 
 class DeprecationTest(TestCase):
+    @skipIf(version_info < (2, 6), 'Catching warnings not available')
     def test(self):
         import pystacia
         from pystacia import image
@@ -77,7 +80,7 @@ class DeprecationTest(TestCase):
             names = ['composites', 'types', 'filters', 'colorspaces',
                      'compressions', 'axes']
             for name in names:
-                self.assertEquals(getattr(pystacia, name).x,
+                self.assertEqual(getattr(pystacia, name).x,
                                   getattr(image, name).x)
                 self.assertTrue(name in w[-1].message.args[0])
 

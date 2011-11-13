@@ -64,6 +64,7 @@ if not environ.get('PYSTACIA_SETUP'):
     read_raw = lazy_imported('read_raw')
     blank = lazy_imported('blank')
     checkerboard = lazy_imported('checkerboard')
+    lena = lazy_imported('lena')
     magick_logo = lazy_imported('magick_logo')
     rose = lazy_imported('rose')
     wizard = lazy_imported('wizard')
