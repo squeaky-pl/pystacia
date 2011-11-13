@@ -52,6 +52,19 @@ class DeprecationTest(TestCase):
         with catch_warnings(record=True) as w:
             simplefilter('always')
             
+            self.assertTrue(image.blank(30, 30).
+                            is_same(pystacia.blank(30, 30)))
+            
+            if lena_available():
+                self.assertTrue(image.lena().is_same(pystacia.lena()))
+            
+            for sample in ['magick_logo', 'wizard',
+                           'netscape', 'granite', 'rose']:
+                self.assertTrue(getattr(image, sample)().
+                                is_same(getattr(pystacia, sample)()))
+                
+            self.assertIsInstance(pystacia.Image(), image.Image)
+            
         with catch_warnings(record=True) as w:
             simplefilter('always')
             names = ['composites', 'types', 'filters', 'colorspaces',
