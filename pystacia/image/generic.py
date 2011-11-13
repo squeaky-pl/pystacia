@@ -32,5 +32,5 @@ def blank(width, height, background=None, factory=None):
     return call(io.read, 'xc:' + str(background),
                 width, height, factory)
     
-from pystacia.image.impl import io
+from pystacia.image._impl import io
 from pystacia.api.func import call

@@ -5,21 +5,8 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from pystacia import image
-from pystacia.image import types
-from pystacia.image.sample import lena_available
-
-
-if lena_available():
-    sample = image.lena
-    sample.size = (512, 512)
-    sample.type = types.truecolor
-else:
-    sample = image.magick_logo
-    sample.size = (640, 480)
-    sample.type = types.palette
-
 from pystacia.tests.common import TestCase, skipIf
+from pystacia.image.sample import lena_available
 
 class MagickLogo(TestCase):
     def test(self):
@@ -61,11 +48,27 @@ class DeprecationTest(TestCase):
                 self.assertTrue(image.lena().is_same(pystacia.lena()))
                 self.assertTrue('lena' in w[-1].message.args[0])
             
-            for sample in ['magick_logo', 'wizard',
+            tmpname = mkstemp()[1] + '.bmp'
+            img = sample()
+            img.write(tmpname)
+            
+            self.assertTrue(pystacia.read(tmpname).
+                            is_same(image.read(tmpname)))
+            self.assertTrue('read' in w[-1].message.args[0])
+            
+            self.assertTrue(pystacia.read_blob(img.get_blob('bmp')).
+                            is_same(image.read_blob(img.get_blob('bmp'))))
+            
+            self.assertTrue(pystacia.read_raw(**img.get_raw('rgb')).
+                            is_same(image.read_raw(**img.get_raw('rgb'))))
+            
+            img.close()
+            
+            for symbol in ['magick_logo', 'wizard',
                            'netscape', 'granite', 'rose']:
-                self.assertTrue(getattr(image, sample)().
-                                is_same(getattr(pystacia, sample)()))
-                self.assertTrue(sample in w[-1].message.args[0])
+                self.assertTrue(getattr(image, symbol)().
+                                is_same(getattr(pystacia, symbol)()))
+                self.assertTrue(symbol in w[-1].message.args[0])
                 
             self.assertIsInstance(pystacia.Image(), image.Image)
             
@@ -77,5 +80,9 @@ class DeprecationTest(TestCase):
                 self.assertTrue(name in w[-1].message.args[0])
 
 
-from pystacia.image import colorspaces
 from warnings import catch_warnings, simplefilter
+from tempfile import mkstemp
+
+from pystacia import image
+from pystacia.image import colorspaces, types
+from pystacia.tests.common import sample 

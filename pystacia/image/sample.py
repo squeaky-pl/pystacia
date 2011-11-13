@@ -120,7 +120,7 @@ from os.path import dirname, join, exists
 
 import pystacia
 from pystacia.api.func import call
-from pystacia.image.impl import io
+from pystacia.image._impl import io
 from pystacia.image.enum import colorspaces
 from pystacia import magick
 from pystacia.util import PystaciaException

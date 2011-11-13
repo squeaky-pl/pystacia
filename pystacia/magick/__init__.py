@@ -44,7 +44,7 @@ def get_options():
     if exists(config_path):
         return get_options_hack(config_path)
     else:
-        return call(impl.get_options)
+        return call(_impl.get_options)
 
 
 @memoized
@@ -77,4 +77,4 @@ except ImportError:
 
 from pystacia.api import get_dll
 from pystacia.api.func import call, simple_call
-from pystacia.magick import impl
+from pystacia.magick import _impl

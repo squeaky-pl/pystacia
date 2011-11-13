@@ -66,37 +66,35 @@ class Stateful(object):
 
 class ResourceTest(TestCase):
     def setUp(self):
-        self._store_registry = common._registry
-        common._registry = self._store_registry.__class__()
-    
-    def tearDown(self):
-        common._registry = self._store_registry
+        self.count = len(common._registry)
     
     def test_tracking(self):
-        self.assertEquals(len(common._registry), 0)
+        count = self.count
         
         mock1 = Mock()
         
-        self.assertEquals(len(common._registry), 1)
+        self.assertEquals(len(common._registry), count + 1)
         
         mock1.close()
         
-        self.assertEquals(len(common._registry), 0)
+        self.assertEquals(len(common._registry), count)
         
         mock1 = Mock()
         mock2 = Mock()
         
-        self.assertEquals(len(common._registry), 2)
+        self.assertEquals(len(common._registry), count + 2)
         
         mock1.close()
         
-        self.assertEquals(len(common._registry), 1)
+        self.assertEquals(len(common._registry), count + 1)
         
         mock2._claim()
         
-        self.assertEquals(len(common._registry), 0)
+        self.assertEquals(len(common._registry), count)
         
     def test_called(self):
+        count = self.count
+        
         mock1 = Mock()
         
         self.assertTrue(mock1.alloc_called)
@@ -106,7 +104,7 @@ class ResourceTest(TestCase):
         
         self.assertTrue(mock1.free_called)
         
-        self.assertEquals(len(common._registry), 0)
+        self.assertEquals(len(common._registry), count)
         
         mock2 = Mock(34)
         
@@ -118,7 +116,7 @@ class ResourceTest(TestCase):
         self.assertFalse(mock3.alloc_called)
         self.assertFalse(mock2.free_called)
         
-        self.assertEquals(len(common._registry), 2)
+        self.assertEquals(len(common._registry), count + 2)
         
         mock2.close()
         
@@ -128,7 +126,7 @@ class ResourceTest(TestCase):
         
         self.assertFalse(mock3.free_called)
         
-        self.assertEquals(len(common._registry), 0)
+        self.assertEquals(len(common._registry), count)
         
     def test_resource(self):
         mock1 = Mock()
@@ -148,9 +146,11 @@ class ResourceTest(TestCase):
         self.assertRaisesRegexp(PystaciaException, 'closed',
                                 lambda:  mock1.resource)
         
-        self.assertEquals(len(common._registry), 0)
+        self.assertEquals(len(common._registry), self.count)
         
     def test_copy(self):
+        count = self.count
+        
         mock = Mock(3)
         
         copy1 = mock.copy()
@@ -161,7 +161,7 @@ class ResourceTest(TestCase):
         self.assertEquals(mock.resource, copy1.resource)
         self.assertEquals(copy2.resource, copy1.resource)
         
-        self.assertEquals(len(common._registry), 3)
+        self.assertEquals(len(common._registry), count + 3)
         
         mock.close()
         
@@ -173,7 +173,7 @@ class ResourceTest(TestCase):
         copy1.close()
         self.assertEquals(copy2._claim(), 3)
         
-        self.assertEquals(len(common._registry), 0)
+        self.assertEquals(len(common._registry), count)
     
     def test_badmock(self):
         self.assertRaisesRegexp(PystaciaException, '_alloc',

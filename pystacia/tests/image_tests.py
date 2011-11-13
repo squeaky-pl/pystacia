@@ -534,5 +534,5 @@ from pystacia.util import PystaciaException
 from pystacia.image import (read, read_raw, read_blob, types,
                            colorspaces, blank, axes)
 from pystacia import color
-from pystacia.tests import sample
+from pystacia.tests.common import sample
 from random import randint

@@ -100,7 +100,7 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
     return call(io.read_raw, raw, format, width, height, depth, factory)
 
 from pystacia.common import Resource
-from pystacia.image.impl import alloc, clone, free
+from pystacia.image._impl import alloc, clone, free
 
 
 class Image(Resource):
@@ -1061,7 +1061,7 @@ if not disable_chains:
             setattr(Image, key, chainable(item))
 
 
-from pystacia.image.impl import (io, geometry, color as color_impl,
+from pystacia.image._impl import (io, geometry, color as color_impl,
                                  blur as blur_impl, deform, special, pixel)
 
 # convenience imports

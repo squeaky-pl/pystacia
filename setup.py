@@ -180,7 +180,7 @@ from setuptools import setup
 packages = ['pystacia',
             'pystacia.tests',
             'pystacia.image',
-            'pystacia.image.impl',
+            'pystacia.image._impl',
             'pystacia.magick',
             'pystacia.color',
             'pystacia.api',

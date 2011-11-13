@@ -183,6 +183,22 @@ def get_dll(init=True):
     
     return dll
 
+from pystacia.util import memoized
+
+
+@memoized
+def get_bridge():
+    if environ.get('PYSTACIA_IMPL', '').upper() == 'SIMPLE':
+        logger.debug('Using Simple implementation')
+        impl = SimpleImpl()
+    else:
+        logger.debug('Using Thread implementation')
+        impl = ThreadImpl(True)
+        
+    bridge = CallBridge(impl)
+    
+    return bridge
+
 
 from os import environ, pathsep
 from os.path import join, exists, dirname
@@ -192,11 +208,12 @@ from warnings import warn
 import atexit
 
 from pystacia import logger
+from pystacia.bridge import CallBridge, ThreadImpl, SimpleImpl
 from pystacia.util import get_osname, PystaciaException
 from pystacia.compat import formattable
 from pystacia.common import _cleanup
 from pystacia import magick
-from pystacia.api.func import get_bridge, simple_call
+from pystacia.api.func import simple_call
 
 
 min_version = (6, 5, 9, 0)

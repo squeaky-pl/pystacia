@@ -127,7 +127,7 @@ def from_int24(value, factory=None):
     return from_rgb8(value & 0xff0000, value & 0xff00, value & 0xff, factory)
 
 from pystacia.common import Resource
-from pystacia.color.impl import alloc, free, clone
+from pystacia.color._impl import alloc, free, clone
 
 
 class Color(Resource):
@@ -152,10 +152,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(impl.get_red, self)
+            return call(_impl.get_red, self)
         
         def fset(self, value):
-            call(impl.set_red, self, value)
+            call(_impl.set_red, self, value)
         
         return property(**locals())
         
@@ -174,10 +174,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(impl.get_green, self)
+            return call(_impl.get_green, self)
         
         def fset(self, value):
-            call(impl.set_green, self, value)
+            call(_impl.set_green, self, value)
         
         return property(**locals())
     
@@ -196,10 +196,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(impl.get_blue, self)
+            return call(_impl.get_blue, self)
         
         def fset(self, value):
-            call(impl.set_blue, self, value)
+            call(_impl.set_blue, self, value)
         
         return property(**locals())
     
@@ -218,10 +218,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(impl.get_alpha, self)
+            return call(_impl.get_alpha, self)
         
         def fset(self, value):
-            call(impl.set_alpha, self, value)
+            call(_impl.set_alpha, self, value)
         
         return property(**locals())
     
@@ -245,7 +245,7 @@ class Color(Resource):
            
            :rtype: tuple
         """
-        return call(impl.get_hsl, self)
+        return call(_impl.get_hsl, self)
         
     def get_rgba(self):
         """Return red, green, blue and alpha components.
@@ -385,5 +385,5 @@ from six import integer_types, string_types
 
 from pystacia.api.func import simple_call, call
 from pystacia.compat import formattable
-from pystacia.color import impl
+from pystacia.color import _impl
 from pystacia.util import PystaciaException
