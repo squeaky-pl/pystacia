@@ -418,6 +418,21 @@ class WithSample(TestCase):
         self.assertNotEquals(result[1], 0)
         
         img2.close()
+        
+    def test_is_same(self):
+        img = self.img
+        
+        self.assertTrue(img.is_same(img))
+        
+        img2 = img.copy()
+        
+        self.assertTrue(img.is_same(img2))
+        
+        img2.gamma(2)
+        
+        self.assertFalse(img.is_same(img2))
+        
+        img2.close()
     
     def test_straigten(self):
         img = self.img

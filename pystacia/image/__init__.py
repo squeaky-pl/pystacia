@@ -829,6 +829,20 @@ class Image(Resource):
         """
         return call(pixel.compare, self, image, metric, factory)
     
+    def is_same(self, image):
+        """Check if images are the same.
+           
+           :param image: reference image
+           :rtype: ``bool``
+           
+           Returns ``True`` if images are exactly the same i.e.
+           are of same dimensions
+           and underlying pixel data is exactly the same.
+        """
+        result = self.compare(image)
+        
+        return result and result[1] == 0
+    
     #def shadow(self, radius, x=0, y=0, opacity=0.5):
     #    resource = self.resource
     #    guard(resource,
