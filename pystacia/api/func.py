@@ -33,6 +33,8 @@ def get_data():
         elif hasattr(name, '__getitem__') and len(name) == 2:
             verb = name[0]
             noun = name[1]
+        elif hasattr(name, '__getitem__') and len(name) == 3:
+            return 'Magick' + name[0].title() + name[2].title()
         else:
             raise PystaciaException('Incorrect name format')
         
@@ -167,6 +169,7 @@ def get_data():
                 ('set', 'color'): ((pw,), b),
                 ('set', 'opacity'): ((d,), b),
                 'composite': ((w, e, ss, ss), b),
+                ('compare', None, 'images'): ((w, e, P(d)), w),
                 
                 'next': ((), b)
             }

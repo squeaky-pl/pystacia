@@ -809,6 +809,26 @@ class Image(Resource):
         """
         call(pixel.overlay, self, image, x, y, composite)
     
+    def compare(self, image, metric=None, factory=None):
+        """Compare image to another image
+           
+           :param image: reference image
+           :type image: :class:`pystacia.image.Image`
+           :param metric: distortion metric
+           :type metric: :class:`pystacia.lazyenum.EnumValue`
+           :param factory: factory to be used to create difference image
+           :rtype: ``tuple`` of :class:`Image` and ``float`` distortion in
+            given metric
+            
+            Compares two images of the same sizes. Returns a tuple of an
+            image marking different parts with red color and a distortion
+            metric.
+            By default it uses :attr:`pystacia.image.metrics.absolute_error`
+            metric. If images are of  differnt sizes
+            returns ``False`` instead.
+        """
+        return call(pixel.compare, self, image, metric, factory)
+    
     #def shadow(self, radius, x=0, y=0, opacity=0.5):
     #    resource = self.resource
     #    guard(resource,

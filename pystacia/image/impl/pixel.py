@@ -45,8 +45,32 @@ def overlay(image, other, x, y, composite):
     c_call(image, 'composite', other, composite, x, y)
 
 
+def compare(image, other, metric, factory):
+    if image.size != other.size:
+        return False
+    
+    if not metric:
+        metric = metrics.absolute_error
+    
+    metric = enum_lookup(metric)
+    
+    if not factory:
+        factory = Image
+    
+    distortion = c_double()
+    
+    diff = c_call(image, ('compare', None, 'images'), other,
+                  metric, distortion)
+    
+    return(factory(diff), distortion.value)
+
+
+from ctypes import c_double
+
 from pystacia.api.func import get_c_method, c_call
 from pystacia.api.enum import lookup as enum_lookup
+from pystacia.image.enum import metrics
+from pystacia.image import Image
 from pystacia.image.enum import composites
 from pystacia.image.generic import blank
 from pystacia.color import from_rgb, Color

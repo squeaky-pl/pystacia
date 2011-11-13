@@ -399,7 +399,26 @@ class WithSample(TestCase):
         before = img2.get_pixel(10, 10)
         img.overlay(img2, 50, 50)
         self.assertEquals(img.get_pixel(60, 60), before)
-
+    
+    def test_compare(self):
+        img = self.img
+        
+        result = img.compare(img)
+        self.assertEquals(result[1], 0)
+        self.assertIsInstance(result[0], Image)
+        
+        img2 = img.copy()
+        
+        result = img.compare(img2)
+        self.assertEquals(result[1], 0)
+        
+        img2.gamma(2)
+        
+        result = img.compare(img2)
+        self.assertNotEquals(result[1], 0)
+        
+        img2.close()
+    
     def test_straigten(self):
         img = self.img
         
