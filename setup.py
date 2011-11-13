@@ -189,7 +189,7 @@ packages = ['pystacia',
 cmdclass = dict(build=pystacia_build,
                 install=pystacia_install)
 
-environ['PYSTACIA_SETUP'] = 1
+environ['PYSTACIA_SETUP'] = '1'
 
 import pystacia
 
