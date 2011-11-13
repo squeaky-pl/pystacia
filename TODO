@@ -2,15 +2,7 @@
 TODO
 ====
 
-
-- TinyException should use new deprecation model
-- get rid of zope.deprecation
-- rename impl to _impl
-- trace calls to another things in _impl so we can skip going through bridges
-  twice. never use instance methods in there
-- use separate logger for api and impl
-- make every image, color method atomic
-- move common under utils [0.1.1]
+------
 - move factory choosing code to a separate function
 - thread/local, global registry
 - figure out how to do basicConfig
@@ -59,7 +51,6 @@ TODO
 - implement gravity=(0, 0) gravity=(.5, 1) gravity=('left') on merge, crop, extend, rotate(crop=True), resize [0.2]
 - with img.masked(mask) as img:
 - with img.canvas() as c:
-- thread safety?
 - all functions should accept blend as param - merges result on top with this blend
 - visual testing framework with reference images
 - wave needs phi
@@ -79,16 +70,19 @@ not documented: splice
 DOCS
 ====
 
-DISQUS
 write chapter on resource management - closed, close, with
 write chapter on performing custom cdll operations and .resource
 fork me on bitbucket
-logo stuff and project group name
+flattr, facebook like, G+
+discussion group
+header with links
 style - fixed left column, background left column, background main
-
+- migration (-W always)
+- what's new
 
 STUFF
 =====
+
 - license on top of files
 - links
 - tinydetect

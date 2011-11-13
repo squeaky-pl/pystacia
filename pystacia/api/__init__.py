@@ -6,6 +6,10 @@
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 from __future__ import with_statement
 
+from logging import getLogger
+
+logger = getLogger('pystacia.api')
+
 
 def find_library(name, abis):
     paths = []
@@ -207,7 +211,6 @@ import ctypes.util
 from warnings import warn
 import atexit
 
-from pystacia import logger
 from pystacia.bridge import CallBridge, ThreadImpl, SimpleImpl
 from pystacia.util import get_osname, PystaciaException
 from pystacia.compat import formattable

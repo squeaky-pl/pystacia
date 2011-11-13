@@ -288,8 +288,7 @@ from six import string_types, b
 
 from pystacia.util import PystaciaException
 from pystacia.compat import native_str, formattable, c_ssize_t
-from pystacia.api import get_dll, get_bridge
+from pystacia.api import get_dll, get_bridge, logger
 from pystacia.api.type import (
     MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, enum)
 from pystacia.common import Resource
-from pystacia import logger
