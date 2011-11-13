@@ -3,7 +3,6 @@ TODO
 ====
 
 
-- implement compare method and is_same shortcut
 - check for deprecated functions in test
 - main call bridge should sit in api
 - move sample to common tests file
@@ -21,12 +20,10 @@ TODO
   if it can be loaded and test for OS and 64bit in setyp.py
 - research auto_level, auto_gamma
 - document splice, implement implode
-- test if we can get delegates before we initialize ImageMagick (lena deletion) [0.1.1]
 - weakrefing cached lena should be only used in tests [0.1.1]
 - setting factories globally [0.1.1] if you want to use a subclass
 - i.e. registry module to use for paths, chainability and any other things
   that affect runtime
-- move version and author from setup.py into __init__.py [0.1.1]
 - more methods for image [0.1.1]
 - more generators from pseudoformats: plasma, checkerboard, gradients etc [0.1.1]
 - Image.write should obey format when explicitely set, ImageMagick always does it

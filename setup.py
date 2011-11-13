@@ -189,13 +189,15 @@ packages = ['pystacia',
 cmdclass = dict(build=pystacia_build,
                 install=pystacia_install)
 
+import pystacia
+
 setup(
     name='pystacia',
     description='Python raster imaging library',
-    author='Paweł Piotr Przeradowski'.replace('ł', 'l'),
+    author=pystacia.__author__.replace('ł', 'l'),  # Paweł Piotr Przeradowski 
     author_email='przeradowski@gmail.com',
     url='http://liquibits.bitbucket.org/',
-    version='0.2dev',
+    version=pystacia.__version__,
     packages=packages,
     license='MIT License',
     long_description=open('README').read(),

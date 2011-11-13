@@ -8,6 +8,10 @@
 """pystacia is a raster graphics library utilizing ImageMagick."""
 
 
+__version__ = '0.2dev'
+__author__ = 'Paweł Piotr Przeradowski'
+
+
 from os import environ
 from logging import getLogger, basicConfig
 
