@@ -57,9 +57,13 @@ class MemoizedTest(TestCase):
     
     @skipIf(not hasattr(math, 'factorial'), 'Python without factorial')
     def test_threaded_recursive(self):
-        for _ in range(0, 20):
-            x = randint(1, 6)
+        def thread():
+            x = randint(1, 7)
             self.assertEqual(threaded_factorial(x), math.factorial(x))
+            
+        threads = [Thread(target=thread) for _ in range(0, 50)]
+        [t.start() for t in threads]
+        [t.join() for t in threads]
 
 
 class A(object):
