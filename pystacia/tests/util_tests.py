@@ -5,8 +5,8 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from pystacia.tests.common import TestCase
-
+from pystacia.tests.common import TestCase, skipIf
+import math
 
 class MemoizedTest(TestCase):
     def test(self):
@@ -45,7 +45,7 @@ class MemoizedTest(TestCase):
         [t.start() for t in threads]
         [t.join() for t in threads]
         
-    def test_recoursive(self):
+    def test_recursive(self):
         def thread():
             for _ in range(randint(0, 20)):
                 a = randint(0, 100)
@@ -54,6 +54,12 @@ class MemoizedTest(TestCase):
         threads = [Thread(target=thread) for _ in range(randint(0, 50))]
         [t.start() for t in threads]
         [t.join() for t in threads]
+    
+    @skipIf(not hasattr(math, 'factorial'), 'Python without factorial')
+    def test_threaded_recursive(self):
+        for _ in range(0, 20):
+            x = randint(1, 6)
+            self.assertEqual(threaded_factorial(x), math.factorial(x))
 
 
 class A(object):
@@ -86,4 +92,28 @@ def recurse(i):
         return recurse(i - 1) + 1
 
 from threading import Thread
+
+
+class SubThread(Thread):
+    def __init__(self, i):
+        self.i = i
+        
+        super(SubThread, self).__init__()
+        
+    def run(self):
+        self.result = threaded_factorial(self.i)
+            
+
+@memoized
+def threaded_factorial(i):
+    if i == 1:
+        return 1
+    else:
+        subthread = SubThread(i - 1)
+        subthread.start()
+        subthread.join()
+        
+        return i * subthread.result
+
+
 from random import randint, choice
