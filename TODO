@@ -2,19 +2,20 @@
 TODO
 ====
 
-- move common under utils [0.1.1]
-- sandboxing with process and
-- subprocess loading of libraries optionall with pyro [0.1.1]
+assertEquals is deprecated
+------
+- move factory choosing code to a separate function
+- thread/local, global registry
+- figure out how to do basicConfig
+- subprocess loading of libraries optionall with pyro [0.3]
 - instead of relying on renames and get_platfom we could use our own solution [0.1.1]
   if it can be loaded and test for OS and 64bit in setyp.py
 - research auto_level, auto_gamma
 - document splice, implement implode
-- test if we can get delegates before we initialize ImageMagick (lena deletion) [0.1.1]
 - weakrefing cached lena should be only used in tests [0.1.1]
 - setting factories globally [0.1.1] if you want to use a subclass
 - i.e. registry module to use for paths, chainability and any other things
   that affect runtime
-- move version and author from setup.py into __init__.py [0.1.1]
 - more methods for image [0.1.1]
 - more generators from pseudoformats: plasma, checkerboard, gradients etc [0.1.1]
 - Image.write should obey format when explicitely set, ImageMagick always does it
@@ -22,25 +23,20 @@ TODO
   into one class with many test methods [0.1.1]
 - compress method that let's you apply compression and reread image, useful for
   preving compression result
-- move lazyenym, and compat under util? [0.1.1]
 - put generators together under some submodule, name? [0.1.1]
 - make string passing possible [x]? [0.1.1]
 - fit method [0.1.1]
-- should getters and setters be explicit? [0.1.1]
 - set_pixel (possible?) [0.1.1]
 - lazy init of imagick and function prototypes [0.1.1]
 - keep track of showed temp files and delete them on exit, possibly in the
   image object [0.1.1]
 - rgb8, rgba8 color factory, and accessors [0.1.1]
-- @api_simple_call [0.1.1]
 - support for with protocol [0.1.1]
 - document origin of name pistacja, włoski, pistachio, pronunciation [0.1.1]
-- move all sample images into tinyimg.image.sample [0.1.1]
-- move all generic images (checkerboard, blank) into tinyimg.image.generic [0.1.1]
 - info method (returns all the crucial magick informations along with loaded libraries and paths)
 - implement other color factories [0.2]
 - add env variable to force immediate init of imagick [0.2]
-- implement better show tool detecting (eog on linux e.g) and fallback to webbrowser [0.2]
+- implement better show tool detecting (doesnt work with unity) and fallback to webbrowser [0.2]
 - allow overriding viewer wiith TINYIMG_VIEWER env var
 - containers vs formats
 - search path alteration logic [0.2]
@@ -56,7 +52,6 @@ TODO
 - implement gravity=(0, 0) gravity=(.5, 1) gravity=('left') on merge, crop, extend, rotate(crop=True), resize [0.2]
 - with img.masked(mask) as img:
 - with img.canvas() as c:
-- thread safety?
 - all functions should accept blend as param - merges result on top with this blend
 - visual testing framework with reference images
 - wave needs phi
@@ -64,8 +59,6 @@ TODO
 - blending gravity
 - checker in show, zoom, crop
 - > and < on color lightness comparison
-- color_overlay should become fill once we have blending everywhere
-- zip deployment technique with all binaries for all osses
 
 
 research functions
@@ -78,16 +71,19 @@ not documented: splice
 DOCS
 ====
 
-DISQUS
 write chapter on resource management - closed, close, with
 write chapter on performing custom cdll operations and .resource
 fork me on bitbucket
-logo stuff and project group name
+flattr, facebook like, G+
+discussion group
+header with links
 style - fixed left column, background left column, background main
-
+- migration (-W always)
+- what's new
 
 STUFF
 =====
+
 - license on top of files
 - links
 - tinydetect

@@ -1,4 +1,44 @@
+from __future__ import with_statement
 """Resource management utilities."""
+
+
+class state(object):
+    
+    """State management context guard
+       
+       Used for push - pop paradigm with objects supporting
+       _get_state and _set_state contract. Typically used with
+       "with" statement.
+       
+       >>> with state(resource, quality=10, format='png'):
+       >>>    resource.do_sth()
+    """
+    
+    def __init__(self, resource, **kw):
+        self.__resource = resource
+        self.__state = []
+        self.__kw = kw
+    
+    def push(self):
+        """Push state"""
+        resource = self.__resource
+        
+        for prop, value in self.__kw.items():
+            if value == None:
+                continue
+            old_value = resource._get_state(prop)
+            self.__state.append((prop, old_value))
+            resource._set_state(prop, value)
+    
+    def pop(self):
+        """Pop state"""
+        for prop, value in reversed(self.__state):
+            self.__resource._set_state(prop, value)
+            
+    __enter__ = push
+    
+    def __exit__(self, type, value, traceback):  # @ReservedAssignment
+        self.pop()
 
 
 class Resource(object):
@@ -23,10 +63,9 @@ class Resource(object):
             tmpl = formattable('{0} _alloc method returned None')
             raise PystaciaException(tmpl.format(self.__class__.__name__))
         
-        if not id(self) in _registry:
-            _registry[id(self)] = self
+        _track(self)
     
-    def _claim(self):
+    def _claim(self, untrack=True):
         """Claim resource and close this instance.
            
            This is used to transfer management of underlying
@@ -35,15 +74,14 @@ class Resource(object):
            
            Not to be called directly under normal circumstances
         """
-        resource = self.resource
-        self.__resource = None
+        self.__resource, resource = None, self.__resource
         
-        if not _cleaningup and id(self) in _registry:
-            del _registry[id(self)]
+        if untrack:
+            _untrack(self)
         
         return resource
     
-    def close(self):
+    def close(self, untrack=True):
         """Free resource and close the object
            
            Call this method when the object is no longer needed or to free
@@ -51,7 +89,7 @@ class Resource(object):
            use with context protocol.
         """
         self._free()
-        self._claim()
+        self._claim(untrack=untrack)
     
     def copy(self):
         """Get independent copy of this resource."""
@@ -94,14 +132,31 @@ class Resource(object):
 
 from weakref import WeakValueDictionary
 
-from pystacia.util import PystaciaException
-from pystacia.compat import formattable
-
 
 _registry = WeakValueDictionary()
 """Dictionary keeping references to all resources."""
 
 _cleaningup = False
+
+from threading import Lock
+
+__lock = Lock()
+
+
+def _track(resource):
+    key = id(resource)
+    if key not in _registry:
+        with __lock:
+            if key not in _registry:
+                _registry[key] = resource
+
+
+def _untrack(resource):
+    key = id(resource)
+    if key in _registry:
+        with __lock:
+            if key in _registry:
+                del _registry[key]
 
 
 def _cleanup():
@@ -110,12 +165,28 @@ def _cleanup():
        Closes and destroys all currently allocated resources. This gets called
        from atexit handler just before :term:`ImageMagick` gets uninitialized.
     """
-    global _cleaningup
-    _cleaningup = True
+    msg = formattable('Tracked weakrefs: {0}')
+    logger.debug(msg.format(len(_registry)))
+    alive = 0
+    unclosed = 0
+    with __lock:
+        for ref in _registry.itervaluerefs():
+            obj = ref()
+            if obj:
+                alive += 1
+                if not obj.closed:
+                    unclosed += 1
+                    obj.close(untrack=False)
+                del obj
     
-    for ref in _registry.itervaluerefs():
-        obj = ref()
-        if obj:
-            if not obj.closed:
-                obj.close()
-            del obj
+    msg = formattable('Alive weakrefs: {0}')
+    logger.debug(msg.format(alive))
+    
+    msg = formattable('Unclosed resources: {0}')
+    logger.debug(msg.format(unclosed))
+    
+    logger.debug('Finished cleanup')
+    
+from pystacia import logger
+from pystacia.util import PystaciaException
+from pystacia.compat import formattable

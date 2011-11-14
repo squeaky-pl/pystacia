@@ -5,332 +5,290 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
+from pystacia.util import memoized
 
-def annote(cdll):
-    cdll.MagickGetVersion.restype = c_char_p
-    cdll.MagickGetVersion.argtypes = (POINTER(c_size_t),)
+
+@memoized
+def get_data():
+    # convenience shortcuts
+    w = MagickWand_p
+    pw = PixelWand_p
+    b = MagickBoolean
+    e = enum
+    ch = c_char_p
+    v = c_void_p
+    P = POINTER
+    s = c_size_t
+    ss = c_ssize_t
+    d = c_double
+    u = c_uint
     
-    cdll.MagickQueryConfigureOptions.restype = POINTER(c_char_p)
-    cdll.MagickQueryConfigureOptions.argtypes = (c_char_p, POINTER(c_size_t))
+    def magick_format(name):
+        return 'Magick' + ''.join(x.title() for x in name.split('_'))
     
-    cdll.MagickQueryConfigureOption.restype = c_char_p
-    cdll.MagickQueryConfigureOption.argtypes = (c_char_p,)
+    def image_format(name):
+        if isinstance(name, string_types):
+            verb = name
+            noun = ''
+        elif hasattr(name, '__getitem__') and len(name) == 2:
+            verb = name[0]
+            noun = name[1]
+        elif hasattr(name, '__getitem__') and len(name) == 3:
+            return 'Magick' + name[0].title() + name[2].title()
+        else:
+            raise PystaciaException('Incorrect name format')
+        
+        return ('Magick' + ''.join(x.title() for x in verb.split('_')) +
+                'Image' + ''.join(x.title() for x in noun.split('_')))
     
-    cdll.MagickWandGenesis.restype = None
-    cdll.MagickWandGenesis.argtypes = ()
+    def pixel_format(name):
+        if name == 'get_hsl':
+            name = 'GetHSL'
+        else:
+            name = ''.join(x.title() for x in name.split('_'))
+        return 'Pixel' + name
     
-    cdll.MagickWandTerminus.argtypes = ()
-    cdll.MagickWandTerminus.restype = None
+    return {
+        None: {
+            'format': lambda name: 'MagickWand' + name.title(),
+            'symbols': {
+                'genesis': ((),),
+                'terminus': ((),),
+            }
+        },
+        
+        'magick': {
+            'format': magick_format,
+            'arg': w,
+            'symbols': {
+                'set_size': ((s, s), b),
+                'get_format': ((), ch),
+                'set_format': ((ch,), b),
+                'set_depth': ((s,), b),
+                'get_exception': ((P(ExceptionType),), v)
+            }
+        },
+        
+        'magick_': {
+            'format': magick_format,
+            'symbols': {
+                'query_configure_options': ((ch, P(s)), P(ch)),
+                'query_configure_option': ((ch,), ch),
+                'get_version': ((P(s),), ch),
+                'relinquish_memory': ((v,), v)
+            }
+        },
+        
+        'wand': {
+            'format': lambda name: name.title() + 'MagickWand',
+            'result': w,
+            'symbols': {
+                'new': ((),),
+                'clone': ((w,),),
+                'destroy': ((w,),)
+            }
+        },
+        
+        'pwand': {
+            'format': lambda name: name.title() + 'PixelWand',
+            'result': pw,
+            'symbols': {
+                'new': ((),),
+                'clone': ((pw,),),
+                'destroy': ((pw,),)
+            }
+        },
+        
+        'image': {
+            'format': image_format,
+            'arg': w,
+            'symbols': {
+                'read': ((ch,), b),
+                'write': ((ch,), b),
+                ('read', 'blob'): ((v, s), b),
+                ('get', 'blob'): ((P(s),), v),
+                
+                ('set', 'format'): ((ch,), b),
+                ('get', 'format'): ((), ch),
+                ('set', 'compression_quality'): ((s,), b),
+                ('get', 'compression_quality'): ((), s),
+                ('get', 'width'): ((), s),
+                ('get', 'height'): ((), s),
+                ('get', 'depth'): ((), s),
+                ('set', 'depth'): ((s,), b),
+                ('get', 'type'): ((), e),
+                ('set', 'type'): ((e,), b),
+                ('get', 'colorspace'): ((), e),
+                ('set', 'colorspace'): ((e,), b),
+                ('get', 'pixel_color'): ((ss, ss, pw),
+                                         b),
+                ('set', 'background_color'): ((pw,), b),
+                ('get', 'background_color'): ((pw,), b),
+                ('transform', 'colorspace'): ((e,), b),
+                
+                'resize': ((s, s, e, d), b),
+                'crop': ((s, s, ss, ss), b),
+                'rotate': ((pw, d), b),
+                'flip': ((), b),
+                'flop': ((), b),
+                'transpose': ((), b),
+                'transverse': ((), b),
+                'shear': ((pw, d, d), b),
+                'roll': ((ss, ss), b),
+                'deskew': ((d,), b),
+                'trim': ((d,), b),
+                'splice': ((s, s, ss, ss), b),
+                
+                'brightness_contrast': ((d, d), b),
+                'gamma': ((d,), b),
+                'auto_gamma': ((), b),
+                'auto_level': ((), b),
+                'modulate': ((d, d, d), b),
+                'sepia_tone': ((d,), b),
+                'equalize': ((), b),
+                'negate': ((b,), b),
+                'solarize': ((d,), b),
+                'posterize': ((u, b), b),
+                
+                'blur': ((d, d), b),
+                'radial_blur': ((d,), b),
+                'enhance': ((), b),
+                'despeckle': ((), b),
+                'emboss': ((d, d), b),
+                
+                'swirl': ((d,), b),
+                'wave': ((d, d), b),
+                
+                'sketch': ((d, d, d), b),
+                'oil_paint': ((d,), b),
+                'spread': ((d,), b),
+                'forward_fourier_transform': ((b,), b),
+                'fx': ((ch,), w),
+                
+                'colorize': ((pw, pw), b),
+                ('set', 'color'): ((pw,), b),
+                ('set', 'opacity'): ((d,), b),
+                'composite': ((w, e, ss, ss), b),
+                ('compare', None, 'images'): ((w, e, P(d)), w),
+                
+                'next': ((), b)
+            }
+        },
+        
+        'pixel': {
+            'format': pixel_format,
+            'arg': pw,
+            'symbols': {
+                'set_red': ((d,),),
+                'get_red': ((), d),
+                'set_green': ((d,),),
+                'get_green': ((), d),
+                'set_blue': ((d,),),
+                'get_blue': ((), d),
+                'set_alpha': ((d,),),
+                'get_alpha': ((), d),
+                'set_color': ((ch,), b),
+                'get_hsl': ((P(d), P(d), P(d)),)
+            }
+        }
+    }
+
+def call(callable_, *args, **kw):
+    bridge = get_bridge()
     
-    #memory
-    cdll.MagickRelinquishMemory.restype = c_void_p
-    cdll.MagickRelinquishMemory.argtypes = (c_void_p,)
-    
-    #exceptions
-    cdll.MagickGetException.restype = c_void_p
-    cdll.MagickGetException.argtypes = (MagickWand_p, POINTER(ExceptionType))
-    
-    #wand
-    cdll.NewMagickWand.restype = MagickWand_p
-    cdll.NewMagickWand.argtypes = ()
-    
-    cdll.CloneMagickWand.restype = MagickWand_p
-    cdll.CloneMagickWand.argtypes = (MagickWand_p,)
-    
-    cdll.DestroyMagickWand.restype = MagickWand_p
-    cdll.DestroyMagickWand.argtypes = (MagickWand_p,)
-    
-    #properties
-    
-    #reading
-    cdll.MagickReadImage.restype = MagickBoolean
-    cdll.MagickReadImage.argtypes = (MagickWand_p, c_char_p)
-    
-    cdll.MagickReadImageBlob.restype = MagickBoolean
-    cdll.MagickReadImageBlob.argtypes = (MagickWand_p, c_void_p, c_size_t)
-    
-    #writing
-    cdll.MagickWriteImage.restype = MagickBoolean
-    cdll.MagickWriteImage.argtypes = (MagickWand_p, c_char_p)
-    
-    cdll.MagickGetImageBlob.argtypes = (MagickWand_p, POINTER(c_size_t))
-    cdll.MagickGetImageBlob.restype = c_void_p
-    
-    #properties
-    cdll.MagickGetImageFormat.argtypes = (MagickWand_p,)
-    cdll.MagickGetImageFormat.restype = c_char_p
-    
-    cdll.MagickSetImageFormat.argtypes = (MagickWand_p, c_char_p)
-    cdll.MagickSetImageFormat.restype = MagickBoolean
-    
-    cdll.MagickGetFormat.argtypes = (MagickWand_p,)
-    cdll.MagickGetFormat.restype = c_char_p
-    
-    cdll.MagickSetImageCompression.argtypes = (MagickWand_p, enum)
-    cdll.MagickSetImageCompression.restype = MagickBoolean
-    
-    cdll.MagickGetImageCompression.argtypes = (MagickWand_p,)
-    cdll.MagickGetImageCompression.restype = enum
-    
-    cdll.MagickSetFormat.argtypes = (MagickWand_p, c_char_p)
-    cdll.MagickSetFormat.restype = MagickBoolean
-    
-    cdll.MagickSetDepth.argtypes = (MagickWand_p, c_size_t)
-    cdll.MagickSetDepth.restype = MagickBoolean
-    
-    cdll.MagickGetImageCompressionQuality.argtypes = (MagickWand_p,)
-    cdll.MagickGetImageCompressionQuality.restype = c_size_t
-    
-    cdll.MagickSetImageCompressionQuality.argtypes = (MagickWand_p, c_size_t)
-    cdll.MagickSetImageCompressionQuality.restype = MagickBoolean
-    
-    cdll.MagickSetImageDepth.argtypes = (MagickWand_p, c_size_t)
-    cdll.MagickSetImageDepth.restype = MagickBoolean
-    
-    cdll.MagickSetImageType.argtypes = (MagickWand_p, c_size_t)
-    cdll.MagickSetImageType.restype = MagickBoolean
-    
-    cdll.MagickGetImageType.argtypes = (MagickWand_p,)
-    cdll.MagickGetImageType.restype = enum
-    
-    cdll.MagickSetSize.argtypes = (MagickWand_p, c_size_t, c_size_t)
-    cdll.MagickSetSize.restype = MagickBoolean
-    
-    cdll.MagickGetImageColorspace.argtypes = (MagickWand_p,)
-    cdll.MagickGetImageColorspace.restype = enum
-    
-    cdll.MagickSetImageColorspace.argtypes = (MagickWand_p, enum)
-    cdll.MagickSetImageColorspace.restype = MagickBoolean
-    
-    cdll.MagickTransformImageColorspace.argtypes = (MagickWand_p, enum)
-    cdll.MagickTransformImageColorspace.restype = MagickBoolean
-    
-    # symbol added in 6.6.1.6
-    try:
-        cdll.MagickSetImageColor.argtypes = (MagickWand_p, PixelWand_p)
-    except AttributeError:
-        pass
+    return bridge.call(callable_, *args, **kw)
+
+
+def simple_call(obj, method, *args, **kw):
+    return call(lambda: c_call(obj, method, *args, **kw))
+
+
+def get_c_method(obj, method, throw=True):
+    if hasattr(obj.__class__, '_api_type'):
+        api_type = obj.__class__._api_type
     else:
-        cdll.MagickSetImageColor.restype = MagickBoolean
+        api_type = obj
+        
+    msg = formattable('Translating method {0}.{1}')
+    logger.debug(msg.format(api_type, method))
     
-    #size
-    cdll.MagickGetImageWidth.restype = c_size_t
-    cdll.MagickGetImageWidth.argtypes = (MagickWand_p,)
+    type_data = get_data()[api_type]
+    method_name = type_data['format'](method)
     
-    cdll.MagickGetImageHeight.restype = c_size_t
-    cdll.MagickGetImageHeight.argtypes = (MagickWand_p,)
+    if not throw and not hasattr(get_dll(False), method_name):
+        return False
     
-    cdll.MagickGetImageDepth.restype = c_size_t
-    cdll.MagickGetImageDepth.argtypes = (MagickWand_p,)
+    c_method = getattr(get_dll(False), method_name)
     
-    #resize
-    cdll.MagickResizeImage.argtypes = (MagickWand_p, c_size_t, c_size_t,
-                                       enum, c_double)
-    cdll.MagickResizeImage.restype = MagickBoolean
-    
-    #crop
-    cdll.MagickCropImage.argtypes = (MagickWand_p, c_size_t, c_size_t,
-                                     c_ssize_t, c_ssize_t)
-    cdll.MagickCropImage.restype = MagickBoolean
-    
-    #flip
-    cdll.MagickFlipImage.argtypes = (MagickWand_p,)
-    cdll.MagickFlipImage.restype = MagickBoolean
-    
-    cdll.MagickFlopImage.argtypes = (MagickWand_p,)
-    cdll.MagickFlopImage.restype = MagickBoolean
-    
-    #roll
-    cdll.MagickRollImage.argtypes = (MagickWand_p, c_ssize_t, c_ssize_t)
-    cdll.MagickRollImage.restype = MagickBoolean
-    
-    #other
-    cdll.MagickDespeckleImage.argtypes = (MagickWand_p,)
-    cdll.MagickDespeckleImage.restype = MagickBoolean
-    
-    cdll.MagickEmbossImage.argtypes = (MagickWand_p, c_double, c_double)
-    cdll.MagickEmbossImage.restype = MagickBoolean
-    
-    cdll.MagickEnhanceImage.argtypes = (MagickWand_p,)
-    cdll.MagickEnhanceImage.restype = MagickBoolean
-    
-    cdll.MagickEqualizeImage.argtypes = (MagickWand_p,)
-    cdll.MagickEqualizeImage.restype = MagickBoolean
-    
-    cdll.MagickForwardFourierTransformImage.argtypes = (MagickWand_p,
-                                                        MagickBoolean)
-    cdll.MagickForwardFourierTransformImage.restype = MagickBoolean
-    
-    cdll.MagickNextImage.argtypes = (MagickWand_p,)
-    cdll.MagickNextImage.restype = MagickBoolean
-    
-    cdll.MagickFxImage.argtypes = (MagickWand_p, c_char_p)
-    cdll.MagickFxImage.restype = MagickWand_p
-    
-    cdll.MagickGammaImage.argtypes = (MagickWand_p, c_double)
-    cdll.MagickGammaImage.restype = MagickBoolean
-    
-    cdll.MagickSwirlImage.argtypes = (MagickWand_p, c_double)
-    cdll.MagickSwirlImage.restype = MagickBoolean
-    
-    cdll.MagickSpreadImage.argtypes = (MagickWand_p, c_double)
-    cdll.MagickSpreadImage.restype = MagickBoolean
-    
-    cdll.MagickAutoGammaImage.argtypes = (MagickWand_p,)
-    cdll.MagickAutoGammaImage.restype = MagickBoolean
-    
-    cdll.MagickAutoLevelImage.argtypes = (MagickWand_p,)
-    cdll.MagickAutoLevelImage.restype = MagickBoolean
-    
-    cdll.MagickBlurImage.argtypes = (MagickWand_p, c_double, c_double)
-    cdll.MagickBlurImage.restype = MagickBoolean
-    
-    cdll.MagickBrightnessContrastImage.argtypes = (MagickWand_p, c_double,
-                                                   c_double)
-    cdll.MagickBrightnessContrastImage.restype = MagickBoolean
-    
-    cdll.MagickCompositeImage.argtypes = (MagickWand_p, MagickWand_p, enum,
-                                          c_ssize_t, c_ssize_t)
-    cdll.MagickCompositeImage.restype = MagickBoolean
-    
-    cdll.MagickDeskewImage.argtypes = (MagickWand_p, c_double)
-    cdll.MagickDeskewImage.restype = MagickBoolean
-    
-    cdll.MagickModulateImage.argtypes = (MagickWand_p, c_double,
-                                         c_double, c_double)
-    cdll.MagickModulateImage.restype = MagickBoolean
-    
-    cdll.MagickNegateImage.argtypes = (MagickWand_p, MagickBoolean)
-    cdll.MagickNegateImage.restype = MagickBoolean
-    
-    cdll.MagickOilPaintImage.argtypes = (MagickWand_p, c_double)
-    cdll.MagickOilPaintImage.restype = MagickBoolean
-    
-    cdll.MagickPosterizeImage.argtypes = (MagickWand_p, c_uint, MagickBoolean)
-    cdll.MagickPosterizeImage.restype = MagickBoolean
-    
-    cdll.MagickRadialBlurImage.argtypes = (MagickWand_p, c_double)
-    cdll.MagickRadialBlurImage.restype = MagickBoolean
-    
-    cdll.MagickRotateImage.argtypes = (MagickWand_p, PixelWand_p, c_double)
-    cdll.MagickRotateImage.restype = MagickBoolean
-    
-    cdll.MagickSepiaToneImage.argtypes = (MagickWand_p, c_double)
-    cdll.MagickSepiaToneImage.restype = MagickBoolean
-    
-    cdll.MagickSetImageOpacity.argtypes = (MagickWand_p, c_double)
-    cdll.MagickSetImageOpacity.restype = MagickBoolean
-    
-    cdll.MagickWaveImage.argtypes = (MagickWand_p, c_double, c_double)
-    cdll.MagickWaveImage.restype = MagickBoolean
-    
-    cdll.MagickShadowImage.argtypes = (MagickWand_p, c_double, c_double,
-                                       c_ssize_t, c_ssize_t)
-    cdll.MagickShadowImage.restype = MagickBoolean
-    
-    cdll.MagickShearImage.argtypes = (MagickWand_p, PixelWand_p,
-                                      c_double, c_double)
-    cdll.MagickShearImage.restype = MagickBoolean
-    
-    cdll.MagickSketchImage.argtypes = (MagickWand_p, c_double,
-                                       c_double, c_double)
-    cdll.MagickSketchImage.restype = MagickBoolean
-    
-    cdll.MagickSolarizeImage.argtypes = (MagickWand_p, c_double)
-    cdll.MagickSolarizeImage.restype = MagickBoolean
-    
-    cdll.MagickTransposeImage.argtypes = (MagickWand_p,)
-    cdll.MagickTransposeImage.restype = MagickBoolean
-    
-    cdll.MagickTransverseImage.argtypes = (MagickWand_p,)
-    cdll.MagickTransverseImage.restype = MagickBoolean
-    
-    cdll.MagickColorizeImage.argtypes = (MagickWand_p, PixelWand_p,
-                                         PixelWand_p)
-    cdll.MagickColorizeImage.restype = MagickBoolean
-    
-    cdll.MagickGetImagePixelColor.argtypes = (MagickWand_p, c_ssize_t,
-                                              c_ssize_t, PixelWand_p)
-    cdll.MagickGetImagePixelColor.restype = MagickBoolean
-    
-    cdll.MagickSpliceImage.argtypes = (MagickWand_p, c_size_t, c_size_t,
-                                       c_ssize_t, c_ssize_t)
-    cdll.MagickSpliceImage.restype = MagickBoolean
-    
-    cdll.MagickSetImageBackgroundColor.argtypes = (MagickWand_p, PixelWand_p)
-    cdll.MagickSetImageBackgroundColor.restype = MagickBoolean
-    
-    cdll.MagickGetImageBackgroundColor.argtypes = (MagickWand_p, PixelWand_p)
-    cdll.MagickGetImageBackgroundColor.restype = MagickBoolean
-    
-    cdll.MagickTrimImage.argtypes = (MagickWand_p, c_double)
-    cdll.MagickTrimImage.restype = MagickBoolean
-    
-    ###pixelwand
-    cdll.NewPixelWand.argtypes = ()
-    cdll.NewPixelWand.restype = PixelWand_p
-    
-    cdll.DestroyPixelWand.argtypes = (PixelWand_p,)
-    cdll.DestroyPixelWand.restype = PixelWand_p
-    
-    cdll.ClonePixelWand.argtypes = (PixelWand_p,)
-    cdll.ClonePixelWand.restype = PixelWand_p
-    
-    cdll.PixelSetColor.argtypes = (PixelWand_p, c_char_p)
-    cdll.PixelSetColor.restype = MagickBoolean
-    
-    cdll.PixelSetRed.argtypes = (PixelWand_p, c_double)
-    cdll.PixelSetRed.restype = None
-    
-    cdll.PixelSetGreen.argtypes = (PixelWand_p, c_double)
-    cdll.PixelSetGreen.restype = None
-    
-    cdll.PixelSetBlue.argtypes = (PixelWand_p, c_double)
-    cdll.PixelSetBlue.restype = None
-    
-    cdll.PixelSetAlpha.argtypes = (PixelWand_p, c_double)
-    cdll.PixelSetAlpha.restype = None
-    
-    cdll.PixelGetRed.argtypes = (PixelWand_p,)
-    cdll.PixelGetRed.restype = c_double
-    
-    cdll.PixelGetGreen.argtypes = (PixelWand_p,)
-    cdll.PixelGetGreen.restype = c_double
-    
-    cdll.PixelGetBlue.argtypes = (PixelWand_p,)
-    cdll.PixelGetBlue.restype = c_double
-    
-    cdll.PixelGetAlpha.argtypes = (PixelWand_p,)
-    cdll.PixelGetAlpha.restype = c_double
-    
-    cdll.PixelGetHSL.argtypes = (PixelWand_p, POINTER(c_double),
-                                 POINTER(c_double), POINTER(c_double))
-    cdll.PixelGetHSL.restype = None
+    if c_method.argtypes == None:
+        msg = formattable('Annoting {0}')
+        logger.debug(msg.format(method_name))
+        method_data = type_data['symbols'][method]
+        
+        argtypes = method_data[0]
+        if 'arg' in type_data:
+            argtypes = (type_data['arg'],) + argtypes
+        c_method.argtypes = argtypes
+        
+        restype = type_data.get('result')
+        if len(method_data) == 2:
+            restype = method_data[1]
+        c_method.restype = restype
+        
+    return method_name, c_method
 
 
-def guard(wand, callable, msg=None):  # @ReservedAssignment
-    result = callable()
-    if not result:
-        description = None
-        if not msg:
-            exc_type = ExceptionType()
-            description = cdll.MagickGetException(wand, byref(exc_type))
-            msg = cast(description, c_char_p).value
-        exc = PystaciaException(msg)
-        
-        if description:
-            cdll.MagickRelinquishMemory(description)
-        
-        raise exc
-        
+def c_call(obj, method, *args, **kw):
+    method_name, c_method = get_c_method(obj, method)
+    
+    try:
+        init = kw.pop('__init')
+    except KeyError:
+        init = True
+    
+    if init:
+        get_dll()
+    
+    msg = formattable('Calling {0}')
+    logger.debug(msg.format(method_name))
+    
+    if isinstance(obj, Resource):
+        args = (obj,) + args
+    
+    args_ = []
+    for arg, type in zip(args, c_method.argtypes):  # @ReservedAssignment
+        if isinstance(arg, Resource):
+            arg = arg.resource
+        elif type == c_char_p:
+            arg = b(arg)
+            
+        args_.append(arg)
+    
+    result = c_method(*args_)
+    
+    if c_method.restype == c_char_p:
+        result = native_str(result)
+    elif c_method.restype == enum:
+        result = result.value
+    elif c_method.restype == MagickBoolean and not result.value:
+        exc_type = ExceptionType()
+        description = c_call('magick', 'get_exception', args_[0], exc_type)
+        try:
+            raise PystaciaException(native_str(string_at(description)))
+        finally:
+            c_call('magick_', 'relinquish_memory', description)
+    
     return result
 
 
-from ctypes import (c_char_p, c_void_p, POINTER, byref,
-                    cast, c_size_t, c_double, c_uint)
+from ctypes import (string_at, c_char_p, c_void_p, POINTER,
+                    c_size_t, c_double, c_uint)
+
+from six import string_types, b
 
 from pystacia.util import PystaciaException
-from pystacia.compat import c_ssize_t
-from pystacia import cdll
-from pystacia.api.type import (MagickWand_p, PixelWand_p, MagickBoolean,
-                           ExceptionType, enum)
+from pystacia.compat import native_str, formattable, c_ssize_t
+from pystacia.api import get_dll, get_bridge, logger
+from pystacia.api.type import (
+    MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, enum)
+from pystacia.common import Resource

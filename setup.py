@@ -179,19 +179,27 @@ from setuptools import setup
 
 packages = ['pystacia',
             'pystacia.tests',
+            'pystacia.image',
+            'pystacia.image._impl',
+            'pystacia.magick',
+            'pystacia.color',
             'pystacia.api',
             'pystacia.api.tests']
 
 cmdclass = dict(build=pystacia_build,
                 install=pystacia_install)
 
+environ['PYSTACIA_SETUP'] = '1'
+
+import pystacia
+
 setup(
     name='pystacia',
     description='Python raster imaging library',
-    author='Paweł Piotr Przeradowski',
+    author=pystacia.__author__,  # Paweł Piotr Przeradowski 
     author_email='przeradowski@gmail.com',
     url='http://liquibits.bitbucket.org/',
-    version='0.2dev',
+    version=pystacia.__version__,
     packages=packages,
     license='MIT License',
     long_description=open('README').read(),

@@ -37,11 +37,8 @@ def from_string(value, factory=None):
         factory = Color
         
     color = factory()
-    r = color.resource
     
-    #ensure we also get "bytes"
-    value = b(value)
-    guard(r, lambda: cdll.PixelSetColor(r, value))
+    simple_call(color, 'set_color', value)
     
     return color
 
@@ -121,41 +118,29 @@ def from_int24(value, factory=None):
        :param factory: alternative :class:`Color` subclass to use
        :rtype: :class:`Color` or factory instance
        
-       Interprets 
+       Interprets an integer as an 24 bit integer representation of RGB with
+       highest 8 bits representing red channel.
        
        >>> from_int24(0xffffff)
        <Color(r=1,g=1,b=1,a=1) object at 0x103222600L>
     """
     return from_rgb8(value & 0xff0000, value & 0xff00, value & 0xff, factory)
 
-
 from pystacia.common import Resource
+from pystacia.color._impl import alloc, free, clone
 
 
 class Color(Resource):
     
     """Object representing color information."""
     
-    def _alloc(self):
-        """Allocate C struct.
-        
-           Not to be called directly.
-        """
-        return cdll.NewPixelWand()
+    _api_type = 'pixel'
     
-    def _free(self):
-        """Free C struct.
+    _alloc = alloc
+    
+    _free = free
         
-           Not to be called directly.
-        """
-        cdll.DestroyPixelWand(self.resource)
-        
-    def _clone(self):
-        """Clone C struct.
-           
-           Not to be called directly.
-        """
-        return cdll.ClonePixelWand(self.resource)
+    _clone = clone
         
     def __red():  # @NoSelf
         doc = (  # @UnusedVariable
@@ -167,10 +152,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(cdll.PixelGetRed(self.resource))
+            return call(_impl.get_red, self)
         
         def fset(self, value):
-            cdll.PixelSetRed(self.resource, value)
+            call(_impl.set_red, self, value)
         
         return property(**locals())
         
@@ -189,10 +174,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(cdll.PixelGetGreen(self.resource))
+            return call(_impl.get_green, self)
         
         def fset(self, value):
-            cdll.PixelSetGreen(self.resource, value)
+            call(_impl.set_green, self, value)
         
         return property(**locals())
     
@@ -211,10 +196,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(cdll.PixelGetBlue(self.resource))
+            return call(_impl.get_blue, self)
         
         def fset(self, value):
-            cdll.PixelSetBlue(self.resource, value)
+            call(_impl.set_blue, self, value)
         
         return property(**locals())
     
@@ -233,10 +218,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return saturate(cdll.PixelGetAlpha(self.resource))
+            return call(_impl.get_alpha, self)
         
         def fset(self, value):
-            cdll.PixelSetAlpha(self.resource, value)
+            call(_impl.set_alpha, self, value)
         
         return property(**locals())
     
@@ -260,11 +245,7 @@ class Color(Resource):
            
            :rtype: tuple
         """
-        hue, saturation, lightness = tuple(x() for x in (c_double,) * 3)
-        
-        cdll.PixelGetHSL(self.resource, hue, saturation, lightness)
-        
-        return tuple(saturate(x.value) for x in (hue, saturation, lightness))
+        return call(_impl.get_hsl, self)
         
     def get_rgba(self):
         """Return red, green, blue and alpha components.
@@ -398,13 +379,11 @@ def cast(value):
     raise PystaciaException(template.format(value))
 
 
-from ctypes import addressof, c_double
+from ctypes import addressof
 
-from six import b, integer_types, string_types
+from six import integer_types, string_types
 
-from pystacia import cdll
-from pystacia.api.func import guard
+from pystacia.api.func import simple_call, call
 from pystacia.compat import formattable
+from pystacia.color import _impl
 from pystacia.util import PystaciaException
-
-transparent = from_string('transparent')

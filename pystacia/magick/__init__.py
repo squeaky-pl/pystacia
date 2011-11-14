@@ -27,21 +27,6 @@ def get_version():
 
 @memoized
 def get_options():
-    def get_options_real():
-        options = {}
-        
-        from ctypes import c_size_t
-        from six import b
-        from pystacia.compat import native_str
-        
-        size = c_size_t()
-        keys = cdll.MagickQueryConfigureOptions(b('*'), size)
-        for key in (keys[i] for i in range(size.value)):
-            options[native_str(key)] =\
-            native_str(cdll.MagickQueryConfigureOption(key))
-            
-        return options
-    
     def get_options_hack(path):
         options = {}
         
@@ -53,19 +38,21 @@ def get_options():
             
         return options
     
-    dll_path = dirname(cdll._name)
+    dll_path = dirname(get_dll(False)._name)
     config_path = join(dll_path, 'configure.xml')
     
     if exists(config_path):
         return get_options_hack(config_path)
     else:
-        return get_options_real()
+        return call(_impl.get_options)
 
 
+@memoized
 def get_version_str():
-    return cdll.MagickGetVersion(None)
+    return simple_call('magick_', 'get_version', None)
 
 
+@memoized
 def get_delegates():
     try:
         delegates = get_options()['DELEGATES']
@@ -75,9 +62,11 @@ def get_delegates():
     return delegates.split()
 
 
+@memoized
 def get_depth():
     depth = get_options().get('QuantumDepth')
     return int(depth) if depth else None
+
 
 from os.path import dirname, join, exists
 
@@ -86,4 +75,6 @@ try:
 except ImportError:
     from xml.etree.ElementTree import ElementTree  # @Reimport
 
-from pystacia import cdll
+from pystacia.api import get_dll
+from pystacia.api.func import call, simple_call
+from pystacia.magick import _impl

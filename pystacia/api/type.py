@@ -8,9 +8,16 @@
 from ctypes import Structure, POINTER, c_int
 
 
-enum = c_int
-MagickBoolean = enum
-ExceptionType = enum
+class enum(c_int):
+    pass
+
+
+class MagickBoolean(enum):
+    pass
+
+
+class ExceptionType(enum):
+    pass
 
 
 class Image(Structure):

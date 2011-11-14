@@ -8,168 +8,89 @@
 """pystacia is a raster graphics library utilizing ImageMagick."""
 
 
-def init():
-    """Find ImageMagick DLL and initialize it.
-       
-       Searches available paths with :func:`pystacia.util.find_library`
-       and then fallbacks to standard :func:`ctypes.util.find_liblrary`.
-       Loads the DLL into memory, initializes it and warns if it has
-       unsupported API and ABI versions.
-    """
-    from pystacia.util import find_library
-    from pystacia.api import name, abis
-    # first let's look in some places that may override system-wide paths
-    resolved_path = find_library(name, abis)
-    # still nothing? let ctypes figure it out
-    if not resolved_path:
-        from ctypes.util import find_library  # @Reimport
-        resolved_path = find_library('MagickWand')
-    if not resolved_path:
-        raise PystaciaException('Could not find or load magickWand')
-    
-    from ctypes import CDLL
-    factory = CDLL
-    global cdll
-    cdll = factory(resolved_path)
-    from pystacia.api.func import annote
-    annote(cdll)
-    cdll.MagickWandGenesis()
-    
-    def shutdown():
-        common._cleanup()
-        cdll.MagickWandTerminus()
-    
-    import atexit
-    atexit.register(shutdown)
-    
-    # warn if unsupported
-    from pystacia import magick
-    from pystacia.api import min_version
-    version = magick.get_version()
-    if version < min_version:
-        from warnings import warn
-        template = formattable('Unsupported version of MagickWand {0}')
-        warn(template.format(version))
-
-__lena = None
+__version__ = '0.2dev'
+__author__ = 'Pawel Piotr Przeradowski'
 
 
-def __lena_image(factory=None):
-    """Perform weakref memoization of Lena."""
-    global __lena
-    
-    if not __lena:
-        lena = image.read(__lena_path)
-        __lena = weakref.ref(lena)
-    else:
-        lena = __lena()
-        if not lena:
-            lena = image.read(__lena_path)
-            __lena = weakref.ref(lena)
-    
-    return lena.copy()
+from os import environ
 
-
-def lena(width=None, factory=None):
-    """Return standard lena test image.
-       
-       Resulting :class:`.Image` object is a TrueType in, RGB colorspace,
-       8bit per channel image. For background on the test image see:
-       http://en.wikipedia.org/wiki/Lenna.
-       
-       :param width: Returned image will be of this size. When not specified
-         defaults to 512x512 which is how the bitmap is stored internally.
-       
-    """
-    img = __lena_image(factory)
+if not environ.get('PYSTACIA_SETUP'):
+    from logging import getLogger, basicConfig
     
-    if width:
-        img.rescale(width, width)
-
-    img.convert_colorspace(image.colorspaces.rgb)
+    logger = getLogger('pystacia')
+    
+    level = environ.get('PYSTACIA_LOG')
+    if level:
+        level = int(level)
+        basicConfig(level=level)
+    
+    
+    if environ.get('PYSTACIA_TRACE'):
+        logger.debug('Starting tracing')
+        import stacktracer
+        stacktracer.trace_start('trace.html', interval=5, auto=True)
+    
+    from pystacia import color
+    
+    colors = color.Factory()
+    """Convenience factory for SVG names"""
+    
+    
+    def lazy_imported(key):
+        def call(*args, **kw):
+            from pystacia import image
+            
+            return getattr(image, key)(*args, **kw)
         
-    return img
-
-
-def magick_logo(factory=None):
-    """Return ImageMagick logo image.
-        
-       Resulting image is 640x480, palette, RGB colorspace image.
-    """
-    return image.read_special('logo:', factory=factory)
-
-
-def rose(factory=None):
-    """Return rose image.
+        return call
     
-       Resulting image is 70x48, RGB, truecolor.
-    """
-    return image.read_special('rose:', factory=factory)
-
-
-def wizard(factory=None):
-    """Return wizard image.
     
-       Resulting image is 480x640, palette, RGB image.
-    """
-    return image.read_special('wizard:', factory=factory)
-
-
-def granite(factory=None):
-    """Return granite texture.
+    def really_lazy_enum(key):
+        class Proxy(object):
+            def __init__(self, key):
+                self.__key = key
+                
+            def __getattr__(self, attr_key):
+                from pystacia import image
+                
+                enum = getattr(image, key)
+                return getattr(enum, attr_key)
+            
+        return Proxy(key)
     
-       Resulting image is 128x128 pallette, RGB image.
-    """
-    return image.read_special('granite:', factory=factory)
-
-
-def netscape(factory=None):
-    """Return standard Netscape 216 color cube.
-       
-       Color cube also known as "Websafe Colors".
-       216x144, palette, RGB.
-    """
-    return image.read_special('netscape:', factory=factory)
-
-
-cdll = None
-
-import weakref
-from os.path import dirname, join, exists
-
-from pystacia.compat import formattable
-from pystacia.util import PystaciaException
-from pystacia import common
-
-init()
-
-from pystacia import magick
-from pystacia import image
-
-#convenience imports
-from pystacia.image import read, read_blob, read_raw
-from pystacia.image import blank, checkerboard
-from pystacia.image import (
-    composites, types, filters, colorspaces, compressions, axes)
-from pystacia import color
-from pystacia.image import Image
-
-
-colors = color.Factory()
-"""Convenience factory for SVG names"""
-
-__lena_path = join(dirname(__file__), 'lena.png')
-
-if not exists(__lena_path) or 'png' not in magick.get_delegates():
-    del lena
-
-__all__ = [
-    'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
-    'read', 'read_blob', 'read_raw',
-    'blank', 'checkerboard',
-    'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
-    'color', 'colors',
-    'Image']
-
-if globals().get('lena'):
-    __all__.append('lena')
+    # lazy importing proxies
+    read = lazy_imported('read')
+    read_blob = lazy_imported('read_blob')
+    read_raw = lazy_imported('read_raw')
+    blank = lazy_imported('blank')
+    checkerboard = lazy_imported('checkerboard')
+    lena = lazy_imported('lena')
+    magick_logo = lazy_imported('magick_logo')
+    rose = lazy_imported('rose')
+    wizard = lazy_imported('wizard')
+    granite = lazy_imported('granite')
+    netscape = lazy_imported('netscape')
+    Image = lazy_imported('Image')
+    
+    composites = really_lazy_enum('composites')
+    types = really_lazy_enum('types')
+    filters = really_lazy_enum('filters')
+    colorspaces = really_lazy_enum('colorspaces')
+    compressions = really_lazy_enum('compressions')
+    axes = really_lazy_enum('axes')
+    
+    
+    __all__ = [
+        'read', 'read_blob', 'read_raw',
+        'blank', 'checkerboard',
+        'lena', 'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
+        'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
+        'color', 'colors',
+        'Image']
+    
+    from zope.deprecation import deprecated
+    from pystacia.compat import formattable
+    
+    msg = formattable('Use pystacia.image.{0} instead')
+    for symbol in set(__all__) - set(['color', 'colors']):
+        deprecated(symbol, msg.format(symbol))
