@@ -94,9 +94,6 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
     
        >>> img = read_raw(b'raw triplets', 'rgb', 1, 1, 8)
     """
-    if hasattr(raw, 'read'):
-        raw = raw.read()
-    
     return call(io.read_raw, raw, format, width, height, depth, factory)
 
 from pystacia.common import Resource
@@ -982,24 +979,28 @@ class Image(Resource):
     
     depth = __depth()
     
-    def show(self):
+    def show(self, no_gui=False):
         """Display an image in GUI.
+           
+           :param no_gui: Skip opening interactive viewer program
+           :type no_gui: ``bool``
            
            :rtype: ``str``
            
            Saves image to temporary lossless file format on a disk and sends
            it to default image handling program to display. Returns a path
            to the temporary file. You get no gurantees about life span of a
-           file since it will be typically deleted when image gets closed.
+           file after process ended since it will be typically deleted when 
+           process ends.
         """
         extension = 'bmp'
-        delegates = magick.get_delegates()
-        if 'png' in delegates:
+        if 'png' in magick.get_delegates():
             extension = 'png'
             
         tmpname = mkstemp()[1] + '.' + extension
         self.write(tmpname)
-        webbrowser.open('file://' + tmpname)
+        if not no_gui:
+            webbrowser.open('file://' + tmpname)
         
         return tmpname
     

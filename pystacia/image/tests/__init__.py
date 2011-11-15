@@ -21,6 +21,16 @@ class WithFactory(TestCase):
         self.assertDictEqual(img.get_raw('rgb'), data)
         self.assertEqual(img.get_pixel(0, 0), color.from_string('white'))
         
+        data = dict(raw=BytesIO(b('\xff\xff\xff')), format='rgb',
+                    depth=8, width=1, height=1)
+        
+        img2 = read_raw(**data)
+        
+        self.assertTrue(img.is_same(img2))
+        
+        img.close()
+        img2.close()
+        
     def test_blank(self):
         img = blank(10, 20)
         
@@ -61,6 +71,9 @@ class WithSample(TestCase):
         img = self.img
         
         bmp = img.get_blob('bmp')
+        bmp2 = img.get_blob('bmp', factory=BytesIO)
+        
+        self.assertEqual(bmp, bmp2.read())
         
         for i in (bmp, BytesIO(bmp)):
             img = read_blob(i)
@@ -330,6 +343,15 @@ class WithSample(TestCase):
         self.assertEqual(pix.r, pix.g)
         self.assertEqual(pix.g, pix.b)
     
+    def test_colorize(self):
+        img = self.img
+        
+        red = color.from_string('red')
+        
+        img.colorize(red)
+        
+        self.assertEquals(img.get_pixel(50, 50).get_hsl()[0], red.get_hsl()[0])
+    
     def test_invert(self):
         img = self.img
         
@@ -419,6 +441,12 @@ class WithSample(TestCase):
         
         img2.close()
         
+        img3 = img.copy().rescale(10, 10)
+        
+        self.assertFalse(img.compare(img3))
+        
+        img3.close()
+        
     def test_is_same(self):
         img = self.img
         
@@ -507,12 +535,46 @@ class WithSample(TestCase):
         img = self.img
         
         self.assertEqual(img.depth, 8)
+        img.depth = 16
+        self.assertEqual(img.depth, 16)
         
     def test_convert_colorspace(self):
         img = self.img
         img.convert_colorspace(colorspaces.ycbcr)
         self.assertEqual(img.colorspace, colorspaces.ycbcr)
-
+    
+    def test_show(self):
+        img = self.img
+        
+        tmpname = img.show(no_gui=True)
+        
+        if 'png' in magick.get_delegates():
+            self.assertTrue(tmpname.endswith('.png'))
+        else:
+            self.assertTrue(tmpname.endswith('.bmp'))
+        
+        self.assertTrue(read(tmpname).is_same(img))
+    
+    def test_checkerboard(self):
+        img = self.img
+        img2 = img.copy().checkerboard()
+        
+        checkerboard_ = checkerboard(*img.size)
+        
+        self.assertTrue(img.is_same(img2))
+        
+        blank_ = blank(*img.size).checkerboard()
+        
+        self.assertTrue(blank_.is_same(checkerboard_))
+        
+    def test_repr(self):
+        img = self.img
+        result = match('<Image\(w=(\d+),h=(\d+),(\d+)bit,(\w+),(\w+)\)',
+                       repr(img))
+        self.assertEqual(result.groups(),
+                         tuple(str(x) for x in img.size + (img.depth,
+                                                           img.colorspace.name,
+                                                           img.type.name)))
 
 class ThreadedTest(TestCase):
     def test(self):
@@ -527,12 +589,14 @@ class ThreadedTest(TestCase):
 
 from threading import Thread
 from tempfile import mkstemp
+from re import match
 
 from six import b, BytesIO
 
 from pystacia.util import PystaciaException
 from pystacia.image import (read, read_raw, read_blob, types,
-                           colorspaces, blank, axes)
+                           colorspaces, blank, axes, checkerboard)
 from pystacia import color
+from pystacia import magick
 from pystacia.tests.common import sample
 from random import randint

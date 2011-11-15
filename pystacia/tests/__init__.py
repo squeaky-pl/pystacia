@@ -10,14 +10,6 @@ from pystacia.tests.common import TestCase, skipIf
 from pystacia.image.sample import lena_available
 
 
-class MagickLogo(TestCase):
-    def test(self):
-        img = image.magick_logo()
-        
-        self.assertEqual(img.size, (640, 480))
-        self.assertEqual(img.type, types.palette)
-
-
 class Lena(TestCase):
     @skipIf(not lena_available(), 'Lena not available')
     def test(self):

@@ -2,8 +2,11 @@
 TODO
 ====
 
-assertEquals is deprecated
-------
+
+- eq for other types in color (cast)
+- eq for other types in enum (cast)
+- support limiting of some enums like axes
+- add str method to enumvalue and enum -> their name
 - move factory choosing code to a separate function
 - thread/local, global registry
 - figure out how to do basicConfig
@@ -13,6 +16,7 @@ assertEquals is deprecated
 - research auto_level, auto_gamma
 - document splice, implement implode
 - weakrefing cached lena should be only used in tests [0.1.1]
+- investigate __all__ of main module, image and color
 - setting factories globally [0.1.1] if you want to use a subclass
 - i.e. registry module to use for paths, chainability and any other things
   that affect runtime

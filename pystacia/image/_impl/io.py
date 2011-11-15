@@ -51,7 +51,10 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
     c_call('magick', 'set_depth', image, depth)
     format = format.upper()  # @ReservedAssignment
     c_call('magick', 'set_format', image, format)
-        
+    
+    if hasattr(raw, 'read'):
+        raw = raw.read()
+    
     c_call(image, ('read', 'blob'), raw, len(raw))
     
     return image
