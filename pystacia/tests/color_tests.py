@@ -27,6 +27,11 @@ class ColorTest(TestCase):
                                 lambda: color.cast((0, 1)))
         self.assertRaisesRegexp(PystaciaException, 'Cannot cast',
                                 lambda: color.cast((0, 1, 2, 3, 4)))
+        
+    def test_copy(self):
+        red = color.from_string('red')
+        self.assertEqual(red.copy(), red)
+        self.assertNotEqual(id(red), id(red.copy()))
     
     def test_get_string(self):
         blue = color.from_string('blue')
@@ -79,7 +84,23 @@ class ColorTest(TestCase):
         
         self.assertEqual(colors.red, color.from_string('red'))
         self.assertEqual(colors.gray, color.from_string('gray'))
+        
+    def test_repr(self):
+        for x in (color.from_string(x) for x in
+                  ['red', 'green', 'blue', 'gray']):
+            rgba = x.get_rgba()
+            float_re = '(\d(\.\d+)?)'
+            regexp = (formattable('<Color\(r={0},g={0},b={0},a={0}\)').
+                format(float_re))
+            result = match(regexp, repr(x))
+            groups = tuple(float(v) for i, v in
+                           enumerate(result.groups()) if not i % 2)
+            self.assertEqual(groups, rgba)
+            
 
+from re import match
 
 from pystacia import color
 from pystacia.util import PystaciaException
+from pystacia.compat import formattable
+

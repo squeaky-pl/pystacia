@@ -7,7 +7,7 @@ def free(color):
 
 
 def clone(color):
-    return simple_call('pwand', 'destroy', color)
+    return simple_call('pwand', 'clone', color)
 
 
 def get_red(color):
