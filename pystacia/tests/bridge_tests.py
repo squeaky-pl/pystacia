@@ -2,8 +2,28 @@ from pystacia.tests.common import TestCase
 from pystacia.bridge import SimpleImpl, ThreadImpl
 
 
+class ImplTest(TestCase):
+    def test(self):
+        impl = Impl()
+        self.assertRaisesRegexp(PystaciaException, 'not set',
+                                lambda: impl.worker)
+        self.worker = lambda: 2
+        self.assertEqual(self.worker(), 2)
+        
+    def test_isolated(self):
+        impl = IsolatedImpl()
+        self.assertRaisesRegexp(PystaciaException, 'not started',
+                                lambda: impl.queue)
+        
+        self.assertRaisesRegexp(PystaciaException, 'not started',
+                                lambda: impl.loop)
+
 class BridgeTest(TestCase):
     impls = [ThreadImpl, SimpleImpl]
+    
+    def test_default_impl(self):
+        bridge = Bridge(lambda: None)
+        self.assertIsInstance(bridge.impl, ThreadImpl)
     
     def test_one(self):
         for impl in self.__class__.impls:
@@ -46,7 +66,8 @@ class BridgeTest(TestCase):
             bridge.shutdown()
 
 
-from pystacia.bridge import Bridge, CallBridge
-
 from threading import Thread
 from random import randint
+
+from pystacia.bridge import Bridge, CallBridge, Impl, IsolatedImpl
+from pystacia.util import PystaciaException

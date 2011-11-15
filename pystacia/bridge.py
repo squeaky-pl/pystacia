@@ -4,6 +4,9 @@ from __future__ import with_statement
 
 
 class Impl(object):
+    def __init__(self):
+        self.__worker = None
+        
     def ___worker():  # @NoSelf
         def fget(self):
             if not self.__worker:
@@ -32,11 +35,12 @@ class SimpleImpl(Impl):
 
 class IsolatedImpl(Impl):
     def __init__(self, daemon=False):
-        self.__worker = None
         self.__loop = None
         self.__queue = None
         self.__lock = threading.Lock()
         self.__daemon = daemon
+        
+        super(IsolatedImpl, self).__init__()
     
     @staticmethod
     def __loop(queue, worker):
