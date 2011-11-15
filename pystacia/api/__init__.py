@@ -11,8 +11,22 @@ from logging import getLogger
 logger = getLogger('pystacia.api')
 
 
-def find_library(name, abis):
+def dll_template(osname, abi):
+    if osname == 'macos':
+        return 'lib{name}.{abi}.dylib' if abi else 'lib{name}.dylib'
+    elif osname == 'linux':
+        return 'lib{name}.so.{abi}' if abi else 'lib{name}.so'
+    elif osname == 'windows':
+        return 'lib{name}-{abi}.dll' if abi else 'lib{name}.dll'
+    
+    return None
+
+
+def find_library(name, abis, environ=None, osname=None):
     paths = []
+    
+    if not environ:
+        environ = os.environ
     
     try:
         path = environ['PYSTACIA_LIBRARY_PATH']
@@ -21,7 +35,8 @@ def find_library(name, abis):
     else:
         paths.append(path)
     
-    osname = get_osname()
+    if not osname:
+        osname = get_osname()
     
     if not environ.get('PYSTACIA_SKIP_PACKAGE'):
         import pystacia
@@ -37,21 +52,10 @@ def find_library(name, abis):
             paths.append(join(path, 'lib'))
             paths.append(join(path, 'dll'))
     
-    from os import getcwd
-    paths.append(getcwd())
+    if not environ.get('PYSTACIA_SKIP_CWD'):
+        from os import getcwd
+        paths.append(getcwd())
     
-    dll_template = None
-
-    def dll_template(abi):
-        if osname == 'macos':
-            return 'lib{name}.{abi}.dylib' if abi else 'lib{name}.dylib'
-        elif osname == 'linux':
-            return 'lib{name}.so.{abi}' if abi else 'lib{name}.so'
-        elif osname == 'windows':
-            return 'lib{name}-{abi}.dll' if abi else 'lib{name}.dll'
-        
-        return None
-
     for path in paths:
         if not exists(path):
             continue
@@ -62,7 +66,7 @@ def find_library(name, abis):
             
             for line in depends:
                 depname, depabi = line.split()
-                template = formattable(dll_template(depabi))
+                template = formattable(dll_template(osname, depabi))
                 dll_path = join(path, template.format(name=depname,
                                                       abi=depabi))
                 try:
@@ -73,11 +77,14 @@ def find_library(name, abis):
             depends.close()
         
         for abi in abis:
-            template = formattable(dll_template(abi))
+            template = formattable(dll_template(osname, abi))
             if not template:
                 continue
             dll_path = join(path, template.format(name=name, abi=abi))
             if exists(dll_path):
+                if environ.get('PYSTACIA_FAKE'):
+                    return dll_path
+                
                 transaction = library_path_transaction(path).begin()
                 
                 try:
@@ -96,11 +103,13 @@ class library_path_transaction:
                          linux='LD_LIBRARY_PATH',
                          windows='PATH')
     
-    def __init__(self, path):
+    def __init__(self, path, environ=None):
+        self.environ = environ or os.environ
         self.key = self.__class__._environ_keys[get_osname()]
         self.path = path
         
     def begin(self):
+        environ = self.environ
         old_path = environ.get(self.key)
         if not old_path or self.path not in old_path:
             parts = [self.path]
@@ -117,6 +126,7 @@ class library_path_transaction:
         return self
     
     def rollback(self):
+        environ = self.environ
         if self.old_path:
             environ[self.key] = self.old_path
         else:
@@ -191,7 +201,10 @@ from pystacia.util import memoized
 
 
 @memoized
-def get_bridge():
+def get_bridge(environ=None):
+    if not environ:
+        environ = os.environ
+        
     if environ.get('PYSTACIA_IMPL', '').upper() == 'SIMPLE':
         logger.debug('Using Simple implementation')
         impl = SimpleImpl()
@@ -204,7 +217,8 @@ def get_bridge():
     return bridge
 
 
-from os import environ, pathsep
+import os
+from os import pathsep
 from os.path import join, exists, dirname
 from ctypes import CDLL
 import ctypes.util
