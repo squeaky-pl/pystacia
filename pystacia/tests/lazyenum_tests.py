@@ -32,6 +32,10 @@ class Enum(TestCase):
         self.assertEqual(xyz.enum.name, 'abc')
         self.assertEqual(xyz.enum, enum('abc'))
         self.assertEqual(cast(xyz.enum, 'xyz'), xyz.enum.xyz)
+    
+    def repr_test(self):
+        asd_xyz = cast('asd', 'xyz')
+        self.assertEqual(repr(asd_xyz), "pystacia.lazyenum.enum('asd').xyz")
 
 
 from pystacia.lazyenum import enum, cast

@@ -35,17 +35,25 @@ def memoized(f, *args, **kw):
     if key not in cache:
         with __lock:
             if key not in cache:
-                cache[key] = {'lock': Lock()}
+                cache[key] = {'lock': RLock()}
                 
     key_cache = cache[key]
     if 'value' not in key_cache:
+        msg = formattable('Memoizing {0}').format(key)
+        logger.debug(msg)
+        
         with key_cache['lock']:
             if 'value' not in key_cache:
-                key_cache['value'] = f(*args, **kw)
-                
+                result = f(*args, **kw)
+                if 'value' not in key_cache:
+                    key_cache['value'] = result
+                    
+                    msg = formattable('Memoized {0}').format(key)
+                    logger.debug(msg)
+            
     return key_cache['value']
 
-from threading import Lock
+from threading import Lock, RLock
 
 __lock = Lock()
 
@@ -77,7 +85,8 @@ TinyException = PystaciaException
 import platform
 from sys import version_info
 
-from pystacia.compat import dist
+from pystacia.compat import dist, formattable
+from pystacia import logger
 
 
 from zope.deprecation import deprecated

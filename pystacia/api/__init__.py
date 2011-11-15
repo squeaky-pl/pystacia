@@ -195,9 +195,9 @@ def get_dll(init=True, environ=None):
                 
                 logger.debug('Registering atexit handler')
                 atexit.register(shutdown)
-            
+                
                 dll.__inited = True
-        
+                
         version = magick.get_version()
         if version < min_version:
             msg = formattable('Unsupported version of MagickWand {0}')

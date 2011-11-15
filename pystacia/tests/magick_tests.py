@@ -8,7 +8,7 @@
 from pystacia.tests.common import TestCase
 
 
-class Magick(TestCase):
+class MagickTest(TestCase):
     def test_options(self):
         self.assertIsInstance(get_options(), dict)
         

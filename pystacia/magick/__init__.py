@@ -38,7 +38,7 @@ def get_options():
             
         return options
     
-    dll_path = dirname(get_dll(False)._name)
+    dll_path = dirname(get_dll()._name)
     config_path = join(dll_path, 'configure.xml')
     
     if exists(config_path):
