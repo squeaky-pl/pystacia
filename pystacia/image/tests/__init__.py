@@ -576,6 +576,7 @@ class WithSample(TestCase):
                                                            img.colorspace.name,
                                                            img.type.name)))
 
+
 class ThreadedTest(TestCase):
     def test(self):
         def thread():

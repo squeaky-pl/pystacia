@@ -1,6 +1,6 @@
 from pystacia.tests.common import TestCase
-
 from pystacia.image import types, colorspaces
+
 
 data = {
     'lena': {
@@ -34,6 +34,7 @@ data = {
         'colorspace': colorspaces.rgb
     }
 }
+
 
 class SampleTest(TestCase):
     def test(self):

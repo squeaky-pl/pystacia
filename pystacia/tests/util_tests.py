@@ -8,6 +8,7 @@
 from pystacia.tests.common import TestCase, skipIf
 import math
 
+
 class MemoizedTest(TestCase):
     def test(self):
         a = producer()

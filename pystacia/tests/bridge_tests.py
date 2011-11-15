@@ -18,6 +18,7 @@ class ImplTest(TestCase):
         self.assertRaisesRegexp(PystaciaException, 'not started',
                                 lambda: impl.loop)
 
+
 class BridgeTest(TestCase):
     impls = [ThreadImpl, SimpleImpl]
     

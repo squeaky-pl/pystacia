@@ -13,7 +13,7 @@ def get_data():
     # convenience shortcuts
     w = MagickWand_p
     pw = PixelWand_p
-    b = MagickBoolean
+    b = MagickBoolean  # @Reimport
     e = enum
     ch = c_char_p
     v = c_void_p
@@ -192,6 +192,7 @@ def get_data():
             }
         }
     }
+
 
 def call(callable_, *args, **kw):
     bridge = get_bridge()

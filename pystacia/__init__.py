@@ -36,7 +36,6 @@ if not environ.get('PYSTACIA_SETUP'):
     colors = color.Factory()
     """Convenience factory for SVG names"""
     
-    
     def lazy_imported(key):
         def call(*args, **kw):
             from pystacia import image
@@ -44,7 +43,6 @@ if not environ.get('PYSTACIA_SETUP'):
             return getattr(image, key)(*args, **kw)
         
         return call
-    
     
     def really_lazy_enum(key):
         class Proxy(object):
@@ -80,12 +78,12 @@ if not environ.get('PYSTACIA_SETUP'):
     compressions = really_lazy_enum('compressions')
     axes = really_lazy_enum('axes')
     
-    
     __all__ = [
         'read', 'read_blob', 'read_raw',
         'blank', 'checkerboard',
         'lena', 'magick_logo', 'rose', 'wizard', 'granite', 'netscape',
-        'composites', 'types', 'filters', 'colorspaces', 'compressions', 'axes',
+        'composites', 'types', 'filters',
+        'colorspaces', 'compressions', 'axes',
         'color', 'colors',
         'Image']
     

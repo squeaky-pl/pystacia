@@ -85,4 +85,4 @@ from tempfile import mkstemp
 
 from pystacia import image
 from pystacia.image import colorspaces, types
-from pystacia.tests.common import sample 
+from pystacia.tests.common import sample

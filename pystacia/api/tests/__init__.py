@@ -9,7 +9,6 @@
 from pystacia.tests.common import TestCase
 
 
-
 class TemplateTest(TestCase):
     def test(self):
         self.assertEqual(dll_template('macos', 1), 'lib{name}.{abi}.dylib')
@@ -34,7 +33,7 @@ class FindLibraryTest(TestCase):
                 for abi in 2, 1, None:
                     template = formattable(dll_template(osname, abi))
                     libpath = join(path,
-                                   template.format(name='Foo', abi=abi)) 
+                                   template.format(name='Foo', abi=abi))
                     open(libpath, 'w').close()
         
         depends = open(join(tmproot, 'depends', 'depends.txt'), 'w')
@@ -42,7 +41,8 @@ class FindLibraryTest(TestCase):
         depends.close()
         
     def setUp(self):
-        self.environ = {'PYSTACIA_SKIP_SYSTEM': '1', 'PYSTACIA_SKIP_PACKAGE': '1'}
+        self.environ = {'PYSTACIA_SKIP_SYSTEM': '1',
+                        'PYSTACIA_SKIP_PACKAGE': '1'}
         self.olddir = getcwd()
         
     def tearDown(self):
@@ -80,7 +80,7 @@ class FindLibraryTest(TestCase):
         v = find_library('Foo', (1, None), environ, 'linux', MockFactory())
         self.assertEqual(basename(v), 'libFoo.so.1')
         
-        v = find_library('Foo', (None,), environ, 'macos', MockFactory()) 
+        v = find_library('Foo', (None,), environ, 'macos', MockFactory())
         self.assertEqual(basename(v), 'libFoo.dylib')
         
     def test_library_path(self):
@@ -95,7 +95,7 @@ class FindLibraryTest(TestCase):
         expect = join(tmproot, 'libFoo.so.1')
         self.assertEqual(realpath(value), realpath(expect))
         
-        value = find_library('Foo', (None,), environ, 'macos', MockFactory()) 
+        value = find_library('Foo', (None,), environ, 'macos', MockFactory())
         expect = join(tmproot, 'libFoo.dylib')
         self.assertEqual(realpath(value), realpath(expect))
         
@@ -111,12 +111,12 @@ class FindLibraryTest(TestCase):
         expect = join(tmproot, 'lib', 'libFoo.so.1')
         self.assertEqual(realpath(value), realpath(expect))
         
-        value = find_library('Foo', (None,), environ, 'macos', MockFactory()) 
+        value = find_library('Foo', (None,), environ, 'macos', MockFactory())
         expect = join(tmproot, 'lib', 'libFoo.dylib')
         self.assertEqual(realpath(value), realpath(expect))
         
         environ['PYSTACIA_SKIP_VIRTUAL_ENV'] = '1'
-        value = find_library('Foo', (None,), environ, 'macos', MockFactory()) 
+        value = find_library('Foo', (None,), environ, 'macos', MockFactory())
         self.assertEqual(value, None)
         
     def test_curdir(self):
@@ -132,7 +132,7 @@ class FindLibraryTest(TestCase):
         expect = join(tmproot, 'libFoo.so.1')
         self.assertEqual(realpath(value), realpath(expect))
         
-        value = find_library('Foo', (None,), environ, 'macos', MockFactory()) 
+        value = find_library('Foo', (None,), environ, 'macos', MockFactory())
         expect = join(tmproot, 'libFoo.dylib')
         self.assertEqual(realpath(value), realpath(expect))
         
@@ -144,7 +144,8 @@ class FindLibraryTest(TestCase):
         environ = this_environ.copy()
         factory = MockFactory()
         find_library('Foo', (2,), environ, 'windows', factory)
-        expect = [join(tmproot, x) for x in ['libDepends-18.dll', 'libFoo-2.dll']]
+        expect = [join(tmproot, x) for x in ['libDepends-18.dll',
+                                             'libFoo-2.dll']]
         self.assertEqual(factory.args, expect)
         
         environ = this_environ.copy()
@@ -157,7 +158,8 @@ class FindLibraryTest(TestCase):
         environ = this_environ.copy()
         factory = MockFactory(throw=True)
         value = find_library('Foo', (1,), environ, 'macos', factory)
-        expect = [join(tmproot, x) for x in ['libDepends.18.dylib', 'libFoo.1.dylib']]
+        expect = [join(tmproot, x) for x in ['libDepends.18.dylib',
+                                             'libFoo.1.dylib']]
         self.assertEqual(value, None)
         self.assertEqual(factory.args, expect)
         
@@ -173,6 +175,7 @@ class FindLibraryTest(TestCase):
                    'PYSTACIA_SKIP_CWD': '1'}
         self.assertEqual(find_library('_YourNonExistant', (None,), environ),
                          None)
+
 
 class GetDllTest(TestCase):
     def test(self):

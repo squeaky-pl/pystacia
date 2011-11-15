@@ -990,7 +990,7 @@ class Image(Resource):
            Saves image to temporary lossless file format on a disk and sends
            it to default image handling program to display. Returns a path
            to the temporary file. You get no gurantees about life span of a
-           file after process ended since it will be typically deleted when 
+           file after process ended since it will be typically deleted when
            process ends.
         """
         extension = 'bmp'

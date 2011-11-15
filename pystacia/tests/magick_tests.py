@@ -14,6 +14,9 @@ class MagickTest(TestCase):
         
     def test_version(self):
         self.assertIsInstance(get_version(), (tuple, type(None)))
+        self.assertIsInstance(get_version_str(), string_types)
 
 
-from pystacia.magick import get_options, get_version
+from pystacia.magick import get_options, get_version, get_version_str
+
+from six import string_types

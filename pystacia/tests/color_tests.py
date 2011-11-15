@@ -103,4 +103,3 @@ from re import match
 from pystacia import color
 from pystacia.util import PystaciaException
 from pystacia.compat import formattable
-
