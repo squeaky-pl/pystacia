@@ -144,6 +144,10 @@ class Bridge(object):
         
     def shutdown(self):
         self.__impl.shutdown()
+        
+    @property
+    def impl(self):
+        return self.__impl
 
 
 class Shutdown():

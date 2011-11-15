@@ -24,6 +24,7 @@ if not environ.get('PYSTACIA_SETUP'):
         level = int(level)
         basicConfig(level=level)
     
+    logger.debug('Imported main module')
     
     if environ.get('PYSTACIA_TRACE'):
         logger.debug('Starting tracing')

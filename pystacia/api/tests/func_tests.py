@@ -18,7 +18,11 @@ class FuncTest(TestCase):
         simple_call('magick', 'set_format', img, 'bmp')
         
         img.close()
+        
+        self.assertRaises(AttributeError,
+                          lambda: get_c_method('magick', 'non_existant'))
+        self.assertFalse(get_c_method('magick', 'non_existant', throw=False))
 
 from pystacia.tests.common import sample
-from pystacia.api.func import simple_call
+from pystacia.api.func import simple_call, get_c_method
 from pystacia.util import PystaciaException

@@ -22,7 +22,7 @@ def dll_template(osname, abi):
     return None
 
 
-def find_library(name, abis, environ=None, osname=None):
+def find_library(name, abis, environ=None, osname=None, factory=None):
     paths = []
     
     if not environ:
@@ -56,6 +56,9 @@ def find_library(name, abis, environ=None, osname=None):
         from os import getcwd
         paths.append(getcwd())
     
+    if not factory:
+        factory = CDLL
+    
     for path in paths:
         if not exists(path):
             continue
@@ -70,31 +73,39 @@ def find_library(name, abis, environ=None, osname=None):
                 dll_path = join(path, template.format(name=depname,
                                                       abi=depabi))
                 try:
-                    CDLL(dll_path)
+                    factory(dll_path)
                 except:
                     pass
             
             depends.close()
         
         for abi in abis:
-            template = formattable(dll_template(osname, abi))
+            template = dll_template(osname, abi)
             if not template:
                 continue
+            
+            template = formattable(template)
+            
             dll_path = join(path, template.format(name=name, abi=abi))
             if exists(dll_path):
-                if environ.get('PYSTACIA_FAKE'):
-                    return dll_path
-                
-                transaction = library_path_transaction(path).begin()
+                transaction = library_path_transaction(path, environ).begin()
                 
                 try:
-                    CDLL(dll_path)
+                    factory(dll_path)
                 except:
+                    from sys import exc_info
+                    msg = formattable('Caught exception while loading '
+                                      '{0}: {1}. Rolling back')
+                    logger.debug(msg.format(dll_path, exc_info()[1]))
                     transaction.rollback()
                 else:
                     transaction.commit()
                     return dll_path
     
+    # still nothing? let ctypes figure it out
+    if not environ.get('PYSTACIA_SKIP_SYSTEM'):
+        return ctypes.util.find_library(name)
+
     return None
 
 
@@ -110,14 +121,13 @@ class library_path_transaction:
         
     def begin(self):
         environ = self.environ
-        old_path = environ.get(self.key)
+        self.old_path = old_path = environ.get(self.key)
         if not old_path or self.path not in old_path:
             parts = [self.path]
             if old_path:
                 parts.append(old_path)
             environ[self.key] = pathsep.join(parts)
         
-        self.old_path = old_path
         environ['MAGICK_HOME'] = self.path
         
         return self
@@ -141,7 +151,7 @@ from threading import Lock
 __lock = Lock()
 
 
-def get_dll(init=True):
+def get_dll(init=True, environ=None):
     """Find ImageMagick DLL and initialize it.
        
        Searches available paths with :func:`find_library`
@@ -153,12 +163,10 @@ def get_dll(init=True):
         logger.debug('Critical section - load MagickWand')
         with __lock:
             if not hasattr(get_dll, '__dll'):
-                # first let's look in some places that may
-                # override system-wide paths
-                path = find_library(name, abis)
-                # still nothing? let ctypes figure it out
-                if not path:
-                    path = ctypes.util.find_library(name)
+                if not environ:
+                    environ = os.environ
+                
+                path = find_library(name, abis, environ=environ)
                 if not path:
                     msg = 'Could not find or load MagickWand'
                     raise PystaciaException(msg)
