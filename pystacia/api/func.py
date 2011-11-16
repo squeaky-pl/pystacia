@@ -262,6 +262,8 @@ def c_call(obj, method, *args, **kw):
             arg = arg.resource
         elif type == c_char_p:
             arg = b(arg)
+        elif type == PixelWand_p:
+            arg = color_cast(arg)
             
         args_.append(arg)
     
@@ -293,3 +295,4 @@ from pystacia.api import get_dll, get_bridge, logger
 from pystacia.api.type import (
     MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, enum)
 from pystacia.common import Resource
+from pystacia.color import cast as color_cast

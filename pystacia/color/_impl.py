@@ -1,4 +1,4 @@
-def alloc(color):
+def alloc():
     return simple_call('pwand', 'new')
 
 
@@ -8,6 +8,10 @@ def free(color):
 
 def clone(color):
     return simple_call('pwand', 'clone', color)
+
+
+def set_string(color, value):
+    c_call(color, 'set_color', value)
 
 
 def get_red(color):

@@ -37,8 +37,7 @@ def from_string(value, factory=None):
         factory = Color
         
     color = factory()
-    
-    simple_call(color, 'set_color', value)
+    color.set_string(value)
     
     return color
 
@@ -127,7 +126,6 @@ def from_int24(value, factory=None):
     return from_rgb8(value & 0xff0000, value & 0xff00, value & 0xff, factory)
 
 from pystacia.common import Resource
-from pystacia.color._impl import alloc, free, clone
 
 
 class Color(Resource):
@@ -136,11 +134,14 @@ class Color(Resource):
     
     _api_type = 'pixel'
     
-    _alloc = alloc
+    def _alloc(self):
+        return impl.alloc()
     
-    _free = free
+    def _free(self):
+        impl.free(self)
         
-    _clone = clone
+    def _clone(self):
+        return impl.clone(self)
         
     def __red():  # @NoSelf
         doc = (  # @UnusedVariable
@@ -152,10 +153,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(_impl.get_red, self)
+            return call(impl.get_red, self)
         
         def fset(self, value):
-            call(_impl.set_red, self, value)
+            call(impl.set_red, self, value)
         
         return property(**locals())
         
@@ -174,10 +175,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(_impl.get_green, self)
+            return call(impl.get_green, self)
         
         def fset(self, value):
-            call(_impl.set_green, self, value)
+            call(impl.set_green, self, value)
         
         return property(**locals())
     
@@ -196,10 +197,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(_impl.get_blue, self)
+            return call(impl.get_blue, self)
         
         def fset(self, value):
-            call(_impl.set_blue, self, value)
+            call(impl.set_blue, self, value)
         
         return property(**locals())
     
@@ -218,10 +219,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(_impl.get_alpha, self)
+            return call(impl.get_alpha, self)
         
         def fset(self, value):
-            call(_impl.set_alpha, self, value)
+            call(impl.set_alpha, self, value)
         
         return property(**locals())
     
@@ -245,7 +246,7 @@ class Color(Resource):
            
            :rtype: tuple
         """
-        return call(_impl.get_hsl, self)
+        return call(impl.get_hsl, self)
         
     def get_rgba(self):
         """Return red, green, blue and alpha components.
@@ -299,6 +300,14 @@ class Color(Resource):
         rgb = tuple(int(x * 255) for x in self.get_rgb())
         
         return template.format(*(rgb + (self.alpha,)))
+    
+    def set_string(self, value):
+        """Resets color value of this instance from string.
+        
+           Usage and parameters identical to factory function
+           :func:`from_string`.
+        """
+        call(impl.set_string, self, value)
     
     @property
     def opaque(self):
@@ -385,7 +394,7 @@ from ctypes import addressof
 
 from six import integer_types, string_types
 
-from pystacia.api.func import simple_call, call
+from pystacia.api.func import call
 from pystacia.compat import formattable
-from pystacia.color import _impl
+from pystacia.color import _impl as impl
 from pystacia.util import PystaciaException

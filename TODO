@@ -2,10 +2,6 @@
 TODO
 ====
 
-- casting in enum_lookup
-- casting in c_call on PixelWand_p with cast
-- support limiting of some enums like axes
-- add str method to enumvalue and enum -> their name
 - move factory choosing code to a separate function
 - thread/local, global registry
 - figure out how to do basicConfig

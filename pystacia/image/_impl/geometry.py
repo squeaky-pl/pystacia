@@ -15,7 +15,7 @@ def rescale(image, width, height, factor, filter, blur):  # @ReservedAssignment
             factor = (factor, factor)
         width, height = int(width * factor[0]), int(height * factor[1])
     
-    c_call(image, 'resize', width, height, enum_lookup(filter), blur)
+    c_call(image, 'resize', width, height, enum_lookup(filter, filters), blur)
 
 
 def resize(image, width, height, x, y):

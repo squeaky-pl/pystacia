@@ -40,7 +40,7 @@ def overlay(image, other, x, y, composite):
     if not composite:
         composite = composites.over
         
-    composite = enum_lookup(composite)
+    composite = enum_lookup(composite, composites)
     
     c_call(image, 'composite', other, composite, x, y)
 
@@ -52,7 +52,7 @@ def compare(image, other, metric, factory):
     if not metric:
         metric = metrics.absolute_error
     
-    metric = enum_lookup(metric)
+    metric = enum_lookup(metric, metrics)
     
     if not factory:
         factory = Image
@@ -69,7 +69,7 @@ from ctypes import c_double
 
 from pystacia.api.func import get_c_method, c_call
 from pystacia.api.enum import lookup as enum_lookup
-from pystacia.image.enum import metrics
+from pystacia.image.enum import metrics, composites
 from pystacia.image import Image
 from pystacia.image.enum import composites
 from pystacia.image.generic import blank

@@ -348,7 +348,7 @@ class WithSample(TestCase):
         
         red = color.from_string('red')
         
-        img.colorize(red)
+        img.colorize('red')
         
         self.assertEquals(img.get_pixel(50, 50).get_hsl()[0], red.get_hsl()[0])
     

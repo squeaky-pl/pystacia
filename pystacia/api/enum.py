@@ -548,7 +548,10 @@ from pystacia.util import memoized
 
 
 @memoized
-def lookup(mnemonic, version=None, throw=True):
+def lookup(mnemonic, enum=None, version=None, throw=True):
+    if enum:
+        mnemonic = enum.cast(mnemonic)
+        
     if not version:
         version = get_version()
         

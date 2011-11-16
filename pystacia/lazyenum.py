@@ -43,6 +43,9 @@ class EnumValue(object):
             return False
         
         return id(self) == id(other)
+    
+    def __hash__(self):
+        return hash((self.enum.name, self.name))
 
 from pystacia.util import memoized
 
@@ -69,14 +72,14 @@ def cast(enum_, name):
     if isinstance(name, EnumValue):
         if name.enum != enum_:
             msg = formattable('Attempted to cast {0} to unrelated Enum {1}')
-            raise CastException(msg.format(name, enum_))
+            raise CastException(msg.format(str(name), str(enum_)))
             
         return name
     elif isinstance(name, string_types):
         return enum_value(enum_, name)
     else:
         msg = formattable('Cannot cast {0} to EnumValue with Enum {1}')
-        raise CastException(msg.format(name, enum_))
+        raise CastException(msg.format(str(name), str(enum_)))
 
 from pystacia.util import PystaciaException
 

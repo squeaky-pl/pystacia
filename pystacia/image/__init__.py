@@ -111,7 +111,7 @@ class Image(Resource):
     
     def _set_state(self, key, value, enum=None):
         if enum:
-            value = enum_lookup(value)
+            value = enum_lookup(value, enum)
             
         simple_call(self, ('set', key), value)
         
