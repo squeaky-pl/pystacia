@@ -9,6 +9,22 @@ from pystacia.tests.common import TestCase
 
 
 class ColorTest(TestCase):
+    def test_instantiate(self):
+        class Subclass(color.Color):
+            pass
+        
+        red = color.from_string('red')
+        self.assertIsInstance(red, color.Color)
+        
+        red = color.from_string('red', factory=Subclass)
+        self.assertIsInstance(red, Subclass)
+        
+        registry.color_factory = Subclass
+        red = color.from_string('red')
+        self.assertIsInstance(red, Subclass)
+        
+        registry.color_factory = color.Color
+        
     def test_int24(self):
         black = color.from_int24(0)
         self.assertEqual(black, color.from_rgb(0, 0, 0))
@@ -111,6 +127,6 @@ class ColorTest(TestCase):
 
 from re import match
 
-from pystacia import color
+from pystacia import color, registry
 from pystacia.util import PystaciaException
 from pystacia.compat import formattable

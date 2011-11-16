@@ -10,6 +10,14 @@ from __future__ import division
 """Various color-related functions and objects."""
 
 
+def _instantiate(factory):
+    """Return new color object
+       
+       Not to be used directly.
+    """
+    return registry.get('color_factory', override=factory)()
+
+
 def from_string(value, factory=None):
     """Create :class:`Color` from string.
     
@@ -33,10 +41,7 @@ def from_string(value, factory=None):
        >>> from_string('hsla(50%, 100%, 100%, 0.5)')
        <Color(r=0,g=1,b=1,a=0.5) object at 0x103252a00L>
     """
-    if not factory:
-        factory = Color
-        
-    color = factory()
+    color = _instantiate(factory)
     color.set_string(value)
     
     return color
@@ -59,10 +64,7 @@ def from_rgb(r, g, b, factory=None):
        >>> from_rgb(0.5, 1, 0.5)
        <Color(r=0.5,g=1,b=0.5,a=1) object at 0x103266200L>
     """
-    if not factory:
-        factory = Color
-        
-    color = factory()
+    color = _instantiate(factory)
     color.set_rgb(r, g, b)
     
     return color
@@ -355,6 +357,10 @@ class Color(Resource):
         
         return formattable(template).format(*self.get_rgba(), **kw)
 
+
+from pystacia import registry
+
+registry._install_default('color_factory', Color)  # @UndefinedVariable
 
 class Factory(object):
     

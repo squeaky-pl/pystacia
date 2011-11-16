@@ -735,6 +735,7 @@ class Image(Resource):
            Reads pixel color at point ``(x,y)``.
         """
         return call(pixel.get_pixel, self, x, y, factory)
+
     
     def fill(self, fill, blend=1):
         """Overlay color over whole image.
@@ -1029,6 +1030,11 @@ class Image(Resource):
         return formattable(template).format(class_=class_, w=w, h=h,
                                             depth=depth, colorspace=colorspace,
                                             addr=addr, type=type)
+
+
+from pystacia import registry
+
+registry._install_default('image_factory', Image)  # @UndefinedVariable
 
 import webbrowser
 from tempfile import mkstemp

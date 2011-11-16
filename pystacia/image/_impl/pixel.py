@@ -1,9 +1,6 @@
-def get_pixel(self, x, y, factory=None):
-    if not factory:
-        factory = Color
-    
-    color_ = factory()
-    
+def get_pixel(self, x, y, factory):
+    color_ = color._instantiate(factory)
+        
     c_call(self, ('get', 'pixel_color'), x, y, color_)
     
     return color_
@@ -73,4 +70,5 @@ from pystacia.image.enum import metrics, composites
 from pystacia.image import Image
 from pystacia.image.enum import composites
 from pystacia.image.generic import blank
-from pystacia.color import from_rgb, Color
+from pystacia.color import from_rgb
+from pystacia import color

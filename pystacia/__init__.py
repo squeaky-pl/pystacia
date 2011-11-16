@@ -31,6 +31,10 @@ if not environ.get('PYSTACIA_SETUP'):
         import stacktracer
         stacktracer.trace_start('trace.html', interval=5, auto=True)
     
+    from pystacia.registry import Registry
+    
+    registry = Registry()
+    
     from pystacia import color
     
     colors = color.Factory()
@@ -85,11 +89,13 @@ if not environ.get('PYSTACIA_SETUP'):
         'composites', 'types', 'filters',
         'colorspaces', 'compressions', 'axes',
         'color', 'colors',
-        'Image']
+        'Image',
+        
+        'registry']
     
     from zope.deprecation import deprecated
     from pystacia.compat import formattable
     
     msg = formattable('Use pystacia.image.{0} instead')
-    for symbol in set(__all__) - set(['color', 'colors']):
+    for symbol in set(__all__) - set(['color', 'colors', 'registry']):
         deprecated(symbol, msg.format(symbol))
