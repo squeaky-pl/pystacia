@@ -2,9 +2,8 @@
 TODO
 ====
 
-
-- eq for other types in color (cast)
-- eq for other types in enum (cast)
+- casting in enum_lookup
+- casting in c_call on PixelWand_p with cast
 - support limiting of some enums like axes
 - add str method to enumvalue and enum -> their name
 - move factory choosing code to a separate function
@@ -27,26 +26,18 @@ TODO
   into one class with many test methods [0.1.1]
 - compress method that let's you apply compression and reread image, useful for
   preving compression result
-- put generators together under some submodule, name? [0.1.1]
 - make string passing possible [x]? [0.1.1]
 - fit method [0.1.1]
 - set_pixel (possible?) [0.1.1]
-- lazy init of imagick and function prototypes [0.1.1]
-- keep track of showed temp files and delete them on exit, possibly in the
-  image object [0.1.1]
+- keep track of showed temp files and delete them on exit
 - rgb8, rgba8 color factory, and accessors [0.1.1]
 - support for with protocol [0.1.1]
 - document origin of name pistacja, włoski, pistachio, pronunciation [0.1.1]
 - info method (returns all the crucial magick informations along with loaded libraries and paths)
 - implement other color factories [0.2]
-- add env variable to force immediate init of imagick [0.2]
 - implement better show tool detecting (doesnt work with unity) and fallback to webbrowser [0.2]
 - allow overriding viewer wiith TINYIMG_VIEWER env var
 - containers vs formats
-- search path alteration logic [0.2]
-- smart detecting and lazy loading of API prototypes (based on maybe docs, and decorators)
-  once new api submodule also has functions inside [0.2]
-- rope in logging in crucial moments, specifically init and finding lib [0.2]
 - bench script to test under different version of python [0.2]
 - pixel iterators [0.2]
 - ping [0.2]

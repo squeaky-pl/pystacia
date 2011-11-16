@@ -333,7 +333,7 @@ class Color(Resource):
         return self.alpha == 0
     
     def __eq__(self, other):
-        return self.get_rgba() == other.get_rgba()
+        return self.get_rgba() == cast(other).get_rgba()
     
     def __str__(self):
         return self.get_string()
@@ -365,7 +365,9 @@ def saturate(v):
 
 
 def cast(value):
-    if isinstance(value, integer_types):
+    if isinstance(value, Color):
+        return value
+    elif isinstance(value, integer_types):
         return from_int24(value)
     elif isinstance(value, string_types):
         return from_string(value)

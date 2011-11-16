@@ -11,7 +11,13 @@ class Enum(object):
         self.name = name
     
     def __getattr__(self, name):
-        return enum_value(self, name)
+        return self.cast(name)
+    
+    def cast(self, name):
+        return cast(self, name)
+    
+    def __str__(self):
+        return self.name
     
     def __repr__(self):
         template = formattable("pystacia.lazyenum.enum('{0}')")
@@ -23,9 +29,20 @@ class EnumValue(object):
     def __init__(self, enum, name):
         self.enum = enum
         self.name = name
-        
+    
+    def __str__(self):
+        return self.name
+    
     def __repr__(self):
         return repr(self.enum) + '.' + self.name
+    
+    def __eq__(self, other):
+        try:
+            other = self.enum.cast(other)
+        except CastException:
+            return False
+        
+        return id(self) == id(other)
 
 from pystacia.util import memoized
 
@@ -41,12 +58,34 @@ def enum_value(enum, name):
 
 
 def cast(enum_, name):
-    if isinstance(enum_, string_types):
+    if isinstance(enum_, Enum):
+        pass
+    elif isinstance(enum_, string_types):
         enum_ = enum(enum_)
-        
-    return enum_value(enum_, name)
+    else:
+        msg = formattable('Cannot cast {0} to Enum')
+        raise CastException(msg.format(enum_))
+    
+    if isinstance(name, EnumValue):
+        if name.enum != enum_:
+            msg = formattable('Attempted to cast {0} to unrelated Enum {1}')
+            raise CastException(msg.format(name, enum_))
+            
+        return name
+    elif isinstance(name, string_types):
+        return enum_value(enum_, name)
+    else:
+        msg = formattable('Cannot cast {0} to EnumValue with Enum {1}')
+        raise CastException(msg.format(name, enum_))
+
+from pystacia.util import PystaciaException
+
+
+class CastException(PystaciaException):
+    pass
 
 
 from six import string_types
 
 from pystacia.compat import formattable
+

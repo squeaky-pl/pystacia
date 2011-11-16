@@ -18,6 +18,8 @@ class ColorTest(TestCase):
         self.assertEqual(green, color.from_rgb(0, 1, 0))
         
     def test_cast(self):
+        red = color.from_string('red')
+        self.assertEqual(id(color.cast(red)), id(red))
         self.assertEqual(color.cast(10), color.from_int24(10))
         self.assertEqual(color.cast('violet'), color.from_string('violet'))
         self.assertEqual(color.cast((0, 1, 0)), color.from_rgb(0, 1, 0))
@@ -84,7 +86,16 @@ class ColorTest(TestCase):
         
         self.assertEqual(colors.red, color.from_string('red'))
         self.assertEqual(colors.gray, color.from_string('gray'))
-        
+    
+    def test_eq(self):
+        red = color.from_string('red')
+        self.assertEqual(red, red.copy())
+        self.assertEqual(red, 'red')
+        self.assertEqual(red, '#f00')
+        self.assertEqual(red, 0xff0000)
+        self.assertEqual(red, (1, 0, 0))
+        self.assertEqual(red, (1, 0, 0, 1))
+    
     def test_repr(self):
         for x in (color.from_string(x) for x in
                   ['red', 'green', 'blue', 'gray']):
