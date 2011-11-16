@@ -13,20 +13,22 @@ def spread(image, radius):
     c_call(image, 'spread', radius)
 
 
-def dft(image, magnitude):
+def dft(image, magnitude, factory):
     magnitude = bool(magnitude)
     copy = image.copy()
     
     c_call(copy, 'forward_fourier_transorm', magnitude)
     
-    first = blank(*image.size)
-    second = blank(*image.size)
+    width, height = image.size
     
-    first.overlay(copy, composite=composites.copy)
+    first = blank(width, height, factory=factory)
+    second = blank(width, height, factory=factory)
+    
+    first.overlay(copy, composite='copy')
     
     c_call(image, 'next')
     
-    second.overlay(copy, composite=composites.copy)
+    second.overlay(copy, composite='copy')
     
     copy.close()
     
@@ -42,4 +44,3 @@ def fx(image, expression):
 
 from pystacia.api.func import c_call
 from pystacia.image.generic import blank
-from pystacia.image.enum import composites

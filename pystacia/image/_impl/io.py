@@ -2,10 +2,7 @@ from __future__ import with_statement
 
 
 def read(spec, width=None, height=None, factory=None):
-    if not factory:
-        factory = Image
-        
-    image = factory()
+    image = _instantiate(factory)
     
     if width and height:
         c_call('magick', 'set_size', image, width, height)
@@ -16,10 +13,7 @@ def read(spec, width=None, height=None, factory=None):
 
 
 def read_blob(blob, format, factory):  # @ReservedAssignment
-    if not factory:
-        factory = Image
-    
-    image = factory()
+    image = _instantiate(factory)
     
     #resource = image.resource
     #if format:
@@ -42,10 +36,7 @@ def read_blob(blob, format, factory):  # @ReservedAssignment
 
 def read_raw(raw, format, width, height,  # @ReservedAssignment
              depth, factory=None):
-    if not factory:
-        factory = Image
-    
-    image = factory()
+    image = _instantiate(factory)
     
     c_call('magick', 'set_size', image, width, height)
     c_call('magick', 'set_depth', image, depth)
@@ -87,5 +78,5 @@ def get_blob(image, format, compression,  # @ReservedAssignment
 from ctypes import c_size_t, string_at
 
 from pystacia.common import state
-from pystacia.image import Image
+from pystacia.image import _instantiate
 from pystacia.api.func import c_call

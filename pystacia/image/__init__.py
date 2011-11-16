@@ -10,6 +10,14 @@ from __future__ import division
 """:class:`Image` creation and management operations"""
 
 
+def _instantiate(factory):
+    """Return new image object
+       
+       Not to be used directly.
+    """
+    return registry.get('image_factory', override=factory)()
+
+
 def read(filename, factory=None):
     """Read :class:`Image` from filename.
        
@@ -695,7 +703,7 @@ class Image(Resource):
         """
         call(special.spread, self, radius)
     
-    def dft(self, magnitude=True):
+    def dft(self, magnitude=True, factory=None):
         """Applies inverse discrete Fourier transform to an image.
            
            :param magnitude: if ``True``, return as magnitude / phase pair
@@ -709,7 +717,7 @@ class Image(Resource):
            accomplished with it. This method will not be present if your
            ImageMagick installation wasn't compiled against FFTW.
         """
-        return call(special.dft, self, magnitude)
+        return call(special.dft, self, magnitude, factory)
     
     def fx(self, expression):  # @ReservedAssignment
         """Perform expression using ImageMagick mini-language.

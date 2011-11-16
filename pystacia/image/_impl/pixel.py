@@ -68,7 +68,6 @@ from pystacia.api.func import get_c_method, c_call
 from pystacia.api.enum import lookup as enum_lookup
 from pystacia.image.enum import metrics, composites
 from pystacia.image import Image
-from pystacia.image.enum import composites
 from pystacia.image.generic import blank
 from pystacia.color import from_rgb
 from pystacia import color

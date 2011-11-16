@@ -10,6 +10,17 @@ from pystacia.tests.common import TestCase, skipIf
 
 
 class WithFactory(TestCase):
+    def test_instantiate(self):
+        class Subclass(Image):
+            pass
+        
+        self.assertIsInstance(blank(30, 30), Image)
+        self.assertIsInstance(blank(30, 30, factory=Subclass), Subclass)
+        
+        registry.image_factory = Subclass
+        self.assertIsInstance(blank(30, 30), Subclass)
+        registry.image_factory = Image
+        
     def test_raw(self):
         data = dict(raw=b('\xff\xff\xff'), format='rgb',
                     depth=8, width=1, height=1)
@@ -597,7 +608,6 @@ from six import b, BytesIO
 from pystacia.util import PystaciaException
 from pystacia.image import (read, read_raw, read_blob, types,
                            colorspaces, blank, axes, checkerboard)
-from pystacia import color
-from pystacia import magick
+from pystacia import color, magick, registry
 from pystacia.tests.common import sample
 from random import randint
