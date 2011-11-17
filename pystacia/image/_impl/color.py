@@ -31,6 +31,10 @@ def sepia(image, threshold, saturation):
     if saturation:
         modulate(image, 0, saturation, 0)
 
+def evaluate(image, operation, value):
+    operation = enum_lookup(operation, operations)
+    
+    c_call(image, 'evaluate', operation, value)
 
 def equalize(image):
     c_call(image, 'equalize')
@@ -71,13 +75,25 @@ def threshold(image, factor, mode):
         c_call(image, 'random_threshold', factor[0], factor[1])
 
 
+def map(image, lookup, interpolation):  # @ReservedAssignment
+    if not interpolation:
+        interpolation = 'average'
+        
+    interpolation = enum_lookup(interpolation, interpolations)
+        
+    c_call(image, 'clut', lookup, interpolation)
+
+def contrast_stretch(image, black, white):
+    black, white = ((2 ** magick.get_depth() - 1) * x for x in [black, white])
+    
+    c_call(image, 'contrast_stretch', black, white)
+
 def convert_colorspace(image, colorspace):
     colorspace = enum_lookup(colorspace, colorspaces)
     c_call(image, ('transform', 'colorspace'), colorspace)
-
 
 from pystacia import magick
 from pystacia import color
 from pystacia.api.func import c_call
 from pystacia.api.enum import lookup as enum_lookup
-from pystacia.image.enum import colorspaces
+from pystacia.image.enum import colorspaces, interpolations, operations

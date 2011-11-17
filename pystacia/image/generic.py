@@ -33,7 +33,7 @@ def blank(width, height, background=None, factory=None):
                 width, height, factory)
 
 
-def noise(width, height, grayscale=False):
+def noise(width, height, grayscale=False, factory=None):
     """Create image filled with monolithic random noise
        
        :param width: Width in pixels
@@ -53,6 +53,23 @@ def noise(width, height, grayscale=False):
         image.type = 'grayscale'
     
     return image
+
+
+def plasma(width, height, type=None, factory=None):  # @ReservedAssignment
+    """Create plasma generic image
+        
+        :param width: Width in pixels
+        :type width: ``int``
+        :param height: Height in pixels
+        :type height: ``int``
+        
+        :rtype: :class:`pystacia.image.Image`
+    """
+    spec = 'plasma:'
+    if type:
+        spec += type
+        
+    return io.read(spec, width, height, factory=factory)
 
 
 from pystacia.image._impl import io

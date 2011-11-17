@@ -589,6 +589,29 @@ class Image(Resource):
         """
         call(color_impl.threshold, self, factor, mode)
     
+    def map(self, lookup, interpolation=None):  # @ReservedAssignment
+        """Map image using intensivities as keys and lookup image.
+           
+           :param lookup: Lookup table image
+           :type lookup: :class:`pystacia.image.Image`
+           :param interpolation: interpolation method
+           
+           Maps an image using lightness as key and copying color values
+           from lookup image.
+        """
+        call(color_impl.map, self, lookup, interpolation)
+    
+    def contrast_stretch(self, black=0, white=1):
+        call(color_impl.contrast_stretch, self, black, white)
+    
+    def evaluate(self, operation, value):
+        call(color_impl.evaluate, self, operation, value)
+    
+    @property
+    def total_colors(self):
+        """Return total number of unique colors in image"""
+        return self._get_state('colors')
+    
     def blur(self, radius, strength=None):
         """Blur image.
            
@@ -604,11 +627,17 @@ class Image(Resource):
         """
         call(blur_impl.blur, self, radius, strength)
     
+    def gaussian_blur(self, radius, strength=None, bias=None):
+        call(blur_impl.gaussian_blur, self, radius, strength, bias)
+    
     def adaptive_blur(self, radius, strength=None, bias=None):
         call(blur_impl.adaptive_blur, self, radius, strength, bias)
         
     def adaptive_sharpen(self, radius, strength=None, bias=None):
         call(blur_impl.adaptive_sharpen, self, radius, strength, bias)
+    
+    def detect_edges(self, radius, strength=None):
+        call(blur_impl.detect_edges, self, radius, strength)
     
     #TODO: moving center here
     def radial_blur(self, angle):
@@ -1119,6 +1148,7 @@ from pystacia.image._impl import (io, geometry, color as color_impl,
 from pystacia.image.enum import (types, filters, colorspaces,  # @UnusedImport
                                  compressions, composites, axes, noises,
                                  thresholds)
-from pystacia.image.generic import blank, checkerboard, noise  # @UnusedImport
+from pystacia.image.generic import (blank, checkerboard, noise,  # @UnusedImport
+                                    plasma)
 from pystacia.image.sample import (lena, magick_logo, rose,  # @UnusedImport
                                    wizard, granite, netscape)
