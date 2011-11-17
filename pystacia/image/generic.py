@@ -31,6 +31,29 @@ def blank(width, height, background=None, factory=None):
     
     return call(io.read, 'xc:' + str(background),
                 width, height, factory)
+
+
+def noise(width, height, grayscale=False):
+    """Create image filled with monolithic random noise
+       
+       :param width: Width in pixels
+       :type width: ``int``
+       :param height: Height in pixels
+       :type height: ``int``
+       :param grayscale: Whether noise should be grayscale
+       
+       By defult returns an image filled with color noise.
+       The image contains grayscale noise if grayscale is set to ``True``.
+    """
     
+    image = blank(width, height, 'white')
+    image.add_noise(noise_type='random')
+    
+    if grayscale:
+        image.type = 'grayscale'
+    
+    return image
+
+
 from pystacia.image._impl import io
 from pystacia.api.func import call

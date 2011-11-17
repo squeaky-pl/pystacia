@@ -5,6 +5,24 @@ def blur(image, radius, strength):
     c_call(image, 'blur', radius, strength)
 
 
+def adaptive_blur(image, radius, strength, bias):
+    if strength == None:
+        strength = radius
+    if bias == None:
+        bias = 0
+        
+    c_call(image, 'adaptive_blur', radius, strength, bias)
+
+
+def adaptive_sharpen(image, radius, strength, bias):
+    if strength == None:
+        strength = radius
+    if bias == None:
+        bias = 0
+        
+    c_call(image, 'adaptive_sharpen', radius, strength, bias)
+
+
 #TODO: moving center here
 def radial_blur(image, angle):
     """Performs radial blur.

@@ -44,7 +44,7 @@ def get_options():
     if exists(config_path):
         return get_options_hack(config_path)
     else:
-        return call(_impl.get_options)
+        return call(impl.get_options)
 
 
 @memoized
@@ -68,6 +68,11 @@ def get_depth():
     return int(depth) if depth else None
 
 
+@memoized
+def get_formats():
+    return call(impl.get_formats)
+
+
 from os.path import dirname, join, exists
 
 try:
@@ -77,4 +82,4 @@ except ImportError:
 
 from pystacia.api import get_dll
 from pystacia.api.func import call, simple_call
-from pystacia.magick import _impl
+from pystacia.magick import _impl as impl

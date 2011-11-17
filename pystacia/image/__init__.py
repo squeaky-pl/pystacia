@@ -565,6 +565,27 @@ class Image(Resource):
         """
         call(color_impl.posterize, self, levels, dither)
     
+    def threshold(self, factor=0.5, mode=None):
+        """Threshold image forcing pixels into black & white.
+        
+           :param factor: Threshold factor
+           :type factor: ``float`` or ``tuple``
+           :patam mode: One of 'default', 'white', 'black'
+           
+           Threshold image resulting in black & white image. Factor specify
+           lightness threshold. It's a float ranging from 0 to 1 and
+           defaults to 0.5. Pixels
+           below intensivity factor are renderer black and pixels
+           above it end up white. In white mode channel pixels above factor
+           intensivity are pushed into their maximum whilst one below are
+           left untouched. In black mode channel pixels below factor are
+           set to ``0`` whilst one above are left untouched. In random mode
+           factor should be two-element tuple that specify minimum and maximum
+           thresholds. Thresholds are then randomly chosen for each pixel
+           individually from given range.
+        """
+        call(color_impl.threshold, self, factor, mode)
+    
     def blur(self, radius, strength=None):
         """Blur image.
            
@@ -579,6 +600,12 @@ class Image(Resource):
            This method can be chained.
         """
         call(blur_impl.blur, self, radius, strength)
+    
+    def adaptive_blur(self, radius, strength=None, bias=None):
+        call(blur_impl.adaptive_blur, self, radius, strength, bias)
+        
+    def adaptive_sharpen(self, radius, strength=None, bias=None):
+        call(blur_impl.adaptive_sharpen, self, radius, strength, bias)
     
     #TODO: moving center here
     def radial_blur(self, angle):
@@ -676,6 +703,9 @@ class Image(Resource):
            This method can be chained.
         """
         call(special.sketch, self, radius, angle, strength)
+    
+    def add_noise(self, attenuate=0, noise_type=None):
+        call(special.add_noise, self, attenuate, noise_type)
     
     def oil_paint(self, radius):
         """Simulates oil paiting.
@@ -1081,7 +1111,8 @@ from pystacia.image._impl import (io, geometry, color as color_impl,
 
 # convenience imports
 from pystacia.image.enum import (types, filters, colorspaces,  # @UnusedImport
-                                 compressions, composites, axes)
-from pystacia.image.generic import blank, checkerboard  # @UnusedImport
+                                 compressions, composites, axes, noises,
+                                 thresholds)
+from pystacia.image.generic import blank, checkerboard, noise  # @UnusedImport
 from pystacia.image.sample import (lena, magick_logo, rose,  # @UnusedImport
                                    wizard, granite, netscape)

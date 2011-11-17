@@ -5,6 +5,14 @@ def sketch(image, radius, angle, strength):
     c_call(image, 'sketch', radius, strength, angle)
 
 
+def add_noise(image, attenuate, noise_type):
+    if not noise_type:
+        noise_type = 'gaussian'
+        
+    noise_type = enum_lookup(noise_type, noises)
+    
+    c_call(image, 'add_noise', noise_type, attenuate)
+
 def oil_paint(image, radius):
     c_call(image, 'oil_paint', radius)
 
@@ -44,3 +52,5 @@ def fx(image, expression):
 
 from pystacia.api.func import c_call
 from pystacia.image.generic import blank
+from pystacia.image.enum import noises
+from pystacia.api.enum import lookup as enum_lookup

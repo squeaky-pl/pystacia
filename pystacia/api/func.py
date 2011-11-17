@@ -74,6 +74,7 @@ def get_data():
             'symbols': {
                 'query_configure_options': ((ch, P(s)), P(ch)),
                 'query_configure_option': ((ch,), ch),
+                'query_formats': ((ch, P(s)), P(ch)),
                 'get_version': ((P(s),), ch),
                 'relinquish_memory': ((v,), v)
             }
@@ -149,8 +150,14 @@ def get_data():
                 'negate': ((b,), b),
                 'solarize': ((d,), b),
                 'posterize': ((u, b), b),
+                'threshold': ((d,), b),
+                'black_threshold': ((pw,), b),
+                'white_threshold': ((pw,), b),
+                'random_threshold': ((d, d), b),
                 
                 'blur': ((d, d), b),
+                'adaptive_blur': ((d, d, d), b),
+                'adaptive_sharpen': ((d, d, d), b),
                 'radial_blur': ((d,), b),
                 'enhance': ((), b),
                 'despeckle': ((), b),
@@ -160,6 +167,7 @@ def get_data():
                 'wave': ((d, d), b),
                 
                 'sketch': ((d, d, d), b),
+                'add_noise': ((e, d), b),
                 'oil_paint': ((d,), b),
                 'spread': ((d,), b),
                 'forward_fourier_transform': ((b,), b),

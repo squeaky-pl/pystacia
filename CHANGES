@@ -8,20 +8,27 @@ CHANGES
 Goal
 ----
 
-Reduce boilerplate code and simplify architecture
+Reduce boilerplate code and simplify architecture, full thread-safety
 
 Additions
 ---------
 tinyimg.colors factory for well known colors
+thread-safety
+magick: get_formats
+- Color.get_hsl, from_int24, cast
+- Image auto_level, auto_gamma, compare, is_same, adaptive_blur, add_noise
+- generic: noise
 
 Changes
 -------
 - Extracted common Resource interface for Image and Color classes
+- tests increased from 70, coverage to 95%
 - rewritten from scratch Python to C-API bridge
 - lazy loading of C-function definitions
+- enumeration values can be passed by strings instead of symbols
 - support for logging debug events pystacia logger
 - bridge sandboxing of client code from C-API
-- Color.get_hsb
+- Colors can be now autocast from strings, ints, 3 and 4-element tuples
 
 Deprecated
 ----------
