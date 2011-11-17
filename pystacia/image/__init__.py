@@ -612,6 +612,18 @@ class Image(Resource):
         """Return total number of unique colors in image"""
         return self._get_state('colors')
     
+    def get_range(self):
+        """Return range minimum and maximum range of channels
+           
+           :rtype: ``tuple``
+           
+           Return a range of color information as a tuple of floats between
+           0 and 1. E.g. black and white image woudle have a range
+           of 0 for minimum and 1 for maximum
+           1-color images will have maximum equal to minimum.
+        """
+        return call(color_impl.get_range, self)
+    
     def blur(self, radius, strength=None):
         """Blur image.
            
@@ -626,6 +638,9 @@ class Image(Resource):
            This method can be chained.
         """
         call(blur_impl.blur, self, radius, strength)
+    
+    def motion_blur(self, radius, angle=0, strength=None, bias=None):
+        call(blur_impl.motion_blur, self, radius, angle, strength, bias)
     
     def gaussian_blur(self, radius, strength=None, bias=None):
         call(blur_impl.gaussian_blur, self, radius, strength, bias)

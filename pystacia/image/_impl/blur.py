@@ -15,6 +15,16 @@ def gaussian_blur(image, radius, strength, bias):
     c_call(image, 'gaussian_blur', radius, strength, bias)
 
 
+def motion_blur(image, radius, angle, strength, bias):
+    if strength == None:
+        strength = radius
+    
+    if bias == None:
+        bias = 0
+    
+    c_call(image, 'motion_blur', radius, strength, angle, bias)
+
+
 def adaptive_blur(image, radius, strength, bias):
     if strength == None:
         strength = radius

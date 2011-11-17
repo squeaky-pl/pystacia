@@ -1,3 +1,6 @@
+from __future__ import division
+
+
 def brightness(image, factor):
     c_call(image, 'brightness_contrast', factor * 100, 0)
 
@@ -83,14 +86,28 @@ def map(image, lookup, interpolation):  # @ReservedAssignment
         
     c_call(image, 'clut', lookup, interpolation)
 
+
 def contrast_stretch(image, black, white):
     black, white = ((2 ** magick.get_depth() - 1) * x for x in [black, white])
     
     c_call(image, 'contrast_stretch', black, white)
 
+
 def convert_colorspace(image, colorspace):
     colorspace = enum_lookup(colorspace, colorspaces)
     c_call(image, ('transform', 'colorspace'), colorspace)
+
+
+def get_range(image):
+    minimum, maximum = c_double(), c_double()
+    
+    c_call(image, ('get', 'range'), minimum, maximum)
+    
+    return tuple(x.value / (2 ** magick.get_depth() - 1)
+                 for x in (minimum, maximum))
+
+
+from ctypes import c_double
 
 from pystacia import magick
 from pystacia import color
