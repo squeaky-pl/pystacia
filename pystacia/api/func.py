@@ -139,6 +139,7 @@ def get_data():
                 'deskew': ((d,), b),
                 'trim': ((d,), b),
                 'splice': ((s, s, ss, ss), b),
+                'chop': ((s, s, ss, ss), b),
                 
                 'brightness_contrast': ((d, d), b),
                 'gamma': ((d,), b),
@@ -168,6 +169,7 @@ def get_data():
                 
                 'sketch': ((d, d, d), b),
                 'add_noise': ((e, d), b),
+                'charcoal': ((d, d, d), b),
                 'oil_paint': ((d,), b),
                 'spread': ((d,), b),
                 'forward_fourier_transform': ((b,), b),

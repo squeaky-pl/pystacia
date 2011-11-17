@@ -17,6 +17,15 @@ def oil_paint(image, radius):
     c_call(image, 'oil_paint', radius)
 
 
+def charcoal(image, radius, strength, bias):
+    if strength == None:
+        strength = radius
+    if bias == None:
+        bias = 0
+
+    c_call(image, 'charcoal', radius, strength, bias)
+
+
 def spread(image, radius):
     c_call(image, 'spread', radius)
 

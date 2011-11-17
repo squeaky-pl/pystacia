@@ -375,6 +375,9 @@ class Image(Resource):
         """
         call(geometry.trim, self, similarity, background)
     
+    def chop(self, x, y, width, height):
+        call(geometry.chop, self, x, y, width, height)
+    
     def brightness(self, factor):
         """Brightens an image.
            
@@ -706,6 +709,9 @@ class Image(Resource):
     
     def add_noise(self, attenuate=0, noise_type=None):
         call(special.add_noise, self, attenuate, noise_type)
+    
+    def charcoal(self, radius, strength=None, bias=None):
+        call(special.charcoal, self, radius, strength, bias)
     
     def oil_paint(self, radius):
         """Simulates oil paiting.
