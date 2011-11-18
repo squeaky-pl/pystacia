@@ -419,6 +419,111 @@ class WithSample(TestCase):
                           tuple(round(1 - x, 4) for x in before.get_rgb()))
     
     # test only if it doesnt blow up
+    def test_normalize(self):
+        img = self.img
+        
+        img.normalize()
+        
+    def test_threshold(self):
+        img = self.img
+        
+        img.threshold()
+        
+        self.assertEqual(img.total_colors, 2)
+    
+    # test only if it doesnt blow up
+    def test_map(self):
+        img = self.img
+        
+        img.map(img)
+        
+    # test only if it doesnt blow up
+    def test_contrast_stretch(self):
+        img = self.img
+        
+        img.contrast_stretch()
+        
+    def test_total_colors(self):
+        img = self.img
+        
+        img.type = 'bilevel'
+        
+        self.assertEqual(img.total_colors, 2)
+    
+    def test_motion_blur(self):
+        img = self.img
+        copy = img.copy()
+        
+        copy.motion_blur(5)
+        self.assertFalse(img.is_same(copy))
+    
+    def test_adaptive_blur(self):
+        img = self.img
+        
+        img.adaptive_blur(5)
+    
+    def test_adaptive_sharpen(self):
+        img = self.img
+        
+        img.adaptive_sharpen(5)
+    
+    def test_detect_edges(self):
+        img = self.img
+        
+        img.detect_edges(2)
+    
+    def test_sharpen(self):
+        img = self.img
+        
+        img.sharpen(2)
+        
+    def test_add_noise(self):
+        img = self.img
+        copy = img.copy()
+        
+        copy.add_noise()
+        self.assertFalse(img.is_same(copy))
+    
+    def test_charcoal(self):
+        img = self.img
+        copy = img.copy()
+        
+        copy.charcoal(2)
+        
+        self.assertFalse(img.is_same(copy))
+    
+    def test_shade(self):
+        img = self.img
+        copy = img.copy()
+        
+        copy.shade()
+        
+        self.assertTrue(copy.type, 'grayscale')
+        self.assertFalse(img.is_same(copy))
+    
+    def test_get_range(self):
+        img = self.img
+        
+        range = img.get_range()  # @ReservedAssignment
+        
+        self.assertNotEqual(range[0], range[1])
+        
+        img = blank(10, 10, 'white')
+        
+        self.assertEqual(range[0], range[1])
+        self.assertEqual(range[0], 1)
+    
+    def test_evaluate(self):
+        img = self.img
+        img.type = 'grayscale'
+        
+        before = img.get_pixel(320, 240)
+        
+        img.evaluate('divide', 2)
+        
+        self.assertAlmostEqual(before.r, img.get_pixel(320, 240).r * 2, 2)
+    
+    # test only if it doesnt blow up
     def test_sketch(self):
         img = self.img
         

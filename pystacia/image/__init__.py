@@ -524,6 +524,7 @@ class Image(Resource):
         call(color_impl.equalize, self)
     
     def normalize(self):
+        """Normalize image histogram."""
         call(color_impl.normalize, self)
     
     def invert(self, only_gray=False):
@@ -605,9 +606,21 @@ class Image(Resource):
         call(color_impl.map, self, lookup, interpolation)
     
     def contrast_stretch(self, black=0, white=1):
+        """Strech image contrast"""
         call(color_impl.contrast_stretch, self, black, white)
     
     def evaluate(self, operation, value):
+        """Apply operation to imaget color information
+           
+           :param operation: Operation like "multiply" or "subtract"
+           :type operation: Enum ``operations`` representation
+           :param value: A constant value used as operand
+           :type value: ``float``
+           
+           Evaluate each pixel in image with operation and provided value.
+           E.g. using ``'divide'`` operation and ``2`` as value would result
+           in all pixels divided by two.
+        """
         call(color_impl.evaluate, self, operation, value)
     
     @property
@@ -643,18 +656,69 @@ class Image(Resource):
         call(blur_impl.blur, self, radius, strength)
     
     def motion_blur(self, radius, angle=0, strength=None, bias=None):
+        """Motion blur image
+           
+           :param radius: Blur radius in pixels
+           :type radius: ``float``
+           :param angle: Angle measured clockwise to X-axis
+           :type angle:``float``
+           
+           Applies motion blur of given radius along in given direction
+           measured in degrees of X-axis clockwise.
+           
+           This method can be chained.
+        """
         call(blur_impl.motion_blur, self, radius, angle, strength, bias)
     
     def gaussian_blur(self, radius, strength=None, bias=None):
+        """Gaussian blur an image
+           
+           :param radius: radius in pixels
+           :type radius: ``float``
+           
+           Applies gaussian blur to an image of given radius.
+           
+           This method can be chained.
+        """
+        
         call(blur_impl.gaussian_blur, self, radius, strength, bias)
     
     def adaptive_blur(self, radius, strength=None, bias=None):
+        """Adaptive blur an image
+           
+           :param radius: radius in pixels
+           :type radius: ``float``
+           
+           Applies adaptive blur of given radius to an image.
+           
+           This method can be chained.
+        """
         call(blur_impl.adaptive_blur, self, radius, strength, bias)
         
     def adaptive_sharpen(self, radius, strength=None, bias=None):
+        """Adaptive sharpen an image
+           
+           :param radius: radius in pixels
+           :type radius: ``float``
+           
+           Applies adaptive sharpening to an image.
+           
+           This method can be chained.
+        """
         call(blur_impl.adaptive_sharpen, self, radius, strength, bias)
     
     def detect_edges(self, radius, strength=None):
+        """Detect edges in image.
+           
+           :param radius: radius of detected edges
+           :type radius: ``float``
+           
+           Analyzes image and marks contrasting edges. It operates on
+           all channels by default so it might be a good idea to grayscale
+           an image before performing it.
+           
+           This method can be chained.
+        """
         call(blur_impl.detect_edges, self, radius, strength)
     
     #TODO: moving center here
@@ -670,7 +734,16 @@ class Image(Resource):
         """
         call(blur_impl.radial_blur, self, angle)
     
-    def sharpen(self, radius, strength, bias):
+    def sharpen(self, radius, strength=None, bias=None):
+        """Sharpen an image.
+           
+           :param radius: Radius of sharpening kernel
+           :type radius: ``float``
+           
+           Performs sharpening of an image.
+           
+           This method can be chained.
+        """
         call(blur_impl.sharpen, self, radius, strength, bias)
     
     def denoise(self):
@@ -758,9 +831,28 @@ class Image(Resource):
         call(special.sketch, self, radius, angle, strength)
     
     def add_noise(self, attenuate=0, noise_type=None):
+        """Add noise to an image.
+           
+           :param attenuate: Attenuation factor
+           :type attenuate: ``float``
+           :param noise_type: values representing
+           :attr:`pystacia.image.enum.noises`
+           
+           Adds noise of given type to an image. Noise type defaults
+           to ``"gaussian"``.
+           
+           This method can be chained.
+        """
         call(special.add_noise, self, attenuate, noise_type)
     
     def charcoal(self, radius, strength=None, bias=None):
+        """Simluate a charcoal.
+           
+           :param radius: Charcoal radius
+           :type radius: ``float``
+           
+           This method can be chained.
+        """
         call(special.charcoal, self, radius, strength, bias)
     
     def oil_paint(self, radius):
@@ -777,6 +869,22 @@ class Image(Resource):
         call(special.oil_paint, self, radius)
     
     def shade(self, azimuth=45, elevation=45, grayscale=True):
+        """Simulate 3D shading effect.
+           
+           :param azimuth: azimuth in degrees - light direction
+           :type azimuth: ``float``
+           :param elevation: elevation above image surface in degrees
+           :type elevation: ``float``
+           :param grayscale: Whether grayscale image
+           :type grayscale: ``bool``
+           
+           Simulates 3D effect by finding edges and rendering them as rised
+           with light comming from azimuth direction in elevation degrees above
+           image surface. Azimuth is rotation along Z axis. By default it
+           grayscales an image before applying an effect.
+           
+           This method can be chained
+        """
         call(special.shade, self, azimuth, elevation, grayscale)
     
     def spread(self, radius):

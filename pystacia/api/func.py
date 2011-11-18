@@ -260,6 +260,16 @@ def get_c_method(obj, method, throw=True):
     return method_name, c_method
 
 
+def annote():
+    dll = get_dll()
+    
+    for class_, funcs in get_data().items():
+        for name in funcs['symbols']:
+            get_c_method(class_, name)
+            
+    return dll
+
+
 def c_call(obj, method, *args, **kw):
     method_name, c_method = get_c_method(obj, method)
     
