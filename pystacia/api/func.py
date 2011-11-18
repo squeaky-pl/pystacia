@@ -165,6 +165,7 @@ def get_data():
                 'blur': ((d, d), b),
                 'gaussian_blur': ((d, d, d), b),
                 'motion_blur': ((d, d, d, d), b),
+                'sharpen': ((d, d, d), b),
                 'edge': ((d, d), b),
                 'adaptive_blur': ((d, d, d), b),
                 'adaptive_sharpen': ((d, d, d), b),

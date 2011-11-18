@@ -34,6 +34,14 @@ def adaptive_blur(image, radius, strength, bias):
     c_call(image, 'adaptive_blur', radius, strength, bias)
 
 
+def sharpen(image, radius, strength, bias):
+    if strength == None:
+        strength = radius
+    if bias == None:
+        bias = 0
+        
+    c_call(image, 'sharpen', radius, strength, bias)
+
 def adaptive_sharpen(image, radius, strength, bias):
     if strength == None:
         strength = radius

@@ -670,6 +670,9 @@ class Image(Resource):
         """
         call(blur_impl.radial_blur, self, angle)
     
+    def sharpen(self, radius, strength, bias):
+        call(blur_impl.sharpen, self, radius, strength, bias)
+    
     def denoise(self):
         """Attempt to remove noise preserving edges.
         
