@@ -11,7 +11,7 @@ def __lena_image(factory=None):
     global __lena
     
     lena_path = join(dirname(pystacia.__file__), 'lena.png')
-    if not exists(lena_path) or 'png' not in magick.get_delegates():
+    if not exists(lena_path) or 'png' not in magick.get_formats():
         raise PystaciaException('Not available')
     
     if not __lena:

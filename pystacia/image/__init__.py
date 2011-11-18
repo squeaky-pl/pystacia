@@ -1200,7 +1200,7 @@ class Image(Resource):
            process ends.
         """
         extension = 'bmp'
-        if 'png' in magick.get_delegates():
+        if 'png' in magick.get_formats():
             extension = 'png'
             
         tmpname = mkstemp()[1] + '.' + extension

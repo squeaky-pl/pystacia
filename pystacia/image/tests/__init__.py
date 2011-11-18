@@ -664,7 +664,7 @@ class WithSample(TestCase):
         
         tmpname = img.show(no_gui=True)
         
-        if 'png' in magick.get_delegates():
+        if 'png' in magick.get_formats():
             self.assertTrue(tmpname.endswith('.png'))
         else:
             self.assertTrue(tmpname.endswith('.bmp'))
