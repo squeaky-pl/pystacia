@@ -148,6 +148,7 @@ def get_data():
                 'modulate': ((d, d, d), b),
                 'sepia_tone': ((d,), b),
                 'equalize': ((), b),
+                'normalize': ((), b),
                 'negate': ((b,), b),
                 'solarize': ((d,), b),
                 'posterize': ((u, b), b),
@@ -182,6 +183,7 @@ def get_data():
                 'spread': ((d,), b),
                 'forward_fourier_transform': ((b,), b),
                 'fx': ((ch,), w),
+                'shade': ((b, d, d), b),
                 
                 'colorize': ((pw, pw), b),
                 ('set', 'color'): ((pw,), b),

@@ -523,6 +523,9 @@ class Image(Resource):
         """
         call(color_impl.equalize, self)
     
+    def normalize(self):
+        call(color_impl.normalize, self)
+    
     def invert(self, only_gray=False):
         """Invert image colors.
            
@@ -769,6 +772,9 @@ class Image(Resource):
            This method can be chained.
         """
         call(special.oil_paint, self, radius)
+    
+    def shade(self, azimuth=45, elevation=45, grayscale=True):
+        call(special.shade, self, azimuth, elevation, grayscale)
     
     def spread(self, radius):
         """Spread pixels in random direction.

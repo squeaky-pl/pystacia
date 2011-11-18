@@ -26,6 +26,10 @@ def charcoal(image, radius, strength, bias):
     c_call(image, 'charcoal', radius, strength, bias)
 
 
+def shade(image, azimuth, elevation, grayscale):
+    c_call(image, 'shade', grayscale, azimuth, elevation)
+
+
 def spread(image, radius):
     c_call(image, 'spread', radius)
 

@@ -39,6 +39,11 @@ def evaluate(image, operation, value):
     
     c_call(image, 'evaluate', operation, value)
 
+
+def normalize(image):
+    c_call(image, 'normalize')
+
+
 def equalize(image):
     c_call(image, 'equalize')
 
