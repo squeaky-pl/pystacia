@@ -2,27 +2,26 @@
 TODO
 ====
 
-- figure out how to do basicConfig
-- instead of relying on renames and get_platfom we could use our own solution [0.1.1]
-  if it can be loaded and test for OS and 64bit in setyp.py
-- document splice, implement implode
+
 - weakrefing cached lena should be only used in tests [0.1.1]
 - investigate __all__ of main module, image and color
 - i.e. registry module to use for paths, chainability and any other things
   that affect runtime
+- implement complex threaded test with many operations
+  -------------------------
+- instead of relying on renames and get_platfom we could use our own solution [0.1.1]
+  if it can be loaded and test for OS and 64bit in setyp.py
 - more generators from pseudoformats: gradients etc [0.1.1]
 - Image.write should obey format when explicitely set, ImageMagick always does it
   from filename, if format is set call get_blob() instead and save to fs in py
   into one class with many test methods [0.1.1]
 - compress method that let's you apply compression and reread image, useful for
   preving compression result
-- implement complex threaded test with many operations
 - fit method [0.1.1]
 - set_pixel (possible?) [0.1.1]
 - keep track of showed temp files and delete them on exit
 - rgb8, rgba8 color factory, and accessors [0.1.1]
 - support for with protocol [0.1.1]
-- document origin of name pistacja, włoski, pistachio, pronunciation [0.1.1]
 - info method (returns all the crucial magick informations along with loaded libraries and paths)
 - implement other color factories [0.2]
 - subprocess loading of libraries optionall with pyro [0.3]
@@ -57,6 +56,8 @@ not documented: splice
 DOCS
 ====
 
+- document origin of name pistacja, włoski, pistachio, pronunciation [0.1.1]
+- document splice, implement implode
 write chapter on resource management - closed, close, with
 write chapter on performing custom cdll operations and .resource
 fork me on bitbucket

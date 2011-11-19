@@ -22,7 +22,8 @@ if not environ.get('PYSTACIA_SETUP'):
     level = environ.get('PYSTACIA_LOG')
     if level:
         level = int(level)
-        basicConfig(level=level)
+        format = '%(asctime)s %(name)-12s %(thread)d %(message)s'
+        basicConfig(level=level, format=format)
     
     logger.debug('Imported main module')
     
