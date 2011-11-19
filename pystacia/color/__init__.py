@@ -378,9 +378,8 @@ class Color(Resource):
     
     def __repr__(self):
         template = ('<{class_}(r={0},g={1},b={2},a={3})'
-                    ' object at {addr}>')
-        kw = dict(addr=hex(addressof(self.resource[0])),
-                  class_=self.__class__.__name__)
+                    ' object at {id}>')
+        kw = dict(id=id(self), class_=self.__class__.__name__)
         
         return formattable(template).format(*self.get_rgba(), **kw)
 
@@ -422,8 +421,6 @@ def cast(value):
     template = formattable('Cannot cast {0} to Color instance.')
     raise PystaciaException(template.format(value))
 
-
-from ctypes import addressof
 
 from six import integer_types, string_types
 

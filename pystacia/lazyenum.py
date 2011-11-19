@@ -42,7 +42,7 @@ class EnumValue(object):
         except CastException:
             return False
         
-        return id(self) == id(other)
+        return self is other
     
     def __hash__(self):
         return hash((self.enum.name, self.name))

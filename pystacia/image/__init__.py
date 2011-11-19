@@ -1247,8 +1247,7 @@ class Image(Resource):
                    ',{colorspace},{type}) object at {addr}>'
         w, h = self.size
         depth, type = self.depth, self.type.name  # @ReservedAssignment
-        colorspace, addr = (
-            self.colorspace.name, hex(addressof(self.resource[0])))
+        colorspace, addr = self.colorspace.name, id(self)  # @ReservedAssignment
         class_ = self.__class__.__name__
         
         return formattable(template).format(class_=class_, w=w, h=h,
@@ -1264,7 +1263,6 @@ import webbrowser
 from tempfile import mkstemp
 from os import environ
 from os.path import exists
-from ctypes import addressof
 
 from pystacia.compat import formattable
 from pystacia import color
