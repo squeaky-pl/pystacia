@@ -33,6 +33,10 @@ class ColorTest(TestCase):
         green = color.from_int24(0x00ff00)
         self.assertEqual(green, color.from_rgb(0, 1, 0))
         
+        self.assertEqual(black.get_int24(), 0)
+        self.assertEqual(white.get_int24(), 0xffffff)
+        self.assertEqual(green.get_int24(), 0xff00)
+        
     def test_cast(self):
         red = color.from_string('red')
         self.assertEqual(id(color.cast(red)), id(red))
@@ -76,6 +80,14 @@ class ColorTest(TestCase):
         red.set_rgba(0, 1, 1, 0)
         
         self.assertEqual(red.get_rgba(), (0, 1, 1, 0))
+        
+    def test_rgb8(self):
+        red = color.from_string('red')
+        self.assertEqual(red.get_rgb8(), (255, 0, 0))
+        green = color.from_string('lime')
+        self.assertEqual(green.get_rgb8(), (0, 255, 0))
+        blue = color.from_string('blue')
+        self.assertEqual(blue.get_rgb8(), (0, 0, 255))
     
     def test_hsl(self):
         red = color.from_string('red')

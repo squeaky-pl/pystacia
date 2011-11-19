@@ -3,12 +3,15 @@ TODO
 ====
 
 
+- from_hsl, get_int24
 - weakrefing cached lena should be only used in tests [0.1.1]
 - investigate __all__ of main module, image and color
 - i.e. registry module to use for paths, chainability and any other things
   that affect runtime
 - implement complex threaded test with many operations
   -------------------------
+- Jython support
+- move more things to registry - paths, and chainability
 - instead of relying on renames and get_platfom we could use our own solution [0.1.1]
   if it can be loaded and test for OS and 64bit in setyp.py
 - more generators from pseudoformats: gradients etc [0.1.1]
@@ -67,6 +70,7 @@ header with links
 style - fixed left column, background left column, background main
 - migration (-W always)
 - what's new
+- twitter
 
 STUFF
 =====

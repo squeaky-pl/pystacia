@@ -242,6 +242,16 @@ class Color(Resource):
            as numbers between 0 and 1.
         """
         return (self.r, self.g, self.b)
+     
+    def get_rgb8(self):
+        """Return red, gren and blue components as 8bit integers
+           
+            :rtype: ``tuple``
+            
+            Returns tuple containg red, green and blue in this order
+            as 8bit integers randing from 0 to 255
+        """
+        return tuple(int(255 * x) for x in self.get_rgb())
     
     def get_hsl(self):
         """Return hue, saturation and lightness components.
@@ -249,7 +259,16 @@ class Color(Resource):
            :rtype: tuple
         """
         return call(impl.get_hsl, self)
-        
+    
+    def get_int24(self):
+        """Return RGB triplet as single 24 bit integer.
+           
+           Returns an integer representing this color.
+           Highest 8 bit represent red channel information.
+        """
+        r, g, b = self.get_rgb8()
+        return (r << 16) | (g << 8) | b
+    
     def get_rgba(self):
         """Return red, green, blue and alpha components.
            
