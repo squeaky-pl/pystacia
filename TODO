@@ -10,6 +10,7 @@ TODO
 - implement complex threaded test with many operations
 - report get range error
   -------------------------
+- think about the issue with overlay discarding alpha channel
 - compile with xz, bzip and gzip on all oses
 - Jython support
 - move more things to registry - paths, and chainability

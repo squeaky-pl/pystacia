@@ -39,7 +39,7 @@ def memoized(f, *args, **kw):
                 
     key_cache = cache[key]
     if 'value' not in key_cache:
-        info = key[0].func_name, key[1]
+        info = key[0].__name__, key[1]
         msg = formattable('Memoizing {0} args={1}').format(*info)
         logger.debug(msg)
         
