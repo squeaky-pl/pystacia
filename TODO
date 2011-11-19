@@ -2,14 +2,15 @@
 TODO
 ====
 
-
-- from_hsl, get_int24
+- fit method [0.1.1]
 - weakrefing cached lena should be only used in tests [0.1.1]
 - investigate __all__ of main module, image and color
 - i.e. registry module to use for paths, chainability and any other things
   that affect runtime
 - implement complex threaded test with many operations
+- report get range error
   -------------------------
+- compile with xz, bzip and gzip on all oses
 - Jython support
 - move more things to registry - paths, and chainability
 - instead of relying on renames and get_platfom we could use our own solution [0.1.1]
@@ -20,7 +21,6 @@ TODO
   into one class with many test methods [0.1.1]
 - compress method that let's you apply compression and reread image, useful for
   preving compression result
-- fit method [0.1.1]
 - set_pixel (possible?) [0.1.1]
 - keep track of showed temp files and delete them on exit
 - rgb8, rgba8 color factory, and accessors [0.1.1]

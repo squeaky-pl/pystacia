@@ -52,7 +52,21 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
 
 
 def write(image, filename, format,  # @ReservedAssignment
-              compression, quality):
+              compression, quality, flatten, background):
+    if not format:
+        format = splitext(filename)[1][1:]  #@ReservedAssignment
+        
+    if flatten == None:
+        flatten = format in ('jpg', 'jpeg')
+        
+    if not background:
+        background = 'white'
+    
+    if flatten:
+        background = blank(image.width, image.height, background)
+        background.overlay(image)
+        image = background
+        
     with state(image, format=format, compression_quality=quality):
         c_call(image, 'write', filename)
 
@@ -74,9 +88,10 @@ def get_blob(image, format, compression,  # @ReservedAssignment
         
         return blob
 
-
+from os.path import splitext
 from ctypes import c_size_t, string_at
 
 from pystacia.common import state
 from pystacia.image import _instantiate
+from pystacia.image.generic import blank
 from pystacia.api.func import c_call

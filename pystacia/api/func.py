@@ -284,22 +284,31 @@ def c_call(obj, method, *args, **kw):
     if init:
         get_dll()
     
-    msg = formattable('Calling {0}')
-    logger.debug(msg.format(method_name))
-    
     if isinstance(obj, Resource):
         args = (obj,) + args
     
+    # if objects are casted here and then
+    # there is only their resource passed
+    # there is a risk that GC will collect
+    # them and __del__ will be called between
+    # driving Imagick to SIGSEGV
+    # lets keep references to them
+    keep_ = []
     args_ = []
     for arg, type in zip(args, c_method.argtypes):  # @ReservedAssignment
-        if isinstance(arg, Resource):
-            arg = arg.resource
-        elif type == c_char_p:
+        if type == c_char_p:
             arg = b(arg)
         elif type == PixelWand_p:
             arg = color_cast(arg)
-            
+            keep_.append(arg)
+        
+        if isinstance(arg, Resource):
+            arg = arg.resource
+        
         args_.append(arg)
+    
+    msg = formattable('Calling {0}')
+    logger.debug(msg.format(method_name))
     
     result = c_method(*args_)
     

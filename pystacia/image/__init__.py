@@ -132,7 +132,7 @@ class Image(Resource):
         return value
     
     def write(self, filename, format=None,  # @ReservedAssignment
-              compression=None, quality=None):
+              compression=None, quality=None, flatten=None, background=None):
         """Write an image to filesystem.
            
            :param filename: file name to write to.
@@ -158,7 +158,8 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(io.write, self, filename, format, compression, quality)
+        call(io.write, self, filename, format, compression,
+             quality, flatten, background)
     
     def get_blob(self, format, compression=None,  # @ReservedAssignment
                  quality=None, factory=None):
@@ -1273,6 +1274,7 @@ if not disable_chains:
             setattr(Image, key, chainable(item))
 
 
+from pystacia.image.generic import blank  # prevent circular references
 from pystacia.image._impl import (io, geometry, color as color_impl,
                                  blur as blur_impl, deform, special, pixel)
 
@@ -1280,7 +1282,7 @@ from pystacia.image._impl import (io, geometry, color as color_impl,
 from pystacia.image.enum import (types, filters, colorspaces,  # @UnusedImport
                                  compressions, composites, axes, noises,
                                  thresholds)
-from pystacia.image.generic import (blank, checkerboard, noise,  # @UnusedImport
+from pystacia.image.generic import (checkerboard, noise,  # @UnusedImport
                                     plasma)
 from pystacia.image.sample import (lena, magick_logo, rose,  # @UnusedImport
                                    wizard, granite, netscape)
