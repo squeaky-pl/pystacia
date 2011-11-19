@@ -379,7 +379,7 @@ class Color(Resource):
     def __repr__(self):
         template = ('<{class_}(r={0},g={1},b={2},a={3})'
                     ' object at {id}>')
-        kw = dict(id=id(self), class_=self.__class__.__name__)
+        kw = dict(id=hex(id(self)), class_=self.__class__.__name__)
         
         return formattable(template).format(*self.get_rgba(), **kw)
 
@@ -394,15 +394,6 @@ class Factory(object):
     
     def __getattr__(self, string):
         return from_string(string)
-
-
-def saturate(v):
-    if v == 0:
-        return 0
-    elif v == 1:
-        return 1
-    else:
-        return round(v, 4)
 
 
 def cast(value):
@@ -428,3 +419,20 @@ from pystacia.api.func import call
 from pystacia.compat import formattable
 from pystacia.color import _impl as impl
 from pystacia.util import PystaciaException
+
+__exclusions = [
+    'division',
+    '_instantiate',
+    'Resource',
+    'Factory',
+    'registry',
+    'integer_types',
+    'string_types',
+    'call',
+    'formattable',
+    'impl',
+    'PystaciaException',
+    '__exclusions'
+]
+
+__all__ = list(set(globals().keys()) - set(__exclusions))

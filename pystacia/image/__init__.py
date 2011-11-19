@@ -1204,7 +1204,7 @@ class Image(Resource):
     
     depth = __depth()
     
-    def show(self, no_gui=False):
+    def show(self, checkerboard=True, zoom=1, no_gui=False):
         """Display an image in GUI.
            
            :param no_gui: Skip opening interactive viewer program
@@ -1218,12 +1218,23 @@ class Image(Resource):
            file after process ended since it will be typically deleted when
            process ends.
         """
+        image = self
         extension = 'bmp'
         if 'png' in magick.get_formats():
             extension = 'png'
+        
+        if zoom != 1 or checkerboard:
+            image = image.copy()
+        
+        if checkerboard:
+            image.checkerboard()
             
+        if zoom:
+            image.rescale(factor=zoom, filter='point')
+        
         tmpname = mkstemp()[1] + '.' + extension
-        self.write(tmpname)
+        
+        image.write(tmpname)
         if not no_gui:
             webbrowser.open('file://' + tmpname)
         
@@ -1252,7 +1263,7 @@ class Image(Resource):
         
         return formattable(template).format(class_=class_, w=w, h=h,
                                             depth=depth, colorspace=colorspace,
-                                            addr=addr, type=type)
+                                            addr=hex(addr), type=type)
 
 
 from pystacia import registry
@@ -1289,6 +1300,7 @@ if not disable_chains:
         if callable(item) and item.__doc__ and ':rtype:' not in item.__doc__:
             setattr(Image, key, chainable(item))
 
+del disable_chains
 
 from pystacia.image.generic import blank  # prevent circular references
 from pystacia.image._impl import (io, geometry, color as color_impl,
@@ -1302,3 +1314,41 @@ from pystacia.image.generic import (checkerboard, noise,  # @UnusedImport
                                     plasma)
 from pystacia.image.sample import (lena, magick_logo, rose,  # @UnusedImport
                                    wizard, granite, netscape)
+
+__exclusions = [
+    'division',
+    '_instantiate',
+    'Resource',
+    'alloc',
+    'clone',
+    'free',
+    'io',
+    'webbrowser',
+    'mkstemp',
+    'environ',
+    'exists',
+    'color',
+    'color_module',
+    'call',
+    'formattable',
+    'generic',
+    'sample',
+    'registry',
+    'simple_call',
+    'magick',
+    'enum_lookup',
+    'enum_reverse_lookup',
+    'chainable',
+    'geometry',
+    'color_impl',
+    'blur_impl',
+    'deform',
+    'special',
+    'pixel',
+    'item',
+    'key',
+    'enum',
+    '_impl'
+]
+
+__all__ = list(set(globals().keys()) - set(__exclusions))

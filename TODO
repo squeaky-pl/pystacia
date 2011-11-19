@@ -2,13 +2,14 @@
 TODO
 ====
 
-- weakrefing cached lena should be only used in tests [0.1.1]
-- investigate __all__ of main module, image and color
 - i.e. registry module to use for paths, chainability and any other things
   that affect runtime
 - implement complex threaded test with many operations
 - report get range error
+- dft needs to throw NotImplemented exception
   -------------------------
+- evaluate file windows in tk or win32
+- weakrefing cached lena should be only used in tests [0.1.1]
 - use is instead of id comparisons in Color
 - think about the issue with overlay discarding alpha channel
 - compile with xz, bzip and gzip on all oses
