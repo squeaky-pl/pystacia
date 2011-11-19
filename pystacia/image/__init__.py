@@ -218,8 +218,10 @@ class Image(Resource):
            :param filter: Scaling filter
            :type filter: :class:`pystacia.lazuenym.Enums`
            
-           Rescales an image to a given width and height pixels. Instead of
-           supplying width and height you can use factor parameter which is
+           Rescales an image to a given width and height pixels. If one of the
+           dimensions is set to ``None`` it gets automatically computed using
+           the other one so that the image aspect ratio is preserved. Instead
+           of supplying width and height you can use factor parameter which is
            a tuple of two floats specifying scaling factor along x and y axes.
            You can also pass single float as factor which implies the same
            factor for both axes. Filter is one of possible scaling algorithms.

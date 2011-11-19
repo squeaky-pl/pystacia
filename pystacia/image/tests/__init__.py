@@ -131,10 +131,16 @@ class WithSample(TestCase):
         img.rescale(factor=.5)
         self.assertEqual(img.size, (128, 128))
         
+        
         img.rescale(factor=(1, .5))
         
         self.assertEqual(img.size, (128, 64))
         self.assertRaises(PystaciaException, lambda: img.rescale())
+        
+        img.rescale(64)
+        self.assertEqual(img.size, (64, 32))
+        img.rescale(None, 64)
+        self.assertEqual(img.size, (128, 64))
     
     def test_resize(self):
         img = self.img

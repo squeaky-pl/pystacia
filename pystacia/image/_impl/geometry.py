@@ -5,6 +5,12 @@ def rescale(image, width, height, factor, filter, blur):  # @ReservedAssignment
     if not filter:
         filter = filters.undefined  # @ReservedAssignment
     
+    if width and not height:
+        height = image.height * width / image.width
+        
+    if height and not width:
+        width = image.width * height / image.height
+    
     if not width and not height:
         if not factor:
             msg = 'Either width, height or factor must be provided'
@@ -13,7 +19,7 @@ def rescale(image, width, height, factor, filter, blur):  # @ReservedAssignment
         width, height = image.size
         if not hasattr(factor, '__getitem__'):
             factor = (factor, factor)
-        width, height = int(width * factor[0]), int(height * factor[1])
+        width, height = width * factor[0], height * factor[1]
     
     c_call(image, 'resize', width, height, enum_lookup(filter, filters), blur)
 

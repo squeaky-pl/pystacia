@@ -298,6 +298,8 @@ def c_call(obj, method, *args, **kw):
     for arg, type in zip(args, c_method.argtypes):  # @ReservedAssignment
         if type == c_char_p:
             arg = b(arg)
+        elif type in (c_size_t, c_ssize_t, c_uint):
+            arg = int(arg)
         elif type == PixelWand_p:
             arg = color_cast(arg)
             keep_.append(arg)
