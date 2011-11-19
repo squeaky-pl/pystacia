@@ -44,6 +44,8 @@ def get_data():
     def pixel_format(name):
         if name == 'get_hsl':
             name = 'GetHSL'
+        elif name =='set_hsl':
+            name = 'SetHSL'
         else:
             name = ''.join(x.title() for x in name.split('_'))
         return 'Pixel' + name
@@ -209,7 +211,8 @@ def get_data():
                 'set_alpha': ((d,),),
                 'get_alpha': ((), d),
                 'set_color': ((ch,), b),
-                'get_hsl': ((P(d), P(d), P(d)),)
+                'get_hsl': ((P(d), P(d), P(d)),),
+                'set_hsl': ((d, d, d),)
             }
         }
     }

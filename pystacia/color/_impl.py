@@ -54,6 +54,10 @@ def get_hsl(color):
     return tuple(saturate(x.value) for x in (h, s, l))
 
 
+def set_hsl(color, hue, saturation, lightness):
+    c_call(color, 'set_hsl', hue, saturation, lightness)
+
+
 def saturate(v):
     if v == 0:
         return 0

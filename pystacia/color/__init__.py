@@ -127,8 +127,13 @@ def from_int24(value, factory=None):
     """
     return from_rgb8(value & 0xff0000, value & 0xff00, value & 0xff, factory)
 
-from pystacia.common import Resource
 
+def from_hsl(h, s, l, factory=None):
+    color = _instantiate(factory)
+    color.set_hsl(h, s, l)
+    return color
+
+from pystacia.common import Resource
 
 class Color(Resource):
     
@@ -259,6 +264,9 @@ class Color(Resource):
            :rtype: tuple
         """
         return call(impl.get_hsl, self)
+    
+    def set_hsl(self, hue, saturation, lightness):
+        return call(impl.set_hsl, self, hue, saturation, lightness)
     
     def get_int24(self):
         """Return RGB triplet as single 24 bit integer.
