@@ -4,6 +4,7 @@
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
+from __future__ import division
 
 from pystacia.image import Image
 from pystacia.tests.common import TestCase, skipIf
@@ -142,6 +143,15 @@ class WithSample(TestCase):
         img.rescale(None, 64)
         self.assertEqual(img.size, (128, 64))
     
+    def test_fit(self):
+        img = self.img
+        
+        ratio = 320 / sample.size[0]
+        img.fit(320)
+        self.assertEqual(img.size, (320, sample.size[1] * ratio))
+        img.fit(128, 128)
+        self.assertEqual(img.size, (128, 128))
+        
     def test_resize(self):
         img = self.img
         

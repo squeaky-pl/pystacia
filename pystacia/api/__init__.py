@@ -209,16 +209,14 @@ from pystacia.util import memoized
 
 
 @memoized
-def get_bridge(environ=None):
-    if not environ:
-        environ = os.environ
-        
-    if environ.get('PYSTACIA_IMPL', '').upper() == 'SIMPLE':
-        logger.debug('Using Simple implementation')
-        impl = SimpleImpl()
-    else:
-        logger.debug('Using Thread implementation')
-        impl = ThreadImpl(True)
+def get_bridge(impl=None):
+    if not impl:
+        if os.environ.get('PYSTACIA_IMPL', '').upper() == 'SIMPLE':
+            logger.debug('Using Simple implementation')
+            impl = SimpleImpl()
+        else:
+            logger.debug('Using Thread implementation')
+            impl = ThreadImpl(True)
         
     bridge = CallBridge(impl)
     

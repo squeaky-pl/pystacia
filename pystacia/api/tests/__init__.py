@@ -190,8 +190,9 @@ class GetDllTest(TestCase):
 
 class GetBridgeTest(TestCase):
     def test(self):
-        self.assertIsInstance(get_bridge.undecorated().impl, ThreadImpl)
-        bridge = get_bridge.undecorated({'PYSTACIA_IMPL': 'simple'})
+        self.assertIsInstance(get_bridge.undecorated(ThreadImpl()).impl,
+                              ThreadImpl)
+        bridge = get_bridge.undecorated(SimpleImpl())
         self.assertIsInstance(bridge.impl, SimpleImpl)
 
 

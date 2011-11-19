@@ -244,6 +244,22 @@ class Image(Resource):
         """
         call(geometry.rescale, self, width, height, factor, filter, blur)
     
+    def fit(self, width=None, height=None, mode=None, upscale=False, 
+            filter=None, blur=1):  # @ReservedAssignment
+        """Fits an image into a rectangle preserving aspect ratio
+           
+           :param width: width in pixels
+           :type width: ``int``
+           :param height: height in pixels
+           :type height: ``int``
+           
+           Fits an image into a region of width, and height pixels
+           preserving aspect ratio.
+           
+           This method can be chained.
+        """
+        call(geometry.fit, self, width, height, mode, upscale, filter, blur)
+    
     def resize(self, width, height, x=0, y=0):
         """Resize (crop) image to given dimensions.
            
@@ -1283,7 +1299,7 @@ from pystacia.image._impl import (io, geometry, color as color_impl,
 # convenience imports
 from pystacia.image.enum import (types, filters, colorspaces,  # @UnusedImport
                                  compressions, composites, axes, noises,
-                                 thresholds)
+                                 thresholds, fit_modes)
 from pystacia.image.generic import (checkerboard, noise,  # @UnusedImport
                                     plasma)
 from pystacia.image.sample import (lena, magick_logo, rose,  # @UnusedImport

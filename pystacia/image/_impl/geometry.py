@@ -1,15 +1,21 @@
 from __future__ import division
 
 
-def rescale(image, width, height, factor, filter, blur):  # @ReservedAssignment
-    if not filter:
-        filter = filters.undefined  # @ReservedAssignment
-    
+def _proportionally(image, width, height):
     if width and not height:
         height = image.height * width / image.width
         
     if height and not width:
         width = image.width * height / image.height
+    
+    return width, height
+
+
+def rescale(image, width, height, factor, filter, blur):  # @ReservedAssignment
+    if not filter:
+        filter = filters.undefined  # @ReservedAssignment
+    
+    width, height = _proportionally(image, width, height)
     
     if not width and not height:
         if not factor:
@@ -22,6 +28,41 @@ def rescale(image, width, height, factor, filter, blur):  # @ReservedAssignment
         width, height = width * factor[0], height * factor[1]
     
     c_call(image, 'resize', width, height, enum_lookup(filter, filters), blur)
+
+
+def fit(image, width, height, mode,
+        upscale, filter, blur):  # @ReservedAssignment
+    width_, height_ = _proportionally(image, width, height)
+    
+    smaller = image.width <= width_ and image.height <= height_
+    
+    if (smaller and upscale) or not smaller:
+        if not width or not height:
+            return rescale(image, width, height, None, filter, blur)
+    
+    if not mode:
+        mode = 'in'
+    
+    if not smaller or upscale:
+        ratio = width / image.width
+        
+        if mode == 'in':
+            if image.width * ratio > width or image.height * ratio > height:
+                ratio = height / image.height
+        elif mode == 'out':
+            if image.height * ratio < height:
+                ratio = height / image.height
+        
+        rescale(image, image.width * ratio, image.height * ratio, None,
+                filter, blur)
+    
+    background = blank(width, height)
+    
+    x, y = ((background.width - image.width) / 2,
+            (background.height - image.height) / 2)
+    background.overlay(image, x, y)
+    
+    image._replace(background)
 
 
 def resize(image, width, height, x, y):
@@ -110,5 +151,6 @@ from math import degrees, atan
 from pystacia.image.enum import filters, axes
 from pystacia.util import PystaciaException
 from pystacia.api.enum import lookup as enum_lookup
+from pystacia.image.generic import blank
 from pystacia.api.func import c_call
 from pystacia.color import from_string, Color

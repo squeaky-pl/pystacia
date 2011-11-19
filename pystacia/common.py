@@ -81,6 +81,24 @@ class Resource(object):
         
         return resource
     
+    def _replace(self, resource):
+        """Free current resource, claim resource from another object.
+           
+           Frees underlying resource, claims resource from another object
+           and sets this object resource to claimed resource, effectively
+           transferring resource property to this object.
+           
+           Not to be called directly
+        """
+        if isinstance(resource, Resource):
+            resource = resource._claim()
+            
+        if resource == None:
+            raise PystaciaException('Replacement resource cannot be None')
+        
+        self._free()
+        self.__resource = resource
+    
     def close(self, untrack=True):
         """Free resource and close the object
            
