@@ -108,10 +108,10 @@ class ColorTest(TestCase):
         self.assertEqual(red.get_rgba(), (1, 0, 0, 1))
     
     def test_saturate(self):
-        self.assertEqual(color.saturate(0.5), 0.5)
-        self.assertIsInstance(color.saturate(0.0), int)
-        self.assertEqual(color.saturate(0.0), 0)
-        self.assertIsInstance(color.saturate(1.0), int)
+        self.assertEqual(saturate(0.5), 0.5)
+        self.assertIsInstance(saturate(0.0), int)
+        self.assertEqual(saturate(0.0), 0)
+        self.assertIsInstance(saturate(1.0), int)
     
     def test_factory(self):
         colors = color.Factory()
@@ -143,6 +143,7 @@ class ColorTest(TestCase):
 
 from re import match
 
+from pystacia.color._impl import saturate
 from pystacia import color, registry
 from pystacia.util import PystaciaException
 from pystacia.compat import formattable

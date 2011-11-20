@@ -8,6 +8,7 @@ from __future__ import division
 
 from pystacia.image import Image
 from pystacia.tests.common import TestCase, skipIf
+from pystacia import magick
 
 
 class WithFactory(TestCase):
@@ -237,7 +238,8 @@ class WithSample(TestCase):
         img.equalize()
     
     # only check if it doesnt blow up
-    @skipIf(not hasattr(Image, 'dft'), 'ImageMagick without FFTW delegate')
+    @skipIf('fftw' not in magick.get_delegates(),
+            'ImageMagick without FFTW delegate')
     def test_dft(self):
         img = self.img
         

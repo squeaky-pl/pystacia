@@ -35,6 +35,9 @@ def spread(image, radius):
 
 
 def dft(image, magnitude, factory):
+    if not 'dft' in magick.get_delegates():
+        raise PystaciaException('Not available')
+        
     magnitude = bool(magnitude)
     copy = image.copy()
     
@@ -63,7 +66,9 @@ def fx(image, expression):
     image.__init__(resource)
 
 
+from pystacia import magick
 from pystacia.api.func import c_call
 from pystacia.image.generic import blank
 from pystacia.image.enum import noises
 from pystacia.api.enum import lookup as enum_lookup
+from pystacia.util import PystaciaException

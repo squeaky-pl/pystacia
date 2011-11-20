@@ -185,7 +185,8 @@ class GetDllTest(TestCase):
                    'PYSTACIA_SKIP_SYSTEM': '1'}
         
         self.assertRaisesRegexp(PystaciaException, 'Could not find or load',
-                                lambda: get_dll(environ=environ))
+                                lambda: get_dll(environ=environ,
+                                                isolated=True))
 
 
 class GetBridgeTest(TestCase):

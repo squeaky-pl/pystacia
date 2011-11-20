@@ -151,7 +151,7 @@ from threading import Lock
 __lock = Lock()
 
 
-def get_dll(init=True, environ=None):
+def get_dll(init=True, environ=None, isolated=False):
     """Find ImageMagick DLL and initialize it.
        
        Searches available paths with :func:`find_library`
@@ -159,10 +159,10 @@ def get_dll(init=True, environ=None):
        Loads the DLL into memory, initializes it and warns if it has
        unsupported API and ABI versions.
     """
-    if not hasattr(get_dll, '__dll'):
+    if not hasattr(get_dll, '__dll') or isolated:
         logger.debug('Critical section - load MagickWand')
         with __lock:
-            if not hasattr(get_dll, '__dll'):
+            if not hasattr(get_dll, '__dll') or isolated:
                 if not environ:
                     environ = os.environ
                 
@@ -173,8 +173,12 @@ def get_dll(init=True, environ=None):
                 
                 msg = formattable('Loading MagickWand from {0}')
                 logger.debug(msg.format(path))
-                get_dll.__dll = CDLL(path)
-                get_dll.__dll.__inited = False
+                dll = CDLL(path)
+                if not isolated:
+                    get_dll.__dll = dll
+                    get_dll.__dll.__inited = False
+                else:
+                    return dll
         
     dll = get_dll.__dll
 

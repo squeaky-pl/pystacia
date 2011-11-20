@@ -1283,9 +1283,6 @@ from pystacia import magick
 from pystacia.api.enum import (lookup as enum_lookup,
                                reverse_lookup as enum_reverse_lookup)
 
-#if not 'fftw' in magick.get_delegates():
-del Image.dft
-
 try:
     disable_chains = environ['PYSTACIA_NO_CHAINS']
 except KeyError:
