@@ -1283,12 +1283,9 @@ from pystacia import magick
 from pystacia.api.enum import (lookup as enum_lookup,
                                reverse_lookup as enum_reverse_lookup)
 
-try:
-    disable_chains = environ['PYSTACIA_NO_CHAINS']
-except KeyError:
-    disable_chains = False
-    
-if not disable_chains:
+
+if not registry.get('no_chains', environ.get('PYSTACIA_NO_CHAINS')):
+    registry._lock('no_chains')
     # perform chainability
     from pystacia.util import chainable
     
@@ -1296,8 +1293,6 @@ if not disable_chains:
         item = Image.__dict__[key]
         if callable(item) and item.__doc__ and ':rtype:' not in item.__doc__:
             setattr(Image, key, chainable(item))
-
-del disable_chains
 
 from pystacia.image.generic import blank  # prevent circular references
 from pystacia.image._impl import (io, geometry, color as color_impl,

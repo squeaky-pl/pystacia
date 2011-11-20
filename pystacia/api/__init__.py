@@ -28,22 +28,20 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
     if not environ:
         environ = os.environ
     
-    try:
-        path = environ['PYSTACIA_LIBRARY_PATH']
-    except KeyError:
-        pass
-    else:
+    path = registry.get('library_path', environ.get('PYSTACIA_LIBRARY_PATH'))
+    if path:
         paths.append(path)
     
     if not osname:
         osname = get_osname()
     
-    if not environ.get('PYSTACIA_SKIP_PACKAGE'):
+    if not registry.get('skip_package', environ.get('PYSTACIA_SKIP_PACKAGE')):
         import pystacia
         path = dirname(pystacia.__file__)
         paths.append(join(path, 'cdll'))
     
-    if not environ.get('PYSTACIA_SKIP_VIRTUAL_ENV'):
+    if not registry.get('skip_virtual_env',
+                        environ.get('PYSTACIA_SKIP_VIRTUAL_ENV')):
         try:
             path = environ['VIRTUAL_ENV']
         except KeyError:
@@ -52,7 +50,7 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
             paths.append(join(path, 'lib'))
             paths.append(join(path, 'dll'))
     
-    if not environ.get('PYSTACIA_SKIP_CWD'):
+    if not registry.get('skip_cwd', environ.get('PYSTACIA_SKIP_CWD')):
         from os import getcwd
         paths.append(getcwd())
     
@@ -103,7 +101,7 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
                     return dll_path
     
     # still nothing? let ctypes figure it out
-    if not environ.get('PYSTACIA_SKIP_SYSTEM'):
+    if not registry.get('skip_system', environ.get('PYSTACIA_SKIP_SYSTEM')):
         return ctypes.util.find_library(name)
 
     return None
@@ -215,7 +213,8 @@ from pystacia.util import memoized
 @memoized
 def get_bridge(impl=None):
     if not impl:
-        if os.environ.get('PYSTACIA_IMPL', '').upper() == 'SIMPLE':
+        if (registry.get('impl', os.environ.get('PYSTACIA_IMPL', ''))
+            .upper() == 'SIMPLE'):
             logger.debug('Using Simple implementation')
             impl = SimpleImpl()
         else:
@@ -235,6 +234,7 @@ import ctypes.util
 from warnings import warn
 import atexit
 
+from pystacia import registry
 from pystacia.bridge import CallBridge, ThreadImpl, SimpleImpl
 from pystacia.util import get_osname, PystaciaException
 from pystacia.compat import formattable

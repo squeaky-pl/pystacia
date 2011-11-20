@@ -2,11 +2,11 @@
 TODO
 ====
 
-- i.e. registry module to use for paths, chainability and any other things
-  that affect runtime
 - implement complex threaded test with many operations
 - report get range error
   -------------------------
+- registry could lookup keys automatically from environ by appending
+PYSTACIA in front
 - evaluate file windows in tk or win32
 - weakrefing cached lena should be only used in tests [0.1.1]
 - use is instead of id comparisons in Color
