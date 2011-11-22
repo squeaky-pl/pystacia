@@ -720,7 +720,21 @@ class ThreadedTest(TestCase):
         threads = [Thread(target=thread) for _ in range(10)]
         [t.start() for t in threads]
         [t.join() for t in threads]
-
+        
+    def complex_test(self):
+        def thread():
+            img = sample()
+            if randint(0, 2):
+                img.rotate(45)
+            if randint(0, 2):
+                img.gaussian_blur(2)
+            img.invert()
+            img.overlay(sample())
+            img.checkerboard()
+        
+        threads = [Thread(target=thread) for _ in range(20)]
+        [t.start() for t in threads]
+        [t.join() for t in threads]
 
 from threading import Thread
 from tempfile import mkstemp
