@@ -54,7 +54,7 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
 def write(image, filename, format,  # @ReservedAssignment
               compression, quality, flatten, background):
     if not format:
-        format = splitext(filename)[1][1:]  #@ReservedAssignment
+        format = splitext(filename)[1][1:]  # @ReservedAssignment
         
     if flatten == None:
         flatten = format in ('jpg', 'jpeg')

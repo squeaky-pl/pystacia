@@ -133,7 +133,6 @@ class WithSample(TestCase):
         img.rescale(factor=.5)
         self.assertEqual(img.size, (128, 128))
         
-        
         img.rescale(factor=(1, .5))
         
         self.assertEqual(img.size, (128, 64))

@@ -34,6 +34,7 @@ def sepia(image, threshold, saturation):
     if saturation:
         modulate(image, 0, saturation, 0)
 
+
 def evaluate(image, operation, value):
     operation = enum_lookup(operation, operations)
     

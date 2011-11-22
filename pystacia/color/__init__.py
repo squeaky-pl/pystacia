@@ -135,6 +135,7 @@ def from_hsl(h, s, l, factory=None):
 
 from pystacia.common import Resource
 
+
 class Color(Resource):
     
     """Object representing color information."""
@@ -387,6 +388,7 @@ class Color(Resource):
 from pystacia import registry
 
 registry._install_default('color_factory', Color)  # @UndefinedVariable
+
 
 class Factory(object):
     

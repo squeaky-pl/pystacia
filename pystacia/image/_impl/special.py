@@ -13,6 +13,7 @@ def add_noise(image, attenuate, noise_type):
     
     c_call(image, 'add_noise', noise_type, attenuate)
 
+
 def oil_paint(image, radius):
     c_call(image, 'oil_paint', radius)
 

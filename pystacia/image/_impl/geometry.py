@@ -141,7 +141,6 @@ def splice(image, x, y, width, height):
     c_call(image, ('set', 'background_color'), old_color)
 
 
-
 def chop(image, x, y, width, height):
     c_call(image, 'chop', width, height, x, y)
 

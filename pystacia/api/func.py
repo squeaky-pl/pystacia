@@ -44,7 +44,7 @@ def get_data():
     def pixel_format(name):
         if name == 'get_hsl':
             name = 'GetHSL'
-        elif name =='set_hsl':
+        elif name == 'set_hsl':
             name = 'SetHSL'
         else:
             name = ''.join(x.title() for x in name.split('_'))

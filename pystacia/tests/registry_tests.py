@@ -35,13 +35,16 @@ class RegistryTest(TestCase):
         registry.value = 3
         registry._lock('value')
         self.assertEquals(registry.value, 3)
+        
         def assign():
             registry.value = 4
-            
+        
         self.assertRaisesRegexp(PystaciaException, 'has been locked',
                                 assign)
+        
         def delete():
             del registry.value
+        
         self.assertRaisesRegexp(PystaciaException, 'has been locked',
                                 delete)
     

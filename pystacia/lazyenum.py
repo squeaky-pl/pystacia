@@ -91,4 +91,3 @@ class CastException(PystaciaException):
 from six import string_types
 
 from pystacia.compat import formattable
-

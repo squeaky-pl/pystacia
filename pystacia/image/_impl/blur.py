@@ -42,6 +42,7 @@ def sharpen(image, radius, strength, bias):
         
     c_call(image, 'sharpen', radius, strength, bias)
 
+
 def adaptive_sharpen(image, radius, strength, bias):
     if strength == None:
         strength = radius

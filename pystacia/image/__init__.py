@@ -244,7 +244,7 @@ class Image(Resource):
         """
         call(geometry.rescale, self, width, height, factor, filter, blur)
     
-    def fit(self, width=None, height=None, mode=None, upscale=False, 
+    def fit(self, width=None, height=None, mode=None, upscale=False,
             filter=None, blur=1):  # @ReservedAssignment
         """Fits an image into a rectangle preserving aspect ratio
            
@@ -959,7 +959,6 @@ class Image(Resource):
            Reads pixel color at point ``(x,y)``.
         """
         return call(pixel.get_pixel, self, x, y, factory)
-
     
     def fill(self, fill, blend=1):
         """Overlay color over whole image.
@@ -1258,7 +1257,7 @@ class Image(Resource):
                    ',{colorspace},{type}) object at {addr}>'
         w, h = self.size
         depth, type = self.depth, self.type.name  # @ReservedAssignment
-        colorspace, addr = self.colorspace.name, id(self)  # @ReservedAssignment
+        colorspace, addr = self.colorspace.name, id(self)
         class_ = self.__class__.__name__
         
         return formattable(template).format(class_=class_, w=w, h=h,
