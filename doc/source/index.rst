@@ -2,8 +2,8 @@
 The «Pystacia» raster image manipulation library
 ===============================================
 
-Pystacia is a new image manipulation library born out of practical
-needs. It's simple, it's cross-platform, runs on Python 2.5+, 3.x,
+Pystacia is a new image manipulation library written to meet practical
+needs of developers. It's simple, it's cross-platform, runs on Python 2.5+, 3.x,
 :term:`PyPy` and :term:`IronPython`. It's compact but still appropriate for most of your
 day to day image handling tasks. Pystacia leverages powerful :term:`ImageMagick`
 library as a back-end exposing easily comprehensible Pythonic API.
@@ -23,6 +23,14 @@ Provided you have file example.png in the same directory it would output
 version of the file which would be scaled to 320╳240 pixels and rotated by 30
 degrees. It would also display it in your default system image viewing
 program.
+
+What's new
+==========
+
+.. toctree::
+    :maxdepth: 1
+    
+    whatsnew/0.2
 
 Front matter
 ============

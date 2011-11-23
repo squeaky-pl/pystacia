@@ -1,0 +1,137 @@
+What's new in Pystacia 0.2
+==========================
+
+This release focuses on thread-safety, reducing code boiler-plate, performance,
+increasing quality and test-coverage.
+
+Architecture
+------------
+
+The C API intermediate interface has been rewritten from scratch. It introduces
+a concept of a bridge that isolates code execution from several threads into so
+called "C-thread" that takes care of correct synchronization and ensures
+thread-safety. Imaging operations are still performed in parallel thanks to
+:term:`OMP` inside :term:`ImageMagick`. Actually this approach yields even
+better performance as :term:`OMP` may have strange interactions with threads
+resulting in excessive context switching.
+
+:class:`pystacia.image.Image` and :class:`pystacia.color.Color` inherit now
+from common base :class:`pystacia.common.Resource` that encapsulate all the
+details of tracing instances, allocating, freeing memory at right time and
+preventing memory leaks.
+
+Underlying C function prototypes and :term:`ImageMagick` itself are loaded
+lazily on-demand resulting in faster
+startup times when importing modules. Also cross-module dependencies have been
+greatly reduced.
+
+Enumeration and color handling simplification
+---------------------------------------------
+
+From now on function calls that accept enumerations and color specifications
+can handle many formats without explicit casting. This approach reduces
+dependencies in your code and will be used in the documentation. Old way is
+still supported and in fact it gets auto-cast to it underneath.
+
+>>> img1.overlay(img2, composite=composites.dst_over)  # old way
+>>> img1.overlay(img2, composite='dst_over')  # new preferred way
+
+>>> img1.get_pixel(0, 0) == from_rgb(1, 0, 0)  # old way
+>>> img1.get_pixel(0, 0) == (1, 0, 0)  # new way
+>>> img1.get_pixel(0, 0) == 'red'  # even simpler
+>>> img1.get_pixel(0, 0) == 0xFF0000  # or like that
+
+TODO: Link it
+More information can be found in Enum handling and Working with color chapters.
+
+The registry
+------------
+
+The registry is a concept introducing control over global Pystacia behavior.
+E.g. you can use it to set class used instead of :class:`pystacia.image.Image`
+when instantiating image objects:
+
+>>> class MyImage(Image):
+>>>     def cool_stuff(self): pass
+>>>
+>>> from pystacia import registry
+>>> registry.image_factory = MyImage
+>>>
+>>> blank(30, 30).__class__ == MyImage
+True
+
+TODO link:
+More on registry can be read in Controlling global behavior
+
+New image handling functions
+----------------------------
+
+New image operations include but are not necessarily limited to:
+
+- :meth:`pystacia.image.Image.fit`
+- :meth:`pystacia.image.Image.threshold`
+- :meth:`pystacia.image.Image.adpative_blur`
+- :meth:`pystacia.image.Image.adaptive_sharpen`
+- :meth:`pystacia.image.Image.add_noise`
+- :meth:`pystacia.image.Image.auto_level`
+- :meth:`pystacia.image.Image.auto_gamma`
+- :meth:`pystacia.image.Image.chop`
+- :meth:`pystacia.image.Image.charcoal`
+- :meth:`pystacia.image.Image.map`
+- :meth:`pystacia.image.Image.contrast_stretch`
+- :meth:`pystacia.image.Image.evaluate`
+- :meth:`pystacia.image.Image.total_colors`
+- :meth:`pystacia.image.Image.gaussian_blur`
+- :meth:`pystacia.image.Image.detect_edges`
+- :meth:`pystacia.image.Image.get_range`
+- :meth:`pystacia.image.Image.motion_blur`
+- :meth:`pystacia.image.Image.normalize`
+- :meth:`pystacia.image.Image.shade`
+- :meth:`pystacia.image.Image.sharpen`
+- :meth:`pystacia.image.Image.compare`
+- :meth:`pystacia.image.Image.is_same`
+
+Underlying ImageMagick
+----------------------
+
+TODO:
+Bundled ImageMagick has been updated to version 6.3.7.X and built with
+
+- libjpeg
+- libtiff
+- libpng
+- libwebp
+- libfftw
+- libz
+
+Color features
+--------------
+
+Color module gained support for :func:`pystacia.color.from_hsl`,
+:func:`pystacia.color.from_int24` and :func:`pystacia.color.from_rgb8` together
+with accompanying getters :meth:`pystacia.color.Color.get_hsl`,
+:meth:`pystacia.color.Color.get_rgb8`, :meth:`pystacia.color.Color.get_int24`.
+
+Migrating to 0.2
+================
+
+Deprecated symbols
+------------------
+
+Several symbols have been deprecated:
+
+- :attr:`read`, :attr:`read_blob`, :attr:`read_raw`, :attr:`blank`,
+  :attr:`checkerboard`, :attr:`lena`, :attr:`magick_logo`, :attr:`rose`,
+  :attr:`wizard`, :attr:`granite`, :attr:`netscape`, :attr:`composites`,
+  :attr:`types`, :attr:`filters`, :attr:`colorspaces`, :attr:`compressions`,
+  :attr:`axes`, :attr:`Image` have been moved from :mod:`pystacia` to
+  :mod:`pystacia.image`. Old imports will still worked and are proxied to
+  corresponding imports in :mod:`pystacia.image` but they will be completely
+  removed in 0.3.
+- :class:`pystacia.util.TinyException` is deprecated in favor of
+  :class:`pystacia.util.PystaciaException`. The old class is still in place
+  but will be removed in 0.3.
+  
+There is easy way to detect if you are using one of those symbols. To get all
+warning information sent to :term:`stdout` just run your script with ``-W all``
+switch.

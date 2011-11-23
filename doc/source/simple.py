@@ -1,7 +1,7 @@
-import pystacia
+from pystacia.image import read
 
 
-image = pystacia.read('example.png')
+image = read('example.png')
 
 image.rescale(320, 240)
 image.rotate(30)

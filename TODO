@@ -2,7 +2,7 @@
 TODO
 ====
 
-- report get range error
+
   -------------------------
 - registry could lookup keys automatically from environ by appending
 PYSTACIA in front
