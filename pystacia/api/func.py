@@ -316,6 +316,8 @@ def c_call(obj, method, *args, **kw):
     
     if c_method.restype == c_char_p:
         result = native_str(result)
+    if c_method.restype in (c_uint, c_ssize_t, c_size_t):
+        result = int(result)
     elif c_method.restype == enum:
         result = result.value
     elif c_method.restype == MagickBoolean and not result.value:
