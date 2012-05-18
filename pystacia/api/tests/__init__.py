@@ -189,14 +189,6 @@ class GetDllTest(TestCase):
                                                 isolated=True))
 
 
-class GetBridgeTest(TestCase):
-    def test(self):
-        self.assertIsInstance(get_bridge.undecorated(ThreadImpl()).impl,
-                              ThreadImpl)
-        bridge = get_bridge.undecorated(SimpleImpl())
-        self.assertIsInstance(bridge.impl, SimpleImpl)
-
-
 class MockFactory(object):
     def __init__(self, throw=False):
         self.args = []
@@ -214,7 +206,6 @@ from os import getcwd, chdir, mkdir
 from os.path import join, basename, exists, realpath
 from shutil import rmtree
 
-from pystacia.api import get_dll, dll_template, find_library, get_bridge
-from pystacia.bridge import ThreadImpl, SimpleImpl
+from pystacia.api import get_dll, dll_template, find_library
 from pystacia.compat import formattable
 from pystacia.util import PystaciaException

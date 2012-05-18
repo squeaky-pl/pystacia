@@ -188,7 +188,6 @@ def get_dll(init=True, environ=None, isolated=False):
             simple_call(None, 'terminus')
             
             logger.debug('Shutting down the bridge')
-            get_bridge().shutdown()
         
         logger.debug('Critical section - init MagickWand')
         with __lock:
