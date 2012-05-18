@@ -93,7 +93,7 @@ class WithSample(TestCase):
             
             self.assertEqual(img.size, sample.size)
             self.assertEqual(img.type, sample.type)
-            self.assertEqual(img.colorspace, colorspaces.rgb)
+            self.assertTrue(img.colorspace.name.endswith('rgb'))
             self.assertEqual(img.depth, 8)
     
     def test_read(self):
@@ -108,7 +108,7 @@ class WithSample(TestCase):
         
         self.assertSequenceEqual(img.size, sample.size)
         self.assertEqual(img.type, sample.type)
-        self.assertEqual(img.colorspace, colorspaces.rgb)
+        self.assertTrue(img.colorspace.name.endswith('rgb'))
         self.assertEqual(img.depth, 8)
             
         img.close()
@@ -121,7 +121,7 @@ class WithSample(TestCase):
         
         img = read(tmpname)
         self.assertEqual(img.size, sample.size)
-        self.assertEqual(img.colorspace, colorspaces.rgb)
+        self.assertTrue(img.colorspace.name.endswith('rgb'))
         self.assertEqual(img.type, sample.type)
         img.close()
     
@@ -647,7 +647,7 @@ class WithSample(TestCase):
     def test_colorspace(self):
         img = self.img
         
-        self.assertEqual(img.colorspace, colorspaces.rgb)
+        self.assertTrue(img.colorspace.name.endswith('rgb'))
         img.colorspace = colorspaces.ycbcr
         self.assertEqual(img.colorspace, colorspaces.ycbcr)
     

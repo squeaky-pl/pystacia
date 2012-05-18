@@ -7,31 +7,26 @@ data = {
         'size': (512, 512),
         'depth': 8,
         'type': types.truecolor,
-        'colorspace': colorspaces.rgb
     },
     'magick_logo': {
         'size': (640, 480),
         'depth': 8,
         'type': types.palette,
-        'colorspace': colorspaces.rgb
     },
     'netscape': {
         'size': (216, 144),
         'depth': 8,
         'type': types.palette,
-        'colorspace': colorspaces.rgb
     },
     'rose': {
         'size': (70, 46),
         'depth': 8,
         'type': types.truecolor,
-        'colorspace': colorspaces.rgb
     },
     'wizard': {
         'size': (480, 640),
         'depth': 8,
         'type': types.palette,
-        'colorspace': colorspaces.rgb
     }
 }
 
