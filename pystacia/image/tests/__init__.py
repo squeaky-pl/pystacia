@@ -6,8 +6,10 @@
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 from __future__ import division
 
+import sys
+
 from pystacia.image import Image
-from pystacia.tests.common import TestCase, skipIf
+from pystacia.tests.common import TestCase, skipIf, expectedFailure
 from pystacia import magick
 
 
@@ -518,6 +520,10 @@ class WithSample(TestCase):
         self.assertTrue(copy.type, 'grayscale')
         self.assertFalse(img.is_same(copy))
     
+    # this is broken in IM
+    @skipIf((3, 1) <= sys.version_info < (3, 2),
+            "Python 3.1 doesn't like expected failures")
+    @expectedFailure
     def test_get_range(self):
         img = self.img
         

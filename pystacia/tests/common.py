@@ -1,7 +1,7 @@
 try:
-    from unittest import skip, skipIf
+    from unittest import skip, skipIf, expectedFailure
 except ImportError:
-    from unittest2 import skip, skipIf  # @UnusedImport @Reimport
+    from unittest2 import skip, skipIf, expectedFailure  # @UnusedImport @Reimport
 
 from unittest import TestCase
 if not hasattr(TestCase, 'assertSequenceEqual'):
