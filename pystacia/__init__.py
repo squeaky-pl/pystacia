@@ -32,7 +32,7 @@ if not environ.get('PYSTACIA_SETUP'):
         import stacktracer
         stacktracer.trace_start('trace.html', interval=5, auto=True)
     
-    from pystacia.registry import Registry
+    from pystacia.util import Registry
     
     registry = Registry()
     
