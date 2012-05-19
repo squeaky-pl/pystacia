@@ -39,7 +39,7 @@ def read(filename, factory=None):
         template = formattable('No such file or directory: {0}')
         raise IOError((2, template.format(filename)))
     
-    return call(io.read, filename, factory=factory)
+    return io.read(filename, factory=factory)
 
 
 def read_blob(blob, format=None,  # @ReservedAssignment
@@ -75,7 +75,7 @@ def read_blob(blob, format=None,  # @ReservedAssignment
     if hasattr(blob, 'read'):
         blob = blob.read(length)
     
-    return call(io.read_blob, blob, format, factory)
+    return io.read_blob(blob, format, factory)
 
 
 def read_raw(raw, format, width, height,  # @ReservedAssignment
@@ -104,7 +104,7 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
     
        >>> img = read_raw(b'raw triplets', 'rgb', 1, 1, 8)
     """
-    return call(io.read_raw, raw, format, width, height, depth, factory)
+    return io.read_raw(raw, format, width, height, depth, factory)
 
 from pystacia.common import Resource
 from pystacia.image._impl import alloc, clone, free
@@ -123,10 +123,10 @@ class Image(Resource):
         if enum:
             value = enum_lookup(value, enum)
             
-        simple_call(self, ('set', key), value)
+        c_call(self, ('set', key), value)
         
     def _get_state(self, key, enum=None):
-        value = simple_call(self, ('get', key))
+        value = c_call(self, ('get', key))
             
         if enum:
             value = enum_reverse_lookup(enum, value)
@@ -160,7 +160,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(io.write, self, filename, format, compression,
+        io.write(self, filename, format, compression,
              quality, flatten, background)
     
     def get_blob(self, format, compression=None,  # @ReservedAssignment
@@ -184,7 +184,7 @@ class Image(Resource):
            :term:`PNG` 0 means best compression. The default value is to choose
            best available compression that preserves good quality image.
         """
-        blob = call(io.get_blob, self, format, compression, quality)
+        blob = io.get_blob(self, format, compression, quality)
         
         if factory:
             blob = factory(blob)
@@ -244,7 +244,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.rescale, self, width, height, factor, filter, blur)
+        geometry.rescale(self, width, height, factor, filter, blur)
     
     def fit(self, width=None, height=None, mode=None, upscale=False,
             filter=None, blur=1):  # @ReservedAssignment
@@ -260,7 +260,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.fit, self, width, height, mode, upscale, filter, blur)
+        geometry.fit(self, width, height, mode, upscale, filter, blur)
     
     def resize(self, width, height, x=0, y=0):
         """Resize (crop) image to given dimensions.
@@ -285,7 +285,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.resize, self, width, height, x, y)
+        geometry.resize(self, width, height, x, y)
     
     def rotate(self, angle):
         """Rotate an image.
@@ -298,7 +298,7 @@ class Image(Resource):
            
            This method can be chained
         """
-        call(geometry.rotate, self, angle)
+        geometry.rotate(self, angle)
         
     def flip(self, axis):
         """Flip an image along given axis.
@@ -310,7 +310,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.flip, self, axis)
+        geometry.flip(self, axis)
     
     def transpose(self):
         """Transpose an image.
@@ -322,7 +322,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.transpose, self)
+        geometry.transpose(self)
     
     def transverse(self):
         """Transverse an image.
@@ -332,7 +332,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.transverse, self)
+        geometry.transverse(self)
     
     def skew(self, offset, axis=None):
         """Skews an image by given offsets.
@@ -347,7 +347,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.skew, self, offset, axis)
+        geometry.skew(self, offset, axis)
     
     def roll(self, x, y):
         """Roll pixels in the image.
@@ -363,7 +363,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.roll, self, x, y)
+        geometry.roll(self, x, y)
     
     def straighten(self, threshold):
         """Attempt to straighten image.
@@ -378,7 +378,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.straighten, self, threshold)
+        geometry.straighten(self, threshold)
     
     def trim(self, similarity=.1, background=None):
         """Attempt to trim off extra background around image.
@@ -394,10 +394,10 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.trim, self, similarity, background)
+        geometry.trim(self, similarity, background)
     
     def chop(self, x, y, width, height):
-        call(geometry.chop, self, x, y, width, height)
+        geometry.chop(self, x, y, width, height)
     
     def brightness(self, factor):
         """Brightens an image.
@@ -412,7 +412,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(color_impl.brightness, self, factor)
+        color_impl.brightness(self, factor)
     
     def contrast(self, factor):
         """Change image contrast.
@@ -428,7 +428,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(color_impl.contrast, self, factor)
+        color_impl.contrast(self, factor)
     
     def gamma(self, gamma):
         """Apply gamma correction to an image.
@@ -443,7 +443,7 @@ class Image(Resource):
            
            This method can be chained
         """
-        call(color_impl.gamma, self, gamma)
+        color_impl.gamma(self, gamma)
     
     def auto_gamma(self):
         """Auto-gamma image.
@@ -453,7 +453,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(color_impl.auto_gamma, self)
+        color_impl.auto_gamma(self)
     
     def auto_level(self):
         """Auto-level image.
@@ -463,7 +463,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(color_impl.auto_level, self)
+        color_impl.auto_level(self)
     
     def modulate(self, hue=0, saturation=0, lightness=0):
         """Modulate hue, saturation and lightness of the image
@@ -486,7 +486,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(color_impl.modulate, self, hue, saturation, lightness)
+        color_impl.modulate(self, hue, saturation, lightness)
     
     def desaturate(self):
         """Desatures an image.
@@ -528,7 +528,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(color_impl.sepia, self, threshold, saturation)
+        color_impl.sepia(self, threshold, saturation)
     
     def equalize(self):
         """Equalize image histogram.
@@ -542,11 +542,11 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(color_impl.equalize, self)
+        color_impl.equalize(self)
     
     def normalize(self):
         """Normalize image histogram."""
-        call(color_impl.normalize, self)
+        color_impl.normalize(self)
     
     def invert(self, only_gray=False):
         """Invert image colors.
@@ -555,7 +555,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(color_impl.invert, self, only_gray)
+        color_impl.invert(self, only_gray)
     
     def solarize(self, factor):
         """Solarizes an image.
@@ -572,7 +572,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(color_impl.solarize, self, factor)
+        color_impl.solarize(self, factor)
     
     def posterize(self, levels, dither=False):
         """Reduces number of colors in the image.
@@ -591,7 +591,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(color_impl.posterize, self, levels, dither)
+        color_impl.posterize(self, levels, dither)
     
     def threshold(self, factor=0.5, mode=None):
         """Threshold image forcing pixels into black & white.
@@ -612,7 +612,7 @@ class Image(Resource):
            thresholds. Thresholds are then randomly chosen for each pixel
            individually from given range.
         """
-        call(color_impl.threshold, self, factor, mode)
+        color_impl.threshold(self, factor, mode)
     
     def map(self, lookup, interpolation=None):  # @ReservedAssignment
         """Map image using intensivities as keys and lookup image.
@@ -624,11 +624,11 @@ class Image(Resource):
            Maps an image using lightness as key and copying color values
            from lookup image.
         """
-        call(color_impl.map, self, lookup, interpolation)
+        color_impl.map(self, lookup, interpolation)
     
     def contrast_stretch(self, black=0, white=1):
         """Strech image contrast"""
-        call(color_impl.contrast_stretch, self, black, white)
+        color_impl.contrast_stretch(self, black, white)
     
     def evaluate(self, operation, value):
         """Apply operation to imaget color information
@@ -642,7 +642,7 @@ class Image(Resource):
            E.g. using ``'divide'`` operation and ``2`` as value would result
            in all pixels divided by two.
         """
-        call(color_impl.evaluate, self, operation, value)
+        color_impl.evaluate(self, operation, value)
     
     @property
     def total_colors(self):
@@ -659,7 +659,7 @@ class Image(Resource):
            of 0 for minimum and 1 for maximum
            1-color images will have maximum equal to minimum.
         """
-        return call(color_impl.get_range, self)
+        return color_impl.get_range(self)
     
     def blur(self, radius, strength=None):
         """Blur image.
@@ -674,7 +674,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(blur_impl.blur, self, radius, strength)
+        blur_impl.blur(self, radius, strength)
     
     def motion_blur(self, radius, angle=0, strength=None, bias=None):
         """Motion blur image
@@ -689,7 +689,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(blur_impl.motion_blur, self, radius, angle, strength, bias)
+        blur_impl.motion_blur(self, radius, angle, strength, bias)
     
     def gaussian_blur(self, radius, strength=None, bias=None):
         """Gaussian blur an image
@@ -702,7 +702,7 @@ class Image(Resource):
            This method can be chained.
         """
         
-        call(blur_impl.gaussian_blur, self, radius, strength, bias)
+        blur_impl.gaussian_blur(self, radius, strength, bias)
     
     def adaptive_blur(self, radius, strength=None, bias=None):
         """Adaptive blur an image
@@ -714,7 +714,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(blur_impl.adaptive_blur, self, radius, strength, bias)
+        blur_impl.adaptive_blur(self, radius, strength, bias)
         
     def adaptive_sharpen(self, radius, strength=None, bias=None):
         """Adaptive sharpen an image
@@ -726,7 +726,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(blur_impl.adaptive_sharpen, self, radius, strength, bias)
+        blur_impl.adaptive_sharpen(self, radius, strength, bias)
     
     def detect_edges(self, radius, strength=None):
         """Detect edges in image.
@@ -740,7 +740,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(blur_impl.detect_edges, self, radius, strength)
+        blur_impl.detect_edges(self, radius, strength)
     
     #TODO: moving center here
     def radial_blur(self, angle):
@@ -753,7 +753,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(blur_impl.radial_blur, self, angle)
+        blur_impl.radial_blur(self, angle)
     
     def sharpen(self, radius, strength=None, bias=None):
         """Sharpen an image.
@@ -765,7 +765,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(blur_impl.sharpen, self, radius, strength, bias)
+        blur_impl.sharpen(self, radius, strength, bias)
     
     def denoise(self):
         """Attempt to remove noise preserving edges.
@@ -775,7 +775,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(blur_impl.denoise, self)
+        blur_impl.denoise(self)
     
     def despeckle(self):
         """Attempt to remove speckle preserving edges.
@@ -785,7 +785,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(blur_impl.despeckle, self)
+        blur_impl.despeckle(self)
     
     def emboss(self, radius=0, strength=None):
         """Apply edge detecting algorithm.
@@ -799,7 +799,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(blur_impl.emboss, self, radius, strength)
+        blur_impl.emboss(self, radius, strength)
     
     def swirl(self, angle):
         """Distort image with swirl effect.
@@ -812,7 +812,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(deform.swirl, self, angle)
+        deform.swirl(self, angle)
     
     def wave(self, amplitude, length, offset=0, axis=None):
         """Apply wave like distortion to an image.
@@ -833,7 +833,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(deform.wave, self, amplitude, length, offset, axis)
+        deform.wave(self, amplitude, length, offset, axis)
     
     def sketch(self, radius, angle=45, strength=None):
         """Simulate sketched image.
@@ -849,7 +849,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(special.sketch, self, radius, angle, strength)
+        special.sketch(self, radius, angle, strength)
     
     def add_noise(self, attenuate=0, noise_type=None):
         """Add noise to an image.
@@ -864,7 +864,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(special.add_noise, self, attenuate, noise_type)
+        special.add_noise(self, attenuate, noise_type)
     
     def charcoal(self, radius, strength=None, bias=None):
         """Simluate a charcoal.
@@ -874,7 +874,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(special.charcoal, self, radius, strength, bias)
+        special.charcoal(self, radius, strength, bias)
     
     def oil_paint(self, radius):
         """Simulates oil paiting.
@@ -887,7 +887,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(special.oil_paint, self, radius)
+        special.oil_paint(self, radius)
     
     def shade(self, azimuth=45, elevation=45, grayscale=True):
         """Simulate 3D shading effect.
@@ -906,7 +906,7 @@ class Image(Resource):
            
            This method can be chained
         """
-        call(special.shade, self, azimuth, elevation, grayscale)
+        special.shade(self, azimuth, elevation, grayscale)
     
     def spread(self, radius):
         """Spread pixels in random direction.
@@ -919,7 +919,7 @@ class Image(Resource):
         
            This method can be chained.
         """
-        call(special.spread, self, radius)
+        special.spread(self, radius)
     
     def dft(self, magnitude=True, factory=None):
         """Applies inverse discrete Fourier transform to an image.
@@ -935,7 +935,7 @@ class Image(Resource):
            accomplished with it. This method will not be present if your
            ImageMagick installation wasn't compiled against FFTW.
         """
-        return call(special.dft, self, magnitude, factory)
+        return special.dft(self, magnitude, factory)
     
     def fx(self, expression):  # @ReservedAssignment
         """Perform expression using ImageMagick mini-language.
@@ -947,7 +947,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        return call(special.fx, self, expression)
+        return special.fx(self, expression)
     
     def get_pixel(self, x, y, factory=None):
         """Get pixel color at given coordinates.
@@ -960,7 +960,7 @@ class Image(Resource):
            
            Reads pixel color at point ``(x,y)``.
         """
-        return call(pixel.get_pixel, self, x, y, factory)
+        return pixel.get_pixel(self, x, y, factory)
     
     def fill(self, fill, blend=1):
         """Overlay color over whole image.
@@ -975,7 +975,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(pixel.fill, self, fill, blend)
+        pixel.fill(self, fill, blend)
     
     def set_color(self, fill):
         """Fill whole image with one color.
@@ -992,7 +992,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(pixel.set_color, self, fill)
+        pixel.set_color(self, fill)
     
     def set_alpha(self, alpha):
         """Set alpha channel of pixels in the image.
@@ -1005,7 +1005,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(pixel.set_alpha, self, alpha)
+        pixel.set_alpha(self, alpha)
     
     def overlay(self, image, x=0, y=0, composite=None):
         """Overlay another image on this image.
@@ -1030,7 +1030,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(pixel.overlay, self, image, x, y, composite)
+        pixel.overlay(self, image, x, y, composite)
     
     def compare(self, image, metric=None, factory=None):
         """Compare image to another image
@@ -1050,7 +1050,7 @@ class Image(Resource):
             metric. If images are of  differnt sizes
             returns ``False`` instead.
         """
-        return call(pixel.compare, self, image, metric, factory)
+        return pixel.compare(self, image, metric, factory)
     
     def is_same(self, image):
         """Check if images are the same.
@@ -1086,7 +1086,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(geometry.splice, self, x, y, width, height)
+        geometry.splice(self, x, y, width, height)
     
     def __colorspace():  # @NoSelf
         doc = (  # @UnusedVariable
@@ -1149,7 +1149,7 @@ class Image(Resource):
            
            This method can be chained.
         """
-        call(color_impl.convert_colorspace, self, colorspace)
+        color_impl.convert_colorspace(self, colorspace)
     
     @property
     def width(self):
@@ -1279,7 +1279,7 @@ from os.path import exists
 from pystacia.compat import formattable
 from pystacia import color
 color_module = color
-from pystacia.api.func import call, simple_call
+from pystacia.api.func import c_call
 from pystacia import magick
 from pystacia.api.enum import (lookup as enum_lookup,
                                reverse_lookup as enum_reverse_lookup)
@@ -1322,12 +1322,10 @@ __exclusions = [
     'exists',
     'color',
     'color_module',
-    'call',
     'formattable',
     'generic',
     'sample',
     'registry',
-    'simple_call',
     'magick',
     'enum_lookup',
     'enum_reverse_lookup',

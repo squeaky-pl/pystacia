@@ -185,15 +185,14 @@ def get_dll(init=True, environ=None, isolated=False):
             logger.debug('Cleaning up traced instances')
             _cleanup()
             
-            simple_call(None, 'terminus')
+            c_call(None, 'terminus')
             
             logger.debug('Shutting down the bridge')
-            get_bridge().shutdown()
         
         logger.debug('Critical section - init MagickWand')
         with __lock:
             if not dll.__inited:
-                simple_call(None, 'genesis', __init=False)
+                c_call(None, 'genesis', __init=False)
                 
                 logger.debug('Registering atexit handler')
                 atexit.register(shutdown)
@@ -207,24 +206,6 @@ def get_dll(init=True, environ=None, isolated=False):
     
     return dll
 
-from pystacia.util import memoized
-
-
-@memoized
-def get_bridge(impl=None):
-    if not impl:
-        if (registry.get('impl', os.environ.get('PYSTACIA_IMPL', ''))
-            .upper() == 'SIMPLE'):
-            logger.debug('Using Simple implementation')
-            impl = SimpleImpl()
-        else:
-            logger.debug('Using Thread implementation')
-            impl = ThreadImpl(True)
-        
-    bridge = CallBridge(impl)
-    
-    return bridge
-
 
 import os
 from os import pathsep
@@ -235,12 +216,11 @@ from warnings import warn
 import atexit
 
 from pystacia import registry
-from pystacia.bridge import CallBridge, ThreadImpl, SimpleImpl
 from pystacia.util import get_osname, PystaciaException
 from pystacia.compat import formattable
 from pystacia.common import _cleanup
 from pystacia import magick
-from pystacia.api.func import simple_call
+from pystacia.api.func import c_call
 
 
 min_version = (6, 5, 9, 0)

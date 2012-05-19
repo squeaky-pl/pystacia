@@ -1,13 +1,13 @@
 def alloc():
-    return simple_call('pwand', 'new')
+    return c_call('pwand', 'new')
 
 
 def free(color):
-    return simple_call('pwand', 'destroy', color)
+    return c_call('pwand', 'destroy', color)
 
 
 def clone(color):
-    return simple_call('pwand', 'clone', color)
+    return c_call('pwand', 'clone', color)
 
 
 def set_string(color, value):
@@ -69,4 +69,4 @@ def saturate(v):
 
 from ctypes import c_double
 
-from pystacia.api.func import simple_call, c_call
+from pystacia.api.func import c_call

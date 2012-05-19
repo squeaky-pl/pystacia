@@ -1,13 +1,13 @@
 def alloc(image):
-    return simple_call('wand', 'new')
+    return c_call('wand', 'new')
 
 
 def free(image):
-    return simple_call('wand', 'destroy', image)
+    return c_call('wand', 'destroy', image)
 
 
 def clone(image):
-    return simple_call('wand', 'clone', image)
+    return c_call('wand', 'clone', image)
 
 
-from pystacia.api.func import simple_call
+from pystacia.api.func import c_call

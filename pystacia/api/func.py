@@ -218,16 +218,6 @@ def get_data():
     }
 
 
-def call(callable_, *args, **kw):
-    bridge = get_bridge()
-    
-    return bridge.call(callable_, *args, **kw)
-
-
-def simple_call(obj, method, *args, **kw):
-    return call(lambda: c_call(obj, method, *args, **kw))
-
-
 def get_c_method(obj, method, throw=True):
     if hasattr(obj.__class__, '_api_type'):
         api_type = obj.__class__._api_type
@@ -338,7 +328,7 @@ from six import string_types, b
 
 from pystacia.util import PystaciaException
 from pystacia.compat import native_str, formattable, c_ssize_t
-from pystacia.api import get_dll, get_bridge, logger
+from pystacia.api import get_dll, logger
 from pystacia.api.type import (
     MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, enum)
 from pystacia.common import Resource
