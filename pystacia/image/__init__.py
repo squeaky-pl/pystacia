@@ -1,11 +1,16 @@
 # coding: utf-8
-# pystacia/image.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# pystacia/image/__init__.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 from __future__ import division
+
+import webbrowser
+from tempfile import mkstemp
+from os import environ
+from os.path import exists
 
 from six import callable
 
@@ -1255,10 +1260,6 @@ from pystacia import registry
 
 registry._install_default('image_factory', Image)  # @UndefinedVariable
 
-import webbrowser
-from tempfile import mkstemp
-from os import environ
-from os.path import exists
 
 from pystacia.compat import formattable
 from pystacia import color

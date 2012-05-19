@@ -1,9 +1,14 @@
 # coding: utf-8
 # pystacia/api/func.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
+
+from ctypes import (string_at, c_char_p, c_void_p, POINTER,
+                    c_size_t, c_double, c_uint)
+
+from six import string_types, b
 
 from pystacia.util import memoized
 
@@ -319,12 +324,6 @@ def c_call(obj, method, *args, **kw):
             c_call('magick_', 'relinquish_memory', description)
     
     return result
-
-
-from ctypes import (string_at, c_char_p, c_void_p, POINTER,
-                    c_size_t, c_double, c_uint)
-
-from six import string_types, b
 
 from pystacia.util import PystaciaException
 from pystacia.compat import native_str, formattable, c_ssize_t

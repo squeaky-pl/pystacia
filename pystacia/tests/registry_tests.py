@@ -1,3 +1,14 @@
+# coding: utf-8
+# pystacia/tests/registry_tests.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
+from time import sleep
+from random import sample, randint
+from threading import Thread
+
 from pystacia.tests.common import TestCase
 
 
@@ -73,11 +84,6 @@ class RegistryTest(TestCase):
             registry._lock('value_' + str(x))
         
         [t.join() for t in threads]
-
-
-from threading import Thread
-from random import sample, randint
-from time import sleep
 
 from pystacia.registry import Registry
 from pystacia.util import PystaciaException

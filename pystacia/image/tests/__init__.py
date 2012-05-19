@@ -1,12 +1,17 @@
 # coding: utf-8
-# pystacia/tests/image_tests.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# pystacia/image/tests/sample_tests.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 from __future__ import division
 
 import sys
+from threading import Thread
+from re import match
+from tempfile import mkstemp
+
+from six import b, BytesIO
 
 from pystacia.image import Image
 from pystacia.tests.common import TestCase, skipIf, expectedFailure
@@ -237,18 +242,6 @@ class WithSample(TestCase):
         img = self.img
         
         img.equalize()
-    
-    # only check if it doesnt blow up
-    @skipIf('fftw' not in magick.get_delegates(),
-            'ImageMagick without FFTW delegate')
-    def test_dft(self):
-        img = self.img
-        
-        result = img.dft()
-        self.assertIsInstance(result, tuple)
-        self.assertIsInstance(result[0], Image)
-        self.assertIsInstance(result[1], Image)
-        self.assertEqual(result[0].size, img.size)
     
     def test_transpose(self):
         img = self.img
@@ -741,11 +734,6 @@ class ThreadedTest(TestCase):
         [t.start() for t in threads]
         [t.join() for t in threads]
 
-from threading import Thread
-from tempfile import mkstemp
-from re import match
-
-from six import b, BytesIO
 
 from pystacia.util import PystaciaException
 from pystacia.image import (read, read_raw, read_blob, types,

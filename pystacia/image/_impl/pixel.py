@@ -1,3 +1,13 @@
+# coding: utf-8
+# pystacia/image/_impl/pixel.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
+from ctypes import c_double
+
+
 def get_pixel(self, x, y, factory):
     color_ = color._instantiate(factory)
         
@@ -61,8 +71,6 @@ def compare(image, other, metric, factory):
     
     return(factory(diff), distortion.value)
 
-
-from ctypes import c_double
 
 from pystacia.api.func import get_c_method, c_call
 from pystacia.api.enum import lookup as enum_lookup

@@ -1,4 +1,12 @@
+# coding: utf-8
+# pystacia/image/_impl/geometry.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
 from __future__ import division
+
+from math import degrees, atan
 
 
 def _proportionally(image, width, height):
@@ -143,9 +151,6 @@ def splice(image, x, y, width, height):
 
 def chop(image, x, y, width, height):
     c_call(image, 'chop', width, height, x, y)
-
-
-from math import degrees, atan
 
 from pystacia.image.enum import filters, axes
 from pystacia.util import PystaciaException

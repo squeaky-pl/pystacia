@@ -1,4 +1,12 @@
+# coding: utf-8
+# pystacia/registry.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
 from __future__ import with_statement
+
+from threading import Lock
 
 
 class Registry(object):
@@ -63,8 +71,6 @@ class Registry(object):
                 raise PystaciaException(msg.format(key))
             
             del self.__dict__[key]
-
-from threading import Lock
 
 from pystacia.compat import formattable
 from pystacia.util import PystaciaException

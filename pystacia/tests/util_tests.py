@@ -5,8 +5,10 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from pystacia.tests.common import TestCase, skipIf
 import math
+from random import randint, choice
+
+from pystacia.tests.common import TestCase, skipIf
 
 
 class MemoizedTest(TestCase):
@@ -119,6 +121,3 @@ def threaded_factorial(i):
         subthread.join()
         
         return i * subthread.result
-
-
-from random import randint, choice

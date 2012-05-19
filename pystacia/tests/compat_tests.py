@@ -1,9 +1,11 @@
 # coding: utf-8
 # pystacia/tests/compat_tests.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
+
+from sys import version_info
 
 from pystacia.tests.common import TestCase
 
@@ -35,6 +37,4 @@ class Compat(TestCase):
             from unittest import TestCase as TestCase_py
             self.assertEqual(TestCase, TestCase_py)
 
-
-from sys import version_info
 from pystacia.compat import formattable, native_str, c_ssize_t

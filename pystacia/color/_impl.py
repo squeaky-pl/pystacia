@@ -1,3 +1,14 @@
+# coding: utf-8
+# pystacia/color/_impl.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
+
+from ctypes import c_double
+
+
 def alloc():
     return c_call('pwand', 'new')
 
@@ -66,7 +77,5 @@ def saturate(v):
     else:
         return round(v, 4)
 
-
-from ctypes import c_double
 
 from pystacia.api.func import c_call

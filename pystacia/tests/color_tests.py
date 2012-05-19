@@ -1,9 +1,11 @@
 # coding: utf-8
 # pystacia/tests/color_tests.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
+
+from re import match
 
 from pystacia.tests.common import TestCase
 
@@ -139,9 +141,6 @@ class ColorTest(TestCase):
             groups = tuple(float(v) for i, v in
                            enumerate(result.groups()) if not i % 2)
             self.assertEqual(groups, rgba)
-            
-
-from re import match
 
 from pystacia.color._impl import saturate
 from pystacia import color, registry

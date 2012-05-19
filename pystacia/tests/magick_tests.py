@@ -1,9 +1,11 @@
 # coding: utf-8
 # pystacia/tests/magick_tests.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
+
+from six import string_types
 
 from pystacia.tests.common import TestCase
 
@@ -23,5 +25,3 @@ class MagickTest(TestCase):
 
 from pystacia.magick import (get_options, get_version, get_version_str,
                             get_formats)
-
-from six import string_types

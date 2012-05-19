@@ -1,5 +1,12 @@
+# coding: utf-8
+# pystacia/iamge/tests/sample_tests.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
 from pystacia.tests.common import TestCase
-from pystacia.image import types, colorspaces
+from pystacia.image import types
 
 
 data = {

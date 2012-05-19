@@ -1,11 +1,17 @@
 # coding: utf-8
-# pystacia/image.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# pystacia/magick/__init__.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 from pystacia.util import memoized
+
+from os.path import dirname, join, exists
+try:
+    from xml.etree.cElementTree import ElementTree
+except ImportError:
+    from xml.etree.ElementTree import ElementTree  # @Reimport
 
 
 @memoized
@@ -71,14 +77,6 @@ def get_depth():
 @memoized
 def get_formats():
     return impl.get_formats()
-
-
-from os.path import dirname, join, exists
-
-try:
-    from xml.etree.cElementTree import ElementTree
-except ImportError:
-    from xml.etree.ElementTree import ElementTree  # @Reimport
 
 from pystacia.api import get_dll
 from pystacia.api.func import c_call

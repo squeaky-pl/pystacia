@@ -1,11 +1,13 @@
 # coding: utf-8
-# pystacia/image.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# pystacia/util.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 from __future__ import with_statement
 
+import platform
+from sys import version_info
 
 from decorator import decorator
 
@@ -78,10 +80,6 @@ class PystaciaException(Exception):
 
 
 TinyException = PystaciaException
-
-
-import platform
-from sys import version_info
 
 from pystacia.compat import dist, formattable
 from pystacia import logger

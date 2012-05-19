@@ -1,10 +1,15 @@
 # coding: utf-8
 # pystacia/api/tests/__init__.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
+
+from os import getcwd, chdir, mkdir
+from os.path import join, basename, exists, realpath
+from tempfile import mkdtemp
+from shutil import rmtree
 
 from pystacia.tests.common import TestCase
 
@@ -200,11 +205,6 @@ class MockFactory(object):
         if self.throw:
             raise PystaciaException('Error')
 
-
-from tempfile import mkdtemp
-from os import getcwd, chdir, mkdir
-from os.path import join, basename, exists, realpath
-from shutil import rmtree
 
 from pystacia.api import get_dll, dll_template, find_library
 from pystacia.compat import formattable

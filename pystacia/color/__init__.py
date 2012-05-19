@@ -1,10 +1,12 @@
 # coding: utf-8
-# pystacia/color.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# pystacia/color/__init__.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 from __future__ import division
+
+from six import integer_types, string_types
 
 
 """Various color-related functions and objects."""
@@ -414,8 +416,6 @@ def cast(value):
     template = formattable('Cannot cast {0} to Color instance.')
     raise PystaciaException(template.format(value))
 
-
-from six import integer_types, string_types
 
 from pystacia.compat import formattable
 from pystacia.color import _impl as impl

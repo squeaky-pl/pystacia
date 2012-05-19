@@ -1,6 +1,16 @@
+# coding: utf-8
+# pystacia/image/sample.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
 from __future__ import with_statement
 
+import sys
+from os.path import dirname, join, exists
 from threading import Lock
+import weakref
+
 
 __lena = None
 __lock = Lock()
@@ -112,11 +122,6 @@ def netscape(factory=None):
        216x144, palette, RGB.
     """
     return io.read('netscape:', factory=factory)
-
-
-import sys
-import weakref
-from os.path import dirname, join, exists
 
 import pystacia
 from pystacia.image._impl import io

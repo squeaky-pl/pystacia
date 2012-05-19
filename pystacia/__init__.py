@@ -22,7 +22,7 @@ if not environ.get('PYSTACIA_SETUP'):
     level = environ.get('PYSTACIA_LOG')
     if level:
         level = int(level)
-        format = '%(asctime)s %(name)-12s %(thread)d %(message)s'
+        format = '%(asctime)s %(name)-12s %(thread)d %(message)s'  # @ReservedAssignment
         basicConfig(level=level, format=format)
     
     logger.debug('Imported main module')

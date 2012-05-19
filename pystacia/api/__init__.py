@@ -1,12 +1,20 @@
 # coding: utf-8
 # pystacia/api/__init__.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 from __future__ import with_statement
 
+import os
+from os import pathsep
+from os.path import join, exists, dirname
+from ctypes import CDLL
+import ctypes.util
+from warnings import warn
+import atexit
 from logging import getLogger
+
 
 logger = getLogger('pystacia.api')
 
@@ -206,14 +214,6 @@ def get_dll(init=True, environ=None, isolated=False):
     
     return dll
 
-
-import os
-from os import pathsep
-from os.path import join, exists, dirname
-from ctypes import CDLL
-import ctypes.util
-from warnings import warn
-import atexit
 
 from pystacia import registry
 from pystacia.util import get_osname, PystaciaException

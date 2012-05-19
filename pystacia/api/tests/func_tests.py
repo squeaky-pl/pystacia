@@ -1,6 +1,6 @@
 # coding: utf-8
 # pystacia/api/tests/func_tests.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -22,6 +22,7 @@ class FuncTest(TestCase):
         self.assertRaises(AttributeError,
                           lambda: get_c_method('magick', 'non_existant'))
         self.assertFalse(get_c_method('magick', 'non_existant', throw=False))
+
 
 from pystacia.tests.common import sample
 from pystacia.api.func import c_call, get_c_method

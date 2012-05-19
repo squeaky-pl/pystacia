@@ -1,7 +1,15 @@
+# coding: utf-8
+# pystacia/image/_impl/io.py
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
+#
+# This module is part of Pystacia and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
 from __future__ import with_statement
 
-
+from os.path import splitext
 from threading import Lock
+from ctypes import c_size_t, string_at
+
 from pystacia.compat import pypy
 
 
@@ -102,9 +110,6 @@ def get_blob(image, format, compression,  # @ReservedAssignment
         c_call('magick', 'set_format', image, old_format)
         
         return blob
-
-from os.path import splitext
-from ctypes import c_size_t, string_at
 
 from pystacia.common import state
 from pystacia.image import _instantiate

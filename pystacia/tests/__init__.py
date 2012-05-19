@@ -1,10 +1,16 @@
 # coding: utf-8
 # pystacia/tests/__init__.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 from __future__ import with_statement
+
+try:
+    from warnings import catch_warnings, simplefilter
+except ImportError:
+    pass
+from tempfile import mkstemp
 
 from pystacia.tests.common import TestCase, skipIf
 from pystacia.image.sample import lena_available
@@ -75,13 +81,6 @@ class DeprecationTest(TestCase):
                 self.assertEqual(getattr(pystacia, name).x,
                                   getattr(image, name).x)
                 self.assertTrue(name in w[-1].message.args[0])
-
-
-try:
-    from warnings import catch_warnings, simplefilter
-except ImportError:
-    pass
-from tempfile import mkstemp
 
 from pystacia import image
 from pystacia.image import colorspaces, types

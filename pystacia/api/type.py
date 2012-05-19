@@ -1,6 +1,6 @@
 # coding: utf-8
 # pystacia/api/type.py
-# Copyright (C) 2011 by Paweł Piotr Przeradowski
+# Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -17,10 +17,6 @@ class MagickBoolean(enum):
 
 
 class ExceptionType(enum):
-    pass
-
-
-class Image(Structure):
     pass
 
 
