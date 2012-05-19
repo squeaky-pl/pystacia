@@ -1,4 +1,5 @@
 # coding: utf-8
+
 # pystacia/image/_impl/pixel.py
 # Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
 #

@@ -1,9 +1,11 @@
 # coding: utf-8
-# pystacia/image/tests/sample_tests.py
+
+# pystacia/image/tests/__init__.py
 # Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
-#
+
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
+
 from __future__ import division
 
 import sys
@@ -372,7 +374,7 @@ class WithSample(TestCase):
 
         img.colorize('red')
 
-        self.assertEquals(img.get_pixel(50, 50).get_hsl()[0], red.get_hsl()[0])
+        self.assertEqual(img.get_pixel(50, 50).get_hsl()[0], red.get_hsl()[0])
 
     def test_invert(self):
         img = self.img

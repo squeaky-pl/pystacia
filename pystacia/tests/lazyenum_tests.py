@@ -1,7 +1,8 @@
 # coding: utf-8
+
 # pystacia/tests/lazyenum_tests.py
 # Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
-#
+
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
@@ -47,7 +48,7 @@ class Enum(TestCase):
         circle = cast('shape', 'circle')
         square = cast('shape', 'square')
 
-        self.assertEquals(circle, 'circle')
+        self.assertEqual(circle, 'circle')
         self.assertNotEqual(circle, 'square')
         self.assertEqual(square, 'square')
         self.assertNotEqual(circle, 3)

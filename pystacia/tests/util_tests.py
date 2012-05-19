@@ -21,7 +21,7 @@ class RegistryTest(TestCase):
         registry = self.registry
 
         registry.value = 2
-        self.assertEquals(registry.value, 2)
+        self.assertEqual(registry.value, 2)
         self.assertTrue(hasattr(registry, 'value'))
         self.assertEqual(registry.get('value', 3), 2)
         self.assertEqual(registry.get('value', 3, 3), 3)
@@ -39,14 +39,14 @@ class RegistryTest(TestCase):
         registry.value = 5
         self.assertEqual(registry.value, 5)
         del registry.value
-        self.assertEquals(registry.value, 4)
+        self.assertEqual(registry.value, 4)
 
     def test_lock(self):
         registry = self.registry
 
         registry.value = 3
         registry._lock('value')
-        self.assertEquals(registry.value, 3)
+        self.assertEqual(registry.value, 3)
 
         def assign():
             registry.value = 4

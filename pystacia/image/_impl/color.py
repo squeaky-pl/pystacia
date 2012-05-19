@@ -1,9 +1,11 @@
 # coding: utf-8
+
 # pystacia/image/_impl/color.py
 # Copyright (C) 2011-2012 by Paweł Piotr Przeradowski
-#
+
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
+
 from __future__ import division
 
 from ctypes import c_double
