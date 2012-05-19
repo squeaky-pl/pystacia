@@ -35,31 +35,6 @@ def spread(image, radius):
     c_call(image, 'spread', radius)
 
 
-def dft(image, magnitude, factory):
-    if not 'dft' in magick.get_delegates():
-        raise PystaciaException('Not available')
-        
-    magnitude = bool(magnitude)
-    copy = image.copy()
-    
-    c_call(copy, 'forward_fourier_transorm', magnitude)
-    
-    width, height = image.size
-    
-    first = blank(width, height, factory=factory)
-    second = blank(width, height, factory=factory)
-    
-    first.overlay(copy, composite='copy')
-    
-    c_call(image, 'next')
-    
-    second.overlay(copy, composite='copy')
-    
-    copy.close()
-    
-    return (first, second)
-
-
 def fx(image, expression):
     resource = c_call(image, 'fx', expression)
     

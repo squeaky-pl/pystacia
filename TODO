@@ -3,14 +3,22 @@ TODO
 ====
 
 
+Backward incompatible changes
+------------------------------
+sRGB
+drop support dft
+
+
   -------------------------
+- move non conflicting external imports on the top, only in package imports
+at the end
 - registry could lookup keys automatically from environ by appending
 PYSTACIA in front
 - evaluate file windows in tk or win32
 - weakrefing cached lena should be only used in tests [0.1.1]
 - use is instead of id comparisons in Color
 - think about the issue with overlay discarding alpha channel
-- compile with xz, bzip and gzip on all oses
+- compile with bzip and gzip on all oses
 - Jython support
 - move more things to registry - paths, and chainability
 - instead of relying on renames and get_platfom we could use our own solution [0.1.1]

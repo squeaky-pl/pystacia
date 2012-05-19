@@ -44,3 +44,8 @@ def fallback_c_size_t():
         
 import ctypes
 c_ssize_t = getattr(ctypes, 'c_ssize_t', fallback_c_size_t())
+
+
+# detect PyPy
+import sys
+pypy = '__pypy__' in sys.builtin_module_names

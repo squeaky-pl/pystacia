@@ -1,13 +1,28 @@
 from __future__ import with_statement
 
 
+from threading import Lock
+from pystacia.compat import pypy
+
+
+if pypy:
+    # read lock for PyPy
+    __lock = Lock()
+
+
 def read(spec, width=None, height=None, factory=None):
     image = _instantiate(factory)
     
     if width and height:
         c_call('magick', 'set_size', image, width, height)
     
+    if pypy:
+        __lock.acquire()
+    
     c_call(image, 'read', spec)
+    
+    if pypy:
+        __lock.release()
     
     return image
 

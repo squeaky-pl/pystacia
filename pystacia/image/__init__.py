@@ -921,22 +921,6 @@ class Image(Resource):
         """
         special.spread(self, radius)
     
-    def dft(self, magnitude=True, factory=None):
-        """Applies inverse discrete Fourier transform to an image.
-           
-           :param magnitude: if ``True``, return as magnitude / phase pair
-             otherwise a real / imaginary image pair.
-           :type magnitude: ``bool``
-           :rtype: 2-element ``tuple`` of :class:`Image`
-           
-           Performs inverse discrete Fourier transform (DFT)
-           and returns a tuple of two resulting images. Go to
-           http://www.imagemagick.org/Usage/fourier/ to see what can be
-           accomplished with it. This method will not be present if your
-           ImageMagick installation wasn't compiled against FFTW.
-        """
-        return special.dft(self, magnitude, factory)
-    
     def fx(self, expression):  # @ReservedAssignment
         """Perform expression using ImageMagick mini-language.
         
