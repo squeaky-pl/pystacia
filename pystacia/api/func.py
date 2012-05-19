@@ -218,10 +218,6 @@ def get_data():
     }
 
 
-def simple_call(obj, method, *args, **kw):
-    return c_call(obj, method, *args, **kw)
-
-
 def get_c_method(obj, method, throw=True):
     if hasattr(obj.__class__, '_api_type'):
         api_type = obj.__class__._api_type

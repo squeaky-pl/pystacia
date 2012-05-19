@@ -185,14 +185,14 @@ def get_dll(init=True, environ=None, isolated=False):
             logger.debug('Cleaning up traced instances')
             _cleanup()
             
-            simple_call(None, 'terminus')
+            c_call(None, 'terminus')
             
             logger.debug('Shutting down the bridge')
         
         logger.debug('Critical section - init MagickWand')
         with __lock:
             if not dll.__inited:
-                simple_call(None, 'genesis', __init=False)
+                c_call(None, 'genesis', __init=False)
                 
                 logger.debug('Registering atexit handler')
                 atexit.register(shutdown)
@@ -220,7 +220,7 @@ from pystacia.util import get_osname, PystaciaException
 from pystacia.compat import formattable
 from pystacia.common import _cleanup
 from pystacia import magick
-from pystacia.api.func import simple_call
+from pystacia.api.func import c_call
 
 
 min_version = (6, 5, 9, 0)

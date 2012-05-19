@@ -13,9 +13,9 @@ class FuncTest(TestCase):
         img = sample()
         
         self.assertRaises(PystaciaException,
-                          lambda: simple_call('magick', 'set_format',
+                          lambda: c_call('magick', 'set_format',
                                               img, 'lolz'))
-        simple_call('magick', 'set_format', img, 'bmp')
+        c_call('magick', 'set_format', img, 'bmp')
         
         img.close()
         
@@ -24,5 +24,5 @@ class FuncTest(TestCase):
         self.assertFalse(get_c_method('magick', 'non_existant', throw=False))
 
 from pystacia.tests.common import sample
-from pystacia.api.func import simple_call, get_c_method
+from pystacia.api.func import c_call, get_c_method
 from pystacia.util import PystaciaException

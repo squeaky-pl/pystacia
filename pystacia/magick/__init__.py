@@ -49,7 +49,7 @@ def get_options():
 
 @memoized
 def get_version_str():
-    return simple_call('magick_', 'get_version', None)
+    return c_call('magick_', 'get_version', None)
 
 
 @memoized
@@ -81,5 +81,5 @@ except ImportError:
     from xml.etree.ElementTree import ElementTree  # @Reimport
 
 from pystacia.api import get_dll
-from pystacia.api.func import simple_call
+from pystacia.api.func import c_call
 from pystacia.magick import _impl as impl

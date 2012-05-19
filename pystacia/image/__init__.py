@@ -123,10 +123,10 @@ class Image(Resource):
         if enum:
             value = enum_lookup(value, enum)
             
-        simple_call(self, ('set', key), value)
+        c_call(self, ('set', key), value)
         
     def _get_state(self, key, enum=None):
-        value = simple_call(self, ('get', key))
+        value = c_call(self, ('get', key))
             
         if enum:
             value = enum_reverse_lookup(enum, value)
@@ -1279,7 +1279,7 @@ from os.path import exists
 from pystacia.compat import formattable
 from pystacia import color
 color_module = color
-from pystacia.api.func import simple_call
+from pystacia.api.func import c_call
 from pystacia import magick
 from pystacia.api.enum import (lookup as enum_lookup,
                                reverse_lookup as enum_reverse_lookup)
@@ -1326,7 +1326,6 @@ __exclusions = [
     'generic',
     'sample',
     'registry',
-    'simple_call',
     'magick',
     'enum_lookup',
     'enum_reverse_lookup',
