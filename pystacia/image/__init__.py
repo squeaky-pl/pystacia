@@ -7,6 +7,8 @@
 
 from __future__ import division
 
+from six import callable
+
 """:class:`Image` creation and management operations"""
 
 

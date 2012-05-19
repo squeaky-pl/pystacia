@@ -24,7 +24,7 @@ class Compat(TestCase):
         self.assertIsInstance(native_str(value), str)
         self.assertEqual(native_str(value), 'abc')
         
-        if version_info >= (2, 7):
+        if version_info >= (3, 2) or (2, 7) <= version_info < (2, 8):
             from ctypes import c_ssize_t as c_ssize_t_
             self.assertEqual(c_ssize_t, c_ssize_t_)
             
