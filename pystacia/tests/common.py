@@ -7,6 +7,16 @@ from unittest import TestCase
 if not hasattr(TestCase, 'assertSequenceEqual'):
     from unittest2 import TestCase  # @UnusedImport @Reimport
 
+# python 3.1 misses this one method, copy implementation from Python source
+if not hasattr(TestCase, 'assertIsInstance'):
+    def assertIsInstance(self, obj, cls, msg=None):
+        """Same as self.assertTrue(isinstance(obj, cls)), with a nicer
+        default message."""
+        if not isinstance(obj, cls):
+            standardMsg = '%s is not an instance of %r' % (safe_repr(obj), cls)
+            self.fail(self._formatMessage(msg, standardMsg))
+            
+    TestCase.assertIsInstance = assertIsInstance
 
 from pystacia import image
 from pystacia.image import types
