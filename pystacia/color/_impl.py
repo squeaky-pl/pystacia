@@ -59,9 +59,9 @@ def set_alpha(color, value):
 
 def get_hsl(color):
     h, s, l = tuple(x() for x in (c_double,) * 3)
-        
+
     c_call(color, 'get_hsl', h, s, l)
-    
+
     return tuple(saturate(x.value) for x in (h, s, l))
 
 

@@ -33,34 +33,34 @@ class FindLibraryTest(TestCase):
             path = join(tmproot, subdir)
             if not exists(path):
                 mkdir(path)
-            
+
             for osname in 'macos', 'linux', 'windows':
                 for abi in 2, 1, None:
                     template = formattable(dll_template(osname, abi))
                     libpath = join(path,
                                    template.format(name='Foo', abi=abi))
                     open(libpath, 'w').close()
-        
+
         depends = open(join(tmproot, 'depends', 'depends.txt'), 'w')
         depends.write('Depends 18\n')
         depends.close()
-        
+
     def setUp(self):
         self.environ = {'PYSTACIA_SKIP_SYSTEM': '1',
                         'PYSTACIA_SKIP_PACKAGE': '1'}
         self.olddir = getcwd()
-        
+
     def tearDown(self):
         chdir(self.olddir)
-        
+
     @classmethod
     def tearDownClass(cls):
         rmtree(cls.tmproot)
-    
+
     def test(self):
         environ = self.environ
         environ['PYSTACIA_LIBRARY_PATH'] = self.tmproot
-        
+
         self.assertEqual(find_library('Bar', (2, 1, None)), None)
         self.assertEqual(find_library('Foo', ()), None)
         self.assertEqual(find_library('Foo', (2, 1, None), {}), None)
@@ -74,91 +74,91 @@ class FindLibraryTest(TestCase):
             find_library('Foo', (2, 1, None), environ,
                          '_dummy_os', MockFactory()),
                          None)
-    
+
     def test_order(self):
         environ = self.environ
         environ['PYSTACIA_LIBRARY_PATH'] = self.tmproot
-        
+
         v = find_library('Foo', (2,), environ, 'windows', MockFactory())
         self.assertEqual(basename(v), 'libFoo-2.dll')
-        
+
         v = find_library('Foo', (1, None), environ, 'linux', MockFactory())
         self.assertEqual(basename(v), 'libFoo.so.1')
-        
+
         v = find_library('Foo', (None,), environ, 'macos', MockFactory())
         self.assertEqual(basename(v), 'libFoo.dylib')
-        
+
     def test_library_path(self):
         environ = self.environ
         tmproot = environ['PYSTACIA_LIBRARY_PATH'] = self.__class__.tmproot
-        
+
         value = find_library('Foo', (2,), environ, 'windows', MockFactory())
         expect = join(tmproot, 'libFoo-2.dll')
         self.assertEqual(realpath(value), realpath(expect))
-        
+
         value = find_library('Foo', (1, None), environ, 'linux', MockFactory())
         expect = join(tmproot, 'libFoo.so.1')
         self.assertEqual(realpath(value), realpath(expect))
-        
+
         value = find_library('Foo', (None,), environ, 'macos', MockFactory())
         expect = join(tmproot, 'libFoo.dylib')
         self.assertEqual(realpath(value), realpath(expect))
-        
+
     def test_venv(self):
         environ = self.environ
         tmproot = environ['VIRTUAL_ENV'] = self.__class__.tmproot
-        
+
         value = find_library('Foo', (2,), environ, 'windows', MockFactory())
         expect = join(tmproot, 'lib', 'libFoo-2.dll')
         self.assertEqual(realpath(value), realpath(expect))
-        
+
         value = find_library('Foo', (1, None), environ, 'linux', MockFactory())
         expect = join(tmproot, 'lib', 'libFoo.so.1')
         self.assertEqual(realpath(value), realpath(expect))
-        
+
         value = find_library('Foo', (None,), environ, 'macos', MockFactory())
         expect = join(tmproot, 'lib', 'libFoo.dylib')
         self.assertEqual(realpath(value), realpath(expect))
-        
+
         environ['PYSTACIA_SKIP_VIRTUAL_ENV'] = '1'
         value = find_library('Foo', (None,), environ, 'macos', MockFactory())
         self.assertEqual(value, None)
-        
+
     def test_curdir(self):
         environ = self.environ
         tmproot = self.__class__.tmproot
         chdir(tmproot)
-        
+
         value = find_library('Foo', (2,), environ, 'windows', MockFactory())
         expect = join(tmproot, 'libFoo-2.dll')
         self.assertEqual(realpath(value), realpath(expect))
-        
+
         value = find_library('Foo', (1, None), environ, 'linux', MockFactory())
         expect = join(tmproot, 'libFoo.so.1')
         self.assertEqual(realpath(value), realpath(expect))
-        
+
         value = find_library('Foo', (None,), environ, 'macos', MockFactory())
         expect = join(tmproot, 'libFoo.dylib')
         self.assertEqual(realpath(value), realpath(expect))
-        
+
     def test_depends(self):
         this_environ = self.environ.copy()
         tmproot = join(self.__class__.tmproot, 'depends')
         this_environ['PYSTACIA_LIBRARY_PATH'] = tmproot
-        
+
         environ = this_environ.copy()
         factory = MockFactory()
         find_library('Foo', (2,), environ, 'windows', factory)
         expect = [join(tmproot, x) for x in ['libDepends-18.dll',
                                              'libFoo-2.dll']]
         self.assertEqual(factory.args, expect)
-        
+
         environ = this_environ.copy()
         factory = MockFactory()
         find_library('Foo', (None,), environ, 'linux', factory)
         expect = [join(tmproot, x) for x in ['libDepends.so.18', 'libFoo.so']]
         self.assertEqual(factory.args, expect)
-        
+
         # throws an exception so shouldnt find anything
         environ = this_environ.copy()
         factory = MockFactory(throw=True)
@@ -167,13 +167,13 @@ class FindLibraryTest(TestCase):
                                              'libFoo.1.dylib']]
         self.assertEqual(value, None)
         self.assertEqual(factory.args, expect)
-        
+
         # add DYLD_LIBRARY_PATH to environ for extra coverage
         environ = this_environ.copy()
         factory = MockFactory(throw=True)
         environ['DYLD_FALLBACK_LIBRARY_PATH'] = '/'
         find_library('Foo', (1,), environ, 'macos', factory)
-        
+
     def test_system_wide(self):
         environ = {'PYSTACIA_SKIP_PACKAGE': '1',
                    'PYSTACIA_SKIP_VIRTUAL_ENV': '1',
@@ -188,7 +188,7 @@ class GetDllTest(TestCase):
                    'PYSTACIA_SKIP_VIRTUAL_ENV': '1',
                    'PYSTACIA_SKIP_CWD': '1',
                    'PYSTACIA_SKIP_SYSTEM': '1'}
-        
+
         self.assertRaisesRegexp(PystaciaException, 'Could not find or load',
                                 lambda: get_dll(environ=environ,
                                                 isolated=True))
@@ -198,10 +198,10 @@ class MockFactory(object):
     def __init__(self, throw=False):
         self.args = []
         self.throw = throw
-        
+
     def __call__(self, arg):
         self.args.append(arg)
-        
+
         if self.throw:
             raise PystaciaException('Error')
 

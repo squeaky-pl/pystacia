@@ -1,4 +1,4 @@
-from pystacia import lena 
+from pystacia import lena
 
 image = lena(128)
 image.set_alpha(0.75)

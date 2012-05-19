@@ -42,13 +42,13 @@ class SampleTest(TestCase):
     def test(self):
         if not lena_available():
             del data['lena']
-            
+
         for sample, params in data.items():
             img = getattr(image, sample)()
-            
+
             for param, value in params.items():
                 self.assertEqual(getattr(img, param), value)
-                
+
             img.close()
 
 

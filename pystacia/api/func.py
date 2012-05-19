@@ -27,10 +27,10 @@ def get_data():
     ss = c_ssize_t
     d = c_double
     u = c_uint
-    
+
     def magick_format(name):
         return 'Magick' + ''.join(x.title() for x in name.split('_'))
-    
+
     def image_format(name):
         if isinstance(name, string_types):
             verb = name
@@ -42,10 +42,10 @@ def get_data():
             return 'Magick' + name[0].title() + name[2].title()
         else:
             raise PystaciaException('Incorrect name format')
-        
+
         return ('Magick' + ''.join(x.title() for x in verb.split('_')) +
                 'Image' + ''.join(x.title() for x in noun.split('_')))
-    
+
     def pixel_format(name):
         if name == 'get_hsl':
             name = 'GetHSL'
@@ -54,7 +54,7 @@ def get_data():
         else:
             name = ''.join(x.title() for x in name.split('_'))
         return 'Pixel' + name
-    
+
     return {
         None: {
             'format': lambda name: 'MagickWand' + name.title(),
@@ -63,7 +63,7 @@ def get_data():
                 'terminus': ((),),
             }
         },
-        
+
         'magick': {
             'format': magick_format,
             'arg': w,
@@ -75,7 +75,7 @@ def get_data():
                 'get_exception': ((P(ExceptionType),), v)
             }
         },
-        
+
         'magick_': {
             'format': magick_format,
             'symbols': {
@@ -86,7 +86,7 @@ def get_data():
                 'relinquish_memory': ((v,), v)
             }
         },
-        
+
         'wand': {
             'format': lambda name: name.title() + 'MagickWand',
             'result': w,
@@ -96,7 +96,7 @@ def get_data():
                 'destroy': ((w,),)
             }
         },
-        
+
         'pwand': {
             'format': lambda name: name.title() + 'PixelWand',
             'result': pw,
@@ -106,7 +106,7 @@ def get_data():
                 'destroy': ((pw,),)
             }
         },
-        
+
         'image': {
             'format': image_format,
             'arg': w,
@@ -115,7 +115,7 @@ def get_data():
                 'write': ((ch,), b),
                 ('read', 'blob'): ((v, s), b),
                 ('get', 'blob'): ((P(s),), v),
-                
+
                 ('set', 'format'): ((ch,), b),
                 ('get', 'format'): ((), ch),
                 ('set', 'compression_quality'): ((s,), b),
@@ -133,7 +133,7 @@ def get_data():
                 ('set', 'background_color'): ((pw,), b),
                 ('get', 'background_color'): ((pw,), b),
                 ('transform', 'colorspace'): ((e,), b),
-                
+
                 'resize': ((s, s, e, d), b),
                 'crop': ((s, s, ss, ss), b),
                 'rotate': ((pw, d), b),
@@ -147,7 +147,7 @@ def get_data():
                 'trim': ((d,), b),
                 'splice': ((s, s, ss, ss), b),
                 'chop': ((s, s, ss, ss), b),
-                
+
                 'brightness_contrast': ((d, d), b),
                 'gamma': ((d,), b),
                 'auto_gamma': ((), b),
@@ -168,7 +168,7 @@ def get_data():
                 'evaluate': ((e, d), b),
                 ('get', 'colors'): ((), s),
                 ('get', 'range'): ((P(d), P(d)), b),
-                
+
                 'blur': ((d, d), b),
                 'gaussian_blur': ((d, d, d), b),
                 'motion_blur': ((d, d, d, d), b),
@@ -180,10 +180,10 @@ def get_data():
                 'enhance': ((), b),
                 'despeckle': ((), b),
                 'emboss': ((d, d), b),
-                
+
                 'swirl': ((d,), b),
                 'wave': ((d, d), b),
-                
+
                 'sketch': ((d, d, d), b),
                 'add_noise': ((e, d), b),
                 'charcoal': ((d, d, d), b),
@@ -192,17 +192,17 @@ def get_data():
                 'forward_fourier_transform': ((b,), b),
                 'fx': ((ch,), w),
                 'shade': ((b, d, d), b),
-                
+
                 'colorize': ((pw, pw), b),
                 ('set', 'color'): ((pw,), b),
                 ('set', 'opacity'): ((d,), b),
                 'composite': ((w, e, ss, ss), b),
                 ('compare', None, 'images'): ((w, e, P(d)), w),
-                
+
                 'next': ((), b)
             }
         },
-        
+
         'pixel': {
             'format': pixel_format,
             'arg': pw,
@@ -228,60 +228,60 @@ def get_c_method(obj, method, throw=True):
         api_type = obj.__class__._api_type
     else:
         api_type = obj
-        
+
     msg = formattable('Translating method {0}.{1}')
     logger.debug(msg.format(api_type, method))
-    
+
     type_data = get_data()[api_type]
     method_name = type_data['format'](method)
-    
+
     if not throw and not hasattr(get_dll(False), method_name):
         return False
-    
+
     c_method = getattr(get_dll(False), method_name)
-    
+
     if c_method.argtypes == None:
         msg = formattable('Annoting {0}')
         logger.debug(msg.format(method_name))
         method_data = type_data['symbols'][method]
-        
+
         argtypes = method_data[0]
         if 'arg' in type_data:
             argtypes = (type_data['arg'],) + argtypes
         c_method.argtypes = argtypes
-        
+
         restype = type_data.get('result')
         if len(method_data) == 2:
             restype = method_data[1]
         c_method.restype = restype
-        
+
     return method_name, c_method
 
 
 def annote():
     dll = get_dll()
-    
+
     for class_, funcs in get_data().items():
         for name in funcs['symbols']:
             get_c_method(class_, name)
-            
+
     return dll
 
 
 def c_call(obj, method, *args, **kw):
     method_name, c_method = get_c_method(obj, method)
-    
+
     try:
         init = kw.pop('__init')
     except KeyError:
         init = True
-    
+
     if init:
         get_dll()
-    
+
     if isinstance(obj, Resource):
         args = (obj,) + args
-    
+
     # if objects are casted here and then
     # there is only their resource passed
     # there is a risk that GC will collect
@@ -298,17 +298,17 @@ def c_call(obj, method, *args, **kw):
         elif type == PixelWand_p:
             arg = color_cast(arg)
             keep_.append(arg)
-        
+
         if isinstance(arg, Resource):
             arg = arg.resource
-        
+
         args_.append(arg)
-    
+
     msg = formattable('Calling {0}')
     logger.debug(msg.format(method_name))
-    
+
     result = c_method(*args_)
-    
+
     if c_method.restype == c_char_p:
         result = native_str(result)
     if c_method.restype in (c_uint, c_ssize_t, c_size_t):
@@ -322,7 +322,7 @@ def c_call(obj, method, *args, **kw):
             raise PystaciaException(native_str(string_at(description)))
         finally:
             c_call('magick_', 'relinquish_memory', description)
-    
+
     return result
 
 from pystacia.util import PystaciaException

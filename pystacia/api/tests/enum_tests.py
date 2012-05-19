@@ -11,7 +11,7 @@ from pystacia.tests.common import TestCase
 class Enum(TestCase):
     def test(self):
         composite = enum('composite')
-        
+
         self.assertEqual(lookup(composite.non_existant,
                                 version=(6, 6), throw=False),
                           None)

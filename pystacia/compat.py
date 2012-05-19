@@ -34,14 +34,14 @@ elif hasattr(platform, 'dist'):
 def fallback_c_size_t():
     from ctypes import (c_void_p, c_int, c_long, c_longlong,
                         sizeof, c_uint, c_ulong, c_ulonglong)
-    
+
     if sizeof(c_uint) == sizeof(c_void_p):
         return c_int
     elif sizeof(c_ulong) == sizeof(c_void_p):
         return c_long
     elif sizeof(c_ulonglong) == sizeof(c_void_p):
         return c_longlong
-        
+
 import ctypes
 c_ssize_t = getattr(ctypes, 'c_ssize_t', fallback_c_size_t())
 

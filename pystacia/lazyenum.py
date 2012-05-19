@@ -11,19 +11,19 @@ from six import string_types
 class Enum(object):
     def __init__(self, name):
         self.name = name
-    
+
     def __getattr__(self, name):
         return self.cast(name)
-    
+
     def cast(self, name):
         return cast(self, name)
-    
+
     def __str__(self):
         return self.name
-    
+
     def __repr__(self):
         template = formattable("pystacia.lazyenum.enum('{0}')")
-        
+
         return template.format(self.name)
 
 
@@ -31,21 +31,21 @@ class EnumValue(object):
     def __init__(self, enum, name):
         self.enum = enum
         self.name = name
-    
+
     def __str__(self):
         return self.name
-    
+
     def __repr__(self):
         return repr(self.enum) + '.' + self.name
-    
+
     def __eq__(self, other):
         try:
             other = self.enum.cast(other)
         except CastException:
             return False
-        
+
         return self is other
-    
+
     def __hash__(self):
         return hash((self.enum.name, self.name))
 
@@ -70,12 +70,12 @@ def cast(enum_, name):
     else:
         msg = formattable('Cannot cast {0} to Enum')
         raise CastException(msg.format(enum_))
-    
+
     if isinstance(name, EnumValue):
         if name.enum != enum_:
             msg = formattable('Attempted to cast {0} to unrelated Enum {1}')
             raise CastException(msg.format(str(name), str(enum_)))
-            
+
         return name
     elif isinstance(name, string_types):
         return enum_value(enum_, name)

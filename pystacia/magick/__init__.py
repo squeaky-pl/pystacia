@@ -17,7 +17,7 @@ except ImportError:
 @memoized
 def get_version():
     options = get_options()
-    
+
     try:
         version = options['LIB_VERSION_NUMBER']
     except KeyError:
@@ -35,18 +35,18 @@ def get_version():
 def get_options():
     def get_options_hack(path):
         options = {}
-        
+
         parser = ElementTree()
         root = parser.parse(path)
         for element in root.findall('configure'):
             attrs = element.attrib
             options[attrs['name']] = attrs['value']
-            
+
         return options
-    
+
     dll_path = dirname(get_dll()._name)
     config_path = join(dll_path, 'configure.xml')
-    
+
     if exists(config_path):
         return get_options_hack(config_path)
     else:
@@ -64,7 +64,7 @@ def get_delegates():
         delegates = get_options()['DELEGATES']
     except KeyError:
         return []
-    
+
     return delegates.split()
 
 

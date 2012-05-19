@@ -26,28 +26,28 @@ def dll_template(osname, abi):
         return 'lib{name}.so.{abi}' if abi else 'lib{name}.so'
     elif osname == 'windows':
         return 'lib{name}-{abi}.dll' if abi else 'lib{name}.dll'
-    
+
     return None
 
 
 def find_library(name, abis, environ=None, osname=None, factory=None):
     paths = []
-    
+
     if not environ:
         environ = os.environ
-    
+
     path = registry.get('library_path', environ.get('PYSTACIA_LIBRARY_PATH'))
     if path:
         paths.append(path)
-    
+
     if not osname:
         osname = get_osname()
-    
+
     if not registry.get('skip_package', environ.get('PYSTACIA_SKIP_PACKAGE')):
         import pystacia
         path = dirname(pystacia.__file__)
         paths.append(join(path, 'cdll'))
-    
+
     if not registry.get('skip_virtual_env',
                         environ.get('PYSTACIA_SKIP_VIRTUAL_ENV')):
         try:
@@ -57,22 +57,22 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
         else:
             paths.append(join(path, 'lib'))
             paths.append(join(path, 'dll'))
-    
+
     if not registry.get('skip_cwd', environ.get('PYSTACIA_SKIP_CWD')):
         from os import getcwd
         paths.append(getcwd())
-    
+
     if not factory:
         factory = CDLL
-    
+
     for path in paths:
         if not exists(path):
             continue
-        
+
         depends_path = join(path, 'depends.txt')
         if exists(depends_path):
             depends = open(depends_path)
-            
+
             for line in depends:
                 depname, depabi = line.split()
                 template = formattable(dll_template(osname, depabi))
@@ -82,20 +82,20 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
                     factory(dll_path)
                 except:
                     pass
-            
+
             depends.close()
-        
+
         for abi in abis:
             template = dll_template(osname, abi)
             if not template:
                 continue
-            
+
             template = formattable(template)
-            
+
             dll_path = join(path, template.format(name=name, abi=abi))
             if exists(dll_path):
                 transaction = library_path_transaction(path, environ).begin()
-                
+
                 try:
                     factory(dll_path)
                 except:
@@ -107,7 +107,7 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
                 else:
                     transaction.commit()
                     return dll_path
-    
+
     # still nothing? let ctypes figure it out
     if not registry.get('skip_system', environ.get('PYSTACIA_SKIP_SYSTEM')):
         return ctypes.util.find_library(name)
@@ -119,12 +119,12 @@ class library_path_transaction:
     _environ_keys = dict(macos='DYLD_FALLBACK_LIBRARY_PATH',
                          linux='LD_LIBRARY_PATH',
                          windows='PATH')
-    
+
     def __init__(self, path, environ=None):
         self.environ = environ or os.environ
         self.key = self.__class__._environ_keys[get_osname()]
         self.path = path
-        
+
     def begin(self):
         environ = self.environ
         self.old_path = old_path = environ.get(self.key)
@@ -133,23 +133,23 @@ class library_path_transaction:
             if old_path:
                 parts.append(old_path)
             environ[self.key] = pathsep.join(parts)
-        
+
         environ['MAGICK_HOME'] = self.path
-        
+
         return self
-        
+
     def commit(self):
         return self
-    
+
     def rollback(self):
         environ = self.environ
         if self.old_path:
             environ[self.key] = self.old_path
         else:
             del environ[self.key]
-            
+
         del environ['MAGICK_HOME']
-        
+
         return self
 
 from threading import Lock
@@ -159,7 +159,7 @@ __lock = Lock()
 
 def get_dll(init=True, environ=None, isolated=False):
     """Find ImageMagick DLL and initialize it.
-       
+
        Searches available paths with :func:`find_library`
        and then fallbacks to standard :func:`ctypes.util.find_liblrary`.
        Loads the DLL into memory, initializes it and warns if it has
@@ -171,12 +171,12 @@ def get_dll(init=True, environ=None, isolated=False):
             if not hasattr(get_dll, '__dll') or isolated:
                 if not environ:
                     environ = os.environ
-                
+
                 path = find_library(name, abis, environ=environ)
                 if not path:
                     msg = 'Could not find or load MagickWand'
                     raise PystaciaException(msg)
-                
+
                 msg = formattable('Loading MagickWand from {0}')
                 logger.debug(msg.format(path))
                 dll = CDLL(path)
@@ -185,33 +185,33 @@ def get_dll(init=True, environ=None, isolated=False):
                     get_dll.__dll.__inited = False
                 else:
                     return dll
-        
+
     dll = get_dll.__dll
 
     if init and not dll.__inited:
         def shutdown():
             logger.debug('Cleaning up traced instances')
             _cleanup()
-            
+
             c_call(None, 'terminus')
-            
+
             logger.debug('Shutting down the bridge')
-        
+
         logger.debug('Critical section - init MagickWand')
         with __lock:
             if not dll.__inited:
                 c_call(None, 'genesis', __init=False)
-                
+
                 logger.debug('Registering atexit handler')
                 atexit.register(shutdown)
-                
+
                 dll.__inited = True
-                
+
         version = magick.get_version()
         if version < min_version:
             msg = formattable('Unsupported version of MagickWand {0}')
             warn(msg.format(version))
-    
+
     return dll
 
 

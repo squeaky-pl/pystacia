@@ -9,16 +9,16 @@
 def sketch(image, radius, angle, strength):
     if strength == None:
         strength = radius
-    
+
     c_call(image, 'sketch', radius, strength, angle)
 
 
 def add_noise(image, attenuate, noise_type):
     if not noise_type:
         noise_type = 'gaussian'
-        
+
     noise_type = enum_lookup(noise_type, noises)
-    
+
     c_call(image, 'add_noise', noise_type, attenuate)
 
 
@@ -45,7 +45,7 @@ def spread(image, radius):
 
 def fx(image, expression):
     resource = c_call(image, 'fx', expression)
-    
+
     image._free()
     image.__init__(resource)
 

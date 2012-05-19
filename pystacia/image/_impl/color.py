@@ -36,16 +36,16 @@ def modulate(image, hue, saturation, lightness):
 
 def sepia(image, threshold, saturation):
     threshold = (2 ** magick.get_depth() - 1) * threshold
-    
+
     c_call(image, 'sepia_tone', threshold)
-    
+
     if saturation:
         modulate(image, 0, saturation, 0)
 
 
 def evaluate(image, operation, value):
     operation = enum_lookup(operation, operations)
-    
+
     c_call(image, 'evaluate', operation, value)
 
 
@@ -63,7 +63,7 @@ def invert(image, only_gray):
 
 def solarize(image, factor):
     factor = (1 - factor) * (2 ** magick.get_depth() - 1)
-    
+
     c_call(image, 'solarize', factor)
 
 
@@ -74,14 +74,14 @@ def posterize(image, levels, dither=False):
 def threshold(image, factor, mode):
     if not mode:
         mode = 'default'
-    
+
     if mode == 'default':
         factor = (2 ** magick.get_depth() - 1) * factor
     elif mode == 'random':
         factor = [(2 ** magick.get_depth() - 1) * f for f in factor]
     else:
         factor = color.from_rgb(factor, factor, factor)
-    
+
     if mode == 'default':
         c_call(image, 'threshold', factor)
     elif mode == 'white':
@@ -95,15 +95,15 @@ def threshold(image, factor, mode):
 def map(image, lookup, interpolation):  # @ReservedAssignment
     if not interpolation:
         interpolation = 'average'
-        
+
     interpolation = enum_lookup(interpolation, interpolations)
-        
+
     c_call(image, 'clut', lookup, interpolation)
 
 
 def contrast_stretch(image, black, white):
     black, white = ((2 ** magick.get_depth() - 1) * x for x in [black, white])
-    
+
     c_call(image, 'contrast_stretch', black, white)
 
 
@@ -114,9 +114,9 @@ def convert_colorspace(image, colorspace):
 
 def get_range(image):
     minimum, maximum = c_double(), c_double()
-    
+
     c_call(image, ('get', 'range'), minimum, maximum)
-    
+
     return tuple(x.value / (2 ** magick.get_depth() - 1)
                  for x in (minimum, maximum))
 

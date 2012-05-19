@@ -22,7 +22,7 @@ if not hasattr(TestCase, 'assertIsInstance'):
         if not isinstance(obj, cls):
             standardMsg = '%s is not an instance of %r' % (safe_repr(obj), cls)
             self.fail(self._formatMessage(msg, standardMsg))
-            
+
     TestCase.assertIsInstance = assertIsInstance
 
 from pystacia import image

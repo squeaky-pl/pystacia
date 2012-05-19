@@ -11,14 +11,14 @@ from pystacia.tests.common import TestCase
 class FuncTest(TestCase):
     def test_exception(self):
         img = sample()
-        
+
         self.assertRaises(PystaciaException,
                           lambda: c_call('magick', 'set_format',
                                               img, 'lolz'))
         c_call('magick', 'set_format', img, 'bmp')
-        
+
         img.close()
-        
+
         self.assertRaises(AttributeError,
                           lambda: get_c_method('magick', 'non_existant'))
         self.assertFalse(get_c_method('magick', 'non_existant', throw=False))

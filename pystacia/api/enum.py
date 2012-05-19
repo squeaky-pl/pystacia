@@ -720,40 +720,40 @@ from pystacia.util import memoized
 def lookup(mnemonic, enum=None, version=None, throw=True):
     if enum:
         mnemonic = enum.cast(mnemonic)
-        
+
     if not version:
         version = get_version()
-        
+
     value = None
-    
+
     for entry in data.get(mnemonic.enum.name, []):
         if entry['_version'] > version:
             break
         value = entry.get(mnemonic.name)
-    
+
     if value == None and throw:
         template = "Enumeration '{enum}' cannot map mnemonic '{mnemonic}'"
         template = formattable(template)
         enum = mnemonic.enum.name
         mnemonic = mnemonic.name
         raise PystaciaException(template.format(enum=enum, mnemonic=mnemonic))
-    
+
     return value
 
 
 @memoized
 def reverse_lookup(enum, value, version=None):
     mnemonic = None
-    
+
     if not version:
         version = get_version()
-    
+
     for entry in data.get(enum.name, []):
         if entry['_version'] > version:
             break
         lookup = dict(zip(entry.values(), entry.keys()))
         mnemonic = getattr(enum, lookup.get(value))
-    
+
     return mnemonic
 
 from pystacia.magick import get_version

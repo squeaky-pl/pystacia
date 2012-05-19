@@ -13,11 +13,11 @@ from pystacia.tests.common import TestCase
 class MagickTest(TestCase):
     def test_options(self):
         self.assertIsInstance(get_options(), dict)
-        
+
     def test_version(self):
         self.assertIsInstance(get_version(), (tuple, type(None)))
         self.assertIsInstance(get_version_str(), string_types)
-        
+
     def test_formats(self):
         formats = get_formats()
         self.assertIn('bmp', formats)

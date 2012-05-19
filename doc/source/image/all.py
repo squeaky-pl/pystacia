@@ -32,12 +32,12 @@ image.close()
 def closeup(f = None, factor=4):
     image = lena()
     image.resize(32, 32, 256, 256)
-    
+
     if f:
         f(image)
-    
+
     image.rescale(factor=factor, filter=filters.point)
-    
+
     return image
 
 image = closeup()

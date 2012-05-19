@@ -22,14 +22,14 @@ binaries = {
 
 def pystacia_get_platform():
     platform = get_platform()
-    
+
     renames = {'macosx-10.6-intel': 'macosx-10.7-x86_64'}
-    
+
     try:
         platform = renames[platform]
     except KeyError:
         pass
-    
+
     return platform
 
 lena_md5 = '525f53c89dbfaa81a9c94e5bf7e1c7fd'
@@ -44,7 +44,7 @@ def md5_file(f, block_size=1 ** 20):
             break
         fingerprint.update(data)
     f.close()
-    
+
     return fingerprint.hexdigest()
 
 
@@ -60,43 +60,43 @@ from distutils.command.build import build
 class pystacia_build(build):
     def run(self):
         result = build.run(self)
-        
+
         local_file = join(self.build_base, 'lena.png')
-        
+
         # download lena
         found = False
         for base in base_urls:
             url = base + 'lena.png'
             self.announce('==> Downloading: ' + url)
             urlretrieve(url, local_file)
-            
+
             if md5_file(local_file) == lena_md5:
                 self.announce('==> MD5 digest OK')
                 found = True
                 break
-            
+
             self.warn('==> MD5 digest failed')
-        
+
         if not found:
             self.warn('==> All the mirrors for lena.png failed')
-        
+
         if environ.get('PYSTACIA_SKIP_BINARIES'):
             self.warn('==> Skipping binaries as requested')
             return result
-        
+
         remote_file = ('imagick-' + magick_version + '-' +
                        pystacia_get_platform() + '.zip')
-        
+
         if remote_file not in binaries:
             self.warn('==> Couldnt find binary Imagick for your platform')
             return result
-        
+
         self.announce('==> Magick binary distribution: ' + remote_file)
-        
+
         local_file = join(self.build_temp, remote_file)
-        
+
         mkpath(self.build_temp)
-        
+
         # download libraries
         found = False
         for base in base_urls:
@@ -108,18 +108,18 @@ class pystacia_build(build):
                 self.announce('==> MD5 digest OK')
                 found = True
                 break
-            
+
             self.warn('==> MD5 digest failed')
-        
+
         if not found:
             self.warn('==> All the mirrors for libraries failed')
             return result
-        
+
         lib_base = join(self.build_base, 'libraries')
         mkpath(lib_base)
-        
+
         extract(local_file, lib_base)
-        
+
         return result
 
 
@@ -135,11 +135,11 @@ from zipfile import ZipFile
 if not hasattr(ZipFile, 'extract'):
     def zip_extract(z, name, path):
         f = open(join(path, name), 'wb')
-        
+
         f.write(z.read(name))
-        
+
         f.close()
-        
+
     ZipFile.extract = zip_extract
 
 from distutils.dir_util import mkpath
@@ -156,15 +156,15 @@ except ImportError:
 class pystacia_install(install):
     def run(self):
         result = install.run(self)
-        
+
         lib_base = join(self.build_base, 'libraries')
         if exists(lib_base):
             self.copy_tree(lib_base, join(self.install_lib, 'pystacia/cdll'))
-            
+
         lena = join(self.build_base, 'lena.png')
         if exists(lena):
             self.copy_file(lena, join(self.install_lib, 'pystacia/lena.png'))
-            
+
         return result
 
 install_requires = ['six', 'decorator', 'zope.deprecation']
@@ -197,7 +197,7 @@ import pystacia
 setup(
     name='pystacia',
     description='Python raster imaging library',
-    author=pystacia.__author__,  # Paweł Piotr Przeradowski 
+    author=pystacia.__author__,  # Paweł Piotr Przeradowski
     author_email='przeradowski@gmail.com',
     url='http://liquibits.bitbucket.org/',
     version=pystacia.__version__,
