@@ -7,7 +7,7 @@ def checkerboard(width, height, factory=None):
        :type height: ``int``
        :rtype: :class:`pystacia.image.Image` or factory
     """
-    return call(io.read, 'pattern:checkerboard',
+    return io.read('pattern:checkerboard',
                                 width, height, factory)
 
 
@@ -29,7 +29,7 @@ def blank(width, height, background=None, factory=None):
     if not background:
         background = 'transparent'
     
-    return call(io.read, 'xc:' + str(background),
+    return io.read('xc:' + str(background),
                 width, height, factory)
 
 
@@ -73,4 +73,3 @@ def plasma(width, height, type=None, factory=None):  # @ReservedAssignment
 
 
 from pystacia.image._impl import io
-from pystacia.api.func import call

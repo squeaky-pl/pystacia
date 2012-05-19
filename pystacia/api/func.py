@@ -218,12 +218,8 @@ def get_data():
     }
 
 
-def call(callable_, *args, **kw):
-    return callable_(*args, **kw)
-
-
 def simple_call(obj, method, *args, **kw):
-    return call(lambda: c_call(obj, method, *args, **kw))
+    return c_call(obj, method, *args, **kw)
 
 
 def get_c_method(obj, method, throw=True):

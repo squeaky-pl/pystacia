@@ -17,14 +17,14 @@ def __lena_image(factory=None):
     if not __lena:
         with __lock:
             if not __lena:
-                lena = call(io.read, lena_path, factory)
+                lena = io.read(lena_path, factory)
                 __lena = weakref.ref(lena)
     else:
         lena = __lena()
         if not lena:
             with __lock:
                 if not lena:
-                    lena = call(io.read, lena_path, factory)
+                    lena = io.read(lena_path, factory)
                     __lena = weakref.ref(lena)
     
     return lena.copy()
@@ -78,7 +78,7 @@ def magick_logo(factory=None):
         
        Resulting image is 640x480, palette, RGB colorspace image.
     """
-    return call(io.read, 'logo:', factory=factory)
+    return io.read('logo:', factory=factory)
 
 
 def rose(factory=None):
@@ -86,7 +86,7 @@ def rose(factory=None):
     
        Resulting image is 70x48, RGB, truecolor.
     """
-    return call(io.read, 'rose:', factory=factory)
+    return io.read('rose:', factory=factory)
 
 
 def wizard(factory=None):
@@ -94,7 +94,7 @@ def wizard(factory=None):
     
        Resulting image is 480x640, palette, RGB image.
     """
-    return call(io.read, 'wizard:', factory=factory)
+    return io.read('wizard:', factory=factory)
 
 
 def granite(factory=None):
@@ -102,7 +102,7 @@ def granite(factory=None):
     
        Resulting image is 128x128 pallette, RGB image.
     """
-    return call(io.read, 'granite:', factory=factory)
+    return io.read('granite:', factory=factory)
 
 
 def netscape(factory=None):
@@ -111,7 +111,7 @@ def netscape(factory=None):
        Color cube also known as "Websafe Colors".
        216x144, palette, RGB.
     """
-    return call(io.read, 'netscape:', factory=factory)
+    return io.read('netscape:', factory=factory)
 
 
 import sys
@@ -119,7 +119,6 @@ import weakref
 from os.path import dirname, join, exists
 
 import pystacia
-from pystacia.api.func import call
 from pystacia.image._impl import io
 from pystacia.image.enum import colorspaces
 from pystacia import magick

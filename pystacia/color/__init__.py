@@ -161,10 +161,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(impl.get_red, self)
+            return impl.get_red(self)
         
         def fset(self, value):
-            call(impl.set_red, self, value)
+            impl.set_red(self, value)
         
         return property(**locals())
         
@@ -183,10 +183,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(impl.get_green, self)
+            return impl.get_green(self)
         
         def fset(self, value):
-            call(impl.set_green, self, value)
+            impl.set_green(self, value)
         
         return property(**locals())
     
@@ -205,10 +205,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(impl.get_blue, self)
+            return impl.get_blue(self)
         
         def fset(self, value):
-            call(impl.set_blue, self, value)
+            impl.set_blue(self, value)
         
         return property(**locals())
     
@@ -227,10 +227,10 @@ class Color(Resource):
         """)
         
         def fget(self):
-            return call(impl.get_alpha, self)
+            return impl.get_alpha(self)
         
         def fset(self, value):
-            call(impl.set_alpha, self, value)
+            impl.set_alpha(self, value)
         
         return property(**locals())
     
@@ -264,10 +264,10 @@ class Color(Resource):
            
            :rtype: tuple
         """
-        return call(impl.get_hsl, self)
+        return impl.get_hsl(self)
     
     def set_hsl(self, hue, saturation, lightness):
-        return call(impl.set_hsl, self, hue, saturation, lightness)
+        return impl.set_hsl(self, hue, saturation, lightness)
     
     def get_int24(self):
         """Return RGB triplet as single 24 bit integer.
@@ -337,7 +337,7 @@ class Color(Resource):
            Usage and parameters identical to factory function
            :func:`from_string`.
         """
-        call(impl.set_string, self, value)
+        impl.set_string(self, value)
     
     @property
     def opaque(self):
@@ -417,7 +417,6 @@ def cast(value):
 
 from six import integer_types, string_types
 
-from pystacia.api.func import call
 from pystacia.compat import formattable
 from pystacia.color import _impl as impl
 from pystacia.util import PystaciaException
@@ -430,7 +429,6 @@ __exclusions = [
     'registry',
     'integer_types',
     'string_types',
-    'call',
     'formattable',
     'impl',
     'PystaciaException',
