@@ -1078,7 +1078,7 @@ class Image(Resource):
         geometry.splice(self, x, y, width, height)
 
     def __colorspace():  # @NoSelf
-        doc = (  # @UnusedVariable
+        doc = (  # NOQA
         """Return or set colorspace associated with image.
 
            Sets or gets colorspace. When you set this property there's no
@@ -1101,7 +1101,7 @@ class Image(Resource):
     colorspace = __colorspace()
 
     def __type():  # @ReservedAssignment @NoSelf
-        doc = (  # @UnusedVariable
+        doc = (  # NOQA
         """Set or get image type.
 
            :rtype: :class:`pystacia.lazyenum.EnumValue`
@@ -1176,7 +1176,7 @@ class Image(Resource):
         return (self.width, self.height)
 
     def __depth():  # @NoSelf
-        doc = (  # @UnusedVariable
+        doc = (  # NOQA
         """Set or get image depth per channel.
 
            :rtype: ``int``
@@ -1285,12 +1285,12 @@ from pystacia.image._impl import (io, geometry, color as color_impl,
                                  blur as blur_impl, deform, special, pixel)
 
 # convenience imports
-from pystacia.image.enum import (types, filters, colorspaces,  # @UnusedImport
+from pystacia.image.enum import (types, filters, colorspaces,  # NOQA
                                  compressions, composites, axes, noises,
                                  thresholds, fit_modes)
-from pystacia.image.generic import (checkerboard, noise,  # @UnusedImport
+from pystacia.image.generic import (checkerboard, noise,  # NOQA
                                     plasma)
-from pystacia.image.sample import (lena, magick_logo, rose,  # @UnusedImport
+from pystacia.image.sample import (lena, magick_logo, rose,  # NOQA
                                    wizard, granite, netscape)
 
 __exclusions = [

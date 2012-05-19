@@ -11,7 +11,7 @@ from os.path import dirname, join, exists
 try:
     from xml.etree.cElementTree import ElementTree
 except ImportError:
-    from xml.etree.ElementTree import ElementTree  # @Reimport
+    from xml.etree.ElementTree import ElementTree  # NOQA
 
 
 @memoized

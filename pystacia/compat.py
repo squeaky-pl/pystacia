@@ -8,7 +8,7 @@
 try:
     format
 except NameError:
-    from stringformat import FormattableString
+    from stringformat import FormattableString  # @UnresolvedImport
     formattable = FormattableString
 else:
     formattable = str

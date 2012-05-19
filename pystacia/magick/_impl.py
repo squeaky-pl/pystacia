@@ -7,6 +7,8 @@
 
 from ctypes import c_size_t
 
+from pystacia.compat import native_str
+
 
 def get_options():
     options = {}
@@ -27,4 +29,3 @@ def get_formats():
     return [native_str(formats[i]).lower() for i in range(size.value)]
 
 from pystacia.api.func import c_call
-from pystacia.compat import native_str

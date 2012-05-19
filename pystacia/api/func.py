@@ -8,7 +8,7 @@
 from ctypes import (string_at, c_char_p, c_void_p, POINTER,
                     c_size_t, c_double, c_uint)
 
-from six import string_types, b
+from six import string_types, b as bytes_
 
 from pystacia.util import memoized
 
@@ -292,7 +292,7 @@ def c_call(obj, method, *args, **kw):
     args_ = []
     for arg, type in zip(args, c_method.argtypes):  # @ReservedAssignment
         if type == c_char_p:
-            arg = b(arg)
+            arg = bytes_(arg)
         elif type in (c_size_t, c_ssize_t, c_uint):
             arg = int(arg)
         elif type == PixelWand_p:

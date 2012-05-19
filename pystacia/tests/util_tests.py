@@ -174,8 +174,6 @@ def recurse(i):
     else:
         return recurse(i - 1) + 1
 
-from threading import Thread
-
 
 class SubThread(Thread):
     def __init__(self, i):

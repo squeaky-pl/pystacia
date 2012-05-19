@@ -21,15 +21,14 @@ if not environ.get('PYSTACIA_SETUP'):
 
     level = environ.get('PYSTACIA_LOG')
     if level:
-        level = int(level)
-        format = '%(asctime)s %(name)-12s %(thread)d %(message)s'  # @ReservedAssignment
-        basicConfig(level=level, format=format)
+        basicConfig(level=int(level),
+                    format='%(asctime)s %(name)-12s %(thread)d %(message)s')
 
     logger.debug('Imported main module')
 
     if environ.get('PYSTACIA_TRACE'):
         logger.debug('Starting tracing')
-        import stacktracer
+        import stacktracer  # @UnresolvedImport
         stacktracer.trace_start('trace.html', interval=5, auto=True)
 
     from pystacia.util import Registry
@@ -94,7 +93,7 @@ if not environ.get('PYSTACIA_SETUP'):
 
         'registry']
 
-    from zope.deprecation import deprecated
+    from zope.deprecation import deprecated  # @UnresolvedImport
     from pystacia.compat import formattable
 
     msg = formattable('Use pystacia.image.{0} instead')

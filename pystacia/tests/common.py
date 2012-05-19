@@ -8,14 +8,25 @@
 try:
     from unittest import skip, skipIf, expectedFailure
 except ImportError:
-    from unittest2 import skip, skipIf, expectedFailure  # @UnusedImport @Reimport
+    from unittest2 import skip, skipIf, expectedFailure  # NOQA
 
 from unittest import TestCase
 if not hasattr(TestCase, 'assertSequenceEqual'):
-    from unittest2 import TestCase  # @UnusedImport @Reimport
+    from unittest2 import TestCase  # @UnusedImport @UnresolvedImport @Reimport
 
 # python 3.1 misses this one method, copy implementation from Python source
 if not hasattr(TestCase, 'assertIsInstance'):
+    _MAX_LENGTH = 80
+
+    def safe_repr(obj, short=False):
+        try:
+            result = repr(obj)
+        except Exception:
+            result = object.__repr__(obj)
+        if not short or len(result) < _MAX_LENGTH:
+            return result
+        return result[:_MAX_LENGTH] + ' [truncated]...'
+
     def assertIsInstance(self, obj, cls, msg=None):
         """Same as self.assertTrue(isinstance(obj, cls)), with a nicer
         default message."""

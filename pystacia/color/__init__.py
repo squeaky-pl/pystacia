@@ -154,7 +154,7 @@ class Color(Resource):
         return impl.clone(self)
 
     def __red():  # @NoSelf
-        doc = (  # @UnusedVariable
+        doc = (  # NOQA
         """Set or get red channel information.
 
            The value ought to be a float between 0 and 1.
@@ -176,7 +176,7 @@ class Color(Resource):
     """Convenience synonym for :attr:`red`."""
 
     def __green():  # @NoSelf
-        doc = (  # @UnusedVariable
+        doc = (  # NOQA
         """Set or get green channel information.
 
            The value ought to be a float between 0 and 1.
@@ -198,7 +198,7 @@ class Color(Resource):
     """Convenience synonym for :attr:`green`."""
 
     def __blue():  # @NoSelf
-        doc = (  # @UnusedVariable
+        doc = (  # NOQA
         """Set or get blue channel information.
 
            The value ought to be a float between 0 and 1.
@@ -220,7 +220,7 @@ class Color(Resource):
     """Convenience synonym for :attr:`blue`."""
 
     def __alpha():  # @NoSelf
-        doc = (  # @UnusedVariable
+        doc = (  # NOQA
         """Set or get alpha channel information.
 
            The value ought to be a float between 0 and 1.

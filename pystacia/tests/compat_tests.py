@@ -13,7 +13,7 @@ from pystacia.tests.common import TestCase
 class Compat(TestCase):
     def test(self):
         if version_info < (2, 6):
-            from stringformat import FormattableString
+            from stringformat import FormattableString  # @UnresolvedImport
             self.assertEqual(formattable, FormattableString)
         else:
             self.assertEqual(formattable, str)
@@ -31,7 +31,7 @@ class Compat(TestCase):
             self.assertEqual(c_ssize_t, c_ssize_t_)
 
         if version_info < (2, 7):
-            from unittest2 import TestCase as TestCase_
+            from unittest2 import TestCase as TestCase_  # @UnresolvedImport
             self.assertEqual(TestCase, TestCase_)
         else:
             from unittest import TestCase as TestCase_py

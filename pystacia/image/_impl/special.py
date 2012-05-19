@@ -49,10 +49,6 @@ def fx(image, expression):
     image._free()
     image.__init__(resource)
 
-
-from pystacia import magick
 from pystacia.api.func import c_call
-from pystacia.image.generic import blank
 from pystacia.image.enum import noises
 from pystacia.api.enum import lookup as enum_lookup
-from pystacia.util import PystaciaException

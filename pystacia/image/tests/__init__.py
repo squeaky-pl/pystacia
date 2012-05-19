@@ -15,7 +15,6 @@ from six import b, BytesIO
 
 from pystacia.image import Image
 from pystacia.tests.common import TestCase, skipIf, expectedFailure
-from pystacia import magick
 
 
 class WithFactory(TestCase):
@@ -738,6 +737,6 @@ class ThreadedTest(TestCase):
 from pystacia.util import PystaciaException
 from pystacia.image import (read, read_raw, read_blob, types,
                            colorspaces, blank, axes, checkerboard)
-from pystacia import color, magick, registry
+from pystacia import color, registry, magick
 from pystacia.tests.common import sample
 from random import randint

@@ -115,6 +115,18 @@ class ColorTest(TestCase):
         self.assertEqual(saturate(0.0), 0)
         self.assertIsInstance(saturate(1.0), int)
 
+    def test_repr(self):
+        for x in [color.from_string(x) for x in
+                  ['red', 'green', 'blue', 'gray']]:
+            rgba = x.get_rgba()
+            float_re = '(\d(\.\d+)?)'
+            regexp = (formattable('<Color\(r={0},g={0},b={0},a={0}\)').
+                format(float_re))
+            result = match(regexp, repr(x))
+            groups = tuple(float(v) for i, v in
+                           enumerate(result.groups()) if not i % 2)
+            self.assertEqual(groups, rgba)
+
     def test_factory(self):
         colors = color.Factory()
 
@@ -129,18 +141,6 @@ class ColorTest(TestCase):
         self.assertEqual(red, 0xff0000)
         self.assertEqual(red, (1, 0, 0))
         self.assertEqual(red, (1, 0, 0, 1))
-
-    def test_repr(self):
-        for x in (color.from_string(x) for x in
-                  ['red', 'green', 'blue', 'gray']):
-            rgba = x.get_rgba()
-            float_re = '(\d(\.\d+)?)'
-            regexp = (formattable('<Color\(r={0},g={0},b={0},a={0}\)').
-                format(float_re))
-            result = match(regexp, repr(x))
-            groups = tuple(float(v) for i, v in
-                           enumerate(result.groups()) if not i % 2)
-            self.assertEqual(groups, rgba)
 
 from pystacia.color._impl import saturate
 from pystacia import color, registry

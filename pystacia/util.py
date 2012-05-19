@@ -8,7 +8,7 @@ from __future__ import with_statement
 
 from sys import version_info
 import platform
-from threading import Lock
+from threading import Lock, RLock
 
 from decorator import decorator
 
@@ -118,8 +118,6 @@ def memoized(f, *args, **kw):
 
     return key_cache['value']
 
-from threading import Lock, RLock
-
 __lock = Lock()
 
 
@@ -150,6 +148,6 @@ from pystacia.compat import dist, formattable
 from pystacia import logger
 
 
-from zope.deprecation import deprecated
+from zope.deprecation import deprecated  # @UnresolvedImport
 template = 'Please use tinyimg.util.PystaciaException instead'
 deprecated('TinyException', template)
