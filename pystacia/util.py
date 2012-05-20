@@ -135,7 +135,7 @@ def get_osname():
     if hasattr(platform, 'mac_ver') and platform.mac_ver()[0]:
         return 'macos'
     if dist and dist()[0]:
-        # beware that under MSYS and Windows it returns Debian!
+        # beware that under ssh/MSYS and Windows it returns Debian!
         return 'linux'
 
     return None

@@ -9,13 +9,14 @@
 from __future__ import with_statement
 
 import os
-from os import pathsep
+from os import pathsep, getcwd, chdir
 from os.path import join, exists, dirname
 from ctypes import CDLL
 import ctypes.util
 from warnings import warn
 import atexit
 from logging import getLogger
+from threading import Lock
 
 
 logger = getLogger('pystacia.api')
@@ -63,7 +64,6 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
             paths.append(join(path, 'dll'))
 
     if not registry.get('skip_cwd', environ.get('PYSTACIA_SKIP_CWD')):
-        from os import getcwd
         paths.append(getcwd())
 
     if not factory:
@@ -105,7 +105,10 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
 
             if exists(dll_path):
                 logger.debug('Found: ' + dll_path)
-                transaction = library_path_transaction(path, environ).begin()
+
+                if osname == 'windows':
+                    old_path = getcwd()
+                    chdir(path)
 
                 try:
                     factory(dll_path)
@@ -114,9 +117,13 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
                     msg = formattable('Caught exception while loading '
                                       '{0}: {1}. Rolling back')
                     logger.debug(msg.format(dll_path, exc_info()[1]))
-                    transaction.rollback()
+
+                    if osname == 'windows':
+                        chdir(old_path)
                 else:
-                    transaction.commit()
+                    if osname == 'windows':
+                        chdir(old_path)
+
                     return dll_path
 
     # still nothing? let ctypes figure it out
@@ -127,43 +134,22 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
 
 
 class library_path_transaction:
-    _environ_keys = dict(macos='DYLD_FALLBACK_LIBRARY_PATH',
-                         linux='LD_LIBRARY_PATH',
-                         windows='PATH')
-
-    def __init__(self, path, environ=None):
-        self.environ = environ or os.environ
-        self.key = self.__class__._environ_keys[get_osname()]
+    def __init__(self, path):
         self.path = path
 
     def begin(self):
-        environ = self.environ
-        self.old_path = old_path = environ.get(self.key)
-        if not old_path or self.path not in old_path:
-            parts = [self.path]
-            if old_path:
-                parts.append(old_path)
-            environ[self.key] = pathsep.join(parts)
-
-        environ['MAGICK_HOME'] = self.path
+        self.old_path = getcwd()
+        chdir(self.path)
 
         return self
 
     def commit(self):
+        chdir(self.old_path)
         return self
 
     def rollback(self):
-        environ = self.environ
-        if self.old_path:
-            environ[self.key] = self.old_path
-        else:
-            del environ[self.key]
+        chdir(self.old_path)
 
-        del environ['MAGICK_HOME']
-
-        return self
-
-from threading import Lock
 
 __lock = Lock()
 
