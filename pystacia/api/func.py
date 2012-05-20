@@ -6,12 +6,14 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
+from threading import Lock
 from ctypes import (string_at, c_char_p, c_void_p, POINTER,
                     c_size_t, c_double, c_uint)
 
 from six import string_types, b as bytes_
 
 from pystacia.util import memoized
+from pystacia.compat import pypy
 
 
 @memoized
@@ -268,6 +270,9 @@ def annote():
 
     return dll
 
+if pypy:
+    __lock = Lock()
+
 
 def c_call(obj, method, *args, **kw):
     method_name, c_method = get_c_method(obj, method)
@@ -291,8 +296,10 @@ def c_call(obj, method, *args, **kw):
     # lets keep references to them
     keep_ = []
     args_ = []
+    should_lock = False
     for arg, type in zip(args, c_method.argtypes):  # @ReservedAssignment
         if type == c_char_p:
+            should_lock = True
             arg = bytes_(arg)
         elif type in (c_size_t, c_ssize_t, c_uint):
             arg = int(arg)
@@ -307,8 +314,14 @@ def c_call(obj, method, *args, **kw):
 
     msg = formattable('Calling {0}')
     logger.debug(msg.format(method_name))
-
+    
+    if pypy and should_lock:
+        __lock.acquire()
+        
     result = c_method(*args_)
+    
+    if pypy and should_lock:
+        __lock.release()
 
     if c_method.restype == c_char_p:
         result = native_str(result)
