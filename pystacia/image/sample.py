@@ -10,36 +10,6 @@ from __future__ import with_statement
 
 import sys
 from os.path import dirname, join, exists
-from threading import Lock
-import weakref
-
-
-__lena = None
-__lock = Lock()
-
-
-def __lena_image(factory=None):
-    """Perform weakref memoization of Lena."""
-    global __lena
-
-    lena_path = join(dirname(pystacia.__file__), 'lena.png')
-    if not exists(lena_path) or 'png' not in magick.get_formats():
-        raise PystaciaException('Not available')
-
-    if not __lena:
-        with __lock:
-            if not __lena:
-                lena = io.read(lena_path, factory)
-                __lena = weakref.ref(lena)
-    else:
-        lena = __lena()
-        if not lena:
-            with __lock:
-                if not lena:
-                    lena = io.read(lena_path, factory)
-                    __lena = weakref.ref(lena)
-
-    return lena.copy()
 
 from pystacia.util import memoized
 
@@ -53,7 +23,7 @@ def lena_available():
         :term:`PNG` format and :term:`PNG` file can be located.
     """
     try:
-        __lena_image()
+        lena()
     except PystaciaException:
         e = sys.exc_info()[1]
         if e.args[0] == 'Not available':
@@ -75,7 +45,11 @@ def lena(width=None, factory=None):
          defaults to 512x512 which is how the bitmap is stored internally.
 
     """
-    img = __lena_image(factory)
+    lena_path = join(dirname(pystacia.__file__), 'lena.png')
+    if not exists(lena_path) or 'png' not in magick.get_formats():
+        raise PystaciaException('Not available')
+
+    img = io.read(lena_path, factory)
 
     if width:
         img.rescale(width, width)

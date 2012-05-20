@@ -14,10 +14,11 @@ drop support dft
 
 
   -------------------------
-- test for which types of read exactly cause an error on PyPy
+- weakrefing cached lena should be only used in tests [0.1.1]
+- write a test creating a color in threads that trigger this nasty LP_MagickWand
+  error
 - registry could lookup keys automatically from environ by appending
 PYSTACIA in front
-- weakrefing cached lena should be only used in tests [0.1.1]
 - use is instead of id comparisons in Color
 - think about the issue with overlay discarding alpha channel
 - compile with bzip and gzip on all oses

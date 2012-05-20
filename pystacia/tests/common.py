@@ -6,6 +6,11 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
+from __future__ import with_statement
+
+from threading import Lock
+from functools import partial
+import weakref
 try:
     from unittest import skip, skipIf, expectedFailure
 except ImportError:
@@ -42,11 +47,35 @@ from pystacia.image import types
 from pystacia.image.sample import lena_available
 
 
+__sample = None
+__lock = Lock()
+
+
+def __weakrefed(factory):
+    """Perform weakref memoization of factory call value."""
+    global __sample
+
+    if not __sample:
+        with __lock:
+            if not __sample:
+                sample = factory()
+                __sample = weakref.ref(sample)
+    else:
+        sample = __sample()
+        if not sample:
+            with __lock:
+                if not sample:
+                    sample = factory()
+                    __sample = weakref.ref(sample)
+
+    return sample.copy()
+
+
 if lena_available():
-    sample = image.lena
+    sample = partial(__weakrefed, image.lena)
     sample.size = (512, 512)
     sample.type = types.truecolor
 else:
-    sample = image.magick_logo
+    sample = partial(__weakrefed, image.magick_logo)
     sample.size = (640, 480)
     sample.type = types.palette
