@@ -197,8 +197,6 @@ def get_dll(init=True, environ=None, isolated=False):
 
             c_call(None, 'terminus')
 
-            logger.debug('Shutting down the bridge')
-
         logger.debug('Critical section - init MagickWand')
         with __lock:
             if not dll.__inited:

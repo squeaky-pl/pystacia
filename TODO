@@ -10,9 +10,8 @@ drop support dft
 
 
   -------------------------
-- move non conflicting external imports on the top, only in package imports
-at the end
-- move registry to util
+- cache downloaded files in temp
+- test for which types of read exactly cause an error on PyPy
 - remove env transactions and depends file support
 - registry could lookup keys automatically from environ by appending
 PYSTACIA in front

@@ -104,7 +104,7 @@ def map(image, lookup, interpolation):  # @ReservedAssignment
 
 
 def contrast_stretch(image, black, white):
-    black, white = ((2 ** magick.get_depth() - 1) * x for x in [black, white])
+    black, white = [(2 ** magick.get_depth() - 1) * x for x in [black, white]]
 
     c_call(image, 'contrast_stretch', black, white)
 

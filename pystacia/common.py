@@ -8,6 +8,9 @@
 
 from __future__ import with_statement
 
+from threading import Lock
+from weakref import WeakValueDictionary
+
 
 """Resource management utilities."""
 
@@ -117,7 +120,7 @@ class Resource(object):
            use with context protocol.
         """
         self._free()
-        self._claim(untrack=untrack)
+        self._claim(untrack)
 
     def copy(self):
         """Get independent copy of this resource."""
@@ -158,15 +161,9 @@ class Resource(object):
             self.close()
 
 
-from weakref import WeakValueDictionary
-
-
 _registry = WeakValueDictionary()
 """Dictionary keeping references to all resources."""
 
-_cleaningup = False
-
-from threading import Lock
 
 __lock = Lock()
 
@@ -188,7 +185,7 @@ def _untrack(resource):
 
 
 def _cleanup():
-    """Free all tracked intances.
+    """Free all tracked instances.
 
        Closes and destroys all currently allocated resources. This gets called
        from atexit handler just before :term:`ImageMagick` gets uninitialized.
@@ -197,15 +194,13 @@ def _cleanup():
     logger.debug(msg.format(len(_registry)))
     alive = 0
     unclosed = 0
+
     with __lock:
-        for ref in _registry.itervaluerefs():
-            obj = ref()
-            if obj:
-                alive += 1
-                if not obj.closed:
-                    unclosed += 1
-                    obj.close(untrack=False)
-                del obj
+        for obj in _registry.values():
+            alive += 1
+            if not obj.closed:
+                unclosed += 1
+                obj.close(untrack=False)
 
     msg = formattable('Alive weakrefs: {0}')
     logger.debug(msg.format(alive))
