@@ -7,6 +7,7 @@
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 from re import match
+from threading import Thread
 
 from pystacia.tests.common import TestCase
 
@@ -142,6 +143,16 @@ class ColorTest(TestCase):
         self.assertEqual(red, 0xff0000)
         self.assertEqual(red, (1, 0, 0))
         self.assertEqual(red, (1, 0, 0, 1))
+
+    def test_threaded(self):
+        def thread():
+            blue = color.from_string('blue')
+            blue.red = 1
+            blue.copy()
+
+        threads = [Thread(target=thread) for _ in range(20)]
+        [t.start() for t in threads]
+        [t.join() for t in threads]
 
 from pystacia.color._impl import saturate
 from pystacia import color, registry

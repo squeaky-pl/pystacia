@@ -14,9 +14,7 @@ drop support dft
 
 
   -------------------------
-- weakrefing cached lena should be only used in tests [0.1.1]
-- write a test creating a color in threads that trigger this nasty LP_MagickWand
-  error
+- try from_string with bad name and see what happens
 - registry could lookup keys automatically from environ by appending
 PYSTACIA in front
 - use is instead of id comparisons in Color
