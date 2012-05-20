@@ -220,7 +220,8 @@ def get_data():
                 'get_alpha': ((), d),
                 'set_color': ((ch,), b),
                 'get_hsl': ((P(d), P(d), P(d)),),
-                'set_hsl': ((d, d, d),)
+                'set_hsl': ((d, d, d),),
+                'get_exception': ((P(ExceptionType),), v)
             }
         }
     }
@@ -331,7 +332,13 @@ def c_call(obj, method, *args, **kw):
         result = result.value
     elif c_method.restype == MagickBoolean and not result.value:
         exc_type = ExceptionType()
-        description = c_call('magick', 'get_exception', args_[0], exc_type)
+
+        if c_method.argtypes[0] == MagickWand_p:
+            class_ = 'magick'
+        elif c_method.argtypes[0] == PixelWand_p:
+            class_ = 'pixel'
+
+        description = c_call(class_, 'get_exception', args[0], exc_type)
         try:
             raise PystaciaException(native_str(string_at(description)))
         finally:
