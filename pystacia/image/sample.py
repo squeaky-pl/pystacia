@@ -67,7 +67,7 @@ def lena_available():
 def lena(width=None, factory=None):
     """Return standard lena test image.
 
-       Resulting :class:`.Image` object is a TrueType in, RGB colorspace,
+       Resulting :class:`.Image` object is a TrueType in, (s)RGB colorspace,
        8bit per channel image. For background on the test image see:
        http://en.wikipedia.org/wiki/Lenna.
 
@@ -79,8 +79,6 @@ def lena(width=None, factory=None):
 
     if width:
         img.rescale(width, width)
-
-    img.convert_colorspace(colorspaces.rgb)
 
     return img
 

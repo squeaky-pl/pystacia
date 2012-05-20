@@ -26,12 +26,12 @@ def read(spec, width=None, height=None, factory=None):
     if width and height:
         c_call('magick', 'set_size', image, width, height)
 
-    if pypy:
+    if pypy and ':' in spec:
         __lock.acquire()
 
     c_call(image, 'read', spec)
 
-    if pypy:
+    if pypy and ':' in spec:
         __lock.release()
 
     return image

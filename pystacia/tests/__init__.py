@@ -24,12 +24,10 @@ class Lena(TestCase):
         img = image.lena()
         self.assertEqual(img.size, (512, 512))
         self.assertEqual(img.type, types.truecolor)
-        self.assertEqual(img.colorspace, colorspaces.rgb)
         img.close()
 
         img = image.lena(32)
         self.assertEqual(img.size, (32, 32))
-        self.assertEqual(img.colorspace, colorspaces.rgb)
         img.close()
 
 from sys import version_info

@@ -2,6 +2,10 @@
 TODO
 ====
 
+NEW
+----
+
+ImageMagick binaries download is now cached
 
 Backward incompatible changes
 ------------------------------
@@ -10,9 +14,7 @@ drop support dft
 
 
   -------------------------
-- cache downloaded files in temp
 - test for which types of read exactly cause an error on PyPy
-- remove env transactions and depends file support
 - registry could lookup keys automatically from environ by appending
 PYSTACIA in front
 - weakrefing cached lena should be only used in tests [0.1.1]
