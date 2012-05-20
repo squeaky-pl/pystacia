@@ -6,8 +6,34 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
+from os import makedirs, remove, environ
+from os.path import exists, join
+from tempfile import gettempdir
+from hashlib import md5
+from shutil import rmtree
+try:
+    from urllib import urlretrieve
+except ImportError:
+    from urllib.request import urlretrieve  # @Reimport
+from zipfile import ZipFile
+from distutils.dir_util import mkpath
+from distutils.util import get_platform
+try:
+    # this will be present when pip or setuptools was installed
+    from setuptools.command.install import install
+except ImportError:
+    # still it can work with python setup.py install
+    from distutils.command.install import install  # @Reimport
+from distutils.command.build import build
+from setuptools import setup
 
-base_urls = [
+environ['PYSTACIA_SETUP'] = '1'
+import pystacia
+
+
+cache_dir = join(gettempdir(), 'pystacia', pystacia.__version__)
+
+mirrors = [
     'https://bitbucket.org/liquibits/pystacia/downloads/'
 ]
 
@@ -65,82 +91,72 @@ def extract(zipfile, path):
         z.extract(name, path)
     z.close()
 
-from distutils.command.build import build
+
+def download(build, mirrors, dest, filename, checksum):
+    dest_file = join(dest, filename)
+
+    if exists(dest_file):
+        if md5_file(dest_file) == checksum:
+            # we already have it in the cache
+            build.announce('==> Cached ' + filename + ' MD5 digest OK')
+            return dest_file
+        else:
+            remove(dest_file)
+            build.warn('==> Cached ' + filename + ' MD5 digest failed')
+
+    # download lena
+    for mirror in mirrors:
+        url = mirror + filename
+        build.announce('==> Downloading: ' + url)
+        urlretrieve(url, dest_file)
+
+        if md5_file(dest_file) == checksum:
+            build.announce('==> MD5 digest' + filename + ' OK')
+            return dest_file
+
+        build.warn('==> MD5 digest ' + filename + ' failed')
+
+    build.warn('==> All the mirrors for ' + filename + ' failed')
+
+    return False
 
 
 class pystacia_build(build):
     def run(self):
         result = build.run(self)
 
-        local_file = join(self.build_base, 'lena.png')
+        if not exists(cache_dir):
+            makedirs(cache_dir)
 
-        # download lena
-        found = False
-        for base in base_urls:
-            url = base + 'lena.png'
-            self.announce('==> Downloading: ' + url)
-            urlretrieve(url, local_file)
-
-            if md5_file(local_file) == lena_md5:
-                self.announce('==> MD5 digest OK')
-                found = True
-                break
-
-            self.warn('==> MD5 digest failed')
-
-        if not found:
-            self.warn('==> All the mirrors for lena.png failed')
+        download(self, mirrors, cache_dir, 'lena.png', lena_md5)
 
         if environ.get('PYSTACIA_SKIP_BINARIES'):
             self.warn('==> Skipping binaries as requested')
             return result
 
-        remote_file = ('imagick-' + magick_version + '-' +
+        filename = ('imagick-' + magick_version + '-' +
                        pystacia_get_platform() + '.zip')
 
-        if remote_file not in binaries:
+        if filename not in binaries:
             self.warn('==> Couldnt find binary Imagick for your platform')
             return result
 
-        self.announce('==> Magick binary distribution: ' + remote_file)
+        self.announce('==> Magick binary distribution: ' + filename)
 
-        local_file = join(self.build_temp, remote_file)
-
-        mkpath(self.build_temp)
-
-        # download libraries
-        found = False
-        for base in base_urls:
-            url = base + remote_file
-            self.announce('==> Downloading: ' + url)
-            urlretrieve(url, local_file)
-
-            if md5_file(local_file) == binaries[remote_file]:
-                self.announce('==> MD5 digest OK')
-                found = True
-                break
-
-            self.warn('==> MD5 digest failed')
-
-        if not found:
-            self.warn('==> All the mirrors for libraries failed')
+        if not download(self, mirrors, cache_dir, filename,
+                        binaries[filename]):
             return result
 
-        lib_base = join(self.build_base, 'libraries')
+        lib_base = join(cache_dir, 'libraries')
+        if exists(lib_base):
+            rmtree(lib_base)
+
         mkpath(lib_base)
 
-        extract(local_file, lib_base)
+        extract(join(cache_dir, filename), lib_base)
 
         return result
 
-
-from os.path import join, exists
-from hashlib import md5
-try:
-    from urllib import urlretrieve
-except ImportError:
-    from urllib.request import urlretrieve  # @Reimport
-from zipfile import ZipFile
 
 # patch ZipFile to have extract method, py25
 if not hasattr(ZipFile, 'extract'):
@@ -153,26 +169,16 @@ if not hasattr(ZipFile, 'extract'):
 
     ZipFile.extract = zip_extract
 
-from distutils.dir_util import mkpath
-from distutils.util import get_platform
-
-try:
-    # this will be present with pip or setuptools was installed
-    from setuptools.command.install import install
-except ImportError:
-    # still it can work with python setup.py install
-    from distutils.command.install import install  # @Reimport
-
 
 class pystacia_install(install):
     def run(self):
         result = install.run(self)
 
-        lib_base = join(self.build_base, 'libraries')
+        lib_base = join(cache_dir, 'libraries')
         if exists(lib_base):
             self.copy_tree(lib_base, join(self.install_lib, 'pystacia/cdll'))
 
-        lena = join(self.build_base, 'lena.png')
+        lena = join(cache_dir, 'lena.png')
         if exists(lena):
             self.copy_file(lena, join(self.install_lib, 'pystacia/lena.png'))
 
@@ -184,9 +190,6 @@ try:
     format
 except NameError:
     install_requires.append('StringFormat')
-
-from os import environ
-from setuptools import setup
 
 packages = ['pystacia',
             'pystacia.tests',
@@ -201,8 +204,6 @@ packages = ['pystacia',
 cmdclass = dict(build=pystacia_build,
                 install=pystacia_install)
 
-environ['PYSTACIA_SETUP'] = '1'
-import pystacia
 
 setup(
     name='pystacia',
