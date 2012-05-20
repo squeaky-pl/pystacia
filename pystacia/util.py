@@ -125,10 +125,6 @@ __lock = Lock()
 
 @memoized
 def get_osname():
-    if hasattr(platform, 'mac_ver') and platform.mac_ver()[0]:
-        return 'macos'
-    if dist and dist()[0]:
-        return 'linux'
     if hasattr(platform, 'win32_ver') and platform.win32_ver()[0]:
         return 'windows'
     # on windows with 2.5 win32_ver is empty
@@ -136,6 +132,11 @@ def get_osname():
         import os
         if os.name == 'nt':
             return 'windows'
+    if hasattr(platform, 'mac_ver') and platform.mac_ver()[0]:
+        return 'macos'
+    if dist and dist()[0]:
+        # beware that under MSYS and Windows it returns Debian!
+        return 'linux'
 
     return None
 

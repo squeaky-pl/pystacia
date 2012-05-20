@@ -33,6 +33,8 @@ def dll_template(osname, abi):
 
 
 def find_library(name, abis, environ=None, osname=None, factory=None):
+    logger.debug('Trying to find ImageMagick...')
+
     paths = []
 
     if not environ:
@@ -67,8 +69,11 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
     if not factory:
         factory = CDLL
 
+    logger.debug('Following paths will be searched: ' + ';'.join(paths))
+
     for path in paths:
         if not exists(path):
+            logger.debug('Path does not exist: ' + path)
             continue
 
         depends_path = join(path, 'depends.txt')
@@ -95,7 +100,11 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
             template = formattable(template)
 
             dll_path = join(path, template.format(name=name, abi=abi))
+
+            logger.debug('Trying: ' + dll_path)
+
             if exists(dll_path):
+                logger.debug('Found: ' + dll_path)
                 transaction = library_path_transaction(path, environ).begin()
 
                 try:
