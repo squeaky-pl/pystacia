@@ -155,7 +155,8 @@ class ColorTest(TestCase):
         [t.join() for t in threads]
 
     def test_bad_string(self):
-        color.from_string('x-wrong-color')
+        self.assertRaisesRegexp(PystaciaException, 'Unknown color',
+                                lambda: color.from_string('x-wrong-color'))
 
 from pystacia.color._impl import saturate
 from pystacia import color, registry

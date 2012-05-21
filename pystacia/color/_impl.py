@@ -7,6 +7,9 @@
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 from ctypes import c_double
+from pystacia.util import PystaciaException
+from six import reraise
+from sys import exc_info
 
 
 def alloc():
@@ -22,7 +25,14 @@ def clone(color):
 
 
 def set_string(color, value):
-    c_call(color, 'set_color', value)
+    try:
+        c_call(color, 'set_color', value)
+    except PystaciaException:
+        info = exc_info()
+        if info[1].args[0].startswith('unrecognized color'):
+            raise PystaciaException('Unknown color string representation')
+
+        reraise(*info)
 
 
 def get_red(color):
