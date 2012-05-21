@@ -9,7 +9,7 @@
 from __future__ import with_statement
 
 import os
-from os import pathsep, getcwd, chdir
+from os import getcwd, chdir
 from os.path import join, exists, dirname
 from ctypes import CDLL
 import ctypes.util

@@ -315,12 +315,12 @@ def c_call(obj, method, *args, **kw):
 
     msg = formattable('Calling {0}')
     logger.debug(msg.format(method_name))
-    
+
     if pypy and should_lock:
         __lock.acquire()
-        
+
     result = c_method(*args_)
-    
+
     if pypy and should_lock:
         __lock.release()
 

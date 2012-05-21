@@ -83,5 +83,5 @@ class DeprecationTest(TestCase):
                 self.assertTrue(name in w[-1].message.args[0])
 
 from pystacia import image
-from pystacia.image import colorspaces, types
+from pystacia.image import types
 from pystacia.tests.common import sample

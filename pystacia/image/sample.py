@@ -99,6 +99,5 @@ def netscape(factory=None):
 
 import pystacia
 from pystacia.image._impl import io
-from pystacia.image.enum import colorspaces
 from pystacia import magick
 from pystacia.util import PystaciaException
