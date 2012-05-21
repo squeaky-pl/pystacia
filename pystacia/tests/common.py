@@ -57,8 +57,8 @@ def __weakrefed(factory):
 
     if not __sample:
         with __lock:
+            sample = factory()
             if not __sample:
-                sample = factory()
                 __sample = weakref.ref(sample)
     else:
         sample = __sample()
