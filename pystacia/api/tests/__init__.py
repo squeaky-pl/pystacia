@@ -26,9 +26,12 @@ class TemplateTest(TestCase):
 
 
 class FindLibraryTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        tmproot = cls.tmproot = mkdtemp()
+    def setUp(self):
+        self.environ = {'PYSTACIA_SKIP_SYSTEM': '1',
+                        'PYSTACIA_SKIP_PACKAGE': '1'}
+        self.olddir = getcwd()
+
+        tmproot = self.tmproot = mkdtemp()
         for subdir in '', 'cdll', 'lib', 'dll', 'depends':
             path = join(tmproot, subdir)
             if not exists(path):
@@ -45,17 +48,10 @@ class FindLibraryTest(TestCase):
         depends.write('Depends 18\n')
         depends.close()
 
-    def setUp(self):
-        self.environ = {'PYSTACIA_SKIP_SYSTEM': '1',
-                        'PYSTACIA_SKIP_PACKAGE': '1'}
-        self.olddir = getcwd()
-
     def tearDown(self):
-        chdir(self.olddir)
+        rmtree(self.tmproot)
 
-    @classmethod
-    def tearDownClass(cls):
-        rmtree(cls.tmproot)
+        chdir(self.olddir)
 
     def test(self):
         environ = self.environ
@@ -90,7 +86,7 @@ class FindLibraryTest(TestCase):
 
     def test_library_path(self):
         environ = self.environ
-        tmproot = environ['PYSTACIA_LIBRARY_PATH'] = self.__class__.tmproot
+        tmproot = environ['PYSTACIA_LIBRARY_PATH'] = self.tmproot
 
         value = find_library('Foo', (2,), environ, 'windows', MockFactory())
         expect = join(tmproot, 'libFoo-2.dll')
@@ -106,7 +102,7 @@ class FindLibraryTest(TestCase):
 
     def test_venv(self):
         environ = self.environ
-        tmproot = environ['VIRTUAL_ENV'] = self.__class__.tmproot
+        tmproot = environ['VIRTUAL_ENV'] = self.tmproot
 
         value = find_library('Foo', (2,), environ, 'windows', MockFactory())
         expect = join(tmproot, 'lib', 'libFoo-2.dll')
@@ -126,7 +122,7 @@ class FindLibraryTest(TestCase):
 
     def test_curdir(self):
         environ = self.environ
-        tmproot = self.__class__.tmproot
+        tmproot = self.tmproot
         chdir(tmproot)
 
         value = find_library('Foo', (2,), environ, 'windows', MockFactory())
@@ -143,7 +139,7 @@ class FindLibraryTest(TestCase):
 
     def test_depends(self):
         this_environ = self.environ.copy()
-        tmproot = join(self.__class__.tmproot, 'depends')
+        tmproot = join(self.tmproot, 'depends')
         this_environ['PYSTACIA_LIBRARY_PATH'] = tmproot
 
         environ = this_environ.copy()
