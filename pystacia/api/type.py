@@ -6,7 +6,7 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from ctypes import Structure, POINTER, c_int
+from ctypes import c_void_p, c_int
 
 
 class enum(c_int):
@@ -21,11 +21,9 @@ class ExceptionType(enum):
     pass
 
 
-class MagickWand(Structure):
+class MagickWand_p(c_void_p):
     pass
-MagickWand_p = POINTER(MagickWand)
 
 
-class PixelWand(Structure):
+class PixelWand_p(c_void_p):
     pass
-PixelWand_p = POINTER(PixelWand)

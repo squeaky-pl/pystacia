@@ -14,7 +14,6 @@ drop support dft
 
 
   -------------------------
-- try from_string with bad name and see what happens
 - registry could lookup keys automatically from environ by appending
 PYSTACIA in front
 - use is instead of id comparisons in Color
