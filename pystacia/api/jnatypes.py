@@ -1,11 +1,23 @@
-from java.lang import Void, String, Integer  # @UnresolvedImport
-from com.sun.jna import NativeLibrary, NativeLong  # @UnresolvedImport
-[ ]
+from java.lang import Void, String, Integer, Double  # @UnresolvedImport
+from com.sun.jna import NativeLibrary, NativeLong, Pointer  # @UnresolvedImport
+
 from pystacia.util import memoized
+
+
+@memoized
+def POINTER(type):  # @ReservedAssignment
+    class pointer(object):
+        _j_type = Pointer
+        _to = type
+
+    return pointer
 
 
 class c_void(object):
     _j_type = Void
+
+
+c_void_p = POINTER(c_void)
 
 
 class c_char_p(object):
@@ -16,8 +28,24 @@ class c_int(object):
     _j_type = Integer
 
 
+class c_uint(object):
+    _j_type = Integer
+
+
 class c_size_t(object):
     _j_type = NativeLong
+
+
+class c_ssize_t(object):
+    _j_type = NativeLong
+
+
+class c_double(object):
+    _j_type = Double
+
+
+def string_at(p):
+    return p.getString(0)
 
 
 class Function(object):

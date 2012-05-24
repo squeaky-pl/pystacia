@@ -6,11 +6,13 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-import sys
+from pystacia.compat import jython
 
 
-if sys.platform.startswith('jython'):
-    pass
+if jython:
+    from pystacia.api.jnatypes import (c_char_p, c_void_p, POINTER,
+                                       c_size_t, c_ssize_t, c_double, c_uint,
+                                       find_library, string_at, CDLL, c_int)
 else:
     from ctypes import (c_char_p, c_void_p, POINTER,  # @UnusedImport
                         c_size_t, c_double, c_uint, string_at, CDLL, c_int)

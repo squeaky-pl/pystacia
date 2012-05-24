@@ -42,3 +42,6 @@ except ImportError:
 # detect PyPy
 import sys
 pypy = '__pypy__' in sys.builtin_module_names
+
+# detect Jython
+jython = sys.platform.startswith('java')
