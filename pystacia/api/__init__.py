@@ -12,7 +12,7 @@ import os
 from os import getcwd, chdir
 from os.path import join, exists, dirname
 from ctypes import CDLL
-import ctypes.util
+from ctypes.util import find_library as ctypes_find_library
 from warnings import warn
 import atexit
 from logging import getLogger
@@ -128,7 +128,7 @@ def find_library(name, abis, environ=None, osname=None, factory=None):
 
     # still nothing? let ctypes figure it out
     if not registry.get('skip_system', environ.get('PYSTACIA_SKIP_SYSTEM')):
-        return ctypes.util.find_library(name)
+        return ctypes_find_library(name)
 
     return None
 

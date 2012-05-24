@@ -6,6 +6,7 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
+from __future__ import absolute_import
 
 try:
     format
@@ -46,6 +47,13 @@ def fallback_c_size_t():
 
 import ctypes
 c_ssize_t = getattr(ctypes, 'c_ssize_t', fallback_c_size_t())
+
+
+try:
+    from webbrowser import open as gui_open
+except ImportError:
+    #TODO: implement
+    gui_open = lambda x: None
 
 
 # detect PyPy

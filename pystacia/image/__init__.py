@@ -8,7 +8,6 @@
 
 from __future__ import division
 
-import webbrowser
 from tempfile import mkstemp
 from os import environ
 from os.path import exists
@@ -1227,7 +1226,7 @@ class Image(Resource):
 
         image.write(tmpname)
         if not no_gui:
-            webbrowser.open('file://' + tmpname)
+            gui_open('file://' + tmpname)
 
         return tmpname
 
@@ -1262,7 +1261,7 @@ from pystacia import registry
 registry._install_default('image_factory', Image)  # @UndefinedVariable
 
 
-from pystacia.compat import formattable
+from pystacia.compat import formattable, gui_open
 from pystacia import color
 color_module = color
 from pystacia.api.func import c_call
@@ -1302,7 +1301,7 @@ __exclusions = [
     'clone',
     'free',
     'io',
-    'webbrowser',
+    'webbrowser_open',
     'mkstemp',
     'environ',
     'exists',

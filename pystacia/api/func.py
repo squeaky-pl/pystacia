@@ -7,8 +7,8 @@
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 from threading import Lock
-from ctypes import (string_at, c_char_p, c_void_p, POINTER,
-                    c_size_t, c_double, c_uint)
+from ctypes import (c_char_p, c_void_p, POINTER, c_size_t, c_double, c_uint,
+                    string_at)
 
 from six import string_types, b as bytes_
 
