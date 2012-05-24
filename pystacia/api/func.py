@@ -7,8 +7,6 @@
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 from threading import Lock
-from ctypes import (c_char_p, c_void_p, POINTER, c_size_t, c_double, c_uint,
-                    string_at)
 
 from six import string_types, b as bytes_
 
@@ -347,9 +345,11 @@ def c_call(obj, method, *args, **kw):
     return result
 
 from pystacia.util import PystaciaException
-from pystacia.compat import native_str, formattable, c_ssize_t
+from pystacia.compat import native_str, formattable
 from pystacia.api import get_dll, logger
 from pystacia.api.type import (
     MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, enum)
+from pystacia.api.compat import (c_char_p, c_void_p, POINTER, c_size_t,
+                                 c_double, c_uint, string_at, c_ssize_t)
 from pystacia.common import Resource
 from pystacia.color import cast as color_cast

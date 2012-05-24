@@ -6,8 +6,6 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from ctypes import c_double
-
 
 def get_pixel(self, x, y, factory):
     color_ = color._instantiate(factory)
@@ -75,6 +73,7 @@ def compare(image, other, metric, factory):
 
 from pystacia.api.func import get_c_method, c_call
 from pystacia.api.enum import lookup as enum_lookup
+from pystacia.api.compat import c_double
 from pystacia.image.enum import metrics, composites
 from pystacia.image import Image
 from pystacia.image.generic import blank

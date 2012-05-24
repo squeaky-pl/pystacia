@@ -32,23 +32,6 @@ elif hasattr(platform, 'dist'):
     dist = platform.dist
 
 
-# python <=2.6 doesnt have c_ssize_t,
-# implementation copied from ctypes from 2.7
-def fallback_c_size_t():
-    from ctypes import (c_void_p, c_int, c_long, c_longlong,
-                        sizeof, c_uint, c_ulong, c_ulonglong)
-
-    if sizeof(c_uint) == sizeof(c_void_p):
-        return c_int
-    elif sizeof(c_ulong) == sizeof(c_void_p):
-        return c_long
-    elif sizeof(c_ulonglong) == sizeof(c_void_p):
-        return c_longlong
-
-import ctypes
-c_ssize_t = getattr(ctypes, 'c_ssize_t', fallback_c_size_t())
-
-
 try:
     from webbrowser import open as gui_open
 except ImportError:

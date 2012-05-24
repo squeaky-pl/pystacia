@@ -6,10 +6,6 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from ctypes import c_size_t
-
-from pystacia.compat import native_str
-
 
 def get_options():
     options = {}
@@ -29,4 +25,6 @@ def get_formats():
 
     return [native_str(formats[i]).lower() for i in range(size.value)]
 
+from pystacia.compat import native_str
 from pystacia.api.func import c_call
+from pystacia.api.compat import c_size_t

@@ -8,8 +8,6 @@
 
 from __future__ import division
 
-from ctypes import c_double
-
 
 def brightness(image, factor):
     c_call(image, 'brightness_contrast', factor * 100, 0)
@@ -127,4 +125,5 @@ from pystacia import magick
 from pystacia import color
 from pystacia.api.func import c_call
 from pystacia.api.enum import lookup as enum_lookup
+from pystacia.api.compat import c_double
 from pystacia.image.enum import colorspaces, interpolations, operations

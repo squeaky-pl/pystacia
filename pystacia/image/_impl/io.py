@@ -9,7 +9,6 @@
 from __future__ import with_statement
 
 from os.path import splitext
-from ctypes import c_size_t, string_at
 
 
 def read(spec, width=None, height=None, factory=None):
@@ -103,3 +102,4 @@ from pystacia.common import state
 from pystacia.image import _instantiate
 from pystacia.image.generic import blank
 from pystacia.api.func import c_call
+from pystacia.api.compat import c_size_t, string_at
