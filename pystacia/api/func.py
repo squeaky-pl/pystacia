@@ -252,7 +252,7 @@ def get_c_method(obj, method, throw=True):
             argtypes = (type_data['arg'],) + argtypes
         c_method.argtypes = argtypes
 
-        restype = type_data.get('result')
+        restype = type_data.get('result', c_void)
         if len(method_data) == 2:
             restype = method_data[1]
         c_method.restype = restype
@@ -314,6 +314,9 @@ def c_call(obj, method, *args, **kw):
     msg = formattable('Calling {0}')
     logger.debug(msg.format(method_name))
 
+    #if method == 'set_format':
+    #    from nose.tools import set_trace; set_trace();
+
     if pypy and should_lock:
         __lock.acquire()
 
@@ -328,7 +331,7 @@ def c_call(obj, method, *args, **kw):
         result = int(result)
     elif c_method.restype == enum:
         result = result.value
-    elif c_method.restype == MagickBoolean and not result.value:
+    elif c_method.restype == MagickBoolean and not result:
         exc_type = ExceptionType()
 
         if c_method.argtypes[0] == MagickWand_p:
@@ -336,7 +339,7 @@ def c_call(obj, method, *args, **kw):
         elif c_method.argtypes[0] == PixelWand_p:
             class_ = 'pixel'
 
-        description = c_call(class_, 'get_exception', args[0], exc_type)
+        description = c_call(class_, 'get_exception', args[0], byref(exc_type))
         try:
             raise PystaciaException(native_str(string_at(description)))
         finally:
@@ -350,6 +353,7 @@ from pystacia.api import get_dll, logger
 from pystacia.api.type import (
     MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, enum)
 from pystacia.api.compat import (c_char_p, c_void_p, POINTER, c_size_t,
-                                 c_double, c_uint, string_at, c_ssize_t)
+                                 c_double, c_uint, string_at, c_ssize_t,
+                                 c_void, byref)
 from pystacia.common import Resource
 from pystacia.color import cast as color_cast

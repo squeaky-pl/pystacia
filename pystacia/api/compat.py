@@ -12,11 +12,14 @@ from pystacia.compat import jython
 if jython:
     from pystacia.api.jnatypes import (c_char_p, c_void_p, POINTER,
                                        c_size_t, c_ssize_t, c_double, c_uint,
-                                       find_library, string_at, CDLL, c_int)
+                                       find_library, string_at, CDLL, c_int,
+                                       c_void, byref)
 else:
     from ctypes import (c_char_p, c_void_p, POINTER,  # @UnusedImport
-                        c_size_t, c_double, c_uint, string_at, CDLL, c_int)
+                        c_size_t, c_double, c_uint, string_at, CDLL, c_int,
+                        byref)
     from ctypes.util import find_library  # @UnusedImport
+    c_void = None
 
     try:
         from ctypes import c_ssize_t  # @UnusedImport
