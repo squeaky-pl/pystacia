@@ -252,7 +252,7 @@ def get_c_method(obj, method, throw=True):
             argtypes = (type_data['arg'],) + argtypes
         c_method.argtypes = argtypes
 
-        restype = type_data.get('result', c_void)
+        restype = type_data.get('result', None)
         if len(method_data) == 2:
             restype = method_data[1]
         c_method.restype = restype
@@ -353,7 +353,6 @@ from pystacia.api import get_dll, logger
 from pystacia.api.type import (
     MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, enum)
 from pystacia.api.compat import (c_char_p, c_void_p, POINTER, c_size_t,
-                                 c_double, c_uint, string_at, c_ssize_t,
-                                 c_void, byref)
+                                 c_double, c_uint, string_at, c_ssize_t, byref)
 from pystacia.common import Resource
 from pystacia.color import cast as color_cast
