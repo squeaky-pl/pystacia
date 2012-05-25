@@ -66,14 +66,14 @@ def compare(image, other, metric, factory):
     distortion = c_double()
 
     diff = c_call(image, ('compare', None, 'images'), other,
-                  metric, distortion)
+                  metric, byref(distortion))
 
     return(factory(diff), distortion.value)
 
 
 from pystacia.api.func import get_c_method, c_call
 from pystacia.api.enum import lookup as enum_lookup
-from pystacia.api.compat import c_double
+from pystacia.api.compat import c_double, byref
 from pystacia.image.enum import metrics, composites
 from pystacia.image import Image
 from pystacia.image.generic import blank

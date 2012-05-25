@@ -90,6 +90,9 @@ def get_blob(image, format, compression,  # @ReservedAssignment
 
         size = c_size_t()
         result = c_call(image, ('get', 'blob'), byref(size))
+
+        #from nose.tools import set_trace; set_trace()
+
         blob = string_at(result, size.value)
 
         c_call('magick_', 'relinquish_memory', result)

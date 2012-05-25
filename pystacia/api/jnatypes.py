@@ -23,9 +23,11 @@ def POINTER(type):  # @ReservedAssignment
         def __getitem__(self, idx):
             deref = self._j_object.getPointer(idx * Pointer.SIZE)
 
-            if self._to._j_type != Pointer:
-                f_name = 'get' + self._to._j_type.__name__
-                deref = getattr(deref, f_name)(0)
+            if issubclass(self._to, wrappable):
+                deref = self._to(deref)
+
+            if hasattr(deref, '_after'):
+                deref = deref._after()
 
             return deref
 
