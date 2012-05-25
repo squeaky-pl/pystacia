@@ -115,7 +115,7 @@ def convert_colorspace(image, colorspace):
 def get_range(image):
     minimum, maximum = c_double(), c_double()
 
-    c_call(image, ('get', 'range'), minimum, maximum)
+    c_call(image, ('get', 'range'), byref(minimum), byref(maximum))
 
     return tuple(x.value / (2 ** magick.get_depth() - 1)
                  for x in (minimum, maximum))
@@ -125,5 +125,5 @@ from pystacia import magick
 from pystacia import color
 from pystacia.api.func import c_call
 from pystacia.api.enum import lookup as enum_lookup
-from pystacia.api.compat import c_double
+from pystacia.api.compat import c_double, byref
 from pystacia.image.enum import colorspaces, interpolations, operations

@@ -314,8 +314,8 @@ def c_call(obj, method, *args, **kw):
     msg = formattable('Calling {0}')
     logger.debug(msg.format(method_name))
 
-    #if method == 'set_format':
-    #    from nose.tools import set_trace; set_trace();
+    #if method == ('read', 'blob'):
+    #   from nose.tools import set_trace; set_trace();
 
     if pypy and should_lock:
         __lock.acquire()
@@ -331,7 +331,7 @@ def c_call(obj, method, *args, **kw):
         result = int(result)
     elif c_method.restype == enum:
         result = result.value
-    elif c_method.restype == MagickBoolean and not result:
+    elif c_method.restype == MagickBoolean and not result.value:
         exc_type = ExceptionType()
 
         if c_method.argtypes[0] == MagickWand_p:

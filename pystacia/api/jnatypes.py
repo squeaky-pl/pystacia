@@ -11,7 +11,7 @@ __ref_mapping = {Integer: ptr.IntByReference,
 
 class wrappable(object):
     def __init__(self, j_object=None):
-            self._j_object = j_object
+            self.value = self._j_object = j_object
 
 
 @memoized
@@ -48,11 +48,11 @@ c_char_p = POINTER(c_char)
 c_char_p._after = lambda o: str(o._j_object.getString(0))
 
 
-class c_int(object):
+class c_int(wrappable):
     _j_type = Integer
 
 
-class c_uint(object):
+class c_uint(wrappable):
     _j_type = Integer
 
 
@@ -104,11 +104,13 @@ class Function(object):
     def __call__(self, *args):
         args_ = []
         to_sync = []
-        for arg in args:
+        for arg, type_ in zip(args, self.argtypes):
             if isinstance(arg, Reference):
                 to_sync.append(arg)
             if hasattr(arg, '_j_object'):
                 arg = arg._j_object
+            if type_._j_type == NativeLong:
+                arg = NativeLong(arg)
             args_.append(arg)
 
         result = self._j_function.invoke(self.restype._j_type, args_)
