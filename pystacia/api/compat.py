@@ -12,6 +12,7 @@ from pystacia.compat import jython
 
 
 if jython:
+    from ctypes import c_ssize_t
     from pystacia.api.jnatypes import POINTER, find_library, string_at, CDLL
 else:
     from ctypes import POINTER, string_at, CDLL #@UnusedImport

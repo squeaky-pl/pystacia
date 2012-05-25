@@ -1,3 +1,5 @@
+import ctypes
+
 from java.lang import Void, String, Integer, Double, UnsatisfiedLinkError  # @UnresolvedImport
 from com.sun.jna import NativeLibrary, NativeLong, Pointer  # @UnresolvedImport
 from com.sun.jna import ptr
@@ -96,52 +98,57 @@ def string_at(p, length=None):
     return str(p._j_object.getString(0))
 
 
+#        args_ = []
+#        to_sync = []
+#        for arg, type_ in zip(args, self.argtypes):
+#            if isinstance(arg, Reference):
+#                to_sync.append(arg)
+#            if hasattr(arg, '_j_object'):
+#                arg = arg._j_object
+#            if type_._j_type == NativeLong:
+#                arg = NativeLong(arg)
+#            args_.append(arg)
+#
+#        result = self._j_function.invoke(self.restype._j_type, args_)
+#
+#        [arg.sync() for arg in to_sync]
+#
+#        if issubclass(self.restype, wrappable):
+#            result = self.restype(result)
+#
+#        if hasattr(result, '_after'):
+#            result = result._after()
+#
+#        return result
+
+
 class Function(object):
-    def __init__(self, java_function):
-        self._j_function = java_function
-        self.argtypes = None
+    def __init__(self, func):
+        self.__dict__['_func'] = func
 
     def __call__(self, *args):
-        args_ = []
-        to_sync = []
-        for arg, type_ in zip(args, self.argtypes):
-            if isinstance(arg, Reference):
-                to_sync.append(arg)
-            if hasattr(arg, '_j_object'):
-                arg = arg._j_object
-            if type_._j_type == NativeLong:
-                arg = NativeLong(arg)
-            args_.append(arg)
+        return self._func(*args)
 
-        result = self._j_function.invoke(self.restype._j_type, args_)
+    def __getattr__(self, name):
+        return getattr(self._func, name)
 
-        [arg.sync() for arg in to_sync]
-
-        if issubclass(self.restype, wrappable):
-            result = self.restype(result)
-
-        if hasattr(result, '_after'):
-            result = result._after()
-
-        return result
+    def __setattr__(self, name, value):
+        setattr(self._func, name, value)
 
 
 class Library(object):
-    def __init__(self, java_library):
-        self._j_library = java_library
-        self._name = java_library.file.path
+    def __init__(self, path):
+        self._dll = ctypes.CDLL(path)
+        self._name = path
 
     @memoized
-    def __getattr__(self, key):
-        try:
-            return Function(self._j_library.getFunction(key))
-        except UnsatisfiedLinkError, e:
-            raise AttributeError(e)
+    def __getattr__(self, name):
+        return Function(getattr(self._dll, name))
 
 
 @memoized
 def CDLL(path):
-    return Library(NativeLibrary.getInstance(path))
+    return Library(path)
 
 
 def find_library(name):

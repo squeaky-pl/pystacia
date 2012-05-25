@@ -225,15 +225,8 @@ def get_data():
     }
 
 
-def get_c_method(obj, method, throw=True):
-    if hasattr(obj.__class__, '_api_type'):
-        api_type = obj.__class__._api_type
-    else:
-        api_type = obj
-
-    msg = formattable('Translating method {0}.{1}')
-    logger.debug(msg.format(api_type, method))
-
+@memoized
+def get_c_method(api_type, method, throw=True):
     type_data = get_data()[api_type]
     method_name = type_data['format'](method)
 
@@ -242,20 +235,19 @@ def get_c_method(obj, method, throw=True):
 
     c_method = getattr(get_dll(False), method_name)
 
-    if c_method.argtypes == None:
-        msg = formattable('Annoting {0}')
-        logger.debug(msg.format(method_name))
-        method_data = type_data['symbols'][method]
+    msg = formattable('Annoting {0}')
+    logger.debug(msg.format(method_name))
+    method_data = type_data['symbols'][method]
 
-        argtypes = method_data[0]
-        if 'arg' in type_data:
-            argtypes = (type_data['arg'],) + argtypes
-        c_method.argtypes = argtypes
+    argtypes = method_data[0]
+    if 'arg' in type_data:
+        argtypes = (type_data['arg'],) + argtypes
+    c_method.argtypes = argtypes
 
-        restype = type_data.get('result', None)
-        if len(method_data) == 2:
-            restype = method_data[1]
-        c_method.restype = restype
+    restype = type_data.get('result', None)
+    if len(method_data) == 2:
+        restype = method_data[1]
+    c_method.restype = restype
 
     return method_name, c_method
 
@@ -274,7 +266,15 @@ if pypy:
 
 
 def c_call(obj, method, *args, **kw):
-    method_name, c_method = get_c_method(obj, method)
+    if hasattr(obj.__class__, '_api_type'):
+        api_type = obj.__class__._api_type
+    else:
+        api_type = obj
+
+    msg = formattable('Translating method {0}.{1}')
+    logger.debug(msg.format(api_type, method))
+
+    method_name, c_method = get_c_method(api_type, method)
 
     try:
         init = kw.pop('__init')

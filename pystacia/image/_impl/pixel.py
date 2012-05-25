@@ -26,7 +26,7 @@ def fill(image, fill, blend):
 
 
 def set_color(image, fill):
-    if get_c_method(image, ('set', 'color'), throw=False):
+    if get_c_method('image', ('set', 'color'), throw=False):
         c_call(image, ('set', 'color'), fill)
 
         # MagickSetImageColor doesnt copy alpha
