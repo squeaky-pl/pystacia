@@ -6,8 +6,6 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from ctypes import c_double
-
 
 def get_pixel(self, x, y, factory):
     color_ = color._instantiate(factory)
@@ -28,7 +26,7 @@ def fill(image, fill, blend):
 
 
 def set_color(image, fill):
-    if get_c_method(image, ('set', 'color'), throw=False):
+    if get_c_method('image', ('set', 'color'), throw=False):
         c_call(image, ('set', 'color'), fill)
 
         # MagickSetImageColor doesnt copy alpha
@@ -68,13 +66,14 @@ def compare(image, other, metric, factory):
     distortion = c_double()
 
     diff = c_call(image, ('compare', None, 'images'), other,
-                  metric, distortion)
+                  metric, byref(distortion))
 
     return(factory(diff), distortion.value)
 
 
 from pystacia.api.func import get_c_method, c_call
 from pystacia.api.enum import lookup as enum_lookup
+from pystacia.api.compat import c_double, byref
 from pystacia.image.enum import metrics, composites
 from pystacia.image import Image
 from pystacia.image.generic import blank

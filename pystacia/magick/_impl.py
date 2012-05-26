@@ -6,16 +6,12 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from ctypes import c_size_t
-
-from pystacia.compat import native_str
-
 
 def get_options():
     options = {}
 
     size = c_size_t()
-    keys = c_call('magick_', 'query_configure_options', '*', size)
+    keys = c_call('magick_', 'query_configure_options', '*', byref(size))
     for key in (native_str(keys[i]) for i in range(size.value)):
         options[key] = (
         c_call('magick_', 'query_configure_option', key))
@@ -25,8 +21,10 @@ def get_options():
 
 def get_formats():
     size = c_size_t()
-    formats = c_call('magick_', 'query_formats', '*', size)
+    formats = c_call('magick_', 'query_formats', '*', byref(size))
 
     return [native_str(formats[i]).lower() for i in range(size.value)]
 
+from pystacia.compat import native_str
 from pystacia.api.func import c_call
+from pystacia.api.compat import c_size_t, byref

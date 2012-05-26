@@ -99,8 +99,8 @@ class WithSample(TestCase):
         for i in (bmp, BytesIO(bmp)):
             img = read_blob(i)
 
-            self.assertEqual(img.size, sample.size)
-            self.assertEqual(img.type, sample.type)
+            self.assertEqual(img.size, sample_size)
+            self.assertEqual(img.type, sample_type)
             self.assertTrue(img.colorspace.name.endswith('rgb'))
             self.assertEqual(img.depth, 8)
 
@@ -114,8 +114,8 @@ class WithSample(TestCase):
 
         img = read(tmpname)
 
-        self.assertSequenceEqual(img.size, sample.size)
-        self.assertEqual(img.type, sample.type)
+        self.assertSequenceEqual(img.size, sample_size)
+        self.assertEqual(img.type, sample_type)
         self.assertTrue(img.colorspace.name.endswith('rgb'))
         self.assertEqual(img.depth, 8)
 
@@ -128,9 +128,9 @@ class WithSample(TestCase):
         img.write(tmpname)
 
         img = read(tmpname)
-        self.assertEqual(img.size, sample.size)
+        self.assertEqual(img.size, sample_size)
         self.assertTrue(img.colorspace.name.endswith('rgb'))
-        self.assertEqual(img.type, sample.type)
+        self.assertEqual(img.type, sample_type)
         img.close()
 
     def test_rescale(self):
@@ -154,9 +154,9 @@ class WithSample(TestCase):
     def test_fit(self):
         img = self.img
 
-        ratio = 320 / sample.size[0]
+        ratio = 320 / sample_size[0]
         img.fit(320)
-        self.assertEqual(img.size, (320, sample.size[1] * ratio))
+        self.assertEqual(img.size, (320, sample_size[1] * ratio))
         img.fit(128, 128)
         self.assertEqual(img.size, (128, 128))
 
@@ -263,7 +263,7 @@ class WithSample(TestCase):
         img = self.img
 
         img.wave(10, 100)
-        new_size = (sample.size[0], sample.size[1] + 20)
+        new_size = (sample_size[0], sample_size[1] + 20)
         self.assertEqual(img.size, new_size)
         self.assertEqual(img.get_pixel(25, 10).alpha, 0)
         self.assertEqual(img.get_pixel(128, 128).alpha, 1)
@@ -654,14 +654,14 @@ class WithSample(TestCase):
     def test_type(self):
         img = self.img
 
-        self.assertEqual(img.type, sample.type)
+        self.assertEqual(img.type, sample_type)
         img.type = types.bilevel
         self.assertEqual(img.type, types.bilevel)
 
     def test_size(self):
         img = self.img
 
-        self.assertSequenceEqual(img.size, sample.size)
+        self.assertSequenceEqual(img.size, sample_size)
         self.assertSequenceEqual((img.width, img.height), img.size)
 
     def test_depth(self):
@@ -740,5 +740,5 @@ from pystacia.util import PystaciaException
 from pystacia.image import (read, read_raw, read_blob, types,
                            colorspaces, blank, axes, checkerboard)
 from pystacia import color, registry, magick
-from pystacia.tests.common import sample
+from pystacia.tests.common import sample, sample_type, sample_size
 from random import randint

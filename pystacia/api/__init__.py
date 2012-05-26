@@ -11,8 +11,6 @@ from __future__ import with_statement
 import os
 from os import getcwd, chdir
 from os.path import join, exists, dirname
-from ctypes import CDLL
-from ctypes.util import find_library as ctypes_find_library
 from warnings import warn
 import atexit
 from logging import getLogger
@@ -192,6 +190,10 @@ def get_dll(init=True, environ=None, isolated=False):
 
             c_call(None, 'terminus')
 
+            if jython:
+                from java.lang import System
+                System.exit(0)
+
         logger.debug('Critical section - init MagickWand')
         with __lock:
             if not dll.__inited:
@@ -212,10 +214,11 @@ def get_dll(init=True, environ=None, isolated=False):
 
 from pystacia import registry
 from pystacia.util import get_osname, PystaciaException
-from pystacia.compat import formattable
+from pystacia.compat import formattable, jython
 from pystacia.common import _cleanup
 from pystacia import magick
 from pystacia.api.func import c_call
+from pystacia.api.compat import CDLL, find_library as ctypes_find_library
 
 
 min_version = (6, 5, 9, 0)

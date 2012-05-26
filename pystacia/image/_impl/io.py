@@ -9,7 +9,6 @@
 from __future__ import with_statement
 
 from os.path import splitext
-from ctypes import c_size_t, string_at
 
 
 def read(spec, width=None, height=None, factory=None):
@@ -90,7 +89,10 @@ def get_blob(image, format, compression,  # @ReservedAssignment
         c_call('magick', 'set_format', image, format)
 
         size = c_size_t()
-        result = c_call(image, ('get', 'blob'), size)
+        result = c_call(image, ('get', 'blob'), byref(size))
+
+        #from nose.tools import set_trace; set_trace()
+
         blob = string_at(result, size.value)
 
         c_call('magick_', 'relinquish_memory', result)
@@ -103,3 +105,4 @@ from pystacia.common import state
 from pystacia.image import _instantiate
 from pystacia.image.generic import blank
 from pystacia.api.func import c_call
+from pystacia.api.compat import c_size_t, string_at, byref

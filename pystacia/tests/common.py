@@ -73,9 +73,9 @@ def __weakrefed(factory):
 
 if lena_available():
     sample = partial(__weakrefed, image.lena)
-    sample.size = (512, 512)
-    sample.type = types.truecolor
+    sample_size = (512, 512)
+    sample_type = types.truecolor
 else:
     sample = partial(__weakrefed, image.magick_logo)
-    sample.size = (640, 480)
-    sample.type = types.palette
+    sample_size = (640, 480)
+    sample_type = types.palette

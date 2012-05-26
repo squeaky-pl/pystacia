@@ -6,7 +6,7 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from ctypes import c_void_p, c_int
+from pystacia.api.compat import c_void_p, c_int
 
 
 class enum(c_int):

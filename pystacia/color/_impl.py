@@ -6,7 +6,6 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from ctypes import c_double
 from pystacia.util import PystaciaException
 from six import reraise
 from sys import exc_info
@@ -70,7 +69,7 @@ def set_alpha(color, value):
 def get_hsl(color):
     h, s, l = tuple(x() for x in (c_double,) * 3)
 
-    c_call(color, 'get_hsl', h, s, l)
+    c_call(color, 'get_hsl', byref(h), byref(s), byref(l))
 
     return tuple(saturate(x.value) for x in (h, s, l))
 
@@ -89,3 +88,4 @@ def saturate(v):
 
 
 from pystacia.api.func import c_call
+from pystacia.api.compat import c_double, byref
