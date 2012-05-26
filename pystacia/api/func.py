@@ -8,7 +8,7 @@
 
 from threading import Lock
 
-from six import string_types, b as bytes_
+from six import string_types, b as bytes_, text_type
 
 from pystacia.util import memoized
 from pystacia.compat import pypy
@@ -299,7 +299,8 @@ def c_call(obj, method, *args, **kw):
     for arg, type in zip(args, c_method.argtypes):  # @ReservedAssignment
         if type == c_char_p:
             should_lock = True
-            arg = bytes_(arg)
+            if isinstance(arg, text_type):
+                arg = bytes_(arg)
         elif type in (c_size_t, c_ssize_t, c_uint):
             arg = int(arg)
         elif type == PixelWand_p:
@@ -313,9 +314,6 @@ def c_call(obj, method, *args, **kw):
 
     msg = formattable('Calling {0}')
     logger.debug(msg.format(method_name))
-
-    #if method == ('read', 'blob'):
-    #   from nose.tools import set_trace; set_trace();
 
     if pypy and should_lock:
         __lock.acquire()
