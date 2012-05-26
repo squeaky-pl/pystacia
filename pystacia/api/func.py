@@ -331,7 +331,7 @@ def c_call(obj, method, *args, **kw):
         result = int(result)
     elif c_method.restype == enum:
         result = result.value
-    elif c_method.restype == MagickBoolean and not result.value:
+    elif c_method.restype == MagickBoolean and not result:
         exc_type = ExceptionType()
 
         if c_method.argtypes[0] == MagickWand_p:

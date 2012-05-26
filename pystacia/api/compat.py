@@ -6,16 +6,16 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-from ctypes import c_char_p, c_void_p, c_size_t, c_double, c_uint, c_int, byref
+from ctypes import c_char_p, c_size_t, c_double, c_uint, c_int, byref
 
 from pystacia.compat import jython
 
 
 if jython:
     from ctypes import c_ssize_t
-    from pystacia.api.jnatypes import POINTER, find_library, string_at, CDLL
+    from pystacia.api.jnatypes import c_void_p, POINTER, find_library, string_at, CDLL
 else:
-    from ctypes import POINTER, string_at, CDLL #@UnusedImport
+    from ctypes import c_void_p, POINTER, string_at, CDLL #@UnusedImport
     from ctypes.util import find_library  # @UnusedImport
     c_void = None
 

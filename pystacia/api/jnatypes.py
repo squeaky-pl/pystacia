@@ -11,91 +11,107 @@ __ref_mapping = {Integer: ptr.IntByReference,
                  Double: ptr.DoubleByReference}
 
 
-class wrappable(object):
-    def __init__(self, j_object=None):
-            self.value = self._j_object = j_object
+class c_void_p(object):
+    _wrap = True
+    _unwrap = True
+    _jffi_type = ctypes.c_ulong._jffi_type
+
+    def __init__(self, value):
+        self.value = value
+
+    def __long__(self):
+        return self.value
 
 
-@memoized
+class c_char_p_p(object):
+    _wrap = True
+    _jffi_type = ctypes.c_void_p._jffi_type
+
+    def __init__(self, value):
+        self.value = Pointer(value)
+
+    def __getitem__(self, idx):
+        return string_at(self.value.getPointer(idx * Pointer.SIZE))
+
+
 def POINTER(type):  # @ReservedAssignment
-    class pointer(wrappable):
-        _j_type = Pointer
-        _to = type
-
-        def __getitem__(self, idx):
-            deref = self._j_object.getPointer(idx * Pointer.SIZE)
-
-            if issubclass(self._to, wrappable):
-                deref = self._to(deref)
-
-            if hasattr(deref, '_after'):
-                deref = deref._after()
-
-            return deref
-
-    return pointer
-
-
-class c_void(object):
-    _j_type = Void
+#    class pointer(wrappable):
+#        _j_type = Pointer
+#        _to = type
+#
+#        def __getitem__(self, idx):
+#            deref = self._j_object.getPointer(idx * Pointer.SIZE)
+#
+#            if issubclass(self._to, wrappable):
+#                deref = self._to(deref)
+#
+#            if hasattr(deref, '_after'):
+#                deref = deref._after()
+#
+#            return deref
+    if type == ctypes.c_char_p:
+        return c_char_p_p
+    else:
+        return ctypes.POINTER(type)
 
 
-class c_char(object):
-    pass
-
-c_void_p = POINTER(c_void)
+#class c_char(object):
+#    pass
 
 
-c_char_p = POINTER(c_char)
-c_char_p._after = lambda o: str(o._j_object.getString(0))
+#c_char_p = POINTER(c_char)
+#c_char_p._after = lambda o: str(o._j_object.getString(0))
 
 
-class c_int(wrappable):
-    _j_type = Integer
-
-
-class c_uint(wrappable):
-    _j_type = Integer
-
-
-_after_size = lambda o: o._j_object.toNative()
-
-
-class c_size_t(wrappable):
-    _j_type = NativeLong
-    _after = _after_size
-
-
-class c_ssize_t(wrappable):
-    _j_type = NativeLong
-    _after = _after_size
-
-
-class c_double(object):
-    _j_type = Double
-
-
-class Reference(object):
-    def __init__(self, o):
-        self._object = o
-        self._j_object = __ref_mapping[o.__class__._j_type]()
-
-    def sync(self):
-        value = self._j_object.getValue()
-        if isinstance(value, NativeLong):
-            value = value.toNative()
-        self._object.value = value
-
-
-def byref(o):
-    return Reference(o)
+#class c_int(wrappable):
+#    _j_type = Integer
+#
+#
+#class c_uint(wrappable):
+#    _j_type = Integer
+#
+#
+#_after_size = lambda o: o._j_object.toNative()
+#
+#
+#class c_size_t(wrappable):
+#    _j_type = NativeLong
+#    _after = _after_size
+#
+#
+#class c_ssize_t(wrappable):
+#    _j_type = NativeLong
+#    _after = _after_size
+#
+#
+#class c_double(object):
+#    _j_type = Double
+#
+#
+#class Reference(object):
+#    def __init__(self, o):
+#        self._object = o
+#        self._j_object = __ref_mapping[o.__class__._j_type]()
+#
+#    def sync(self):
+#        value = self._j_object.getValue()
+#        if isinstance(value, NativeLong):
+#            value = value.toNative()
+#        self._object.value = value
+#
+#
+#def byref(o):
+#    return Reference(o)
 
 
 def string_at(p, length=None):
-    if length:
-        return p._j_object.getByteArray(0, length).tostring()
+    if isinstance(p, c_void_p):
+        p = Pointer(p.value)
 
-    return str(p._j_object.getString(0))
+    if length:
+        return p.getByteArray(0, length).tostring()
+
+    return p.getString(0).encode('utf-8')
 
 
 #        args_ = []
@@ -127,7 +143,14 @@ class Function(object):
         self.__dict__['_func'] = func
 
     def __call__(self, *args):
-        return self._func(*args)
+        func = self._func
+
+        result = func(*args)
+
+        if hasattr(func.restype, '_wrap'):
+            result = func.restype(result)
+
+        return result
 
     def __getattr__(self, name):
         return getattr(self._func, name)
