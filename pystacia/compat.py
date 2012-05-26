@@ -32,16 +32,14 @@ elif hasattr(platform, 'dist'):
     dist = platform.dist
 
 
-try:
-    from webbrowser import open as gui_open
-except ImportError:
-    #TODO: implement
-    gui_open = lambda x: None
-
-
 # detect PyPy
 import sys
 pypy = '__pypy__' in sys.builtin_module_names
 
 # detect Jython
 jython = sys.platform.startswith('java')
+
+if jython:
+    from pystacia.jbrowser import open as gui_open
+else:
+    from webbrowser import open as gui_open
