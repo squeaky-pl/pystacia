@@ -190,6 +190,10 @@ def get_dll(init=True, environ=None, isolated=False):
 
             c_call(None, 'terminus')
 
+            if jython:
+                from java.lang import System
+                System.exit(0)
+
         logger.debug('Critical section - init MagickWand')
         with __lock:
             if not dll.__inited:
@@ -210,7 +214,7 @@ def get_dll(init=True, environ=None, isolated=False):
 
 from pystacia import registry
 from pystacia.util import get_osname, PystaciaException
-from pystacia.compat import formattable
+from pystacia.compat import formattable, jython
 from pystacia.common import _cleanup
 from pystacia import magick
 from pystacia.api.func import c_call
