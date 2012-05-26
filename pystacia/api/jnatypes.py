@@ -166,7 +166,10 @@ class Library(object):
 
     @memoized
     def __getattr__(self, name):
-        return Function(getattr(self._dll, name))
+        try:
+            return Function(getattr(self._dll, name))
+        except NameError, e:
+            raise AttributeError(e)
 
 
 @memoized

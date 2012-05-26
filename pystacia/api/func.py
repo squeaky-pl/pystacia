@@ -114,7 +114,7 @@ def get_data():
             'symbols': {
                 'read': ((ch,), b),
                 'write': ((ch,), b),
-                ('read', 'blob'): ((v, s), b),
+                ('read', 'blob'): ((ch, s), b),
                 ('get', 'blob'): ((P(s),), v),
 
                 ('set', 'format'): ((ch,), b),
@@ -329,7 +329,7 @@ def c_call(obj, method, *args, **kw):
         result = native_str(result)
     if c_method.restype in (c_uint, c_ssize_t, c_size_t):
         result = int(result)
-    elif c_method.restype == enum:
+    elif c_method.restype == enum and not jython:
         result = result.value
     elif c_method.restype == MagickBoolean and not result:
         exc_type = ExceptionType()
@@ -348,7 +348,7 @@ def c_call(obj, method, *args, **kw):
     return result
 
 from pystacia.util import PystaciaException
-from pystacia.compat import native_str, formattable
+from pystacia.compat import native_str, formattable, jython
 from pystacia.api import get_dll, logger
 from pystacia.api.type import (
     MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, enum)
