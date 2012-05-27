@@ -39,6 +39,17 @@ pypy = '__pypy__' in sys.builtin_module_names
 jython = sys.platform.startswith('java')
 
 if jython:
-    from pystacia.jbrowser import open as gui_open  # @UnusedImport
+    from java.io import File  # @UnresolvedImport
+    from java.net import URL  # @UnresolvedImport
+    from javax.imageio import ImageIO  # @UnresolvedImport
+    from javax.swing import JLabel, JFrame, ImageIcon  # @UnresolvedImport
+
+    def gui_open(path):
+        label = JLabel(ImageIcon(ImageIO.read(File(URL(path).getFile()))))
+        frame = JFrame()
+        frame.getContentPane().add(label)
+        frame.pack()
+        frame.setLocation(200, 200)
+        frame.setVisible(True)
 else:
     from webbrowser import open as gui_open  # NOQA
