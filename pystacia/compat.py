@@ -31,7 +31,6 @@ if hasattr(platform, 'linux_distribution'):
 elif hasattr(platform, 'dist'):
     dist = platform.dist
 
-
 # detect PyPy
 import sys
 pypy = '__pypy__' in sys.builtin_module_names
@@ -40,6 +39,6 @@ pypy = '__pypy__' in sys.builtin_module_names
 jython = sys.platform.startswith('java')
 
 if jython:
-    from pystacia.jbrowser import open as gui_open
+    from pystacia.jbrowser import open as gui_open  # @UnusedImport
 else:
-    from webbrowser import open as gui_open
+    from webbrowser import open as gui_open  # NOQA

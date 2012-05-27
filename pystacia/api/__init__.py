@@ -191,7 +191,7 @@ def get_dll(init=True, environ=None, isolated=False):
             c_call(None, 'terminus')
 
             if jython:
-                from java.lang import System
+                from java.lang import System  # @UnresolvedImport
                 System.exit(0)
 
         logger.debug('Critical section - init MagickWand')

@@ -1,11 +1,10 @@
-from java.awt.image import BufferedImage
-from java.io import File
-from java.net import URL
-from javax.imageio import ImageIO
-from javax.swing import JLabel, JFrame, ImageIcon
+from java.io import File  # @UnresolvedImport
+from java.net import URL  # @UnresolvedImport
+from javax.imageio import ImageIO  # @UnresolvedImport
+from javax.swing import JLabel, JFrame, ImageIcon  # @UnresolvedImport
 
 
-def open(path):
+def open(path):  # @ReservedAssignment
     label = JLabel(ImageIcon(ImageIO.read(File(URL(path).getFile()))))
     frame = JFrame()
     frame.getContentPane().add(label)

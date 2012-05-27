@@ -19,7 +19,6 @@ PYSTACIA in front
 - use is instead of id comparisons in Color
 - think about the issue with overlay discarding alpha channel
 - compile with bzip and gzip on all oses
-- Jython support
 - move more things to registry - paths, and chainability
 - instead of relying on renames and get_platfom we could use our own solution [0.1.1]
   if it can be loaded and test for OS and 64bit in setyp.py
@@ -35,7 +34,6 @@ PYSTACIA in front
 - support for with protocol [0.1.1]
 - info method (returns all the crucial magick informations along with loaded libraries and paths)
 - implement other color factories [0.2]
-- subprocess loading of libraries optionall with pyro [0.3]
 - implement better show tool detecting (doesnt work with unity) and fallback to webbrowser [0.2]
 - allow overriding viewer wiith TINYIMG_VIEWER env var
 - containers vs formats

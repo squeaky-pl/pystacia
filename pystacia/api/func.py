@@ -19,7 +19,7 @@ def get_data():
     # convenience shortcuts
     w = MagickWand_p
     pw = PixelWand_p
-    b = MagickBoolean  # @Reimport
+    b = MagickBoolean
     e = enum
     ch = c_char_p
     v = c_void_p

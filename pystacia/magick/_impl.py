@@ -12,7 +12,7 @@ def get_options():
 
     size = c_size_t()
     keys = c_call('magick_', 'query_configure_options', '*', byref(size))
-    for key in (native_str(keys[i]) for i in range(size.value)):
+    for key in [native_str(keys[i]) for i in range(size.value)]:
         options[key] = (
         c_call('magick_', 'query_configure_option', key))
 
