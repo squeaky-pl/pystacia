@@ -192,14 +192,14 @@ except NameError:
     install_requires.append('StringFormat')
 
 packages = ['pystacia',
-            'pystacia.tests',
+            'pystacia.api',
+            'pystacia.api.tests',
+            'pystacia.color',
             'pystacia.image',
             'pystacia.image._impl',
             'pystacia.image.tests',
             'pystacia.magick',
-            'pystacia.color',
-            'pystacia.api',
-            'pystacia.api.tests']
+            'pystacia.tests']
 
 cmdclass = dict(build=pystacia_build,
                 install=pystacia_install)
