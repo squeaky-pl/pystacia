@@ -9,7 +9,7 @@
 from __future__ import absolute_import
 
 try:
-    format
+    format  # NOQA
 except NameError:
     from stringformat import FormattableString  # @UnresolvedImport
     formattable = FormattableString
