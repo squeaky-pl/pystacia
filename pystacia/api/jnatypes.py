@@ -1,3 +1,4 @@
+from sys import exc_info
 import ctypes
 
 from java.lang import UnsatisfiedLinkError  # @UnresolvedImport
@@ -76,8 +77,8 @@ class Library(object):
     def __getattr__(self, name):
         try:
             return Function(getattr(self._dll, name))
-        except NameError, e:
-            raise AttributeError(e)
+        except NameError:
+            raise AttributeError(exc_info()[1])
 
 
 @memoized
