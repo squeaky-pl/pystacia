@@ -10,6 +10,7 @@ install:
     - pip install -v --use-mirrors .
     - pip install --use-mirrors flake8
 before_script:
+    - PYSTACIA_LOG=1 python -c "import pystacia"
     - python -c "from pystacia import magick; from pprint import pprint; pprint(magick.info())"
 script:
     - cd pystacia && flake8 --exit-zero . && cd ..
