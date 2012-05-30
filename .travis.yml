@@ -9,6 +9,8 @@ install:
     - if [[ `python -c "import sys; print(int(sys.version_info < (2, 7)))"` == "1" ]]; then pip install --use-mirrors unittest2; fi
     - pip install --use-mirrors .
     - pip install --use-mirrors flake8
+before_script:
+    - python -c "from pystacia import magick; from pprint import pprint; pprint(magick.info())"
 script:
-    - nosetests
     - flake8 .
+    - nosetests

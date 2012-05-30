@@ -79,6 +79,13 @@ def get_depth():
 def get_formats():
     return impl.get_formats()
 
+
+@memoized
+def info():
+    return {'options': get_options(),
+            'formats': get_formats(),
+            'dll': get_dll()._name}
+
 from pystacia.api import get_dll
 from pystacia.api.func import c_call
 from pystacia.magick import _impl as impl
