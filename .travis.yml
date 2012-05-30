@@ -12,5 +12,5 @@ install:
 before_script:
     - python -c "from pystacia import magick; from pprint import pprint; pprint(magick.info())"
 script:
-    - flake8 .
+    - cd pystacia && flake8 . && cd ..
     - nosetests
