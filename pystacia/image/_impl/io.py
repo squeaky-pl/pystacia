@@ -70,7 +70,8 @@ def write(image, filename, format, # @ReservedAssignment
         format = splitext(filename)[1][1:].lower()  # @ReservedAssignment
 
     if flatten == None:
-        flatten = format not in ('png', 'tiff', 'tif', 'bmp', 'gif')
+        flatten = (image.type.name.endswith('matte') and
+                   format not in ('png', 'tiff', 'tif', 'bmp', 'gif'))
 
     if not background:
         background = 'white'

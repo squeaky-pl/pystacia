@@ -32,14 +32,12 @@ PYSTACIA in front
 - keep track of showed temp files and delete them on exit
 - rgba8 color factory, and accessors [0.1.1]
 - support for with protocol [0.1.1]
-- info method (returns all the crucial magick informations along with loaded libraries and paths)
 - implement other color factories [0.2]
 - implement better show tool detecting (doesnt work with unity) and fallback to webbrowser [0.2]
 - allow overriding viewer wiith TINYIMG_VIEWER env var
 - containers vs formats
 - bench script to test under different version of python [0.2]
 - pixel iterators [0.2]
-- ping [0.2]
 - show should accept zoom factor, passed to resize with point filter, and crop information [0.2]
 - show for color creates 32x32 image with color preview [0.2]
 - [0.2] cmyk setters and getters
@@ -51,7 +49,7 @@ PYSTACIA in front
 - wave needs phi
 - copy parameter to each function as kw, along blend
 - blending gravity
-- checker in show, zoom, crop
+- show should be able to zoom, crop
 - > and < on color lightness comparison
 
 not documented: splice
