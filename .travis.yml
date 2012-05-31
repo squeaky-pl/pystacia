@@ -4,7 +4,7 @@ python:
     - "2.6"
     - "2.7"
     - "3.2"
-#    - "pypy"
+    - "pypy"
 install:
     - if [[ `python -c "import sys; print(int(sys.version_info < (2, 7)))"` == "1" ]]; then pip install --use-mirrors unittest2; fi
     - pip install -v --use-mirrors .
