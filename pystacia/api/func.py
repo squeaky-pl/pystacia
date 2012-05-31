@@ -114,6 +114,8 @@ def get_data():
             'symbols': {
                 'read': ((ch,), b),
                 'write': ((ch,), b),
+                'ping': ((ch,), b),
+                ('ping', 'blob'): ((ch, s), b),
                 ('read', 'blob'): ((ch, s), b),
                 ('get', 'blob'): ((P(s),), v),
 

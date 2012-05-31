@@ -47,7 +47,7 @@ def read(filename, factory=None):
     return io.read(filename, factory=factory)
 
 
-def read_blob(blob, format=None,  # @ReservedAssignment
+def read_blob(blob, format=None, # @ReservedAssignment
               length=None, factory=None):
     """Read :class:`Image` from a blob string or stream with a header.
 
@@ -83,7 +83,7 @@ def read_blob(blob, format=None,  # @ReservedAssignment
     return io.read_blob(blob, format, factory)
 
 
-def read_raw(raw, format, width, height,  # @ReservedAssignment
+def read_raw(raw, format, width, height, # @ReservedAssignment
              depth, factory=None):
     """Read :class:`Image` from raw string or stream.
 
@@ -138,7 +138,7 @@ class Image(Resource):
 
         return value
 
-    def write(self, filename, format=None,  # @ReservedAssignment
+    def write(self, filename, format=None, # @ReservedAssignment
               compression=None, quality=None, flatten=None, background=None):
         """Write an image to filesystem.
 
@@ -168,7 +168,7 @@ class Image(Resource):
         io.write(self, filename, format, compression,
              quality, flatten, background)
 
-    def get_blob(self, format, compression=None,  # @ReservedAssignment
+    def get_blob(self, format, compression=None, # @ReservedAssignment
                  quality=None, factory=None):
         """Return a blob representing an image
 
@@ -501,7 +501,7 @@ class Image(Resource):
 
            This method can be chained.
         """
-        self.modulate(saturation=-1)
+        self.modulate(saturation= -1)
 
     def colorize(self, color):
         """Colorize image.
@@ -520,7 +520,7 @@ class Image(Resource):
 
         overlay.close()
 
-    def sepia(self, threshold=.8, saturation=-.4):
+    def sepia(self, threshold=.8, saturation= -.4):
         """Sepia-tonne an image.
 
            :param threshold: Controls hue. Set to sepia tone by default.
@@ -1078,7 +1078,7 @@ class Image(Resource):
         geometry.splice(self, x, y, width, height)
 
     def __colorspace():  # @NoSelf
-        doc = (  # NOQA
+        doc = (# NOQA
         """Return or set colorspace associated with image.
 
            Sets or gets colorspace. When you set this property there's no
@@ -1101,7 +1101,7 @@ class Image(Resource):
     colorspace = __colorspace()
 
     def __type():  # @ReservedAssignment @NoSelf
-        doc = (  # NOQA
+        doc = (# NOQA
         """Set or get image type.
 
            :rtype: :class:`pystacia.lazyenum.EnumValue`
@@ -1161,6 +1161,16 @@ class Image(Resource):
         return self._get_state('height')
 
     @property
+    def format(self):  # @ReservedAssignment
+        """Get original image format.
+
+           :rtype: ``str``
+
+           Return format image was originally stored in.
+        """
+        return self._get_state('format').lower()
+
+    @property
     def size(self):
         """Return a tuple of image width and height.
 
@@ -1176,7 +1186,7 @@ class Image(Resource):
         return (self.width, self.height)
 
     def __depth():  # @NoSelf
-        doc = (  # NOQA
+        doc = (# NOQA
         """Set or get image depth per channel.
 
            :rtype: ``int``
@@ -1283,14 +1293,15 @@ if not registry.get('no_chains', environ.get('PYSTACIA_NO_CHAINS')):
 from pystacia.image.generic import blank  # prevent circular references
 from pystacia.image._impl import (io, geometry, color as color_impl,
                                  blur as blur_impl, deform, special, pixel)
+from pystacia.image._impl.io import ping, ping_blob
 
 # convenience imports
-from pystacia.image.enum import (types, filters, colorspaces,  # NOQA
+from pystacia.image.enum import (types, filters, colorspaces, # NOQA
                                  compressions, composites, axes, noises,
                                  thresholds, fit_modes)
-from pystacia.image.generic import (checkerboard, noise,  # NOQA
+from pystacia.image.generic import (checkerboard, noise, # NOQA
                                     plasma)
-from pystacia.image.sample import (lena, magick_logo, rose,  # NOQA
+from pystacia.image.sample import (lena, magick_logo, rose, # NOQA
                                    wizard, granite, netscape)
 
 __exclusions = [

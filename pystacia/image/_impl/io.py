@@ -35,6 +35,9 @@ def read_blob(blob, format, factory):  # @ReservedAssignment
     #          lambda: cdll.MagickSetFormat(resource, format),
     #          template.format(format))
 
+    if hasattr(blob, 'read'):
+        blob = blob.read()
+
     c_call(image, ('read', 'blob'), blob, len(blob))
 
     #if format:
@@ -44,7 +47,7 @@ def read_blob(blob, format, factory):  # @ReservedAssignment
     return image
 
 
-def read_raw(raw, format, width, height,  # @ReservedAssignment
+def read_raw(raw, format, width, height, # @ReservedAssignment
              depth, factory=None):
     image = _instantiate(factory)
 
@@ -61,13 +64,13 @@ def read_raw(raw, format, width, height,  # @ReservedAssignment
     return image
 
 
-def write(image, filename, format,  # @ReservedAssignment
+def write(image, filename, format, # @ReservedAssignment
               compression, quality, flatten, background):
     if not format:
-        format = splitext(filename)[1][1:]  # @ReservedAssignment
+        format = splitext(filename)[1][1:].lower()  # @ReservedAssignment
 
     if flatten == None:
-        flatten = format in ('jpg', 'jpeg')
+        flatten = format not in ('png', 'tiff', 'tif', 'bmp', 'gif')
 
     if not background:
         background = 'white'
@@ -81,7 +84,7 @@ def write(image, filename, format,  # @ReservedAssignment
         c_call(image, 'write', filename)
 
 
-def get_blob(image, format, compression,  # @ReservedAssignment
+def get_blob(image, format, compression, # @ReservedAssignment
              quality):
     with state(image, compression=compression, compression_quality=quality):
         format = format.upper()  # @ReservedAssignment
@@ -101,8 +104,43 @@ def get_blob(image, format, compression,  # @ReservedAssignment
 
         return blob
 
+
+def ping(filename):
+    image = _instantiate(None)
+
+    c_call(image, 'ping', filename)
+
+    result = {
+        'width': image.width,
+        'height': image.height,
+        'format': image.format
+    }
+
+    image.close()
+    return result
+
+
+def ping_blob(blob):
+    image = _instantiate(None)
+
+    if hasattr(blob, 'read'):
+        blob = blob.read()
+
+    c_call(image, ('ping', 'blob'), blob, len(blob))
+
+    result = {
+        'width': image.width,
+        'height': image.height,
+        'format': image.format
+    }
+
+    image.close()
+    return result
+
+
 from pystacia.common import state
 from pystacia.image import _instantiate
 from pystacia.image.generic import blank
 from pystacia.api.func import c_call
 from pystacia.api.compat import c_size_t, string_at, byref
+
