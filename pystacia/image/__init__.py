@@ -154,10 +154,11 @@ class Image(Resource):
            Saves an image to disk under given filename, format is determined
            from filename unless specified explicitely. The interpretation of
            quality parameter depends on the chosen format. E.g. for
-           :term:`JPEG` it's a integer number between 1 (worst) and 100 (best)
-           whilst for lossless format like
-           :term:`PNG` 0 means best compression. The default value is to choose
+           :term:`JPEG` it's a integer number between 1 (worst) and 100 (best).
+           The default value is to choose
            best available compression that preserves good quality image.
+           The details are in the `ImageMagick documentation
+           <http://www.imagemagick.org/script/command-line-options.php#quality>`.
 
            >>> img = blank(10, 10)
            >>> img.write('example.jpg')
@@ -185,9 +186,10 @@ class Image(Resource):
            algorithms but typically this parameter is not used.
            The interpretation of quality parameter depends
            on the chosen format. E.g. for :term:`JPEG` it's integer number
-           between 1 (worst) and 100 (best) whilst for lossless format like
-           :term:`PNG` 0 means best compression. The default value is to choose
+           between 1 (worst) and 100 (best). The default value is to choose
            best available compression that preserves good quality image.
+           The details are in the `ImageMagick documentation
+           <http://www.imagemagick.org/script/command-line-options.php#quality>`.
         """
         blob = io.get_blob(self, format, compression, quality)
 
