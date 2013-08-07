@@ -214,7 +214,7 @@ setup(
     version=pystacia.__version__,
     packages=packages,
     license='MIT License',
-    long_description=open('README').read(),
+    long_description=open('README.rst').read(),
     install_requires=install_requires,
     cmdclass=cmdclass,
     classifiers=[
