@@ -31,6 +31,7 @@ def blank(width, height, background=None, factory=None):
 
        Creates blank image of given dimensions filled with background color.
 
+       >>> from pystacia.image import color
        >>> blank(32, 32, color.from_string('red'))
        <Image(w=32,h=32,16bit,rgb,palette) object at 0x108006000L>
     """

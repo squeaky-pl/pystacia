@@ -23,8 +23,9 @@ class state(object):
        _get_state and _set_state contract. Typically used with
        "with" statement.
 
+       >>> resource = Resource(None)
        >>> with state(resource, quality=10, format='png'):
-       >>>    resource.do_sth()
+       ...     resource.do_sth()
     """
 
     def __init__(self, resource, **kw):

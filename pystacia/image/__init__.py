@@ -12,7 +12,7 @@ from tempfile import mkstemp
 from os import environ
 from os.path import exists
 
-from six import callable
+from six import callable as callable_
 
 """:class:`Image` creation and management operations"""
 
@@ -73,7 +73,7 @@ def read_blob(blob, format=None,  # @ReservedAssignment
        to use alternative :class:`Image` subclass.
 
        >>> with file('example.jpg') as f:
-       >>>     img = read_blob(f)
+       ...     img = read_blob(f)
        >>> img
        <Image(w=512,h=512,8bit,rgb,truecolor) object at 0x10302ee00L>
     """
@@ -158,7 +158,8 @@ class Image(Resource):
            The default value is to choose
            best available compression that preserves good quality image.
            The details are in the `ImageMagick documentation
-           <http://www.imagemagick.org/script/command-line-options.php#quality>`.
+           <http://www.imagemagick.org/script/
+           command-line-options.php#quality>`.
 
            >>> img = blank(10, 10)
            >>> img.write('example.jpg')
@@ -189,7 +190,8 @@ class Image(Resource):
            between 1 (worst) and 100 (best). The default value is to choose
            best available compression that preserves good quality image.
            The details are in the `ImageMagick documentation
-           <http://www.imagemagick.org/script/command-line-options.php#quality>`.
+           <http://www.imagemagick.org/script/
+           command-line-options.php#quality>`.
         """
         blob = io.get_blob(self, format, compression, quality)
 
@@ -1134,8 +1136,8 @@ class Image(Resource):
            Converts an image to a given colorspace.
 
            >>> img = read('example.jpg')
-           >>> img.convert_colorspace(colorspace.ycbcr)
-           >>> img.colorspace == colorspace.ycbcr
+           >>> img.convert_colorspace(colorspaces.ycbcr)
+           >>> img.colorspace == colorspaces.ycbcr
            True
 
            This method can be chained.
@@ -1289,7 +1291,7 @@ if not registry.get('no_chains', environ.get('PYSTACIA_NO_CHAINS')):
 
     for key in (key for key in Image.__dict__ if not key.startswith('_')):
         item = Image.__dict__[key]
-        if callable(item) and item.__doc__ and ':rtype:' not in item.__doc__:
+        if callable_(item) and item.__doc__ and ':rtype:' not in item.__doc__:
             setattr(Image, key, chainable(item))
 
 from pystacia.image.generic import blank  # prevent circular references
