@@ -11,7 +11,7 @@ env:
 matrix:
     include:
         - python: 2.7
-          env: PYLAMA=1
+          env: LINT="pylama -l pep8"
 install:
     - if [[ `python -c "import sys; print(int(sys.version_info < (2, 7)))"` == "1" ]]; then pip install --use-mirrors unittest2; fi
     - pip install -v --use-mirrors .
@@ -21,5 +21,5 @@ before_script:
     - PYSTACIA_LOG=1 python -c "from pystacia.api import get_dll; get_dll(False)"
     - python -c "from pystacia import magick; from pprint import pprint; pprint(magick.info())"
 script:
-    - if [[ $TEST == "test" ]]; then nosetests; fi
-    - if [[ $PYLAMA == "1" ]]; then cd pystacia && pylama; fi
+    - if [[ $TEST ]]; then nosetests; fi
+    - if [[ "$LINT" ]]; then cd pystacia && $LINT; fi
