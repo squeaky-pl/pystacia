@@ -70,7 +70,7 @@ class Resource(object):
 
     def __init__(self, resource=None):
         """Construct new instance of resource."""
-        self.__resource = resource if resource is None else self._alloc()
+        self.__resource = resource if resource is not None else self._alloc()
 
         if self.__resource is None:
             tmpl = formattable('{0} _alloc method returned None')
