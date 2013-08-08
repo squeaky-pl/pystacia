@@ -11,7 +11,9 @@ env:
 matrix:
     include:
         - python: 2.7
-          env: LINT="pylama -l pep8"
+          env:
+                - LINT="pylama -l pep8"
+                - LINT="pylama -l pyflakes"
 install:
     - if [[ `python -c "import sys; print(int(sys.version_info < (2, 7)))"` == "1" ]]; then pip install --use-mirrors unittest2; fi
     - pip install -v --use-mirrors .
