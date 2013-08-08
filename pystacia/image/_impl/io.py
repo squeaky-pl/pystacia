@@ -47,7 +47,7 @@ def read_blob(blob, format, factory):  # @ReservedAssignment
     return image
 
 
-def read_raw(raw, format, width, height, # @ReservedAssignment
+def read_raw(raw, format, width, height,  # @ReservedAssignment
              depth, factory=None):
     image = _instantiate(factory)
 
@@ -64,12 +64,12 @@ def read_raw(raw, format, width, height, # @ReservedAssignment
     return image
 
 
-def write(image, filename, format, # @ReservedAssignment
-              compression, quality, flatten, background):
+def write(image, filename, format,  # @ReservedAssignment
+          compression, quality, flatten, background):
     if not format:
         format = splitext(filename)[1][1:].lower()  # @ReservedAssignment
 
-    if flatten == None:
+    if flatten is None:
         flatten = (image.type.name.endswith('matte') and
                    format not in ('png', 'tiff', 'tif', 'bmp', 'gif'))
 
@@ -85,7 +85,7 @@ def write(image, filename, format, # @ReservedAssignment
         c_call(image, 'write', filename)
 
 
-def get_blob(image, format, compression, # @ReservedAssignment
+def get_blob(image, format, compression,  # @ReservedAssignment
              quality):
     with state(image, compression=compression, compression_quality=quality):
         format = format.upper()  # @ReservedAssignment
@@ -144,4 +144,3 @@ from pystacia.image import _instantiate
 from pystacia.image.generic import blank
 from pystacia.api.func import c_call
 from pystacia.api.compat import c_size_t, string_at, byref
-

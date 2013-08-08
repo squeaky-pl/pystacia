@@ -28,9 +28,8 @@ def set_string(color, value):
         c_call(color, 'set_color', value)
     except PystaciaException:
         info = exc_info()
-        e = info[1].args[0]
-        if (e.startswith('unrecognized color') or
-            e.startswith('UnrecognizedColor')):
+        matches = info[1].args[0].startswith
+        if matches('unrecognized color') or matches('UnrecognizedColor'):
             raise PystaciaException('Unknown color string representation')
 
         reraise(*info)

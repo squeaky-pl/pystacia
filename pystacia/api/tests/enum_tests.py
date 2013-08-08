@@ -15,7 +15,7 @@ class Enum(TestCase):
 
         self.assertEqual(lookup(composite.non_existant,
                                 version=(6, 6), throw=False),
-                          None)
+                         None)
         self.assertRaisesRegexp(PystaciaException, 'cannot map mnemonic',
                                 lambda: lookup(composite.non_existant,
                                                version=(6, 0)))
@@ -23,7 +23,7 @@ class Enum(TestCase):
                                 version=(6, 6, 2, 10)), 0)
         self.assertEqual(lookup(composite.undefined,
                                 version=(2, 6), throw=False),
-                          None)
+                         None)
         self.assertEqual(lookup(composite.undefined,
                                 version=(6, 7, 2, 8)), 0)
         self.assertEqual(lookup(composite.darken_intensity,

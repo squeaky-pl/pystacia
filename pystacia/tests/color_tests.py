@@ -48,7 +48,7 @@ class ColorTest(TestCase):
         self.assertEqual(color.cast('violet'), color.from_string('violet'))
         self.assertEqual(color.cast((0, 1, 0)), color.from_rgb(0, 1, 0))
         self.assertEqual(color.cast((0, 1, 1, 0.5)),
-                          color.from_rgba(0, 1, 1, 0.5))
+                         color.from_rgba(0, 1, 1, 0.5))
         self.assertRaisesRegexp(PystaciaException, 'Cannot cast',
                                 lambda: color.cast((0, 1)))
         self.assertRaisesRegexp(PystaciaException, 'Cannot cast',
@@ -123,7 +123,7 @@ class ColorTest(TestCase):
             rgba = x.get_rgba()
             float_re = '(\d(\.\d+)?)'
             regexp = (formattable('<Color\(r={0},g={0},b={0},a={0}\)').
-                format(float_re))
+                      format(float_re))
             result = match(regexp, repr(x))
             groups = tuple(float(v) for i, v in
                            enumerate(result.groups()) if not i % 2)

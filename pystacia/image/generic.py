@@ -16,8 +16,7 @@ def checkerboard(width, height, factory=None):
        :type height: ``int``
        :rtype: :class:`pystacia.image.Image` or factory
     """
-    return io.read('pattern:checkerboard',
-                                width, height, factory)
+    return io.read('pattern:checkerboard', width, height, factory)
 
 
 def blank(width, height, background=None, factory=None):
@@ -38,8 +37,7 @@ def blank(width, height, background=None, factory=None):
     if not background:
         background = 'transparent'
 
-    return io.read('xc:' + str(background),
-                width, height, factory)
+    return io.read('xc:' + str(background), width, height, factory)
 
 
 def noise(width, height, grayscale=False, factory=None):

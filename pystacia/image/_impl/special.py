@@ -8,7 +8,7 @@
 
 
 def sketch(image, radius, angle, strength):
-    if strength == None:
+    if strength is None:
         strength = radius
 
     c_call(image, 'sketch', radius, strength, angle)
@@ -28,9 +28,9 @@ def oil_paint(image, radius):
 
 
 def charcoal(image, radius, strength, bias):
-    if strength == None:
+    if strength is None:
         strength = radius
-    if bias == None:
+    if bias is None:
         bias = 0
 
     c_call(image, 'charcoal', radius, strength, bias)

@@ -37,7 +37,7 @@ class state(object):
         resource = self.__resource
 
         for prop, value in self.__kw.items():
-            if value == None:
+            if value is None:
                 continue
             old_value = resource._get_state(prop)
             self.__state.append((prop, old_value))
@@ -70,9 +70,9 @@ class Resource(object):
 
     def __init__(self, resource=None):
         """Construct new instance of resource."""
-        self.__resource = resource if resource != None else self._alloc()
+        self.__resource = resource if resource is None else self._alloc()
 
-        if self.__resource == None:
+        if self.__resource is None:
             tmpl = formattable('{0} _alloc method returned None')
             raise PystaciaException(tmpl.format(self.__class__.__name__))
 
@@ -106,7 +106,7 @@ class Resource(object):
         if isinstance(resource, Resource):
             resource = resource._claim()
 
-        if resource == None:
+        if resource is None:
             raise PystaciaException('Replacement resource cannot be None')
 
         self._free()
@@ -126,7 +126,7 @@ class Resource(object):
         """Get independent copy of this resource."""
         resource = self._clone()
 
-        if resource == None:
+        if resource is None:
             tmpl = formattable('{0} _clone method returned None')
             raise PystaciaException(tmpl.format(self.__class__.__name__))
 
@@ -139,7 +139,7 @@ class Resource(object):
            Returns ``True`` if object is no longer usable i.e.
            :meth:``pystacia.common.Resource.close`` has been called.
         """
-        return self.__resource == None
+        return self.__resource is None
 
     @property
     def resource(self):
@@ -149,7 +149,7 @@ class Resource(object):
            can use with :term:`ctypes` calls directly. It can be useful
            when you want to perform custom operations.
         """
-        if self.__resource == None:
+        if self.__resource is None:
             tmpl = formattable('{0} already closed.')
             raise PystaciaException(tmpl.format(self.__class__.__name__))
 

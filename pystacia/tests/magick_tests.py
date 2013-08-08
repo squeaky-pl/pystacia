@@ -24,5 +24,5 @@ class MagickTest(TestCase):
         self.assertIn('bmp', formats)
 
 
-from pystacia.magick import (get_options, get_version, get_version_str,
-                            get_formats)
+from pystacia.magick import (
+    get_options, get_version, get_version_str, get_formats)

@@ -13,8 +13,8 @@ from pystacia.compat import jython
 
 if jython:
     from ctypes import c_ssize_t  # @UnusedImport
-    from pystacia.api.jnatypes import (c_void_p, POINTER, find_library,
-                                      string_at, CDLL)  # @UnusedImport
+    from pystacia.api.jnatypes import (
+        c_void_p, POINTER, find_library, string_at, CDLL)  # @UnusedImport
 else:
     from ctypes import c_void_p, POINTER, string_at, CDLL  # NOQA
     from ctypes.util import find_library  # NOQA

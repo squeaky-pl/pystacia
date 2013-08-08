@@ -79,7 +79,7 @@ class DeprecationTest(TestCase):
                      'compressions', 'axes']
             for name in names:
                 self.assertEqual(getattr(pystacia, name).x,
-                                  getattr(image, name).x)
+                                 getattr(image, name).x)
                 self.assertTrue(name in w[-1].message.args[0])
 
 from pystacia import image

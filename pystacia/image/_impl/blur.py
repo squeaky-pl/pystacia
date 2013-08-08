@@ -8,61 +8,61 @@
 
 
 def blur(image, radius, strength):
-    if strength == None:
+    if strength is None:
         strength = radius
 
     c_call(image, 'blur', radius, strength)
 
 
 def gaussian_blur(image, radius, strength, bias):
-    if strength == None:
+    if strength is None:
         strength = radius
 
-    if bias == None:
+    if bias is None:
         bias = 0
 
     c_call(image, 'gaussian_blur', radius, strength, bias)
 
 
 def motion_blur(image, radius, angle, strength, bias):
-    if strength == None:
+    if strength is None:
         strength = radius
 
-    if bias == None:
+    if bias is None:
         bias = 0
 
     c_call(image, 'motion_blur', radius, strength, angle, bias)
 
 
 def adaptive_blur(image, radius, strength, bias):
-    if strength == None:
+    if strength is None:
         strength = radius
-    if bias == None:
+    if bias is None:
         bias = 0
 
     c_call(image, 'adaptive_blur', radius, strength, bias)
 
 
 def sharpen(image, radius, strength, bias):
-    if strength == None:
+    if strength is None:
         strength = radius
-    if bias == None:
+    if bias is None:
         bias = 0
 
     c_call(image, 'sharpen', radius, strength, bias)
 
 
 def adaptive_sharpen(image, radius, strength, bias):
-    if strength == None:
+    if strength is None:
         strength = radius
-    if bias == None:
+    if bias is None:
         bias = 0
 
     c_call(image, 'adaptive_sharpen', radius, strength, bias)
 
 
 def detect_edges(image, radius, strength):
-    if strength == None:
+    if strength is None:
         strength = radius
 
     c_call(image, 'edge', radius, strength)
@@ -116,7 +116,7 @@ def emboss(image, radius, strength):
 
        This method can be chained.
     """
-    if strength == None:
+    if strength is None:
         strength = radius
 
     c_call(image, 'emboss', radius, strength)

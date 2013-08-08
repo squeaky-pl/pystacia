@@ -15,7 +15,7 @@ class FuncTest(TestCase):
 
         self.assertRaises(PystaciaException,
                           lambda: c_call('magick', 'set_format',
-                                              img, 'lolz'))
+                                         img, 'lolz'))
         c_call('magick', 'set_format', img, 'bmp')
 
         img.close()

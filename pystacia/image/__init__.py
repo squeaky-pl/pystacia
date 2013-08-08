@@ -47,7 +47,7 @@ def read(filename, factory=None):
     return io.read(filename, factory=factory)
 
 
-def read_blob(blob, format=None, # @ReservedAssignment
+def read_blob(blob, format=None,  # @ReservedAssignment
               length=None, factory=None):
     """Read :class:`Image` from a blob string or stream with a header.
 
@@ -83,7 +83,7 @@ def read_blob(blob, format=None, # @ReservedAssignment
     return io.read_blob(blob, format, factory)
 
 
-def read_raw(raw, format, width, height, # @ReservedAssignment
+def read_raw(raw, format, width, height,  # @ReservedAssignment
              depth, factory=None):
     """Read :class:`Image` from raw string or stream.
 
@@ -138,7 +138,7 @@ class Image(Resource):
 
         return value
 
-    def write(self, filename, format=None, # @ReservedAssignment
+    def write(self, filename, format=None,  # @ReservedAssignment
               compression=None, quality=None, flatten=None, background=None):
         """Write an image to filesystem.
 
@@ -166,10 +166,10 @@ class Image(Resource):
 
            This method can be chained.
         """
-        io.write(self, filename, format, compression,
-             quality, flatten, background)
+        io.write(
+            self, filename, format, compression, quality, flatten, background)
 
-    def get_blob(self, format, compression=None, # @ReservedAssignment
+    def get_blob(self, format, compression=None,  # @ReservedAssignment
                  quality=None, factory=None):
         """Return a blob representing an image
 
@@ -215,7 +215,7 @@ class Image(Resource):
                     depth=self.depth)
 
     def rescale(self, width=None, height=None,
-               factor=None, filter=None, blur=1):  # @ReservedAssignment
+                factor=None, filter=None, blur=1):  # @ReservedAssignment
         """Rescales an image to given dimensions.
 
            :param width: Width of resulting image
@@ -503,7 +503,7 @@ class Image(Resource):
 
            This method can be chained.
         """
-        self.modulate(saturation= -1)
+        self.modulate(saturation=-1)
 
     def colorize(self, color):
         """Colorize image.
@@ -522,7 +522,7 @@ class Image(Resource):
 
         overlay.close()
 
-    def sepia(self, threshold=.8, saturation= -.4):
+    def sepia(self, threshold=.8, saturation=-.4):
         """Sepia-tonne an image.
 
            :param threshold: Controls hue. Set to sepia tone by default.
@@ -1293,9 +1293,10 @@ if not registry.get('no_chains', environ.get('PYSTACIA_NO_CHAINS')):
             setattr(Image, key, chainable(item))
 
 from pystacia.image.generic import blank  # prevent circular references
-from pystacia.image._impl import (io, geometry, color as color_impl,
-                                 blur as blur_impl, deform, special, pixel)
-from pystacia.image._impl.io import ping, ping_blob
+from pystacia.image._impl import (
+    io, geometry, color as color_impl, blur as blur_impl, deform, special,
+    pixel)
+from pystacia.image._impl.io import ping, ping_blob  # NOQA
 
 # convenience imports
 from pystacia.image.enum import (types, filters, colorspaces, # NOQA

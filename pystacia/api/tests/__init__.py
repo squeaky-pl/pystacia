@@ -69,7 +69,7 @@ class FindLibraryTest(TestCase):
         self.assertEqual(
             find_library('Foo', (2, 1, None), environ,
                          '_dummy_os', MockFactory()),
-                         None)
+            None)
 
     def test_order(self):
         environ = self.environ

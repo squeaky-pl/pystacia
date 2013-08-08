@@ -31,7 +31,7 @@ def auto_level(image):
 
 def modulate(image, hue, saturation, lightness):
     c_call(image, 'modulate', lightness * 100 + 100, saturation * 100 + 100,
-                              hue * 100 + 100)
+           hue * 100 + 100)
 
 
 def sepia(image, threshold, saturation):

@@ -322,8 +322,8 @@ class WithSample(TestCase):
         img.brightness(0)
         self.assertEqual(img.get_pixel(*coords), before)
         img.brightness(0.5)
-        self.assertGreaterEqual(img.get_pixel(*coords).get_rgba(),
-                           before.get_rgba())
+        self.assertGreaterEqual(
+            img.get_pixel(*coords).get_rgba(), before.get_rgba())
 
     def test_brightness_darken(self):
         img = self.img
@@ -331,8 +331,8 @@ class WithSample(TestCase):
         coords = (40, 40)
         before = img.get_pixel(*coords)
         img.brightness(-0.5)
-        self.assertLessEqual(img.get_pixel(*coords).get_rgba(),
-                        before.get_rgba())
+        self.assertLessEqual(
+            img.get_pixel(*coords).get_rgba(), before.get_rgba())
         img.brightness(-1)
         self.assertEqual(img.get_pixel(*coords), color.from_string('black'))
         img.brightness(1)
@@ -428,8 +428,9 @@ class WithSample(TestCase):
         img.solarize(0)
         self.assertEqual(img.get_pixel(256, 256), before)
         img.solarize(1)
-        self.assertEqual(img.get_pixel(256, 256).get_rgb(),
-                          tuple(round(1 - x, 4) for x in before.get_rgb()))
+        self.assertEqual(
+            img.get_pixel(256, 256).get_rgb(),
+            tuple(round(1 - x, 4) for x in before.get_rgb()))
 
     # test only if it doesnt blow up
     def test_normalize(self):
@@ -737,8 +738,8 @@ class ThreadedTest(TestCase):
 
 
 from pystacia.util import PystaciaException
-from pystacia.image import (read, read_raw, read_blob, types,
-                           colorspaces, blank, axes, checkerboard)
+from pystacia.image import (
+    read, read_raw, read_blob, types, colorspaces, blank, axes, checkerboard)
 from pystacia import color, registry, magick
 from pystacia.tests.common import sample, sample_type, sample_size
 from random import randint

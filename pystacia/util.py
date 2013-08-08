@@ -38,7 +38,7 @@ class Registry(object):
         if lock:
             self._lock(key)
 
-        if override != None:
+        if override is not None:
             return override
 
         if key in self.__dict__:
