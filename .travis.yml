@@ -21,5 +21,5 @@ before_script:
     - PYSTACIA_LOG=1 python -c "from pystacia.api import get_dll; get_dll(False)"
     - python -c "from pystacia import magick; from pprint import pprint; pprint(magick.info())"
 script:
-    - if [[ $TEST == "test" ]]; nosetests
-    - if [[ $PYLAMA == "1" ]]; cd pystacia && pylama
+    - if [[ $TEST == "test" ]]; then nosetests; fi
+    - if [[ $PYLAMA == "1" ]]; then cd pystacia && pylama; fi
