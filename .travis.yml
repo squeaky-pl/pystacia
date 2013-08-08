@@ -8,11 +8,11 @@ python:
 install:
     - if [[ `python -c "import sys; print(int(sys.version_info < (2, 7)))"` == "1" ]]; then pip install --use-mirrors unittest2; fi
     - pip install -v --use-mirrors .
-    - pip install --use-mirrors flake8
+    - pip install --use-mirrors pylama
 before_script:
     - python symlinkcdll.py
     - PYSTACIA_LOG=1 python -c "from pystacia.api import get_dll; get_dll(False)"
     - python -c "from pystacia import magick; from pprint import pprint; pprint(magick.info())"
 script:
-    - cd pystacia && flake8 --exit-zero . && cd ..
     - nosetests
+    - cd pystacia && pylama
