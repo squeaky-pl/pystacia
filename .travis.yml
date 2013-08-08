@@ -11,13 +11,15 @@ env:
 matrix:
     include:
         - python: 2.7
-          env:
-                - LINT="pylama -l pep8"
-                - LINT="pylama -l pyflakes"
+          env: LINT="pylama"
+        - python: 2.7
+          env: LINT="pylama -l pylint"
+        - python: 2.7
+          env: LINT='find . -name "*.py" | xargs py3kwarn'
 install:
     - if [[ `python -c "import sys; print(int(sys.version_info < (2, 7)))"` == "1" ]]; then pip install --use-mirrors unittest2; fi
     - pip install -v --use-mirrors .
-    - pip install --use-mirrors pylama
+    - pip install --use-mirrors pylama py3kwarn
 before_script:
     - python symlinkcdll.py
     - PYSTACIA_LOG=1 python -c "from pystacia.api import get_dll; get_dll(False)"
