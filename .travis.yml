@@ -6,6 +6,8 @@ python:
     - "3.2"
     - "3.3"
     - "pypy"
+env:
+    - TEST=test
 matrix:
     include:
         - python: 2.7
@@ -19,5 +21,5 @@ before_script:
     - PYSTACIA_LOG=1 python -c "from pystacia.api import get_dll; get_dll(False)"
     - python -c "from pystacia import magick; from pprint import pprint; pprint(magick.info())"
 script:
-    - nosetests
-    - cd pystacia && pylama
+    - if [[ $TEST == "test" ]]; nosetests
+    - if [[ $PYLAMA == "1" ]]; cd pystacia && pylama
