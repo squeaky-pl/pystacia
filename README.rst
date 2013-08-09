@@ -10,4 +10,5 @@ ImageMagick library with Python style & taste.
 Build status
 ============
 
-.. image:: https://travis-ci.org/squeaky-pl/pystacia.png?branch=master   :target: https://travis-ci.org/squeaky-pl/pystacia
+.. image:: https://travis-ci.org/squeaky-pl/pystacia.png?branch=master
+   :target: https://travis-ci.org/squeaky-pl/pystacia
