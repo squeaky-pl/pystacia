@@ -13,4 +13,4 @@ ImageMagick library with Python style & taste.
    :target: https://crate.io/packages/pystacia
 
 .. image:: https://pypip.in/d/pystacia/badge.png
-   :target: https://create.io/packages/pystacia
+   :target: https://crate.io/packages/pystacia
