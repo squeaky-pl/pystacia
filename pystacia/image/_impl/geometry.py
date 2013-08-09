@@ -40,6 +40,19 @@ def rescale(image, width, height, factor, filter, blur):  # @ReservedAssignment
     c_call(image, 'resize', width, height, enum_lookup(filter, filters), blur)
 
 
+def _calculate_mode(image, width, height, mode):
+    ratio = width / image.width
+
+    if mode == 'in':
+        if image.width * ratio > width or image.height * ratio > height:
+            ratio = height / image.height
+    elif mode == 'out':
+        if image.height * ratio < height:
+            ratio = height / image.height
+
+    return width * ratio, height * ratio
+
+
 def fit(image, width, height, mode,
         upscale, filter, blur):  # @ReservedAssignment
     width_, height_ = _proportionally(image, width, height)
@@ -50,23 +63,15 @@ def fit(image, width, height, mode,
         if not width or not height:
             return rescale(image, width, height, None, filter, blur)
 
+    background = blank(width, height)
+
     if not mode:
         mode = 'in'
 
     if not smaller or upscale:
-        ratio = width / image.width
+        width, height = _calculate_mode(image, width, height, mode)
 
-        if mode == 'in':
-            if image.width * ratio > width or image.height * ratio > height:
-                ratio = height / image.height
-        elif mode == 'out':
-            if image.height * ratio < height:
-                ratio = height / image.height
-
-        rescale(image, image.width * ratio, image.height * ratio, None,
-                filter, blur)
-
-    background = blank(width, height)
+        rescale(image, width, height, None, filter, blur)
 
     x, y = ((background.width - image.width) / 2,
             (background.height - image.height) / 2)
