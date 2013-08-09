@@ -1,6 +1,7 @@
 py.test
 drop distutils solo, always expect setuptools
 drop python 2.5 (@property, delete StringFormat, delete from future import with)
+grep -r "except" -A 1 . and convert to except Exception as e
 evaluate CFFI on Windows, IronPython and Jython
 make pylint happy with some exclusions
 
