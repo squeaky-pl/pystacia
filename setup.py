@@ -7,7 +7,7 @@
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 from os import makedirs, remove, environ
-from os.path import exists, join
+from os.path import exists, join, abspath, dirname
 from tempfile import gettempdir
 from hashlib import md5
 from shutil import rmtree
@@ -135,7 +135,7 @@ class pystacia_build(build):
             return result
 
         filename = ('imagick-' + magick_version + '-' +
-                       pystacia_get_platform() + '.zip')
+                    pystacia_get_platform() + '.zip')
 
         if filename not in binaries:
             self.warn('==> Couldnt find binary Imagick for your platform')
@@ -205,6 +205,10 @@ cmdclass = dict(build=pystacia_build,
                 install=pystacia_install)
 
 
+readme = open(join(dirname(abspath(__file__)), 'README.rst'))
+long_description = readme.read()
+readme.close()
+
 setup(
     name='pystacia',
     description='Python raster imaging library',
@@ -214,19 +218,19 @@ setup(
     version=pystacia.__version__,
     packages=packages,
     license='MIT License',
-    long_description=open('README.rst').read(),
+    long_description=long_description,
     install_requires=install_requires,
     cmdclass=cmdclass,
     classifiers=[
-          'Development Status :: 4 - Beta',
-          'Intended Audience :: Developers',
-          'License :: OSI Approved :: MIT License',
-          'Operating System :: POSIX :: Linux',
-          'Operating System :: MacOS :: MacOS X',
-          'Operating System :: Microsoft :: Windows',
-          'Operating System :: POSIX',
-          'Programming Language :: Python',
-          'Programming Language :: Python :: 3',
-          'Topic :: Multimedia :: Graphics',
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: POSIX :: Linux',
+        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Topic :: Multimedia :: Graphics',
     ],
 )
