@@ -22,11 +22,12 @@ matrix:
 install:
     - if [[ `python -c "import sys; print(int(sys.version_info < (2, 7)))"` == "1" ]]; then pip install --use-mirrors unittest2; fi
     - pip install -v --use-mirrors .
+    - if [[ $TEST ]]; then pip install coverage; fi
     - if [[ "$LINT" ]]; then pip install --use-mirrors pylama py3kwarn; fi
 before_script:
     - python symlinkcdll.py
     - PYSTACIA_LOG=1 python -c "from pystacia.api import get_dll; get_dll(False)"
     - python -c "from pystacia import magick; from pprint import pprint; pprint(magick.info())"
 script:
-    - if [[ $TEST ]]; then nosetests; fi
+    - if [[ $TEST ]]; then nosetests --with-coverage; fi
     - if [[ "$LINT" ]]; then cd pystacia && bash -c "$LINT"; fi
