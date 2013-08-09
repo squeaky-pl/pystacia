@@ -16,6 +16,9 @@ matrix:
           env: LINT="pylama -l pylint"
         - python: 2.7
           env: LINT='find . -name "*.py" -exec py3kwarn {} +'
+    allow_failures:
+        - python: 2.7
+        - env: LINT="pylama -l pylint"
 install:
     - if [[ `python -c "import sys; print(int(sys.version_info < (2, 7)))"` == "1" ]]; then pip install --use-mirrors unittest2; fi
     - pip install -v --use-mirrors .

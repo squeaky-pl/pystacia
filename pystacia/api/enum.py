@@ -752,7 +752,7 @@ def reverse_lookup(enum, value, version=None):
     for entry in data.get(enum.name, []):
         if entry['_version'] > version:
             break
-        lookup = dict(zip(entry.values(), entry.keys()))
+        lookup = dict((entry[k], k) for k in entry)
         mnemonic = getattr(enum, lookup.get(value))
 
     return mnemonic
