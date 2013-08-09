@@ -22,7 +22,7 @@ matrix:
 install:
     - if [[ `python -c "import sys; print(int(sys.version_info < (2, 7)))"` == "1" ]]; then pip install --use-mirrors unittest2; fi
     - pip install -v --use-mirrors .
-    - if [[ $TEST ]]; then pip install coverage; fi
+    - if [[ $TEST ]]; then pip install --use-mirrors coverage coveralls; fi
     - if [[ "$LINT" ]]; then pip install --use-mirrors pylama py3kwarn; fi
 before_script:
     - python symlinkcdll.py
@@ -31,3 +31,5 @@ before_script:
 script:
     - if [[ $TEST ]]; then nosetests --with-coverage --cover-package=pystacia; fi
     - if [[ "$LINT" ]]; then cd pystacia && bash -c "$LINT"; fi
+after_success:
+    - coveralls
