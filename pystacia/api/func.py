@@ -42,15 +42,6 @@ def get_c_method(api_type, method, throw=True):
     return method_name, c_method
 
 
-def annote():
-    dll = get_dll()
-
-    for class_, funcs in metadata.items():
-        for name in funcs['symbols']:
-            get_c_method(class_, name)
-
-    return dll
-
 if pypy:
     __lock = Lock()
 
