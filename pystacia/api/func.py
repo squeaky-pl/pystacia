@@ -8,7 +8,7 @@
 
 from threading import Lock
 
-from six import string_types, b as bytes_, text_type
+from six import b as bytes_, text_type
 
 from pystacia.util import memoized
 from pystacia.compat import pypy
@@ -45,7 +45,7 @@ def get_c_method(api_type, method, throw=True):
 def annote():
     dll = get_dll()
 
-    for class_, funcs in get_data().items():
+    for class_, funcs in metadata.items():
         for name in funcs['symbols']:
             get_c_method(class_, name)
 
@@ -53,6 +53,57 @@ def annote():
 
 if pypy:
     __lock = Lock()
+
+
+def handle_result(result, restype, args, argtypes):
+    if restype == c_char_p:
+        result = native_str(result)
+    if restype in (c_uint, c_ssize_t, c_size_t):
+        result = int(result)
+    elif restype == enum and not jython:
+        result = result.value
+    elif restype == MagickBoolean and not result:
+        exc_type = ExceptionType()
+
+        if argtypes[0] == MagickWand_p:
+            klass = 'magick'
+        elif argtypes[0] == PixelWand_p:
+            klass = 'pixel'
+
+        description = c_call(klass, 'get_exception', args[0], byref(exc_type))
+        try:
+            raise PystaciaException(native_str(string_at(description)))
+        finally:
+            c_call('magick_', 'relinquish_memory', description)
+
+    return result
+
+
+def prepare_args(c_method, obj, args):
+    keep_ = []
+    args_ = []
+    should_lock = False
+
+    if isinstance(obj, Resource):
+        args = (obj,) + args
+
+    for arg, type in zip(args, c_method.argtypes):  # @ReservedAssignment
+        if type == c_char_p:
+            should_lock = True
+            if isinstance(arg, text_type):
+                arg = bytes_(arg)
+        elif type in (c_size_t, c_ssize_t, c_uint):
+            arg = int(arg)
+        elif type == PixelWand_p and not isinstance(arg, PixelWand_p):
+            arg = color_cast(arg)
+            keep_.append(arg)
+
+        if isinstance(arg, Resource):
+            arg = arg.resource
+
+        args_.append(arg)
+
+    return keep_, args_, should_lock
 
 
 def c_call(obj, method, *args, **kw):
@@ -74,33 +125,13 @@ def c_call(obj, method, *args, **kw):
     if init:
         get_dll()
 
-    if isinstance(obj, Resource):
-        args = (obj,) + args
-
     # if objects are casted here and then
     # there is only their resource passed
     # there is a risk that GC will collect
     # them and __del__ will be called between
     # driving Imagick to SIGSEGV
     # lets keep references to them
-    keep_ = []
-    args_ = []
-    should_lock = False
-    for arg, type in zip(args, c_method.argtypes):  # @ReservedAssignment
-        if type == c_char_p:
-            should_lock = True
-            if isinstance(arg, text_type):
-                arg = bytes_(arg)
-        elif type in (c_size_t, c_ssize_t, c_uint):
-            arg = int(arg)
-        elif type == PixelWand_p:
-            arg = color_cast(arg)
-            keep_.append(arg)
-
-        if isinstance(arg, Resource):
-            arg = arg.resource
-
-        args_.append(arg)
+    keep_, args_, should_lock = prepare_args(c_method, obj, args)
 
     msg = formattable('Calling {0}')
     logger.debug(msg.format(method_name))
@@ -113,34 +144,18 @@ def c_call(obj, method, *args, **kw):
     if pypy and should_lock:
         __lock.release()
 
-    if c_method.restype == c_char_p:
-        result = native_str(result)
-    if c_method.restype in (c_uint, c_ssize_t, c_size_t):
-        result = int(result)
-    elif c_method.restype == enum and not jython:
-        result = result.value
-    elif c_method.restype == MagickBoolean and not result:
-        exc_type = ExceptionType()
+    del keep_
 
-        if c_method.argtypes[0] == MagickWand_p:
-            class_ = 'magick'
-        elif c_method.argtypes[0] == PixelWand_p:
-            class_ = 'pixel'
+    return handle_result(
+        result, c_method.restype, args_, c_method.argtypes)
 
-        description = c_call(class_, 'get_exception', args[0], byref(exc_type))
-        try:
-            raise PystaciaException(native_str(string_at(description)))
-        finally:
-            c_call('magick_', 'relinquish_memory', description)
-
-    return result
 
 from pystacia.util import PystaciaException
 from pystacia.compat import native_str, formattable, jython
 from pystacia.api import get_dll, logger
 from pystacia.api.type import (
     MagickWand_p, PixelWand_p, MagickBoolean, ExceptionType, enum)
-from pystacia.api.compat import (c_char_p, c_void_p, POINTER, c_size_t,
-                                 c_double, c_uint, string_at, c_ssize_t, byref)
+from pystacia.api.compat import (
+    c_char_p, c_size_t, c_uint, string_at, c_ssize_t, byref)
 from pystacia.common import Resource
 from pystacia.color import cast as color_cast
