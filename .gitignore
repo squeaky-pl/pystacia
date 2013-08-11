@@ -3,3 +3,4 @@ pystacia.egg-info/
 .coverage
 
 tool/downloads
+tool/data.py
