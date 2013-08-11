@@ -44,6 +44,19 @@ enums = {
     'type': ('ImageType', len('Type'), image_type),
 }
 
+fixes = {
+    'composite': {
+        'add': 'modulus_add',
+        'subtract': 'modulus_subtract',
+        'minus': 'minus_dst',
+        'divide': 'divide_dst'
+    },
+    'filter': {
+        'bessel': 'jinc',
+        'lanczos2_d': 'lanczos2'
+    }
+}
+
 
 def process(directory):
     preprocessed = check_output([
@@ -71,7 +84,13 @@ def process(directory):
             names.pop()
             values.pop()
 
-        result[enum] = dict(zip(names, filled()))
+        zipped = dict(zip(names, filled()))
+
+        for name, rename in fixes.get(enum, {}).items():
+            if name in zipped:
+                zipped[rename] = zipped.pop(name)
+
+        result[enum] = zipped
 
     return result
 
