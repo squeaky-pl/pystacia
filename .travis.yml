@@ -16,6 +16,8 @@ matrix:
           env: LINT="pylama -l pylint"
         - python: 2.7
           env: LINT='find . -name "*.py" -exec py3kwarn {} +'
+        - python: 2.7
+          env: LINT='clonedigger . || html2rest output.html'
     allow_failures:
         - python: 2.7
         - env: LINT="pylama -l pylint"
@@ -23,7 +25,7 @@ install:
     - if [[ `python -c "import sys; print(int(sys.version_info < (2, 7)))"` == "1" ]]; then pip install --use-mirrors unittest2; fi
     - pip install -v --use-mirrors .
     - if [[ $TEST && $TRAVIS_PYTHON_VERSION != '2.5' ]]; then pip install --use-mirrors coverage coveralls; fi
-    - if [[ "$LINT" ]]; then pip install --use-mirrors pylama py3kwarn; fi
+    - if [[ "$LINT" ]]; then pip install --use-mirrors pylama py3kwarn clonedigger html2rest; fi
 before_script:
     - python symlinkcdll.py
     - PYSTACIA_LOG=1 python -c "from pystacia.api import get_dll; get_dll(False)"
