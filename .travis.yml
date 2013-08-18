@@ -35,4 +35,7 @@ script:
     - if [[ $TEST && $TRAVIS_PYTHON_VERSION == '2.5' ]]; then nosetests; fi
     - if [[ "$LINT" ]]; then cd pystacia && bash -c "$LINT"; fi
 after_success:
-    - coveralls
+    - if [[ $TEST ]]; then coveralls; fi
+notifications:
+    email: false
+

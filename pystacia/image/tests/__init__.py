@@ -543,19 +543,6 @@ class WithSample(TestCase):
         img.fill(red)
         self.assertEqual(img.get_pixel(40, 40), red)
 
-    def test_get_pixel_red(self):
-        img = blank(5, 5, color.from_string('red'))
-        self.assertEqual(img.get_pixel(0, 0), color.from_string('red'))
-        img.close()
-
-        img = blank(5, 5, color.from_string('blue'))
-        self.assertEqual(img.get_pixel(0, 1), color.from_string('blue'))
-        img.close()
-
-        img = blank(5, 5, color.from_string('white'))
-        self.assertEqual(img.get_pixel(1, 1), color.from_string('white'))
-        img.close()
-
     def test_splice(self):
         img = self.img
 
