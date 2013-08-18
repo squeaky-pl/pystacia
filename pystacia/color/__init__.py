@@ -369,7 +369,6 @@ def cast(value):
     raise PystaciaException(template.format(value))
 
 
-from pystacia.compat import formattable
 from pystacia.color import _impl as impl
 from pystacia.util import PystaciaException
 
