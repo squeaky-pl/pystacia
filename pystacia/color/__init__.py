@@ -138,6 +138,24 @@ def from_hsl(h, s, l, factory=None):
     return color
 
 from pystacia.common import Resource
+from pystacia.compat import formattable
+
+
+def _make_component(name):
+    doc = formattable("""Set or get {0} channel information.
+
+       The value ought to be a float between 0 and 1.
+
+       :rtype: ``float`` or ``int``
+    """).format(name)
+
+    def fget(self):
+        return getattr(impl, 'get_' + name)(self)
+
+    def fset(self, value):
+        getattr(impl, 'set_' + name)(self, value)
+
+    return property(fget, fset, doc=doc)
 
 
 class Color(Resource):
@@ -155,90 +173,22 @@ class Color(Resource):
     def _clone(self):
         return impl.clone(self)
 
-    def __red():  # @NoSelf
-        doc = (  # NOQA
-        """Set or get red channel information.
-
-           The value ought to be a float between 0 and 1.
-
-           :rtype: ``float`` or ``int``
-        """)
-
-        def fget(self):
-            return impl.get_red(self)
-
-        def fset(self, value):
-            impl.set_red(self, value)
-
-        return property(**locals())
-
-    red = __red()
+    red = _make_component('red')
 
     r = red
     """Convenience synonym for :attr:`red`."""
 
-    def __green():  # @NoSelf
-        doc = (  # NOQA
-        """Set or get green channel information.
-
-           The value ought to be a float between 0 and 1.
-
-           :rtype: ``float`` or ``int``
-        """)
-
-        def fget(self):
-            return impl.get_green(self)
-
-        def fset(self, value):
-            impl.set_green(self, value)
-
-        return property(**locals())
-
-    green = __green()
+    green = _make_component('green')
 
     g = green
     """Convenience synonym for :attr:`green`."""
 
-    def __blue():  # @NoSelf
-        doc = (  # NOQA
-        """Set or get blue channel information.
-
-           The value ought to be a float between 0 and 1.
-
-           :rtype: ``float`` or ``int``
-        """)
-
-        def fget(self):
-            return impl.get_blue(self)
-
-        def fset(self, value):
-            impl.set_blue(self, value)
-
-        return property(**locals())
-
-    blue = __blue()
+    blue = _make_component('blue')
 
     b = blue
     """Convenience synonym for :attr:`blue`."""
 
-    def __alpha():  # @NoSelf
-        doc = (  # NOQA
-        """Set or get alpha channel information.
-
-           The value ought to be a float between 0 and 1.
-
-           :rtype: ``float`` or ``int``
-        """)
-
-        def fget(self):
-            return impl.get_alpha(self)
-
-        def fset(self, value):
-            impl.set_alpha(self, value)
-
-        return property(**locals())
-
-    alpha = __alpha()
+    alpha = _make_component('alpha')
 
     a = alpha
     """Convenience synonym for :attr:`alpha`."""

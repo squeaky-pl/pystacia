@@ -7,13 +7,6 @@
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 
-def blur(image, radius, strength):
-    if strength is None:
-        strength = radius
-
-    c_call(image, 'blur', radius, strength)
-
-
 def _make_radius_strength_bias(c_name, names, order=None):
     def function(image, *args):
         kwargs = dict(zip(names, args))
@@ -21,7 +14,7 @@ def _make_radius_strength_bias(c_name, names, order=None):
         if kwargs['strength'] is None:
             kwargs['strength'] = kwargs['radius']
 
-        if kwargs['bias'] is None:
+        if 'bias' in kwargs and kwargs['bias'] is None:
             kwargs['bias'] = 0
 
         order_ = order or names
@@ -31,6 +24,9 @@ def _make_radius_strength_bias(c_name, names, order=None):
         c_call(image, c_name, *values)
 
     return function
+
+
+blur = _make_radius_strength_bias('blur', ['radius', 'strength'])
 
 
 gaussian_blur = _make_radius_strength_bias(
@@ -54,11 +50,7 @@ adaptive_sharpen = _make_radius_strength_bias(
     'adaptive_sharpen', ['radius', 'strength', 'bias'])
 
 
-def detect_edges(image, radius, strength):
-    if strength is None:
-        strength = radius
-
-    c_call(image, 'edge', radius, strength)
+detect_edges = _make_radius_strength_bias('edge', ['radius', 'strength'])
 
 
 #TODO: moving center here
@@ -97,22 +89,7 @@ def despeckle(image):
     c_call(image, 'despeckle')
 
 
-def emboss(image, radius, strength):
-    """Apply edge detecting algorithm.
-
-       :param radius: filter radius
-       :type radius: ``int``
-       :param stregth: filter strength (sigma)
-       :type strength: ``int``
-
-       On a typical photo creates effect of raised edges.
-
-       This method can be chained.
-    """
-    if strength is None:
-        strength = radius
-
-    c_call(image, 'emboss', radius, strength)
+emboss = _make_radius_strength_bias('emboss', ['radius', 'strength'])
 
 
 from pystacia.api.func import c_call
