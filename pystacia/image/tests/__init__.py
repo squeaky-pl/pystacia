@@ -81,6 +81,21 @@ class WithFactory(TestCase):
         img.close()
 
 
+def _test_doesnot_explode(method, args=None, different=True):
+    if not args:
+        args = []
+
+    def test(self):
+        img = self.img.copy() if different else self.img
+
+        getattr(img, method)(*args)
+
+        if different:
+            self.assertFalse(img.is_same(self.img))
+
+    return test
+
+
 class WithSample(TestCase):
     def setUp(self):
         self.img = sample()
@@ -220,29 +235,13 @@ class WithSample(TestCase):
         pix = img.get_pixel(9, 30)
         self.assertEqual(pix, before)
 
-    # only checks if it doesnt blow up
-    def test_despeckle(self):
-        img = self.img
+    test_despeckle = _test_doesnot_explode('despeckle')
 
-        img.despeckle()
+    test_emboss = _test_doesnot_explode('emboss')
 
-    # only check if it doesnt blow up
-    def test_emboss(self):
-        img = self.img
+    test_denoise = _test_doesnot_explode('denoise')
 
-        img.emboss()
-
-    # only check if it doesnt blow up
-    def test_denoise(self):
-        img = self.img
-
-        img.denoise()
-
-    # only check if it doesnt blow up
-    def test_equalize(self):
-        img = self.img
-
-        img.equalize()
+    test_equalize = _test_doesnot_explode('equalize')
 
     def test_transpose(self):
         img = self.img
@@ -268,11 +267,7 @@ class WithSample(TestCase):
         self.assertEqual(img.get_pixel(25, 10).alpha, 0)
         self.assertEqual(img.get_pixel(128, 128).alpha, 1)
 
-    # only test if it doesnt blow up
-    def test_fx(self):
-        img = self.img
-
-        img.fx('1/2 * u')
+    test_fx = _test_doesnot_explode('fx', ['1/2 * u'])
 
     def test_gamma(self):
         img = self.img
@@ -285,34 +280,15 @@ class WithSample(TestCase):
         pix = img.get_pixel(128, 128)
         self.assertGreaterEqual(pix.get_rgba(), rgba)
 
-    # only test if it doesnt blow up
-    def test_swirl(self):
-        img = self.img
+    test_swirl = _test_doesnot_explode('swirl', [90])
 
-        img.swirl(90)
+    test_spread = _test_doesnot_explode('spread', [5])
 
-    # only test if it doesnt blow up
-    def test_spread(self):
-        img = self.img
+    test_auto_gamma = _test_doesnot_explode('auto_gamma')
 
-        img.spread(5)
+    test_auto_level = _test_doesnot_explode('auto_level', different=False)
 
-    # only test if it doest blow up
-    def test_auto_gamma(self):
-        img = self.img
-
-        img.auto_gamma()
-
-    # only test if it doesnt blow up
-    def test_auto_level(self):
-        img = self.img
-
-        img.auto_level()
-
-    def test_blur(self):
-        img = self.img
-
-        img.blur(3)
+    test_blur = _test_doesnot_explode('blur', [3])
 
     def test_brightness_brighten(self):
         img = self.img
@@ -386,16 +362,9 @@ class WithSample(TestCase):
         self.assertEqual(tuple(x + y for x, y in zip(before, after)),
                          (1, 1, 1))
 
-    # test if it doesnt blow
-    def test_oil_paint(self):
-        img = self.img
+    test_oil_paint = _test_doesnot_explode('oil_paint', [3])
 
-        img.oil_paint(3)
-
-    def test_posterize(self):
-        img = self.img
-
-        img.posterize(4)
+    test_posterize = _test_doesnot_explode('posterize', [4])
 
     def test_radial_blur(self):
         img = self.img
@@ -432,11 +401,7 @@ class WithSample(TestCase):
             img.get_pixel(256, 256).get_rgb(),
             tuple(round(1 - x, 4) for x in before.get_rgb()))
 
-    # test only if it doesnt blow up
-    def test_normalize(self):
-        img = self.img
-
-        img.normalize()
+    test_normalize = _test_doesnot_explode('normalize')
 
     def test_threshold(self):
         img = self.img
@@ -451,11 +416,7 @@ class WithSample(TestCase):
 
         img.map(img)
 
-    # test only if it doesnt blow up
-    def test_contrast_stretch(self):
-        img = self.img
-
-        img.contrast_stretch()
+    test_contrast_stretch = _test_doesnot_explode('contrast_stretch')
 
     def test_total_colors(self):
         img = self.img
@@ -464,47 +425,20 @@ class WithSample(TestCase):
 
         self.assertEqual(img.total_colors, 2)
 
-    def test_motion_blur(self):
-        img = self.img
-        copy = img.copy()
+    test_motion_blur = _test_doesnot_explode('motion_blur', [5])
 
-        copy.motion_blur(5)
-        self.assertFalse(img.is_same(copy))
+    test_adaptive_blur = _test_doesnot_explode('adaptive_blur', [5])
 
-    def test_adaptive_blur(self):
-        img = self.img
+    test_adaptive_sharpen = _test_doesnot_explode(
+        'adaptive_sharpen', [5], different=False)
 
-        img.adaptive_blur(5)
+    test_detect_edges = _test_doesnot_explode('detect_edges', [2])
 
-    def test_adaptive_sharpen(self):
-        img = self.img
+    test_sharpen = _test_doesnot_explode('sharpen', [2])
 
-        img.adaptive_sharpen(5)
+    test_add_noise = _test_doesnot_explode('add_noise')
 
-    def test_detect_edges(self):
-        img = self.img
-
-        img.detect_edges(2)
-
-    def test_sharpen(self):
-        img = self.img
-
-        img.sharpen(2)
-
-    def test_add_noise(self):
-        img = self.img
-        copy = img.copy()
-
-        copy.add_noise()
-        self.assertFalse(img.is_same(copy))
-
-    def test_charcoal(self):
-        img = self.img
-        copy = img.copy()
-
-        copy.charcoal(2)
-
-        self.assertFalse(img.is_same(copy))
+    test_charcoal = _test_doesnot_explode('charcoal', [2])
 
     def test_shade(self):
         img = self.img
@@ -541,11 +475,7 @@ class WithSample(TestCase):
 
         self.assertAlmostEqual(before.r, img.get_pixel(320, 240).r * 2, 2)
 
-    # test only if it doesnt blow up
-    def test_sketch(self):
-        img = self.img
-
-        img.sketch(2)
+    test_sketch = _test_doesnot_explode('sketch', [2])
 
     def test_overlay(self):
         img = self.img
@@ -604,10 +534,7 @@ class WithSample(TestCase):
         img.straighten(100)
         self.assertGreater(img.size, size)
 
-    def test_sepia(self):
-        img = self.img
-
-        img.sepia()
+    test_sepia = _test_doesnot_explode('sepia')
 
     def test_fill(self):
         img = self.img
