@@ -17,7 +17,7 @@ matrix:
         - python: 2.7
           env: LINT='find . -name "*.py" -exec py3kwarn {} +'
         - python: 2.7
-          env: LINT='clonedigger . || html2rest output.html'
+          env: LINT='clonedigger . && html2rest output.html'
     allow_failures:
         - python: 2.7
         - env: LINT="pylama -l pylint"
