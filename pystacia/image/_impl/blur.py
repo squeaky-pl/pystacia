@@ -14,51 +14,44 @@ def blur(image, radius, strength):
     c_call(image, 'blur', radius, strength)
 
 
-def gaussian_blur(image, radius, strength, bias):
-    if strength is None:
-        strength = radius
+def _make_radius_strength_bias(c_name, names, order=None):
+    def function(image, *args):
+        kwargs = dict(zip(names, args))
 
-    if bias is None:
-        bias = 0
+        if kwargs['strength'] is None:
+            kwargs['strength'] = kwargs['radius']
 
-    c_call(image, 'gaussian_blur', radius, strength, bias)
+        if kwargs['bias'] is None:
+            kwargs['bias'] = 0
 
+        order_ = order or names
 
-def motion_blur(image, radius, angle, strength, bias):
-    if strength is None:
-        strength = radius
+        values = [kwargs[k] for k in order_]
 
-    if bias is None:
-        bias = 0
+        c_call(image, c_name, *values)
 
-    c_call(image, 'motion_blur', radius, strength, angle, bias)
-
-
-def adaptive_blur(image, radius, strength, bias):
-    if strength is None:
-        strength = radius
-    if bias is None:
-        bias = 0
-
-    c_call(image, 'adaptive_blur', radius, strength, bias)
+    return function
 
 
-def sharpen(image, radius, strength, bias):
-    if strength is None:
-        strength = radius
-    if bias is None:
-        bias = 0
-
-    c_call(image, 'sharpen', radius, strength, bias)
+gaussian_blur = _make_radius_strength_bias(
+    'gaussian_blur', ['radius', 'strength', 'bias'])
 
 
-def adaptive_sharpen(image, radius, strength, bias):
-    if strength is None:
-        strength = radius
-    if bias is None:
-        bias = 0
+motion_blur = _make_radius_strength_bias(
+    'motion_blur', ['radius', 'angle', 'strength', 'bias'],
+    ['radius', 'strength', 'angle', 'bias'])
 
-    c_call(image, 'adaptive_sharpen', radius, strength, bias)
+
+adaptive_blur = _make_radius_strength_bias(
+    'adaptive_blur', ['radius', 'strength', 'bias'])
+
+
+sharpen = _make_radius_strength_bias(
+    'sharpen', ['radius', 'strength', 'bias'])
+
+
+adaptive_sharpen = _make_radius_strength_bias(
+    'adaptive_sharpen', ['radius', 'strength', 'bias'])
 
 
 def detect_edges(image, radius, strength):
