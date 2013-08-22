@@ -5,6 +5,9 @@
 
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
+from ez_setup import use_setuptools
+use_setuptools()
+
 
 from os import makedirs, remove, environ
 from os.path import exists, join, abspath, dirname
@@ -18,12 +21,7 @@ except ImportError:
 from zipfile import ZipFile
 from distutils.dir_util import mkpath
 from distutils.util import get_platform
-try:
-    # this will be present when pip or setuptools was installed
-    from setuptools.command.install import install
-except ImportError:
-    # still it can work with python setup.py install
-    from distutils.command.install import install  # @Reimport
+from setuptools.command.install import install
 from distutils.command.build import build
 from setuptools import setup
 
