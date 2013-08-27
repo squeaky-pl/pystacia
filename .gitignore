@@ -2,5 +2,10 @@
 pystacia.egg-info/
 .coverage
 
+build
+
+doc/source/_static/generated
+dob/build
+
 tool/downloads
 tool/data.py

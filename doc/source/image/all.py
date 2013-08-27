@@ -82,7 +82,6 @@ import wave
 import sketch
 import oil_paint
 import spread
-import dft
 import fx
 
 import fill
