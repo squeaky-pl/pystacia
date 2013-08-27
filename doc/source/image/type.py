@@ -1,4 +1,8 @@
+from os.path import join, dirname
+
 from pystacia import types
+
+dest = join(dirname(__file__), '../_static/generated')
 
 from all import closeup
 
@@ -8,7 +12,7 @@ def palette(i):
 
 image = closeup(palette)
 
-image.write('../_static/generated/lena_palette.png')
+image.write(join(dest, 'lena_palette.png'))
 
 image.close()
 
@@ -18,7 +22,7 @@ def grayscale(i):
 
 image = closeup(grayscale)
 
-image.write('../_static/generated/lena_gray.jpg')
+image.write(join(dest, 'lena_gray.jpg'))
 
 image.close()
 
@@ -28,6 +32,6 @@ def bilevel(i):
 
 image = closeup(bilevel)
 
-image.write('../_static/generated/lena_bilevel.png')
+image.write(join(dest, 'lena_bilevel.png'))
 
 image.close()

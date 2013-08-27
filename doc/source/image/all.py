@@ -1,35 +1,40 @@
-from pystacia import lena, magick_logo, rose, wizard, granite, netscape, filters
+from os.path import dirname, join
 
+from pystacia import (
+    lena, magick_logo, rose, wizard, granite, netscape, filters)
+
+dest = join(dirname(__file__), '../_static/generated')
 
 image = lena(256)
-image.write('../_static/generated/lena.jpg')
+image.write(join(dest, 'lena.jpg'))
 image.close()
 
 image = lena(128)
-image.write('../_static/generated/lena128.jpg')
+image.write(join(dest, 'lena128.jpg'))
 image.close()
 
 image = magick_logo()
-image.write('../_static/generated/magick_logo.jpg')
+image.write(join(dest, 'magick_logo.jpg'))
 image.close()
 
 image = rose()
-image.write('../_static/generated/rose.jpg')
+image.write(join(dest, 'rose.jpg'))
 image.close()
 
 image = wizard()
-image.write('../_static/generated/wizard.jpg')
+image.write(join(dest, 'wizard.jpg'))
 image.close()
 
 image = granite()
-image.write('../_static/generated/granite.jpg')
+image.write(join(dest, 'granite.jpg'))
 image.close()
 
 image = netscape()
-image.write('../_static/generated/netscape.jpg')
+image.write(join(dest, 'netscape.jpg'))
 image.close()
 
-def closeup(f = None, factor=4):
+
+def closeup(f=None, factor=4):
     image = lena()
     image.resize(32, 32, 256, 256)
 
@@ -40,8 +45,9 @@ def closeup(f = None, factor=4):
 
     return image
 
+
 image = closeup()
-image.write('../_static/generated/lena_closeup.jpg')
+image.write(join(dest, 'lena_closeup.jpg'))
 image.close()
 
 import generic
