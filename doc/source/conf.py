@@ -10,7 +10,7 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
-
+from os.path import abspath, dirname, join
 import sys, os
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -243,3 +243,9 @@ texinfo_documents = [
 sys.path.append(os.path.abspath('_themes'))
 html_theme_path = ['_themes']
 html_theme = 'kr'
+
+
+from subprocess import check_call
+here = dirname(abspath(__file__))
+
+check_call(['python', join(here, 'image/all.py')])
