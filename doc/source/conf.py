@@ -11,6 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 from os.path import abspath, dirname, join
+from sys import executable
 import sys, os
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -248,4 +249,4 @@ html_theme = 'kr'
 from subprocess import check_call
 here = dirname(abspath(__file__))
 
-check_call(['python', join(here, 'image/all.py')])
+check_call([executable, join(here, 'image/all.py')])
