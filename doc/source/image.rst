@@ -1178,40 +1178,6 @@ within given radius.
        
        radius 6
 
-Discrete Fourier transform
---------------------------
-
-:meth:`pystacia.image.Image.dft` performs Discrete Fourier transform on an input
-image. It returns a pair of images representing magnitude and phase components
-or real and imaginary part. These have many interesting applications. See
-http://www.imagemagick.org/Usage/fourier.
-
->>> image.dft()
-
->>> image.dft(False)
-
-.. container:: clearfix left
-
-    .. figure:: _static/generated/lena128.jpg
-       
-       Original
-       
-    .. figure:: _static/generated/lena_magnitude.jpg
-       
-       Magnitude
-       
-    .. figure:: _static/generated/lena_phase.jpg
-       
-       Phase
-       
-    .. figure:: _static/generated/lena_real.jpg
-       
-       Real
-       
-    .. figure:: _static/generated/lena_imaginary.jpg
-       
-       Imaginary
-
 Fx method
 ---------
 
