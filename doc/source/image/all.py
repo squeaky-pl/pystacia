@@ -54,6 +54,7 @@ import generic
 
 import colorspace
 import type
+import trim
 
 import rescale
 import resize
