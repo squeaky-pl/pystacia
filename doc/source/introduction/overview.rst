@@ -8,14 +8,14 @@ The philiosophy
 Modules
 -------
 
-Pacakge :mod:`pystacia` is divided into several submodules of which
+Package :mod:`pystacia` is divided into several submodules of which
 :mod:`pystacia.image` and :mod:`pystacia.color` are of most interest
 to readers. For convenience reasons symbols from `pystacia.image` are
 imported directly into :mod:`pystacia` and :mod:`pystacia.color` is
 accessible as :attr:`pystacia.color` attribute under :mod:`pystacia`.
 
 For quick experiments in a console you can perform `from pystacia import *`. 
-Several attributes got pulled into your namespace including:
+Several attributes got pulled into your name-space including:
 
 - :func:`pystacia.image.read`, :func:`pystacia.image.read_blob` and
   :func:`pystacia.image.read_raw` image factories
@@ -77,7 +77,7 @@ Some of them are listed below:
 Method chaining
 ---------------
 
-By default methods of :class:`pystacia.image.Image` are chainable i.e. you
+By default methods of :class:`pystacia.image.Image` can be chained i.e. you
 can construct code using long string of methods forming a chain such as::
 
     from pystacia import read
@@ -121,7 +121,7 @@ or from shell:
 Behind the scenes
 =================
 
-Pystcia uses :term:`ImageMagick` :term:`DLL` to perform its operation.
+Pystacia uses :term:`ImageMagick` :term:`DLL` to perform its operation.
 Specifically :term:`MagickWand` API is used which is contained in
 `libMagickWand.so`, `libMagickWand.dylib` or `libMagickWand.dll` depending on
 the platform used. Pystacia searches for the library in several places starting

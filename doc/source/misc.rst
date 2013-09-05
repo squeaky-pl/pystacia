@@ -7,7 +7,7 @@ Skipping binary install
 -----------------------
 
 Pystacia to work requires :term:`ImageMagick` shared libraries. Specifically
-:term:`MagickWand` DLL. Pystacia by default does install prebuilt binaries.
+:term:`MagickWand` DLL. Pystacia by default does install pre-built binaries.
 Sometimes you may want to compile :term:`ImageMagick` yourself and not use packaged
 one. You can set environment variable ``PYSTACIA_SKIP_BINARIES`` to non-false
 value while performing installation to skip copying of DLLs.
@@ -33,7 +33,7 @@ no SONAME.
 Subclassing Image class
 -----------------------
 
-Any factory function inside Pystcia can accept optional factory parameter specifying
+Any factory function inside Pystacia can accept optional factory parameter specifying
 class or function to be used when instantiating objects.
 
 >>> from pystacia import Image

@@ -298,7 +298,7 @@ include :term:`point` (also known as nearest neighbor), :term:`cubic`,
 
 >>> image.rescale(factor=2, filter=filters.lanczos)
 
-Upscaling close-ups with differnt filters:
+Upscaling close-ups with different filters:
 
 .. container:: clearfix left
 
@@ -351,7 +351,7 @@ Resizing
 --------
 
 If you wanna crop out a portion of an image you can use
-:meth:`pystacia.image.Image.resize`. it accepts four parameters describing cropped
+:meth:`pystacia.image.Image.resize`. It accepts four parameters describing cropped
 out region: width, height, x and y in this order. The latter two default
 to 0:
 
@@ -380,7 +380,7 @@ Rotating
 --------
 
 You can rotate an image with :meth:`pystacia.image.Image.rotate` method.
-Angle is mesaured in degrees. Positive
+Angle is measured in degrees. Positive
 angles yield clockwise rotation while negative ones counter-clockwise.
 The resulting empty spaces are filled with transparent pixels.
 
@@ -493,7 +493,7 @@ Rolling
 
 Rolling in an action of offsetting an image and filling empty space
 with pixels that overflew on the edge. It can be performed with
-:meth:`pystacia.image.Image.roll` method. It accepts offses in X and Y
+:meth:`pystacia.image.Image.roll` method. It accepts offsets in X and Y
 directions as arguments.
 
 >>> image.roll(100, 0)
@@ -520,7 +520,7 @@ Straightening image
 Sometimes you have an image that is not straightened since It could be scanned
 so. You can use :meth:`pystacia.image.Image.straighten` to correct that.
 It accepts single parameter - threshold which tells Pystacia what is the
-difference between baackground and subject.
+difference between background and subject.
 
 >>> image.straighten(20)
 
@@ -564,7 +564,7 @@ Adjsuting contrast
 
 :meth:`pystacia.image.Image.contrast` increases or decreases contrast of an image.
 Passing `0` is no change operation. Values towards `-1` decrease
-constract whilst values towards `1` increase it.
+contrast whilst values towards `1` increase it.
 
 >>> image.contrast(-1)
 
@@ -612,7 +612,7 @@ Adjusting brightness
 
 :meth:`pystacia.image.Image.brightness` adjusts the brightness of an image.
 Value `0` is no-change operation. Values towards `-1` make image darker whilst
-calues towards `1` increase brightness.
+values towards `1` increase brightness.
 
 >>> image.brightness(-1)
 
@@ -705,7 +705,7 @@ an image. It can be accomplished with :meth:`pystacia.image.Image.modulate`.
 It accepts parameters in hue, saturation and luminance order. They all default
 to 0 meaning no change. Usable hue values start from -1 meaning rotation of hue
 by -180 degrees to 1 meaning +180 degrees. Saturation values towards `-1` 
-desaturte image whilst values towards infinity saturate it. Setting luminosity
+desaturate image whilst values towards infinity saturate it. Setting luminosity
 to `-1` yields completely black image whilst values towards infinity make it
 brighter.
 
@@ -750,7 +750,7 @@ brighter.
 Desaturation
 ------------
 
-You can peform desaturation with :meth:`pystacia.image.Image.desaturate`. It is
+You can perform desaturation with :meth:`pystacia.image.Image.desaturate`. It is
 a shortcut to :meth:`pystacia.image.Image.modulate` passing `-1` as saturation.
 
 >>> image.desaturate()
@@ -808,7 +808,7 @@ parameter performs it.
 Sepia tone
 ----------
 
-:meth:`pystacia.image.Image.sepia` performs effect similar to old-fashined
+:meth:`pystacia.image.Image.sepia` performs effect similar to old-fashioned
 sepia image. You can adjust hue and saturation parameters but the default
 values are a good starting point.
 
@@ -827,8 +827,8 @@ values are a good starting point.
 Equalization
 ------------
 
-:meth:`pystacia.image.Image.equalize` is a method of streching channel information
-to fill full avaiable spectrum. It can result in drastic color quality improvement
+:meth:`pystacia.image.Image.equalize` is a method of stretching channel information
+to fill full available spectrum. It can result in drastic color quality improvement
 on low contrast, tainted images.
 
 >>> image.equalize()
@@ -846,7 +846,7 @@ on low contrast, tainted images.
 Invertion
 ---------
 
-Invertion is a process of substractin original channel value from it's maximum
+Invertion is a process of subtracting original channel value from it's maximum
 value. It results in a negative and can be performed with
 :meth:`pystacia.image.Image.invert`.
 
@@ -868,7 +868,7 @@ Solarization
 Solarization leads to effect similar of partly exposing an image in a darkroom.
 It can be performed with :meth:`pystacia.image.Image.solarize`. It accepts single
 parameter - factor. Factor `0` is no change operation, Factor `1` is exactly the
-same as negative of original. Value of `0.5` yields particulary interesting effects.
+same as negative of original. Value of `0.5` yields particularly interesting effects.
 
 >>> image.solarize(0)
 
@@ -1133,7 +1133,7 @@ Oil paint effect
 ----------------
 
 :meth:`pystacia.image.Image.oil_paint` simulates oil painting by covering image
-with circles filled with mean color value. It accepts single paramater -
+with circles filled with mean color value. It accepts single parameter -
 radius in pixels.
 
 >>> image.oil_paint(3)
@@ -1184,7 +1184,7 @@ Fx method
 With :meth:`pystacia.image.Image.fx` you can perform custom operations using
 :term:`ImageMagick` tiny scripting language. Beware that this can be very
 slow on large images as it's directly interpreted and not compiled in any way.
-http://www.imagemagick.org/script/fx.php has infomration on syntax.
+http://www.imagemagick.org/script/fx.php has information on syntax.
 
 >>> image.fx('u * 1/2')
 
@@ -1204,7 +1204,7 @@ Pixel manipulation
 Reading single pixels
 ---------------------
 
-To access pixel data anywhere in the image you cen use 
+To access pixel data anywhere in the image you can use 
 :meth:`pystacia.image.Image.get_pixel` passing it x and y
 coordinates.
 
@@ -1216,7 +1216,7 @@ Filling
 
 If you want to fill image with solid color you use
 :meth:`pystacia.image.Image.fill` passing it color. You can
-optionally pass also blend parameter specyfing opacity with
+optionally pass also blend parameter specifying opacity with
 `1` meaning opaque.
 
 >>> image.fill(color.from_string('red'))
@@ -1253,8 +1253,8 @@ Setting color
 -------------
 
 Another way to paint over whole image is using
-:meth:`pystacia.image.Image.set_color`. Unlinke :meth:`pystacia.image.fill` it always
-discards backgorund information replacing pixels. You can use alpha component
+:meth:`pystacia.image.Image.set_color`. Unlike :meth:`pystacia.image.fill` it always
+discards background information replacing pixels. You can use alpha component
 of color to gain translucency.
 
 >>> image.set_color(color.from_string('red'))
@@ -1419,7 +1419,7 @@ overlay your image on top of checkerboard pattern in the same manner that
 Bundled images
 ==============
 
-pystacia comes with standard test images which can be used for testing purposes.
+Pystacia comes with standard test images which can be used for testing purposes.
 Most of them are embedded in :term:`ImageMagick` library.
 
 :meth:`pystacia.lena` optionally accepting size parameter:

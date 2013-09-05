@@ -3,7 +3,7 @@ Working with color
 ==================
 
 Couple of methods in Pystacia use color as argument. There are many ways to
-factory a color in Pystcia. All the machinery is defined in :mod:`pystcia.color`
+factory a color in Pystacia. All the machinery is defined in :mod:`pystcia.color`
 As a convention all the channel information for red, blue, green, alpha and so on
 is specified as ``float`` numbers between `0` and `1`. It can be misleading
 for people used to thinking in 8-bit 0-255 mode. Pystacia uses ``float`` because

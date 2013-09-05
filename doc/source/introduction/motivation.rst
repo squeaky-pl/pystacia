@@ -24,7 +24,7 @@ Python software.
 - They are not actively maintained anymore or largely out-dated
 - They don't provide Pythonic API because they are modeled after :term:`C` code
 - They provide interfaces that are not easily extensible e.g. don't allow
-  subclassing
+  sub-classing
 - They are not easily installed on widely used OSes such as :term:`Windows`,
   :term:`Linux` and `MacOS X`
 - They always require :term:`C` compiler during installation phase
@@ -64,17 +64,17 @@ What Pystacia does about that
 - The default :term:`ImageMagick` distribution coming with Pystacia processes
   data in 16 bit precision internally.
 - I did put a lot of effort into making this code as good as possible.
-  All the Python code is continously tested against PEP8 validity and inspected
+  All the Python code is continuously tested against PEP8 validity and inspected
   with :term:`Pyflakes` to detect common problems.
 - Pystacia tries to hide :term:`ImageMagick` quirks, shield you from ABI changes,
   provide monolithic Python API. It supports any version of Imagick that is
   newer or equal to 6.5.9.0. Pystacia itself comes with reasonable recent
   versions of :term:`ImageMagick`.
 - Pystacia strives to provide Pythonic API employing as many idioms and common
-  patterns as possible. Pystacia classes are fully subclassable and factory
+  patterns as possible. Pystacia classes can be sub-classed and factory
   methods can accept factory parameters which specify which class is to be used.
-- Pystacia comes with prebuild :term:`ImageMagick` binaries for Windows, Linux and
-  MacOS X. Still it's possible to build it yourself if the default distribution
+- Pystacia comes with pre-built :term:`ImageMagick` binaries for Windows, Linux and
+  Mac OS X. Still it's possible to build it yourself if the default distribution
   doesn't fit your needs.
 - Pystacia is completely free of charge both for open-source and commercial uses
   as it's licensed under

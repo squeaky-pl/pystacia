@@ -52,9 +52,3 @@ General documentation structure and many paragraphs were adapted from
 Documentation theme is based on
 `Flask theme <https://github.com/mitsuhiko/flask-sphinx-themes/blob/master/LICENSE>`_
 by Armin Rochaster later adapted by Kenneth Reitz for :term:`Requests` project.
-
-Attributions
-------------
-
-- Bobby Drake - the first production adaption of the library and editing of
-  this document he never did.

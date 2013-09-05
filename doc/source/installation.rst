@@ -19,15 +19,15 @@ so installation must be performed manually by downloading and unpacking
 several packages. Refer to :ref:`ironpython` for more details.
 
 Installing Pystacia with cPython or PyPy on Windows, Linux and MacOS
-===================================================================
+====================================================================
 
 Before proceeding on Windows ensure that Python binary is on your system
 search path. When you type `python` in console you should be greeted with
 python interactive console.
 
-It is best practice to install develop your applicaion in a “virtual”
+It is best practice to install develop your application in a “virtual”
 Python environment in order to obtain isolation from any “system”
-packages you’ve got installed in your Python version. This can be done by
+packages you have got installed in your Python version. This can be done by
 using the :term:`virtualenv` package. Using a virtualenv will also prevent
 Pystacia from globally installing versions
 of packages that are not compatible with your system Python.
@@ -39,7 +39,7 @@ Let's assume that you have following folder structure::
               helloworld.py
 
 Workspace folder is typically a common ancestor folder where you put your Python
-projects. My project folder contains all the files related to your poject.
+projects. My project folder contains all the files related to your project.
 
 To set up virtualenv you need to grab its latest version from 
 https://github.com/pypa/virtualenv/tags. At the time of writing version
@@ -61,7 +61,7 @@ type following command:
     instead of :term:`cPython` substitute `python` for `pypy` binary name.
 
 This will create my-project/my-project-env with virtual environment in it. You
-can put your virtual environment whereever you want but typically you do it
+can put your virtual environment wherever you want but typically you do it
 under a subfolder inside your project folder to keep things together.
 
 Now the virtualenv is created you need to activate it so all the feature
@@ -151,7 +151,7 @@ You are almost done. Open your console program and type::
     ipy.exe -X:Frames
     >>> from pystacia import *
 
-If it succeeds everything is configured propertly. Note that we assmued that
+If it succeeds everything is configured properly. Note that we assumed that
 `ipy.exe` is on your system path - otherwise you need to type full path to it
 Also -X:Frames switch is mandatory since :term:`IronPython` otherwise doesn't
 provide :func:`sys._getframe` which is referenced by :term:`decorator` and
