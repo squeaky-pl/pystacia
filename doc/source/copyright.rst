@@ -2,10 +2,9 @@ Copyright, Trademarks, and Attributions
 =======================================
 
 *The Pystacia image manipulation library, Version 0.2*
+by `Paweł Piotr Przeradowski <http://twitter.com/squeaky_pl>`_
 
 No ponies were harmed during development of this software.
-
-by `Paweł Piotr Przeradowski <http://gplus.to/przeradowski>`_
 
 All rights reserved.  This material may be copied or distributed only
 subject to the terms and conditions set forth in the `Creative Commons
@@ -18,12 +17,12 @@ similar license to this one.
 
 .. note::
 
-   While the Pystacia documentation is offered under the
-   Creative Commons Attribution-Nonconmmercial-Share Alike 3.0 United
-   States License, the Pystacia *software* is offered under a
-   `less restrictive MIT license
-   <http://www.opensource.org/licenses/mit-license.php>`_ . It's completely
-   free of charge both for open-source and commercial project use.
+While the Pystacia documentation is offered under the
+Creative Commons Attribution-Noncommercial-Share Alike 3.0 United
+States License, the Pystacia *software* is offered under a
+`less restrictive MIT license
+<http://www.opensource.org/licenses/mit-license.php>`_ . It's completely
+free of charge both for open-source and commercial project use.
 
 All terms mentioned in this documentation that are known to be trademarks or
 service marks have been appropriately capitalized. However, use of a
@@ -42,7 +41,7 @@ This software relies on :term:`ImageMagick` for its internal operation.
 :term:`ImageMagick` is licensed under the
 `ImageMagick License <http://www.imagemagick.org/script/license.php>`_.
 
-Logo image is a derivative work based on image by user Ckim06 used in Wikipedia that can
+Logo image is a derivative work based on image by user ``Ckim06`` used in Wikipedia that can
 be found here: http://kk.wikipedia.org/wiki/%D0%A1%D1%83%D1%80%D0%B5%D1%82:PistachGrp_001_LR.jpg.
 Image is released into public domain.
 
@@ -52,9 +51,3 @@ General documentation structure and many paragraphs were adapted from
 Documentation theme is based on
 `Flask theme <https://github.com/mitsuhiko/flask-sphinx-themes/blob/master/LICENSE>`_
 by Armin Rochaster later adapted by Kenneth Reitz for :term:`Requests` project.
-
-Attributions
-------------
-
-- Bobby Drake - the first production adaption of the library and editing of
-  this document he never did.
