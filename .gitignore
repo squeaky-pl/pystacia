@@ -9,3 +9,5 @@ dob/build
 
 tool/downloads
 tool/data.py
+
+*.spl

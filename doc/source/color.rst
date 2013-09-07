@@ -105,7 +105,7 @@ and :meth:`pystacia.color.Color.get_rgba`:
 >>> red.get_rgba()
 (1, 1, 1, 0.1)
 
-To return value CSS3 string representation of color use :meth:`pystacia.color.Color.get_string`
+To return value :term:`CSS3` string representation of color use :meth:`pystacia.color.Color.get_string`
 or cast instance with :func:`str`:
 
 >>> red.get_string()
