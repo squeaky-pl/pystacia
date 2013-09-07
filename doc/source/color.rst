@@ -22,25 +22,29 @@ string representations. It accepts broad variety of input formats as defined in
 
 Well known colors:
 
->>> color.from_string('transparent')
-<Color(r=0,g=0,b=0,a=0) object at 0x10a858c00L>
->>> color.from_string('red')
-<Color(r=1,g=0,b=0,a=1) object at 0x103716c00L>
->>> color.from_string('teal')
-<Color(r=0,g=0.502,b=0.502,a=1) object at 0x10a856a00L>
+.. code-block:: python
+
+    >>> color.from_string('transparent')
+    <Color(r=0,g=0,b=0,a=0) object at 0x10a858c00L>
+    >>> color.from_string('red')
+    <Color(r=1,g=0,b=0,a=1) object at 0x103716c00L>
+    >>> color.from_string('teal')
+    <Color(r=0,g=0.502,b=0.502,a=1) object at 0x10a856a00L>
 
 Function syntax:
 
->>> color.from_string('rgb(255, 255, 255)')  # rgb
-<Color(r=1,g=1,b=1,a=1) object at 0x108047e00L>
->>> color.from_string('rgb(100%,100%,50%)')  # rgb with percentage
-<Color(r=1,g=1,b=0.5,a=1) object at 0x10a817e00L>
->>> color.from_string('rgba(255, 255, 255, 0.5)')  # rgba
-<Color(r=1,g=1,b=1,a=0.5) object at 0x10a819a00L>
->>> color.from_string('hsl(120, 100%, 75%)')  # hsl
-<Color(r=0.9,g=1,b=0.5,a=1) object at 0x10804a400L>
->>> color.from_string('hsla(240, 100%, 50%, 0.5)')  # hsla
-<Color(r=0,g=1,b=0.4,a=0.5) object at 0x1080a0c00L>
+.. code-block:: python
+
+    >>> color.from_string('rgb(255, 255, 255)')  # rgb
+    <Color(r=1,g=1,b=1,a=1) object at 0x108047e00L>
+    >>> color.from_string('rgb(100%,100%,50%)')  # rgb with percentage
+    <Color(r=1,g=1,b=0.5,a=1) object at 0x10a817e00L>
+    >>> color.from_string('rgba(255, 255, 255, 0.5)')  # rgba
+    <Color(r=1,g=1,b=1,a=0.5) object at 0x10a819a00L>
+    >>> color.from_string('hsl(120, 100%, 75%)')  # hsl
+    <Color(r=0.9,g=1,b=0.5,a=1) object at 0x10804a400L>
+    >>> color.from_string('hsla(240, 100%, 50%, 0.5)')  # hsla
+    <Color(r=0,g=1,b=0.4,a=0.5) object at 0x1080a0c00L>
 
 Creating colors from floats
 ===========================

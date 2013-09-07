@@ -17,7 +17,7 @@ Files, streams and byte strings
 To read a file from the disk you would use :func:`pystacia.image.read` factory::
 
     from pystacia import read
-    
+
     image = read('example.jpg')
 
 This reads file `example.jpg` from current working directory and returns
@@ -34,7 +34,7 @@ in byte string or stream (file-like object with :meth:`read` method). In such
 case you use :func:`pystacia.image.read_blob` instead::
 
      from pystacia import read_blob
-     
+
      # data is byte string or stream in e.g. PNG format
      image = read_blob(data)
 
@@ -46,22 +46,22 @@ it's not carried along data itself.
 ::
 
     from pystacia import read_raw
-    
+
     # create 2x2 pixel RGB image with red, green, blue and black pixel
     # from RGB triplets in 8 bit depth
     data = [255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0]
     data = bytes(data) # python 3k, ''.join(chr(x) for x in data) in 2.x
-    
+
     image = read_raw(data, 'rgb', 2, 2, 8)
 
 Sometimes you may also want to dump image object contents to byte string instead
 of saving in to this. You use get_blob method to do so. To dump image contents
-as PNG blob you would call::
+as :term:`PNG` blob you would call::
 
     image.get_blob('png')
 
 To get :term:`RAW` data along its format, dimensions, and depth as dictionary
-analogical to parameters you would pass to :meth:`pystacia.image.read_raw` you 
+analogical to parameters you would pass to :meth:`pystacia.image.read_raw` you
 can call :meth:`pystacia.image.get_raw` passing it color space::
 
     image.get_raw('ycbcr')
@@ -84,15 +84,15 @@ specifying color can be used.
 .. container:: clearfix left
 
     .. figure:: _static/generated/transparent.jpg
-       
+
        Transparent (default)
-    
+
     .. figure:: _static/generated/red.jpg
-       
+
        Red
-       
+
     .. figure:: _static/generated/green.jpg
-       
+
        Translucent green
 
 You can also generate a checkerboard pattern which is used in this documentation
@@ -103,7 +103,7 @@ accepts width and height.
 >>> checkerboard(200, 200)
 
 .. figure:: _static/generated/checkerboard.png
-       
+
    Checkerboard pattern
 
 Common properties
@@ -129,7 +129,7 @@ Color space
 
 Color space represents combination of channels that image is internally stored
 in. You can query it with :attr:`pystacia.Image.colorspace` property. It yields
-`pystacia.image.colorspaces.rgb` for most images but other values are also 
+`pystacia.image.colorspaces.rgb` for most images but other values are also
 possible.
 
 >>> image.colorspace
@@ -144,15 +144,15 @@ visual effects.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original :term:`RGB` image
-    
+
     .. figure:: _static/generated/lena_ycbcr.jpg
-       
+
        Reinterpreted as :term:`YCbCr`
-       
+
     .. figure:: _static/generated/lena_cmy.jpg
-       
+
        Reinterpreted as :term:`CMY`
 
 Note that :term:`RGB` image reinterpreted as :term:`CMY` is simply negative
@@ -210,19 +210,19 @@ Here are close-ups of resulting images:
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena_closeup.jpg
-       
+
        :term:`TrueColor` image
-    
+
     .. figure:: _static/generated/lena_palette.png
-       
+
        Converted to :term:`pallette`
-       
+
     .. figure:: _static/generated/lena_gray.jpg
-       
+
        Coverted to :term:`grayscale`
-       
+
     .. figure:: _static/generated/lena_bilevel.png
-       
+
        Coverted to :term:`bilevel`
 
 Geometry transformation
@@ -233,7 +233,7 @@ Rescaling
 
 Rescaling is an operation of changing size of original image
 that preserves all the original visual characteristics in the new
-viewport. Rescaling can be both proportional and not proportional.
+view-port. Rescaling can be both proportional and not proportional.
 You typically perform this operation by suppling width and height
 into :meth:`pystacia.image.Image.rescale`:
 
@@ -249,15 +249,15 @@ into :meth:`pystacia.image.Image.rescale`:
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-    
+
     .. figure:: _static/generated/lena_rescale_300.jpg
-       
+
        (100, 200)
-       
+
     .. figure:: _static/generated/lena_rescale_128.jpg
-       
+
        (128, 128)
 
 Alternatively you can pass factor into method. This specifies how many times
@@ -271,15 +271,15 @@ be proportional in both dimensions. You can also pass a two-element ``tuple``.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena_rescale_f0.75.jpg
-       
+
        Factor 0.75
-    
+
     .. figure:: _static/generated/lena_rescale_f0.6_0.5.jpg
-       
+
        Factor (0.6, 0.5)
-       
+
     .. figure:: _static/generated/lena_rescale_f1.3_1.jpg
-       
+
        Factor (1.3, 1)
 
 Note that this way resulting size is calculated relatively to previous size.
@@ -303,19 +303,19 @@ Upscaling close-ups with different filters:
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena_upscale_point.jpg
-       
+
        Point
-    
+
     .. figure:: _static/generated/lena_upscale_cubic.jpg
-       
+
        Cubic
-       
+
     .. figure:: _static/generated/lena_upscale_sinc.jpg
-       
+
        Sinc
-       
+
     .. figure:: _static/generated/lena_upscale_lanczos.jpg
-       
+
        Lanczos
 
 
@@ -332,19 +332,19 @@ Downscaling close-ups with different filters:
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena_downscale_point.jpg
-       
+
        Point
-    
+
     .. figure:: _static/generated/lena_downscale_cubic.jpg
-       
+
        Cubic
-       
+
     .. figure:: _static/generated/lena_downscale_sinc.jpg
-       
+
        Sinc
-       
+
     .. figure:: _static/generated/lena_downscale_lanczos.jpg
-       
+
        Lanczos
 
 Resizing
@@ -365,15 +365,15 @@ to 0:
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_resize1.jpg
-       
+
        (128, 128)
-    
+
     .. figure:: _static/generated/lena_resize2.jpg
-       
+
        (64, 128, 128, 128)
 
 Rotating
@@ -393,19 +393,19 @@ The resulting empty spaces are filled with transparent pixels.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena128.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_rotate30.jpg
-       
+
        30°
-       
+
     .. figure:: _static/generated/lena_rotate90.jpg
-       
+
        90°
-       
+
     .. figure:: _static/generated/lena_rotate-45.jpg
-       
+
        -45°
 
 Flipping
@@ -422,15 +422,15 @@ specify axis.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_flipx.jpg
-       
+
        Mirror X
-       
+
     .. figure:: _static/generated/lena_flipy.jpg
-       
+
        Mirror Y
 
 Transposing and transversing
@@ -446,17 +446,17 @@ pixels around the central y-axis while rotating them 270-degrees.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_transpose.jpg
-       
+
        Transposed
-       
+
     .. figure:: _static/generated/lena_transverse.jpg
-       
+
        Transversed
-       
+
 Skewing
 _______
 
@@ -473,19 +473,19 @@ offset in pixels and desired axis.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena128.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_skewx10.jpg
-       
+
        10 pixels along X
-       
+
     .. figure:: _static/generated/lena_skewx-5.jpg
-       
+
        -5 pixels along X
-       
+
     .. figure:: _static/generated/lena_skewy20.jpg
-       
+
        20 pixels along Y
 
 Rolling
@@ -503,15 +503,15 @@ directions as arguments.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_roll100_0.jpg
-       
+
        Rolled by (100, 0)
-       
+
     .. figure:: _static/generated/lena_roll-30_40.jpg
-       
+
        Rolled by (-30, 40)
 
 Straightening image
@@ -527,11 +527,11 @@ difference between background and subject.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena_notstraight.jpg
-       
+
        Rotated image
-       
+
     .. figure:: _static/generated/lena_straightened.jpg
-       
+
        Straightened up
 
 Trimming extra background
@@ -546,11 +546,11 @@ similarity and background color of space to discard (defaults to transparent).
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena_extrabg.jpg
-       
+
        Image with empty space
-       
+
     .. figure:: _static/generated/lena_trim.jpg
-       
+
        Trimmed off
 
 Color transformation
@@ -583,27 +583,27 @@ contrast whilst values towards `1` increase it.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena_contrast-1.jpg
-       
+
        -1
-       
+
     .. figure:: _static/generated/lena_contrast-0.6.jpg
-       
+
        -0.6
-       
+
     .. figure:: _static/generated/lena_contrast-0.25.jpg
-       
+
        -0.25
-       
+
     .. figure:: _static/generated/lena128.jpg
-       
+
        0 (original)
-       
+
     .. figure:: _static/generated/lena_contrast0.25.jpg
-       
+
        +0.25
-       
+
     .. figure:: _static/generated/lena_contrast1.jpg
-       
+
        +1
 
 
@@ -631,27 +631,27 @@ values towards `1` increase brightness.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena_brightness-1.jpg
-       
+
        -1
-       
+
     .. figure:: _static/generated/lena_brightness-0.6.jpg
-       
+
        -0.6
-       
+
     .. figure:: _static/generated/lena_brightness-0.25.jpg
-       
+
        -0.25
-       
+
     .. figure:: _static/generated/lena128.jpg
-       
+
        0 (original)
-       
+
     .. figure:: _static/generated/lena_brightness0.25.jpg
-       
+
        +0.25
-       
+
     .. figure:: _static/generated/lena_brightness0.75.jpg
-       
+
        +0.75
 
 Gamma correction
@@ -674,27 +674,27 @@ towards infinity make image lighter.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena_gamma0.1.jpg
-       
+
        0.1
-       
+
     .. figure:: _static/generated/lena_gamma0.3.jpg
-       
+
        0.3
-       
+
     .. figure:: _static/generated/lena_gamma0.6.jpg
-       
+
        0.6
-       
+
     .. figure:: _static/generated/lena128.jpg
-       
+
        1 (Original)
-       
+
     .. figure:: _static/generated/lena_gamma1.5.jpg
-       
+
        1.5
-       
+
     .. figure:: _static/generated/lena_gamma2.jpg
-       
+
        2
 
 Modulation
@@ -704,7 +704,7 @@ Modulation is an operation of adjusting hue, saturation and luminance of
 an image. It can be accomplished with :meth:`pystacia.image.Image.modulate`.
 It accepts parameters in hue, saturation and luminance order. They all default
 to 0 meaning no change. Usable hue values start from -1 meaning rotation of hue
-by -180 degrees to 1 meaning +180 degrees. Saturation values towards `-1` 
+by -180 degrees to 1 meaning +180 degrees. Saturation values towards `-1`
 desaturate image whilst values towards infinity saturate it. Setting luminosity
 to `-1` yields completely black image whilst values towards infinity make it
 brighter.
@@ -724,27 +724,27 @@ brighter.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena_modulate-1,-0.25,0.1.jpg
-       
+
        (-1, -0.25, 0.1)
-       
+
     .. figure:: _static/generated/lena_modulate-0.5,0.25,0.jpg
-       
+
        (-0.5, 0.25, 0)
-       
+
     .. figure:: _static/generated/lena_modulate-0.2,0.5,-0.25.jpg
-       
+
        (-0.2, 0.5, -0.25)
-       
+
     .. figure:: _static/generated/lena128.jpg
-       
+
        (0, 0, 0) Original
-       
+
     .. figure:: _static/generated/lena_modulate0.4,-0.5,0.jpg
-       
+
        (0.4, -0.5, 0)
-       
+
     .. figure:: _static/generated/lena_modulate0.8,0,0.jpg
-       
+
        (0.8, 0, 0)
 
 Desaturation
@@ -758,11 +758,11 @@ a shortcut to :meth:`pystacia.image.Image.modulate` passing `-1` as saturation.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_desaturate.jpg
-       
+
        Desatured
 
 Colorization
@@ -785,24 +785,24 @@ parameter performs it.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena128.jpg
-       
+
        Original
-       
-       
+
+
     .. figure:: _static/generated/lena_colorize_red.jpg
-       
+
        red
-       
+
     .. figure:: _static/generated/lena_colorize_yellow.jpg
-       
+
        yellow
-       
+
     .. figure:: _static/generated/lena_colorize_blue.jpg
-       
+
        blue
-       
+
     .. figure:: _static/generated/lena_colorize_violet.jpg
-       
+
        violet
 
 Sepia tone
@@ -817,11 +817,11 @@ values are a good starting point.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_sepia.jpg
-       
+
        Sepia tonning
 
 Equalization
@@ -836,11 +836,11 @@ on low contrast, tainted images.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_equalize.jpg
-       
+
        Equalized image
 
 Invertion
@@ -855,11 +855,11 @@ value. It results in a negative and can be performed with
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_invert.jpg
-       
+
        Inverted image
 
 Solarization
@@ -879,15 +879,15 @@ same as negative of original. Value of `0.5` yields particularly interesting eff
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        0 (Original)
-       
+
     .. figure:: _static/generated/lena_solarize0.5.jpg
-       
+
        0.5
-       
+
     .. figure:: _static/generated/lena_solarize1.jpg
-       
+
        1 (Inverted original)
 
 Posterization
@@ -910,23 +910,23 @@ and so on.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena128.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_posterize2.jpg
-       
+
        2 levels
-       
+
     .. figure:: _static/generated/lena_posterize3.jpg
-       
+
        3 levels
-       
+
     .. figure:: _static/generated/lena_posterize4.jpg
-       
+
        4 levels
-       
+
     .. figure:: _static/generated/lena_posterize5.jpg
-       
+
        5 levels
 
 Bluring, denoising and enhancing
@@ -945,17 +945,17 @@ mandatory radius and optional strength parameter.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_blur3.jpg
-       
+
        radius 3
-       
+
     .. figure:: _static/generated/lena_blur10.jpg
-       
+
        radius 10
-       
+
 Radial blur
 -----------
 
@@ -969,17 +969,17 @@ single parameter - blur angle in degrees.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_radial_blur10.jpg
-       
+
        10 degrees
-       
+
     .. figure:: _static/generated/lena_radial_blur45.jpg
-       
+
        45 degrees
-       
+
 Removing noise
 --------------
 
@@ -991,11 +991,11 @@ If you want to perform noise removal you can use
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_denoise.jpg
-       
+
        Denoised image
 
 Removing speckles
@@ -1009,11 +1009,11 @@ Removing speckles
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_despeckle.jpg
-       
+
        Despeckled image
 
 
@@ -1029,11 +1029,11 @@ Call :meth:`pystacia.image.Image.emboss` to use it.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_emboss.jpg
-       
+
        Embossed image
 
 Deforming
@@ -1052,15 +1052,15 @@ angles result in clockwise whirling, negative in counter-clockwise.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_swirl60.jpg
-       
+
        60 degrees
-       
+
     .. figure:: _static/generated/lena_swirl-30.jpg
-       
+
        -30 degrees
 
 Waving
@@ -1082,23 +1082,23 @@ transparent.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena128.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_wave20,100,x.jpg
-       
+
        (100, 20, x)
-       
+
     .. figure:: _static/generated/lena_wave-10,50,x.jpg
-       
+
        (50, -10, x)
-       
+
     .. figure:: _static/generated/lena_wave50,200,y.jpg
-       
+
        (200, 50, y)
-       
+
     .. figure:: _static/generated/lena_wave10,30,y.jpg
-       
+
        (30, 10, y)
 
 Special effects
@@ -1118,15 +1118,15 @@ pencils (defaults to 45 degrees).
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_sketch3.jpg
-       
+
        radius 3, angle 45
-       
+
     .. figure:: _static/generated/lena_sketch6,0.jpg
-       
+
        radius 6, angle 0
 
 Oil paint effect
@@ -1143,15 +1143,15 @@ radius in pixels.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_oil_paint3.jpg
-       
+
        radius 2
-       
+
     .. figure:: _static/generated/lena_oil_paint8.jpg
-       
+
        radius 8
 
 Spreading
@@ -1167,15 +1167,15 @@ within given radius.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_spread2.jpg
-       
+
        radius 2
-       
+
     .. figure:: _static/generated/lena_spread6.jpg
-       
+
        radius 6
 
 Fx method
@@ -1191,11 +1191,11 @@ http://www.imagemagick.org/script/fx.php has information on syntax.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_fx.jpg
-       
+
        After processing
 
 Pixel manipulation
@@ -1204,7 +1204,7 @@ Pixel manipulation
 Reading single pixels
 ---------------------
 
-To access pixel data anywhere in the image you can use 
+To access pixel data anywhere in the image you can use
 :meth:`pystacia.image.Image.get_pixel` passing it x and y
 coordinates.
 
@@ -1230,23 +1230,23 @@ optionally pass also blend parameter specifying opacity with
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena128.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_fill_red.jpg
-       
+
        red
-       
+
     .. figure:: _static/generated/lena_fill_green.jpg
-       
+
        green 0.5 blend
-       
+
     .. figure:: _static/generated/lena_fill_blue.jpg
-       
+
        blue 0.25 blend
-       
+
     .. figure:: _static/generated/lena_fill_orange.jpg
-       
+
        orange 0.2 blend
 
 Setting color
@@ -1268,23 +1268,23 @@ of color to gain translucency.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena128.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_set_color_red.jpg
-       
+
        red
-       
+
     .. figure:: _static/generated/lena_set_color_green.jpg
-       
+
        green 0.5 alpha
-       
+
     .. figure:: _static/generated/lena_set_color_black.jpg
-       
+
        black 0.2 alpha
-       
+
     .. figure:: _static/generated/lena_set_color_violet.jpg
-       
+
        violet 0.5 alpha
 
 Setting alpha
@@ -1304,30 +1304,30 @@ can do that with :meth:`pystacia.image.Image.set_alpha`.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena128.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_alpha0.75.jpg
-       
+
        0.75
-       
+
     .. figure:: _static/generated/lena_alpha0.5.jpg
-       
+
        0.5
-       
+
     .. figure:: _static/generated/lena_alpha0.25.jpg
-       
+
        0.25
-       
+
     .. figure:: _static/generated/lena_alpha0.jpg
-       
+
        0
 
 Overlaying
 ----------
 
 With :meth:`pystacia.image.Image.overlay` you can overlay images on top of
-image the method is called from. It accepts the image that is going to be 
+image the method is called from. It accepts the image that is going to be
 overlaid as first parameter, x and y coordinates and composite mode.
 There are many composite modes available. `over` is the default one,
 other popular ones include `colorize`, `multiply`, `overlay`, `pin_light`.
@@ -1347,51 +1347,51 @@ other popular ones include `colorize`, `multiply`, `overlay`, `pin_light`.
 .. container:: clearfix left
 
     .. figure:: _static/generated/lena128.jpg
-       
+
        Original
-       
+
     .. figure:: _static/generated/lena_overlay1.jpg
-       
+
        Over (default)
-       
+
     .. figure:: _static/generated/lena_overlay2.jpg
-       
+
        colorize
-       
+
     .. figure:: _static/generated/lena_overlay3.jpg
-       
+
        multiply
-       
+
     .. figure:: _static/generated/lena_overlay4.jpg
-       
+
        overlay
-       
+
     .. figure:: _static/generated/lena_overlay5.jpg
-       
+
        pin_light
-       
+
     .. figure:: _static/generated/lena_overlay6.jpg
-       
+
        saturate
-       
+
     .. figure:: _static/generated/lena_overlay7.jpg
-       
+
        soft_light
-       
+
     .. figure:: _static/generated/lena_overlay8.jpg
-       
+
        modulus_add
-       
+
     .. figure:: _static/generated/lena_overlay9.jpg
-       
+
        modulus_substract
-       
+
     .. figure:: _static/generated/lena_overlay10.jpg
-       
+
        luminize
-       
+
     .. figure:: _static/generated/lena_overlay11.jpg
-       
+
        hard_light
 
 Utilities
