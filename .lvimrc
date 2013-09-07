@@ -1,0 +1,2 @@
+let b:spellfile = expand('<sfile>:p:h'). '/.vim/en.utf-8.add'
+let &l:spf = b:spellfile

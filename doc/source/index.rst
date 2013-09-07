@@ -6,7 +6,7 @@ Pystacia is a new image manipulation library written to meet practical
 needs of developers. It's simple, it's cross-platform, runs on Python 2.5+, 3.x,
 :term:`PyPy` and :term:`IronPython`. It's compact but still appropriate for most of your
 day to day image handling tasks. Pystacia leverages powerful :term:`ImageMagick`
-library as a back-end exposing easily comprehensible Pythonic API.
+library as a back-end exposing easily comprehensible pythonic API.
 
 Here is one of the simplest code snippets showing what you can do with it:
 
