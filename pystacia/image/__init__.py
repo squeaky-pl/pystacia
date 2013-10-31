@@ -64,9 +64,9 @@ def read_blob(blob, format=None,  # @ReservedAssignment
        Reads image from string or data stream that contains a valid file
        header i.e. it carries information on image dimensions, bit depth and
        compression. Data format is equivalent to e.g. :term:`JPEG` file
-       read into string(Python 2.x)/bytes(PYthon 3.x) or file-like object.
+       read into string(Python 2.x)/bytes(Python 3.x) or file-like object.
        It is useful in cases when you have open file-like object but not the
-       file itself in the filesystem. That often happens in web applications
+       file itself in the file system. That often happens in web applications
        which map :term:`POST` data with file-like objects. Format and length
        are typically not used but can be a hint when the information cannot be
        guessed from the data itself. You can optionally pass factory parameter
@@ -140,7 +140,7 @@ class Image(Resource):
 
     def write(self, filename, format=None,  # @ReservedAssignment
               compression=None, quality=None, flatten=None, background=None):
-        """Write an image to filesystem.
+        """Write an image to file system.
 
            :param filename: file name to write to.
            :type filename: ``str``
@@ -152,7 +152,7 @@ class Image(Resource):
            :type quality: ``int``
 
            Saves an image to disk under given filename, format is determined
-           from filename unless specified explicitely. The interpretation of
+           from filename unless specified explicitly. The interpretation of
            quality parameter depends on the chosen format. E.g. for
            :term:`JPEG` it's a integer number between 1 (worst) and 100 (best).
            The default value is to choose
@@ -280,7 +280,7 @@ class Image(Resource):
            :type height: ``int``
            :param x: x origin of resized area
            :type x: ``int``
-           :param y: y origin of resixed area
+           :param y: y origin of resized area
            :type y: ``int``
 
            Crops out the given x, y, width, height area of image.
@@ -392,14 +392,14 @@ class Image(Resource):
     def trim(self, similarity=.1, background=None):
         """Attempt to trim off extra background around image.
 
-           :param similarity: Smilarity factor
+           :param similarity: Similarity factor
            :type similarity: ``float``
            :param background: background color, transparent by default
            :type background: :class:`pystacia.color.Color`
 
            Removes edges that are the background color from the image.
            The greater similarity the more distant hues are considered the same
-           color. Simlarity of `0` means only this exact color.
+           color. Similarity of `0` means only this exact color.
 
            This method can be chained.
         """
@@ -411,7 +411,7 @@ class Image(Resource):
     def brightness(self, factor):
         """Brightens an image.
 
-           :param factor: Brightness factor betwwen -1 and 1
+           :param factor: Brightness factor between -1 and 1
            :type factor: ``float``
 
            Brightens an image with specified factor. Factor of ``0`` is
@@ -426,13 +426,13 @@ class Image(Resource):
     def contrast(self, factor):
         """Change image contrast.
 
-           :param factor: Contrast factor betwwen -1 and 1
+           :param factor: Contrast factor between -1 and 1
            :type factor: ``float``
 
            Change image contrast with specified factor. Factor of ``0`` is
            no-change operation. Values towards ``-1`` make image less
            contrasting. ``-1`` makes image completely gray. Values towards
-           ``1`` increase image constrast. ``1`` pulls channel values towards
+           ``1`` increase image contrast. ``1`` pulls channel values towards
            0 and 1 resulting in a highly contrasting posterized image.
 
            This method can be chained.
@@ -447,7 +447,7 @@ class Image(Resource):
 
            Apply gamma correction to an image. Value ``1`` is an identity
            operation. Higher values yield brighter image and lower values
-           darken image. More information on gamma corection can be found
+           darken image. More information on gamma correction can be found
            here: http://en.wikipedia.org/wiki/Gamma_correction.
 
            This method can be chained
@@ -458,7 +458,7 @@ class Image(Resource):
         """Auto-gamma image.
 
            Extracts the 'mean' from the image and adjust the
-           image to try make set its gamma appropriatally.
+           image to try make set its gamma appropriately.
 
            This method can be chained.
         """
@@ -481,7 +481,7 @@ class Image(Resource):
            :type hue: ``float``
            :param saturation: Saturation value from -1 to infinity
            :type saturation: ``float``
-           :param lightness: Lightness value from -1 to inifinity
+           :param lightness: Lightness value from -1 to infinity
            :type lightness: ``float``
 
            Setting any of the parameters to 0 is no-change operation.
@@ -532,7 +532,7 @@ class Image(Resource):
            :param saturation: Saturation level
            :type saturation:``float``
 
-           Perform sepia-tonning of an image. You can control hue by
+           Perform sepia-toning of an image. You can control hue by
            adjusting threshold parameter.
 
            This method can be chained.
@@ -572,7 +572,7 @@ class Image(Resource):
            :param factor: solarize factor
            :type factor: ``float``
 
-           Applies solarization which is a color value opration similar to
+           Applies solarization which is a color value operation similar to
            what can be a result of partially exposing a photograph in a
            darkroom. The usable range of factor is from ``0`` to ``1``
            inclusive. Value of ``0`` is no-change operation whilst ``1``
@@ -595,7 +595,7 @@ class Image(Resource):
            Levels specify color levels allowed in each channel. The
            channel spectrum is divided equally by level. Very low
            values (2, 3 or 4) have the most visible effect. ``1`` produces
-           ``1**3`` output colors, ``2`` produces ``2**3`` colors ie. ``8``
+           ``1**3`` output colors, ``2`` produces ``2**3`` colors i.e. ``8``
            and so on. Setting dither to ``True`` enables dithering.
 
            This method can be chained.
@@ -612,9 +612,9 @@ class Image(Resource):
            Threshold image resulting in black & white image. Factor specify
            lightness threshold. It's a float ranging from 0 to 1 and
            defaults to 0.5. Pixels
-           below intensivity factor are renderer black and pixels
+           below intensity factor are renderer black and pixels
            above it end up white. In white mode channel pixels above factor
-           intensivity are pushed into their maximum whilst one below are
+           intensity are pushed into their maximum whilst one below are
            left untouched. In black mode channel pixels below factor are
            set to ``0`` whilst one above are left untouched. In random mode
            factor should be two-element tuple that specify minimum and maximum
@@ -624,7 +624,7 @@ class Image(Resource):
         color_impl.threshold(self, factor, mode)
 
     def map(self, lookup, interpolation=None):  # @ReservedAssignment
-        """Map image using intensivities as keys and lookup image.
+        """Map image using intensities as keys and lookup image.
 
            :param lookup: Lookup table image
            :type lookup: :class:`pystacia.image.Image`
@@ -636,11 +636,11 @@ class Image(Resource):
         color_impl.map(self, lookup, interpolation)
 
     def contrast_stretch(self, black=0, white=1):
-        """Strech image contrast"""
+        """Stretch image contrast"""
         color_impl.contrast_stretch(self, black, white)
 
     def evaluate(self, operation, value):
-        """Apply operation to imaget color information
+        """Apply operation to image color information
 
            :param operation: Operation like "multiply" or "subtract"
            :type operation: Enum ``operations`` representation
@@ -664,7 +664,7 @@ class Image(Resource):
            :rtype: ``tuple``
 
            Return a range of color information as a tuple of floats between
-           0 and 1. E.g. black and white image woudle have a range
+           0 and 1. E.g. black and white image would have a range
            of 0 for minimum and 1 for maximum
            1-color images will have maximum equal to minimum.
         """
@@ -678,7 +678,7 @@ class Image(Resource):
            :param strength: Standard deviation (sigma)
            :type strength: float
 
-           Convolves the image with a gaussian operator of the given radius
+           Convolves the image with a Gaussian operator of the given radius
            and standard deviation (strength).
 
            This method can be chained.
@@ -706,7 +706,7 @@ class Image(Resource):
            :param radius: radius in pixels
            :type radius: ``float``
 
-           Applies gaussian blur to an image of given radius.
+           Applies Gaussian blur to an image of given radius.
 
            This method can be chained.
         """
@@ -714,7 +714,7 @@ class Image(Resource):
         blur_impl.gaussian_blur(self, radius, strength, bias)
 
     def adaptive_blur(self, radius, strength=None, bias=None):
-        """Adaptive blur an image
+        """Adaptively blur an image
 
            :param radius: radius in pixels
            :type radius: ``float``
@@ -801,7 +801,7 @@ class Image(Resource):
 
            :param radius: filter radius
            :type radius: ``int``
-           :param stregth: filter strength (sigma)
+           :param strength: filter strength (sigma)
            :type strength: ``int``
 
            On a typical photo creates effect of raised edges.
@@ -835,7 +835,7 @@ class Image(Resource):
            :param axis: axis along which to apply deformation. Defaults to x.
            :type axis: ``pystacia.enum.EnumValue``
 
-           Applies wave like distoration to an image along chosen
+           Applies wave like distortion to an image along chosen
            axis. Axis defaults to :attr:``axes.x``. Offset parameter is
            not effective as for now. Will be implemented in the feature.
            Resulting empty areas are filled with transparent pixels.
@@ -876,7 +876,7 @@ class Image(Resource):
         special.add_noise(self, attenuate, noise_type)
 
     def charcoal(self, radius, strength=None, bias=None):
-        """Simluate a charcoal.
+        """Simulate a charcoal.
 
            :param radius: Charcoal radius
            :type radius: ``float``
@@ -886,7 +886,7 @@ class Image(Resource):
         special.charcoal(self, radius, strength, bias)
 
     def oil_paint(self, radius):
-        """Simulates oil paiting.
+        """Simulates oil painting.
 
            :param radius: brush radius
            :type radius: ``float``
@@ -908,8 +908,8 @@ class Image(Resource):
            :param grayscale: Whether grayscale image
            :type grayscale: ``bool``
 
-           Simulates 3D effect by finding edges and rendering them as rised
-           with light comming from azimuth direction in elevation degrees above
+           Simulates 3D effect by finding edges and rendering them as raised
+           with light coming from azimuth direction in elevation degrees above
            image surface. Azimuth is rotation along Z axis. By default it
            grayscales an image before applying an effect.
 
@@ -963,7 +963,7 @@ class Image(Resource):
            :param blend: overlay blending
            :type blend: ``float``
 
-           Overlay a color over whole image. Blend is bleding factor of a
+           Overlay a color over whole image. Blend is blending factor of a
            color with `0` being completely transparent and ``1`` fully opaque.
 
            This method can be chained.
@@ -994,7 +994,7 @@ class Image(Resource):
            :type alpha: float
 
            Resets alpha channel of all pixels in the image to given
-           value between 0 (transpanret) and 1 (opaque).
+           value between 0 (transparent) and 1 (opaque).
 
            This method can be chained.
         """
@@ -1040,7 +1040,7 @@ class Image(Resource):
             image marking different parts with red color and a distortion
             metric.
             By default it uses :attr:`pystacia.image.metrics.absolute_error`
-            metric. If images are of  differnt sizes
+            metric. If images are of  different sizes
             returns ``False`` instead.
         """
         return pixel.compare(self, image, metric, factory)
@@ -1066,7 +1066,7 @@ class Image(Resource):
     #                                         radius, x, y))
 
     def splice(self, x, y, width, height):
-        """Insert bands of transprent areas into an image.
+        """Insert bands of transparent areas into an image.
 
            :param x: x coordinate of splice
            :type x: ``int``
@@ -1178,7 +1178,7 @@ class Image(Resource):
     def size(self):
         """Return a tuple of image width and height.
 
-           :rtype: ``tuples`` of two ``int``
+           :rtype: ``tuple`` of two ``int``
 
            Returns a tuple storing image width on first position and image
            height on second position.
@@ -1218,7 +1218,7 @@ class Image(Resource):
 
            Saves image to temporary lossless file format on a disk and sends
            it to default image handling program to display. Returns a path
-           to the temporary file. You get no gurantees about life span of a
+           to the temporary file. You get no guarantees about life span of a
            file after process ended since it will be typically deleted when
            process ends.
         """
@@ -1247,7 +1247,7 @@ class Image(Resource):
     def checkerboard(self):
         """Fills transparent pixels with checkerboard.
 
-           Useful for presentation when you want to explicitely
+           Useful for presentation when you want to explicitly
            mark transparent pixels when otherwise it might be
            unclear where they are.
         """
