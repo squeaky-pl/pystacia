@@ -31,7 +31,7 @@ def from_string(value, factory=None):
        :rtype: :class:`Color` or factory instance
 
        Creates new instance from a valid color specification string
-       as in CSS 2.1. Supported formats include rgb, rgba, hsl, hsla,
+       as in `CSS` 2.1. Supported formats include rgb, rgba, hsl, hsla,
        color identifiers, hexadecimal values, integer and percent values
        where applicable. When factory is specified this type
        is used instead of default :class:`Color` type.
@@ -104,7 +104,7 @@ def from_rgba(r, g, b, a, factory=None):
        :param factory: alternative :class:`Color` subclass to use
        :rtype: :class:`Color` or factory instance
 
-       Red, gren, blue and alpha components should be numbers between 0 and 1
+       Red, green, blue and alpha components should be numbers between 0 and 1
        inclusive.
 
        >>> from_rgba(1, 1, 0, 0.5)
@@ -208,7 +208,7 @@ class Color(Resource):
 
             :rtype: ``tuple``
 
-            Returns tuple containg red, green and blue in this order
+            Returns tuple containing red, green and blue in this order
             as 8bit integers randing from 0 to 255
         """
         return tuple(int(255 * x) for x in self.get_rgb())
