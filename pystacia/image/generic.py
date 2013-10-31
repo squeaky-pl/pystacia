@@ -50,7 +50,7 @@ def noise(width, height, grayscale=False, factory=None):
        :type height: ``int``
        :param grayscale: Whether noise should be grayscale
 
-       By defult returns an image filled with color noise.
+       By default returns an image filled with color noise.
        The image contains grayscale noise if grayscale is set to ``True``.
     """
 

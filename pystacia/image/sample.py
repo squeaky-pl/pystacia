@@ -16,7 +16,7 @@ from pystacia.util import memoized
 
 @memoized
 def lena_available():
-    """Check if lena test image is available in this intall
+    """Check if lena test image is available in this install
 
         Returns ``True`` if Lena test image is available i.e. ImageMagick
         is compiled with support for
@@ -60,7 +60,7 @@ def lena(width=None, factory=None):
 def magick_logo(factory=None):
     """Return ImageMagick logo image.
 
-       Resulting image is 640x480, palette, RGB colorspace image.
+       Resulting image is 640 x 480, palette, RGB colorspace image.
     """
     return io.read('logo:', factory=factory)
 
@@ -68,7 +68,7 @@ def magick_logo(factory=None):
 def rose(factory=None):
     """Return rose image.
 
-       Resulting image is 70x48, RGB, truecolor.
+       Resulting image is 70 x 48, RGB, truecolor.
     """
     return io.read('rose:', factory=factory)
 
@@ -76,7 +76,7 @@ def rose(factory=None):
 def wizard(factory=None):
     """Return wizard image.
 
-       Resulting image is 480x640, palette, RGB image.
+       Resulting image is 480 x 640, palette, RGB image.
     """
     return io.read('wizard:', factory=factory)
 
@@ -84,7 +84,7 @@ def wizard(factory=None):
 def granite(factory=None):
     """Return granite texture.
 
-       Resulting image is 128x128 pallette, RGB image.
+       Resulting image is 128 x 128 pallette, RGB image.
     """
     return io.read('granite:', factory=factory)
 
@@ -92,8 +92,8 @@ def granite(factory=None):
 def netscape(factory=None):
     """Return standard Netscape 216 color cube.
 
-       Color cube also known as "Websafe Colors".
-       216x144, palette, RGB.
+       Color cube also known as "Web safe Colors".
+       216 x 144, palette, RGB.
     """
     return io.read('netscape:', factory=factory)
 
