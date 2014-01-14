@@ -24,6 +24,7 @@ from distutils.util import get_platform
 from setuptools.command.install import install
 from distutils.command.build import build
 from setuptools import setup
+from sys import version_info
 
 environ['PYSTACIA_SETUP'] = '1'
 import pystacia
@@ -207,6 +208,18 @@ readme = open(join(dirname(abspath(__file__)), 'README.rst'))
 long_description = readme.read()
 readme.close()
 
+test_require = ['nose', 'coverage']
+if version_info < (2, 7):
+    test_require.append('unittest2')
+
+travis_require = test_require + ['coveralls']
+
+docs_require = ['sphinx']
+
+dev_require = test_require + docs_require + ['ipython']
+
+lint_require = ['pylama', 'py3kwarn', 'clonedigger', 'html2rest']
+
 setup(
     name='pystacia',
     description='Python raster imaging library',
@@ -218,6 +231,14 @@ setup(
     license='MIT License',
     long_description=long_description,
     install_requires=install_requires,
+    extras_require={
+        'test': test_require,
+        'travis': travis_require,
+        'lint': lint_require,
+        'docs': docs_require,
+        'dev': dev_require,
+        'lint': lint_require
+    },
     cmdclass=cmdclass,
     classifiers=[
         'Development Status :: 4 - Beta',
