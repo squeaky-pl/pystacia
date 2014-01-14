@@ -1,6 +1,5 @@
 language: python
 python:
-    - "2.5"
     - "2.6"
     - "2.7"
     - "3.2"
@@ -24,15 +23,14 @@ matrix:
 install:
     - if [[ `python -c "import sys; print(int(sys.version_info < (2, 7)))"` == "1" ]]; then pip install --use-mirrors unittest2; fi
     - pip install -v --use-mirrors .
-    - if [[ $TEST && $TRAVIS_PYTHON_VERSION != '2.5' ]]; then pip install --use-mirrors coverage coveralls; fi
+    - if [[ $TEST ]]; then pip install --use-mirrors coverage coveralls; fi
     - if [[ "$LINT" ]]; then pip install --use-mirrors pylama py3kwarn clonedigger html2rest; fi
 before_script:
     - python symlinkcdll.py
     - PYSTACIA_LOG=1 python -c "from pystacia.api import get_dll; get_dll(False)"
     - python -c "from pystacia import magick; from pprint import pprint; pprint(magick.info())"
 script:
-    - if [[ $TEST && $TRAVIS_PYTHON_VERSION != '2.5' ]]; then coverage run --source=pystacia `which nosetests`; fi
-    - if [[ $TEST && $TRAVIS_PYTHON_VERSION == '2.5' ]]; then nosetests; fi
+    - if [[ $TEST ]]; then coverage run --source=pystacia `which nosetests`; fi
     - if [[ "$LINT" ]]; then cd pystacia && bash -c "$LINT"; fi
 after_success:
     - if [[ $TEST ]]; then coveralls; fi
