@@ -21,8 +21,9 @@ matrix:
         - python: 2.7
         - env: LINT="pylama -l pylint"
 install:
-    - if [[ $TEST ]]; then pip install --use-mirrors -e .[travis]; fi
-    - if [[ "$LINT" ]]; then pip install --use-mirrors -e .[lint]; fi
+    - pip install --upgrade pip
+    - if [[ $TEST ]]; then pip install -e .[travis]; fi
+    - if [[ "$LINT" ]]; then pip install -e .[lint]; fi
 before_script:
     - python symlinkcdll.py
     - PYSTACIA_LOG=1 python -c "from pystacia.api import get_dll; get_dll(False)"
