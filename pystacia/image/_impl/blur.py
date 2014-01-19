@@ -6,8 +6,10 @@
 # This module is part of Pystacia and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
+import six
 
-from future_builtins import zip
+if not six.PY3:
+    from future_builtins import zip
 
 
 def _make_radius_strength_bias(c_name, names, order=None):
