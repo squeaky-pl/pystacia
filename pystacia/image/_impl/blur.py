@@ -7,6 +7,9 @@
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 
+from future_builtins import zip
+
+
 def _make_radius_strength_bias(c_name, names, order=None):
     def function(image, *args):
         kwargs = dict(zip(names, args))
