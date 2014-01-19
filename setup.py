@@ -218,7 +218,7 @@ docs_require = ['sphinx']
 
 dev_require = test_require + docs_require + ['ipython']
 
-lint_require = ['pylama', 'py3kwarn', 'clonedigger', 'html2rest']
+lint_require = ['pylama', 'pylint', 'py3kwarn', 'clonedigger', 'html2rest']
 
 setup(
     name='pystacia',
