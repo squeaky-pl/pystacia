@@ -26,6 +26,12 @@ from distutils.command.build import build
 from setuptools import setup
 from sys import version_info
 
+
+if version_info < (2, 5):
+    raise NotImplementedError(
+        "Sorry, you need at least Python 2.5 or Python 3.x")
+
+
 environ['PYSTACIA_SETUP'] = '1'
 import pystacia
 
